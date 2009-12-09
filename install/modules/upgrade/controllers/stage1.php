@@ -21,6 +21,7 @@
 		protected $supportedVersions = array(
 											# Stable versions											
 											'2.3.0', '2.3.1', '2.3.2', '2.3.3',
+											'2.4.0',
 
 											# Dev versions											
 											'2.3.50', '2.3.51', '2.3.52', '2.3.53', '2.3.54', '2.3.55', '2.3.56',

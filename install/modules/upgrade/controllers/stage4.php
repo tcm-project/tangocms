@@ -21,6 +21,8 @@
 		 */
 		protected $routes = array(
 								# Stable Releases
+								'2.4.0'			=> '2.5.0-alpha1',
+
 								'2.3.3'			=> '2.4.0-alpha1',
 								'2.3.2'			=> '2.3.3',
 								'2.3.1'			=> '2.3.2',
@@ -320,6 +322,19 @@
 					return '2.3.90';
 			}
 		}
+
+		/**
+		 * Upgrades to 2.5.0-alpha1 (2.4.60)
+		 *
+		 * @return bool|string
+		 */
+		protected function upgradeTo_250_alpha1() {
+			switch( $this->version ) {
+				case '2.4.0':
+					return '2.4.50';
+				default:
+					return '2.4.50';
+			}
 
 	}
 
