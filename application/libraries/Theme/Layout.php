@@ -1,5 +1,4 @@
 <?php
-// $Id: Layout.php 2833 2009-12-05 20:35:00Z alexc $
 
 /**
  * Zula Framework Theme Layout

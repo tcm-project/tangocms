@@ -4,7 +4,6 @@
 # Zula JavaScript source compressor
 #
 # Author: Alex Cartwright
-# Id: $Id$
 # Copyright: Copyright (C) 2009 Alex Cartwright
 # Licence: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html GNU/LGPL 2.1
 #---

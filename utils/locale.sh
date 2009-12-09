@@ -3,7 +3,6 @@
 # Zula Locale Tools
 #
 # Author: Robert Clipsham
-# Id: $Id$
 # Copyright: Copyright (c) 2008, 2009 Robert Clipsham
 # Licence: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html GNU/LGPL 2.1
 #---

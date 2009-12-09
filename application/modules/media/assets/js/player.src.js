@@ -1,4 +1,3 @@
-// $Id: player.src.js 2778 2009-11-17 19:23:33Z alexc $
 
 /*!
  * TangoCMS Media

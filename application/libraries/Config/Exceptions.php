@@ -1,5 +1,4 @@
 <?php
-// $Id: Exceptions.php 2810 2009-11-29 11:42:29Z alexc $
 
 /**
  * Zula Config exceptions

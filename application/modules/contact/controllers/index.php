@@ -1,5 +1,4 @@
 <?php
-// $Id: index.php 2832 2009-12-05 20:31:02Z alexc $
 
 /**
  * Zula Framework Module (contact)

@@ -1,5 +1,4 @@
 <?php
-// $Id: manage.php 2798 2009-11-24 12:15:41Z alexc $
 
 /**
  * Zula Framework Module (content_layout)

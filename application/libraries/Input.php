@@ -1,5 +1,4 @@
 <?php
-// $Id: Input.php 2815 2009-12-02 10:36:33Z alexc $
 
 /**
  * Zula Framework Input

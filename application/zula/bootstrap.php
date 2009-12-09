@@ -1,5 +1,4 @@
 <?php
-// $Id: bootstrap.php 2811 2009-11-30 14:54:28Z alexc $
 
 /**
  * Zula Framework Bootstrap

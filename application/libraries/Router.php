@@ -1,5 +1,4 @@
 <?php
-// $Id: Router.php 2799 2009-11-25 12:53:19Z alexc $
 
 /**
  * Zula Framework Router

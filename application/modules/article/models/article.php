@@ -1,5 +1,4 @@
 <?php
-// $Id: article.php 2803 2009-11-28 11:18:07Z alexc $
 
 /**
  * Zula Framework Model (Article)

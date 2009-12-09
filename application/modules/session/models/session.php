@@ -1,5 +1,4 @@
 <?php
-// $Id: session.php 2836 2009-12-07 17:11:47Z alexc $
 
 /**
  * Zula Framework Model (Session)

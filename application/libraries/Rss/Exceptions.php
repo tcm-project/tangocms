@@ -1,5 +1,4 @@
 <?php
-// $Id: Exceptions.php 2789 2009-11-20 08:27:46Z alexc $
 
 /**
  * Zula Framework Rss Exceptions

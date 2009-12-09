@@ -1,5 +1,4 @@
 <?php
-// $Id: Rss.php 2800 2009-11-26 14:11:03Z alexc $
 
 /**
  * Zula Framework RSS

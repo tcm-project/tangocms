@@ -1,5 +1,4 @@
 ;<?php die( 'You can not access this file directly ... You can have a cup of tea though, if you want?' ); ?>
-; $Id: config.ini.php 2842 2009-12-09 15:25:34Z alexc $
 
 ; ---
 ; Zula Framework configuration ini file.

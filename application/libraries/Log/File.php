@@ -1,5 +1,4 @@
 <?php
-// $Id: File.php 2814 2009-12-01 17:19:18Z alexc $
 
 /**
  * Zula Framework Logging - File. Logs all messagess to a file.

@@ -1,5 +1,4 @@
 <?php
-// $Id: config.php 2830 2009-12-05 15:45:10Z alexc $
 
 /**
  * Zula Framework Module (page)

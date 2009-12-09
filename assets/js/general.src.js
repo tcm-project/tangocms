@@ -1,4 +1,3 @@
-// $Id: general.src.js 2768 2009-11-13 18:12:34Z alexc $
 
 /*!
  * Zula Framework General JS

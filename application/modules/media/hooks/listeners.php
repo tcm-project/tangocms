@@ -1,5 +1,4 @@
 <?php
-// $Id: listeners.php 2797 2009-11-23 22:00:46Z alexc $
 
 /**
  * Zula Framework Module (media)

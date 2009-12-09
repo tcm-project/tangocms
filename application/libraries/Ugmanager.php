@@ -1,5 +1,4 @@
 <?php
-// $Id: Ugmanager.php 2801 2009-11-27 11:28:34Z alexc $
 
 /**
  * Zula Framework UGManager

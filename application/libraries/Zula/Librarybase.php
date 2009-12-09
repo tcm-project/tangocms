@@ -1,5 +1,4 @@
 <?php
-// $Id: Librarybase.php 2768 2009-11-13 18:12:34Z alexc $
 
 /**
  * Zula Framework base abstract library class

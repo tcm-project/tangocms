@@ -1,5 +1,4 @@
 <?php
-// $Id: Controllerbase.php 2810 2009-11-29 11:42:29Z alexc $
 
 /**
  * Zula Framework Controller Base

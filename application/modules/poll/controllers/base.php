@@ -1,5 +1,4 @@
 <?php
-// $Id: base.php 2838 2009-12-07 21:21:02Z alexc $
 
 /**
  * Zula Framework Module (poll)

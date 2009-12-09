@@ -1,5 +1,4 @@
 <?php
-// $Id: Session.php 2821 2009-12-03 11:27:47Z alexc $
 
 /**
  * Zula Framework Session Handler

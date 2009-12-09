@@ -1,5 +1,4 @@
 <?php
-// $Id: Regex.php 2822 2009-12-03 11:57:57Z alexc $
 
 /**
  * Zula Framework Validator (Regex)

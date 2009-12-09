@@ -1,5 +1,4 @@
 <?php
-// $Id: listeners.php 2823 2009-12-03 15:12:40Z alexc $
 
 /**
  * TangoCMS Module (Settings)

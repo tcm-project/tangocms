@@ -1,5 +1,4 @@
 <?php
-// $Id: add.php 2818 2009-12-02 14:05:05Z alexc $
 
 /**
  * Zula Framework Module (media)

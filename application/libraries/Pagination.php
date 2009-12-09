@@ -1,5 +1,4 @@
 <?php
-// $Id: Pagination.php 2789 2009-11-20 08:27:46Z alexc $
 
 /**
  * Zula Framework Pagination

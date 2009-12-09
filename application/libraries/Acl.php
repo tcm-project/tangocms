@@ -1,5 +1,4 @@
 <?php
-// $Id: Acl.php 2792 2009-11-21 17:06:58Z alexc $
 
 /**
  * Zula Framework Access Control Levels/Lists (Deny all default)

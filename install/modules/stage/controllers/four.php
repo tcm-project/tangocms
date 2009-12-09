@@ -1,5 +1,4 @@
 <?php
-// $Id: four.php 2808 2009-11-28 21:09:14Z alexc $
 
 /**
  * Zula Framework

@@ -1,5 +1,4 @@
 <?php
-// $Id: Base.php 2806 2009-11-28 17:43:42Z alexc $
 
 /**
  * Zula Framework Configuration Base

@@ -1,6 +1,5 @@
 <?php
 /**
-* @version $Id: core.php,v 1.9 2007/08/12 01:11:33 harryf Exp $
 * @package utf8
 * @subpackage strings
 */

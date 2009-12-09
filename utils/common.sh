@@ -2,7 +2,6 @@
 # Common functions for use in all utility scripts
 #
 # Author: Robert Clipsham
-# Id: $Id$
 # Copyright: Copyright (c) 2008, Robert Clipsham
 # Licence: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html GNU/LGPL 2.1
 #---

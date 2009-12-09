@@ -1,5 +1,4 @@
 <?php
-// $Id: post.php 2768 2009-11-13 18:12:34Z alexc $
 /*
  * Post a new comment for a given request path
  *
