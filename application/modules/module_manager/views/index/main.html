@@ -1,0 +1,40 @@
+<?php
+	if ( empty( $categories ) ) {
+		echo 'No modules to display ... wait, that is impossible';
+	} else { ?>
+		<div class="jsSearchBox">
+			<label for="module_manager-filter" class="horizontal" >{L_[Filter Modules:]}</label>
+			<input type="text" id="module_manager-filter" >
+		</div>
+		<?php
+			$mod_dir = $this->_zula->getDir( 'modules' );
+			$mod_dir_html = $this->_zula->getDir( 'modules', true );
+			foreach( $categories as $category=>$tmp_modules ) {
+		?>
+			<div class="module_manager-category">
+				<h3><?php echo ucwords( zula_strtolower($category) ); ?></h3>
+				<ol class="module_manager-item">
+					<?php
+						foreach( $tmp_modules as $module ) {
+							$mod_url = $this->_router->makeUrl( $module['name'], $module['cntrlr'] );
+							$perm_url = $this->_router->makeUrl( 'module_manager', 'permission', $module['name'] );
+							// Module icon
+							$prefix = array(
+										 	'relative' 	=> $mod_dir.'/'.$module['name'].'/icons',
+										 	'html' 		=> $mod_dir_html.'/'.$module['name'].'/icons',
+										 	);
+							$icon = zula_get_icon( 'modules/'.$module['name'], $prefix );
+					?>
+					<li>
+						<a class="imglink" href="<?php echo $mod_url; ?>" title="<?php echo $module['description']; ?>">
+							<img src="<?php echo $icon; ?>" alt="<?php echo $module['name']; ?>">
+						</a>
+						<p>
+							<a class="title" href="<?php echo $mod_url; ?>" title="<?php echo $module['description']; ?>"><?php echo $module['title']; ?></a>
+							<a class="module_manager-item-permission" href="<?php echo $perm_url; ?>" title="{L_[Manage Permissions]}">{L_[Permissions]}</a>
+						</p>
+					</li>
+				<?php } ?>
+			</ol>
+		</div>
+<?php } } ?>

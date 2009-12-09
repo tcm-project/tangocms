@@ -1,0 +1,25 @@
+<form action="<?php echo $this->_router->makeUrl( 'theme', 'index', 'settings' ); ?>" method="post">
+	<table>
+		<tbody>
+			<tr class="even">
+				<td>
+					<dl>
+						<dt>{L_[Allow users to choose a custom theme?]}</dt>
+						<dd>{L_[If set to 'yes', users can choose their own theme to use, instead of the default used.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="radio" id="theme-o-yes" name="theme[allow_user_override]" value="1" <?php echo $theme['allow_user_override'] ? 'checked="checked"' : ''; ?>>
+					<label class="horizontal" for="theme-o-yes">{L_[Yes]}</label>
+					<br>
+					<input type="radio" id="theme-o-no" name="theme[allow_user_override]" value="0" <?php echo !$theme['allow_user_override'] ? 'checked="checked"' : ''; ?>>
+					<label class="horizontal" for="theme-o-no">{L_[No]}</label>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<div class="actions">
+		<input type="submit" value="{L_[Update]}">
+	</div>
+</form>

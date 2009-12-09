@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<details>
+	<detail>
+		<name>sysinfo</name>
+		<title>Information</title>
+		<description>Displays details of the system environment, and checks for TangoCMS upgrades.</description>
+		<author>Alex Cartwright</author>
+		<category>system</category>
+	</detail>
+</details>

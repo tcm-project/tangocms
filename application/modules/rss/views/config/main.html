@@ -1,0 +1,55 @@
+<form method="post" action="<?php echo $this->_router->makeUrl( 'rss', 'config', 'index' ); ?>">
+	<table>
+		<tbody>
+			<tr class="even">
+				<td>
+					<dl>
+						<dt>{L_[Global Aggregation]}</dt>
+						<dd>{L_[Generate a global RSS feed with content from all other feeds]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="radio" id="rss-global-yes" name="rss[global]" value="1" <?php echo $rss['global'] ? 'checked="checked"' : ''; ?>>
+					<label class="horizontal" for="rss-global-yes">{L_[Yes]}</label>
+					<br>
+					<input type="radio" id="rss-global-no" name="rss[global]" value="0" <?php echo $rss['global'] ? '' : 'checked="checked"' ?>>
+					<label class="horizontal" for="rss-global-no">{L_[No]}</label>
+				</td>
+			</tr>
+			<tr class="odd">
+				<td>
+					<dl>
+						<dt>{L_[Default RSS Feed]}</dt>
+						<dd>{L_[The default RSS Feed to use when a feed isn't specifically associated with a page]}</dd>
+					</dl>
+				</td>
+		        <td class="confcol">
+					<select name="rss[default]">>
+						<?php if ( empty( $rss_feeds ) ) { ?>
+							<option value="">{L_[Currently no RSS feeds]}</option>
+						<?php } else {
+							foreach( $rss_feeds as $name=>$option ) {
+								$selected = $rss['default'] == $name ? 'selected="selected"' : '';
+		                    	echo '<option value="', $name, '" ', $selected, '>', $option, "</option>\n";
+							} }
+						?>
+					</select>
+				</td>
+			</tr>
+			<tr class="even">
+				<td>
+					<dl>
+						<dt>{L_[Number of items per feed]}</dt>
+						<dd>{L_[Set this to 0 to have an infinite number of items per feed. If you have a lot of articles this will cause a lot of disk space to be used.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="text" name="rss[items]" value="{RSS.ITEMS}">
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<div class="actions">
+		<input type="submit" value="{L_[Update]}">
+	</div>
+</form>

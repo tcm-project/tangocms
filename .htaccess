@@ -1,0 +1,33 @@
+# $Id: .htaccess 2768 2009-11-13 18:12:34Z alexc $
+
+###
+## Zula Framework .htaccess file
+###
+
+### Override some PHP settings that can't be done at runtime
+<IfModule mod_php5.c>
+	php_flag magic_quotes_gpc	off
+	php_flag register_globals	off
+</IfModule>
+
+### Rewrite Rules, used with 'SEF' routers
+<IfModule mod_rewrite.c>
+	RewriteEngine on
+
+	# The following RewriteBase will need changing if TangoCMS
+	# is running within a subdirectory (can also be the cause of
+	# 500/Internal Server Errors).
+	#
+	# EG, TangoCMS running in subdir of /tcm, use the following:
+	# RewriteBase /tcm
+	#
+	#RewriteBase /
+
+	RewriteCond %{SCRIPT_FILENAME} !-d
+	RewriteCond %{SCRIPT_FILENAME} !-f
+	RewriteRule ^(.*)$ index.php?url=$1 [QSA]
+</IfModule>
+
+### Stop people accessing various directories
+RedirectMatch 403 (?:/application/logs(?:/.*?\.log)?|/tmp/cache/.*?|/config/.*?/(?:layouts/.*\.xml|config\.ini\.php)|/application/modules/.*?/install\.(?:xml|sql)|/assets/uploads/media/.*?)(?:/|$)
+RedirectMatch 403 \.svn/?

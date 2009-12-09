@@ -1,0 +1,8 @@
+<?php printf( t('Hello, %1$s!'), $username ); ?>
+
+
+{L_[You have recently registered for an account with us, however your account has been declined.]}
+
+{L_[With your account being declined, it has also been deleted. If you wish, you can try to register again by going to the following URL:]}
+
+<?php echo $this->_router->makeFullUrl( 'session', 'register', '', 'main' ); ?>

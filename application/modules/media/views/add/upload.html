@@ -1,0 +1,51 @@
+<form action="" method="post" enctype="multipart/form-data">
+	<table>
+		<tbody>
+			<tr class="even">
+				<td>
+					<dl>
+						<dt>{L_[Title]}</dt>
+						<dd>{L_[Enter a short title that will be displayed.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="text" name="media[title]" value="{MEDIA.TITLE}">
+				</td>
+			</tr>
+			<tr class="odd">
+				<td>
+					<dl>
+						<dt>{L_[Media File]}</dt>
+						<dd>{L_[Select any image, video or audio file to upload.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="file" name="media_file">
+				</td>
+			</tr>
+			<tr class="even">
+				<td>
+					<dl>
+						<dt>{L_[Thumbnail Image (optional)]}</dt>
+						<dd>{L_[A thumbnail will automatically be generated if an image has not been selected here.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="file" name="media_thumb">
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<div>
+		<hr>
+		<label for="media-description">{L_[Enter the description you would like to be displayed (optional)]}</label>
+		<textarea name="media[desc]" id="media-description" rows="30" cols="20">{MEDIA.DESC}</textarea>
+	</div>
+
+	<div class="actions">
+		<input type="hidden" name="media[cid]" value="{MEDIA.CID}">
+		<input type="submit" value="{L_[Upload Media]}">
+	</div>
+
+</form>

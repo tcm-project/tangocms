@@ -1,0 +1,44 @@
+<?php if ( $this->_config->get( 'article/show_cat_desc' ) && !empty( $cat_details['description'] ) ) { ?>
+	<dl class="article-category-desc">
+		<dt>{L_[Category Description]}</dt>
+		<dd>{CAT_DETAILS.DESCRIPTION}</dd>
+	</dl>
+<?php } ?>
+
+<?php
+	if ( empty( $articles ) ) {
+		echo '<p>', t('No articles to display'), '</p>';
+	} else {
+		foreach( $articles as $article ) {
+			$aid = $article['id'];
+			$articleLink = $this->_router->makeUrl( 'article', 'view', $article['clean_title'] );
+		?>
+			<div class="article-entry">
+				<h4 class="article-title">
+					<a href="<?php echo $articleLink; ?>" title="{L_[View Article]}">
+						<?php echo zula_htmlspecialchars( $article['title'] ); ?>
+					</a>
+				</h4>
+				<p>
+					<em>
+						<?php
+							$catLink = $this->_router->makeUrl( 'article', 'cat', $article['category_clean_title'] );
+						 	printf( t('Published %1$s by, %2$s in %3$s'),
+									$this->_date->formatStamp( $article['date'] ),
+									$this->_helper('user')->link( $article['author'] ),
+									'<a href="'.$catLink.'">'.$article['category_title'].'</a>'
+								  );
+						?>
+					</em>
+				</p>
+				<div class="article-body">
+					<?php echo $article['body']; ?>
+				</div>
+				<p class="article-links">
+					<a class="article-read-more" href="<?php echo $articleLink; ?>">{L_[View Article]}</a>
+				</p>
+				<hr class="article-separator">
+			</div>
+<?php } } ?>
+
+{PAGINATION}

@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<install>
+	<dependencies>
+		<zula>
+			<version operator=">=">0.7.6</version>
+		</zula>
+	</dependencies>
+	<aclResources>
+		<resource roleHint="group_admin">groups_global</resource>
+		<resource roleHint="group_admin">groups_add</resource>
+		<resource roleHint="group_admin">groups_edit</resource>
+		<resource roleHint="group_admin">groups_delete</resource>
+	</aclResources>
+</install>

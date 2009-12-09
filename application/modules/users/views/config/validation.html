@@ -1,0 +1,41 @@
+<form action="<?php echo $this->_router->makeUrl( 'users', 'config', 'validation' ); ?>" method="post">
+	<table class="contentdata">
+		<thead>
+			<tr>
+				<th class="checkcol"></tj>
+				<th>{L_[Username]}</th>
+				<th>{L_[Joined]}</th>
+				<th>{L_[Group]}</th>
+				<th>{L_[Email]}</th>
+			</tr>
+		</thead>
+		<tbody>
+			<?php if ( empty($validations) ) { ?>
+				<tr class="even">
+					<td colspan="5">{L_[There are currently no users to be validated]}</td>
+				</tr>
+			<?php } else {
+					$i = 0; foreach( $validations as $user ) { ?>
+					<tr class="<?php echo zula_odd_even( $i ); ?>">
+						<td class="checkcol">
+							<input type="checkbox" value="<?php echo $user['id']; ?>" name="users[uids][]">
+						</td>
+						<td><?php echo $this->_helper('user')->link($user['id']); ?></td>
+						<td><?php echo $this->_date->formatStamp($user['joined']); ?></td>
+						<td><?php echo $this->_ugmanager->gidName( $user['group'] ); ?></td>
+						<td><?php echo $user['email']; ?></td>
+					</tr>
+			<?php $i++; } } ?>
+		</tbody>
+	</table>
+
+	<?php if ( !empty($validations) ) { ?>
+		<div class="actions">
+			<select name="users[action]">
+				<option value="accept">{L_[Accept]}</option>
+				<option value="decline">{L_[Decline]}</option>
+			</select>
+			<input type="submit" value="{L_[Update]}">
+		</div>
+	<?php } ?>
+</form>

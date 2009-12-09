@@ -1,0 +1,49 @@
+<?php
+	$url = $this->_router->makeUrl( 'content_layout' ).'/index';
+	include $this->getPath( '../sitetype_selector.html' );
+?>
+
+<form action="<?php echo $this->_router->makeUrl( 'content_layout', 'index', 'delete' ); ?>" method="post">
+	<table id="content_layout" class="contentdata">
+		<thead>
+			<tr>
+				<th class="checkcol"></th>
+				<th>{L_[Layout Name]}</th>
+				<th>{L_[URL/Regex]}</th>
+				<th>{L_[Manage]}</th>
+			</tr>
+		</thead>
+		<tbody>
+			<?php $i = 0; foreach( $layouts as $layout ) { ?>
+				<tr class="<?php echo zula_odd_even( $i ); ?>">
+					<td class="checkcol">
+						<?php
+							$default = $layout['name'] == $site_type.'-default';
+							$format = '<input type="checkbox" name="layout_names[]" value="%1$s" %2$s>';
+							$disabled = $default ? 'disabled="disabled"' : '';
+							printf( $format, $layout['name'], $disabled );
+						?>
+					</td>
+					<td><?php
+							if ( $default ) {
+								echo '<strong>'.t('(Default)').'</strong> ';
+							}
+							echo $layout['name'];
+						?>
+					</td>
+					<td><?php echo $layout['regex']; ?></td>
+					<td class="managecol">
+						<a href="<?php echo $this->_router->makeUrl( 'content_layout', 'manage', $layout['name'] ); ?>" title="{L_[Edit Layout]}">{L_[Edit]}</a> |
+						<a href="<?php echo $this->_router->makeUrl( 'content_layout', 'index', 'add', null, array('clone' => $layout['name']) ); ?>">{L_[Clone Layout]}</a>
+					</td>
+				</tr>
+				<?php $i++; } ?>
+		</tbody>
+	</table>
+	<?php if ( count( $layouts ) > 1 ) { ?>
+		{CSRF}
+		<div class="actions">
+			<input type="submit" value="{L_[Delete Selected]}">
+		</div>
+	<?php } ?>
+</form>

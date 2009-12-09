@@ -1,0 +1,84 @@
+<p>{L_[Below are some basic configuration settings, these can all (and many more) be changed later.]}</p>
+
+<form action="{ACTION}" method="post">
+	<table>
+		<thead>
+			<tr>
+				<th colspan="2">{L_[General]}</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr class="even">
+				<td>
+					<dl>
+						<dt>{L_[Title]}</dt>
+						<dd>{L_[Title of the website to be displayed.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="text" name="settings[config][title]" value="{SETTINGS.CONFIG.TITLE}">
+				</td>
+			</tr>
+			<tr class="odd">
+				<td>
+					<dl>
+						<dt>{L_[Description]}</dt>
+						<dd>{L_[Short description of your website.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="text" name="settings[meta][description]" value="{SETTINGS.META.DESCRIPTION}">
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<table>
+		<thead>
+			<tr>
+				<th colspan="2">{L_[Email]}</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr class="even">
+				<td>
+					<dl>
+						<dt>{L_[Outgoing]}</dt>
+						<dd>{L_[The email address all out-going email will appear from.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="text"  name="settings[mail][outgoing]" value="{SETTINGS.MAIL.OUTGOING}">
+				</td>
+			</tr>
+			<tr class="odd">
+				<td>
+					<dl>
+						<dt>{L_[Incoming]}</dt>
+						<dd>{L_[The email address all incoming mail should come to.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="text"  name="settings[mail][incoming]" value="{SETTINGS.MAIL.INCOMING}">
+				</td>
+			</tr>
+			<tr class="even">
+				<td>
+					<dl>
+						<dt>{L_[Prefix email subject with site title?]}</dt>
+						<dd>{L_[Should the subject of every email sent be prefixed with the site title?]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="radio" id="prefix_yes" name="settings[mail][subject_prefix]" value="1" <?php echo $settings['mail']['subject_prefix'] ? 'checked="checked"' : ''; ?>>
+					<label class="horizontal" for="prefix_yes">{L_[Yes]}</label>
+					<br>
+					<input type="radio" id="prefix_no" name="settings[mail][subject_prefix]" value="0" <?php echo $settings['mail']['subject_prefix'] ? '' : 'checked="checked"'; ?>>
+					<label class="horizontal" for="prefix_no">{L_[No]}</label>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<div class="actions">
+		<input type="submit" value="{L_[Finish]}">
+	</div>
+</form>

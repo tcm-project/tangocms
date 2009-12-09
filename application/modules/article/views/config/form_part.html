@@ -1,0 +1,37 @@
+<form action="{ACTION}" method="post">
+	<table>
+		<tbody>
+			<tr class="even">
+				<td>
+					<dl>
+						<dt>{L_[Part Title]}</dt>
+						<dd>{L_[The title of the article part that will get displayed.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="text" name="article[title]" value="{ARTICLE.TITLE}">
+				</td>
+			</tr>
+			<tr class="odd">
+				<td>
+					<dl>
+						<dt>{L_[Order]}</dt>
+						<dd>{L_[The order this part will appear in. Lower values will appear first.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="text" name="article[order]" value="{ARTICLE.ORDER}">
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	{AMC.TABLE}
+
+	<h3>{L_[Part Content]}</h3>
+	<textarea class="editor_body" name="article[body]">{ARTICLE.BODY}</textarea>
+
+	<div class="actions">
+		<input type="submit" value="<?php echo $op == 'add' ? t('Add Article Part') : t('Edit Article Part'); ?>">
+	</div>
+</form>

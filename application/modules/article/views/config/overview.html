@@ -1,0 +1,75 @@
+<?php if ( $count != 0 ) { ?>
+	<div class="jsSearchBox">
+		<p><label class="horizontal" for="article-title">{L_[Search articles:]}</label> <input type="text" id="article-title"></p>
+	</div>
+<?php } ?>
+<?php if ( count($categories) > 1 ) { ?>
+	<form action="" method="get">
+		<p>
+			<?php if ( $this->_router->getType() == 'standard' ) { ?>
+				<input type="hidden" name="url" value="<?php echo $this->_router->getRawRequestPath(); ?>">
+			<?php } ?>
+			<label class="horizontal" for="article-filter">{L_[Show from category:]}</label>
+			<select id="article-filter" name="cid">
+				<option value="">{L_[All Categories]}</option>
+				<?php
+					foreach( $categories as $cat ) {
+						printf( '<option value="%1$d" %2$s>%3$s</option>',
+								$cat['id'],
+								($cat['id'] == $current_cid ? 'selected="selected"' : ''),
+								$cat['title']
+							  );
+					}
+				?>
+			</select>
+			<input type="submit" value="{L_[Update]}">
+		</p>
+	</form>
+<?php } ?>
+
+<form method="post" action="">
+	<table class="contentdata">
+		<thead>
+			<tr>
+				<th class="checkcol"></th>
+				<th>{L_[Title]}</th>
+				<th>{L_[Author]}</th>
+				<th>{L_[Category]}</th>
+				<th>{L_[Published]}</th>
+				<th>{L_[Manage]}</th>
+			</tr>
+		</thead>
+		<tbody>
+			<?php if ( $count == 0 ) { ?>
+				<tr class="even">
+					<td colspan="6">{L_[No articles to display.]}</td>
+				</tr>
+			<?php } else { $i = 0; foreach( $articles as $article ) { ?>
+				<tr class="<?php echo zula_odd_even( $i ); ?>">
+					<td class="checkcol">
+						<input type="checkbox" name="article_ids[]" value="<?php echo $article['id']; ?>">
+					</td>
+					<td>
+						<a href="<?php echo $this->_router->makeUrl( 'article', 'view', $article['clean_title'], $this->_router->getDefaultSiteType() ); ?>">
+							<?php echo zula_snippet( $article['title'], 50, true ); ?>
+						</a>
+					</td>
+					<td><?php echo $this->_helper('user')->link( $article['author'] ); ?></td>
+					<td><?php echo isset($categories[ $article['cat_id'] ]) ? $categories[ $article['cat_id'] ]['title'] : t('Unknown'); ?></td>
+					<td><?php echo $article['published'] ? $this->_date->formatStamp( $article['date'] ) : '<strong>'.t('Unpublished').'</strong>'; ?></td>
+					<td class="managecol">
+						<a href="<?php echo $this->_router->makeUrl( 'article', 'config', 'edit', null, array('id' => $article['id']) ); ?>" title="{L_[Edit Article]}">{L_[Edit]}</a> |
+						<a href="<?php echo $this->_router->makeUrl( 'article', 'config', 'addpart', null, array('id' => $article['id']) ); ?>">{L_[Add Part]}</a>
+					</td>
+				</tr>
+			<?php $i++; } } ?>
+		</tbody>
+	</table>
+
+
+	<?php if ( $count ) { ?>
+		{PAGINATION}
+		<div class="actions"><input type="submit" value="{L_[Delete Selected]}"></div>
+		{CSRF}
+	<?php } ?>
+</form>

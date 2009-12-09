@@ -1,0 +1,30 @@
+{L_[Hello,]}
+
+{L_[You have received the following contact form. Replying to this email will reply to the email provided by the form submitter.]}
+
+----------
+
+{L_[Form Name:]} {FORM.NAME}
+{L_[Username:]} <?php echo $this->_session->getUser( 'username' ); ?>
+
+
+<?php
+	$out = null;
+	foreach( $fields as $field ) {
+		if ( isset( $contact['fields'][ $field['id'] ] ) ) {
+			$value = $contact['fields'][ $field['id'] ];
+			if ( is_array( $value ) ) {
+				$value = implode( "\n", $value );
+			} else if ( !trim( $value ) ) {
+				continue;
+			}
+			$value = str_replace( array("\n", "\r\n"), "\n\t", wordwrap($value) );
+			$out .= $field['name'].": \n\t".$value."\n\n";
+		}
+
+	}
+	echo trim( $out );
+?>
+
+
+----------

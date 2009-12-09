@@ -1,0 +1,85 @@
+<form action="" method="post">
+	<table>
+		<tbody>
+			<tr class="even">
+				<td>
+					<dl>
+						<dt>{L_[Title]}</dt>
+						<dd>{L_[Title of the page that will get displayed]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="text" name="page[title]" value="{PAGE.TITLE}">
+				</td>
+			</tr>
+			<?php if ( !empty( $parents ) ) { ?>
+				<tr class="odd">
+					<td>
+						<dl>
+							<dt>{L_[Parent]}</dt>
+							<dd>{L_[Select the parent this page should be under (if any)]}</dd>
+						</dl>
+					</td>
+					<td class="confcol">
+						<select name="page[parent]">
+							<option value="0">{L_[No Parent]}</option>
+							<?php
+								foreach( $parents as $key=>$parent ) {
+									printf( '<option value="%1$d" %2$s>%4$s%3$s</option>',
+											$parent['id'],
+											($parent['id'] == $page['parent'] ? 'selected="selected"' : ''),
+											$parent['title'],
+											($key !== 0 ? str_pad( '- ', $parent['depth']+3, '-', STR_PAD_LEFT ) : '')
+										  );
+								}
+							 ?>
+						</select>
+					</td>
+				</tr>
+			<?php } ?>
+		</tbody>
+	</table>
+
+	<?php echo $quick_edit ? null : $amc['table']; ?>
+
+	{ACL_FORM}
+
+	<h3>{L_[Page Body]}</h3>
+	<textarea name="page[body]" class="editor_body" id="page_body">{PAGE.BODY}</textarea>
+
+	<div class="actions">
+		<?php if ( empty( $parents ) ) { ?>
+			<input type="hidden" value="{PAGE.PARENT}" name="page[parent]">
+		<?php } ?>
+		<input type="hidden" value="{PAGE.ID}" name="page[id]">
+		<input type="hidden" value="{PAGE_QE}" name="page_qe">
+		<input type="submit" value="<?php echo $op == 'add' ? t('Add Page') : t('Edit Page'); ?>">
+	</div>
+</form>
+
+<?php if ( $children ) { ?>
+	<h3>{L_[Sub/Child Pages]}</h3>
+
+	<form action="<?php echo $this->_router->makeUrl( 'page', 'config', 'bridge' ); ?>" method="post">
+		<table class="contentdata">
+			<thead>
+				<tr>
+					<th class="checkcol"></th>
+					<th>{L_[Order]}</th>
+					<th>{L_[Page Title]}</th>
+					<th>{L_[Manage]}</th>
+				</tr>
+			</thead>
+			<tbody>
+				{CHILDREN}
+			</tbody>
+		</table>
+
+		<div class="actions">
+			<input type="hidden" name="page_parent" value="{PAGE.ID}">
+			<a class="general-button" href="<?php echo $this->_router->makeUrl( 'page', 'config', 'add', null, array('pid' => $page['id']) ); ?>">{L_[Add Child]}</a>
+			<input name="page_delete" type="submit" value="{L_[Delete Selected]}">
+			<input name="page_update_order" type="submit" value="{L_[Update Order]}">
+		</div>
+	</form>
+<?php } ?>

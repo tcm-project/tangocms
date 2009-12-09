@@ -1,0 +1,19 @@
+<p><?php printf( '%1$s has been successfully upgraded to version %2$s. Thank you!', _PROJECT_NAME, $project_version ); ?></p>
+
+<p>
+	<strong>{L_[You must now remove the install directory (./install) before you can view your website]}</strong>
+</p>
+
+<hr>
+
+<p style="text-align: center;">
+	<a href="<?php echo _BASE_DIR.'../'; ?>">{L_[Main Site]}</a> |
+	<?php
+		if ( $this->_config->get( 'url_router/type' ) == 'sef' ) {
+			$url = _BASE_DIR.'../admin';
+		} else {
+			$url = _BASE_DIR.'../index.php?url=/admin';
+		}
+	 ?>
+	<a href="<?php echo $url; ?>">{L_[AdminCP]}</a>
+</p>

@@ -1,0 +1,97 @@
+<?php if ( !$layout->isDefault() ) { ?>
+	<form action="{ACTION}" method="post">
+		<table>
+			<tbody>
+				<tr class="even">
+					<td>
+						<dl>
+							<dt>{L_[URL/Regex]}</dt>
+							<dd>{L_[URL that the layout will be applied to (regex supported).]}</dd>
+						</dl>
+					<td class="confcol">
+						<input type="text" name="content_layout[regex]"  value="{CONTENT_LAYOUT.REGEX}">
+					</td>
+				</tr>
+			</tbody>
+		</table>
+
+		<input type="submit" value="{L_[Edit Layout]}">
+	</form>
+
+	<h3>{L_[Attached Modules]}</h3>
+<?php } ?>
+
+<ul>
+	<li>{L_[Drag and Drop the table rows to adjust the order of the attached modules.]}</li>
+</ul>
+
+<form action="<?php echo $this->_router->makeUrl( 'content_layout', 'manage', 'bridge' ); ?>" method="post" >
+	<table id="content_layout" class="contentdata">
+		<thead>
+			<tr class="nodrag nodrop">
+				<th class="checkcol"></th>
+				<th>{L_[Sector/Module]}</th>
+				<th class="order">{L_[Order & Placement]}</th>
+				<th>{L_[Manage]}</th>
+			</tr>
+		</thead>
+		<tbody>
+			<?php
+				$s_count = 0;
+				foreach( $layout->asArray() as $sector ) {
+					if ( $sector['id'] == 'SC' ) {
+						$sector['description'] = t('Frontpage Content');
+					}
+			?>
+				<tr class="subheading nodrag <?php echo $s_count == 0 ? 'nodrop' : ''; ?>">
+					<td colspan="4">
+						<?php echo $sector['id'].'::'.$sector['description']; ?>
+						<input class="sector" type="hidden" value="<?php echo $sector['id']; ?>">
+					</td>
+				</tr>
+				<?php $i = 0; foreach( $sector['controllers'] as $cntrlr ) { ?>
+					<tr class="<?php echo zula_odd_even( $i ); ?>">
+						<td class="checkcol">
+							<input type="checkbox" name="controller_ids[]" value="<?php echo $cntrlr['id']; ?>">
+						</td>
+						<td><?php echo $cntrlr['mod']; ?></td>
+						<td class="order">
+							<select name="content_layout[<?php echo $cntrlr['id']; ?>][order]">
+								<?php
+									$count = count( $sector['controllers'] );
+									for( $a=1; $a <= $count; $a++ ) {
+										printf( '<option value="%1$d" %2$s>%1$d</option>',
+												$a,
+												($cntrlr['order'] == $a ? 'selected="selected"' : '')
+											   );
+									}
+								?>
+							</select>
+							<select name="content_layout[<?php echo $cntrlr['id']; ?>][sector]">
+								<?php
+									foreach ( $layout->getSectors() as $tmpSector ) {
+										printf( '<option value="%1$s" %2$s>%3$s</option>',
+												$tmpSector['id'],
+												($tmpSector['id'] == $cntrlr['sector'] ? 'selected="selected"' : ''),
+												$tmpSector['description']
+											   );
+									}
+								?>
+							</select>
+						</td>
+						<td class="managecol">
+							<a href="<?php echo $this->_router->makeUrl( 'content_layout', 'edit', $layout->getName(), null, array('id' => $cntrlr['id']) ); ?>" title="{L_[Configure Module Details]}">{L_[Configure]}</a>
+						</td>
+					</tr>
+					<?php $i++; } ?>
+			<?php $s_count++; } ?>
+		</tbody>
+	</table>
+
+	<div class="actions">
+		<input type="hidden" name="content_layout_name" value="<?php echo $layout->getName(); ?>">
+		<a href="<?php echo $this->_router->makeUrl( 'content_layout', 'attach', $layout->getName() ); ?>" class="general-button">{L_[Attach New Module]}</a>
+		<input type="submit" name="content_layout_detach" value="{L_[Detach Selected]}">
+		<input type="submit" name="content_layout_order" value="{L_[Update Order & Placement]}">
+	</div>
+</form>

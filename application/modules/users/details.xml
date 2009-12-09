@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<details>
+	<detail>
+		<name>users</name>
+		<title>Users</title>
+		<description>View and manage all users.</description>
+		<author>Alex Cartwright</author>
+		<category>Users &amp; Groups</category>
+	</detail>
+</details>

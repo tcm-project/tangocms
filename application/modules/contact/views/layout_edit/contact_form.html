@@ -1,0 +1,31 @@
+<table>
+	<tbody>
+		<tr class="even">
+			<td>
+				<dl>
+					<dt>{L_[Contact Form]}</dt>
+					<dd>{L_[Select the contact form you wish to display]}</dd>
+				</dl>
+			</td>
+			<td class="confcol">
+				<select name="content_layout[config][display_form]">
+				<?php
+					$format = '<option value="%d" %s>%s</option>';
+					foreach( $forms as $form ) {
+						$selected = '';
+						if ( $this->_input->has( 'post', 'display_form' ) && $this->_input->post( 'display_form' ) == $form['id'] ) {
+							$selected = 'selected="selected"';
+						}
+						printf( $format, $form['id'], $selected, $form['name'] );
+					}
+				?>
+				</select>
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+<div>
+	<input type="hidden" name="content_layout[cntrlr]" value="index">
+	<input type="hidden" name="content_layout[section]" value="index">
+</div>

@@ -1,0 +1,81 @@
+<form action="" method="post">
+	<table>
+		<tbody>
+			<tr class="even">
+				<td>
+					<dl>
+						<dt>{L_[Category Name]}</dt>
+						<dd>{L_[The name of the category to identify the menu.]}</dd>
+					</dl>
+				<td class="confcol">
+					<input type="text" name="menu[name]" value="{MENU.NAME}">
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	{AMC.TABLE}
+	{ACL_FORM}
+
+	<div class="actions">
+		<input type="submit" value="<?php echo $op == 'add' ? t('Add Category') : t('Edit Category'); ?>">
+	</div>
+</form>
+
+<?php if ( $op == 'edit' ) { ?>
+	<form action="<?php echo $this->_router->makeUrl( 'menu', 'config', 'bridge' ); ?>" method="post">
+		<h3>{L_[Menu Items]}</h3>
+
+		<table class="contentdata">
+			<thead>
+				<tr>
+					<th class="checkcol"></th>
+					<th class="order">{L_[Order]}</th>
+					<th>{L_[Name]}</th>
+					<th>{L_[URL]}</th>
+					<th>{L_[Manage]}</th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php if ( empty( $items ) ) { ?>
+					<tr class="even">
+						<td colspan="5">{L_[No menu items to display.]}</td>
+					</tr>
+				<?php } else { $i = 0; foreach( $items as $item ) { ?>
+					<tr class="<?php echo zula_odd_even($i); ?>">
+						<td>
+							<input type="checkbox" name="menu_ids[]" value="<?php echo $item['id']; ?>">
+						</td>
+						<td class="order">
+							<select name="menu_order[<?php echo $item['id']; ?>]">
+								<?php
+									for( $k = 1; $k <= $item['order_range']; $k++ ) {
+										printf( '<option value="%1$d" %2$s>%1$d</option>',
+												$k,
+												($item['order'] == $k ? 'selected="selected"' : '')
+											  );
+									}
+								?>
+							</select>
+						</td>
+						<td><?php echo str_repeat( '---', $item['depth'] ).' '.zula_snippet( $item['name'], 50, true ); ?></td>
+						<td><?php echo $item['url']; ?></td>
+						<td class="managecol">
+							<a href="<?php echo $this->_router->makeUrl( 'menu', 'config', 'edititem', null, array('id' => $item['id']) ); ?>">{L_[Edit]}</a> |
+							<a href="<?php echo $this->_router->makeUrl( 'menu', 'config', 'additem', null, array('id' => $cat_id, 'parent' => $item['id']) );?>">{L_[Add Item]}</a>
+						</td>
+					</tr>
+				<?php $i++; } } ?>
+			</tbody>
+		</table>
+
+		<div class="actions">
+			<a class="general-button" href="<?php echo $this->_router->makeUrl( 'menu', 'config', 'additem', null, array('id' => $cat_id) ); ?>">{L_[Add New Item]}</a>
+			<?php if ( !empty( $items ) ) { ?>
+				<input type="hidden" name="menu[cid]" value="{CAT_ID}">
+				<input type="submit" name="menu_delete" value="{L_[Delete Selected]}">
+				<input type="submit" name="menu_updateorder" value="{L_[Update Order]}">
+			<?php } ?>
+		</div>
+	</form>
+<?php } ?>

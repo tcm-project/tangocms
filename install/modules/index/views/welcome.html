@@ -1,0 +1,10 @@
+<p><?php printf( 'Thank you for choosing %s to power your website. Please proceed to begin the installation', _PROJECT_NAME ); ?></p>
+
+<ul>
+	<li>
+		<a href="<?php echo $this->_router->makeUrl( 'stage', 'one' ); ?>"><?php printf( 'Install %s', _PROJECT_NAME ); ?></a>
+	</li>
+	<li>
+		<a href="<?php echo $this->_router->makeUrl( 'upgrade', 'stage1' ); ?>"><?php printf( 'Upgrade %s', _PROJECT_NAME ); ?></a>
+	</li>
+</ul>

@@ -1,0 +1,16 @@
+<?xml version="1.0" ?>
+<install>
+	<dependencies>
+		<zula>
+			<version operator=">=">0.7.6</version>
+		</zula>
+	</dependencies>
+	<aclResources>
+		<resource roleHint="guest">page_global</resource>
+		<resource roleHint="group_admin">page_add</resource>
+		<resource roleHint="group_admin">page_edit</resource>
+		<resource roleHint="group_admin">page_delete</resource>
+
+		<resource roleHint="guest">page-1</resource>
+	</aclResources>
+</install>

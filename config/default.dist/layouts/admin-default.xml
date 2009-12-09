@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<controllers>
+  <controller id="409" sector="S2" order="2">
+    <mod>menu</mod>
+    <con>index</con>
+    <sec>index</sec>
+    <config>     
+      <displayTitle>true</displayTitle>
+      <customTitle/>
+      <display_category>2</display_category>
+    </config>
+  </controller>
+  <controller id="123" sector="S2" order="1">
+    <mod>session</mod>
+    <con>index</con>
+    <sec>index</sec>
+    <config>
+      <displayTitle>true</displayTitle>
+      <customTitle/>
+    </config>
+  </controller>
+  <controller id="909" sector="S1" order="1">
+    <mod>menu</mod>
+    <con>index</con>
+    <sec>index</sec>
+    <config>      
+      <displayTitle>false</displayTitle>
+      <customTitle/>
+      <display_category>1</display_category>
+    </config>
+  </controller>
+  <controller id="551" sector="SC" order="0">
+    <mod>module_manager</mod>
+    <con>index</con>
+    <sec>index</sec>
+    <config>
+      <displayTitle>true</displayTitle>
+      <customTitle/>      
+    </config>
+  </controller>
+</controllers>

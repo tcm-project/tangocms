@@ -1,0 +1,11 @@
+<?php printf( t('Hello, %1$s!'), $username ); ?>
+
+
+{L_[You are receiving this email because you registered for an account on]} {PLAIN.SITE_TITLE}. {L_[Your account will be validated by an admin shortly. Once an admin has validated your account, you can then login with the following details:]}
+
+{L_[Username]} {USERNAME}
+{L_[Password: The password you entered upon registration.]}
+
+{L_[If you ever forget your password, or need to reset it for any reason you can do so by going to the following URL:]}
+
+<?php echo $this->_router->makeFullUrl( 'session', 'reset' ); ?>

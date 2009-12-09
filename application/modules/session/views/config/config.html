@@ -1,0 +1,188 @@
+<form action="<?php echo $this->_router->makeUrl( 'session', 'config', 'update' ); ?>" method="post">
+	<table>
+		<thead>
+			<tr>
+				<th colspan="2">{L_[Login Method & Security]}</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr class="even">
+				<td>
+					<dl>
+						<dt>{L_[Users Login By]}</dt>
+						<dd>{L_[Select if users should login via email address, or username]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<select name="setting[login_by]">
+						<?php
+							foreach( array(t('Username') => 'username', t('E-Mail Address') => 'email') as $name=>$tmp_method ) {
+								printf( '<option value="%s" %s>%s</option>',
+										$tmp_method,
+										($tmp_method == $login_by ? 'selected="selected"' : ''),
+										$name
+									  );
+							}
+						?>
+					</select>
+				</td>
+			</tr>
+			<tr class="odd">
+				<td>
+					<dl>
+						<dt>{L_[Maximum number of login attempts]}</dt>
+						<dd>{L_[Once the maximum login attempts has been reached, the user will not be able to try again for 10 minutes. Set to 0 to disable.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="text" name="setting[max_login_attempts]" value="{MAX_LOGIN_ATTEMPTS}">
+				</td>
+			</tr>
+			<tr class="even">
+				<td>
+					<dl>
+						<dt>{L_[Use HTTPS for user logins?]}</dt>
+						<dd>{L_[When set to 'yes', all form data will be sent using HTTPS for logins.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="radio" id="session-https-yes" name="setting[force_https]" value="1" <?php echo $force_https ? 'checked="checked"' : ''; ?>>
+					<label class="horizontal" for="session-https-yes">{L_[Yes]}</label>
+					<br>
+					<input type="radio" id="session-https-no" name="setting[force_https]" value="0" <?php echo $force_https ? '' : 'checked="checked"'; ?>>
+					<label class="horizontal" for="session-https-no">{L_[No]}</label>
+				</td>
+			</tr>
+			<tr class="odd">
+				<td>
+					<dl>
+						<dt>{L_[Login Destination]}</dt>
+						<dd>{L_[Select where users should be redirect to once they have logged in.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<select id="session-login_destination" name="setting[login_destination]">
+						<?php
+							$opts = array(
+										t('Previous URL')	=> 'previous',
+										t('Home Page')		=> 'home',
+										t('Custom...')		=> 'custom',
+										);
+							foreach( $opts as $key=>$val ) {
+								printf( '<option value="%1$s" %2$s>%3$s</option>',
+										$val,
+										($val == $login_destination ? 'selected="selected"' : ''),
+										$key
+									  );
+							}
+						?>
+					</select>
+					<input type="text" id="session-destination_url" name="setting[login_destination_url]" value="{LOGIN_DESTINATION_URL}">
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<table>
+		<thead>
+			<tr>
+				<th colspan="2">{L_[User Registration]}</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr class="even">
+				<td>
+					<dl>
+						<dt>{L_[Allow New Registrations?]}</dt>
+						<dd>{L_[Should new users be able to register an account?]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="radio" id="session-register-yes" name="setting[allow_register]" value="1" <?php echo $allow_register ? 'checked="checked"' : ''; ?>>
+					<label class="horizontal" for="session-register-yes">{L_[Yes]}</label>
+					<br>
+					<input type="radio" id="session-register-no" name="setting[allow_register]" value="0" <?php echo $allow_register ? '' : 'checked="checked"'; ?>>
+					<label class="horizontal" for="session-register-no">{L_[No]}</label>
+				</td>
+			</tr>
+			<tr class="odd">
+				<td>
+					<dl>
+						<dt>{L_[Registration Group]}</dt>
+						<dd>{L_[Select the group that new registered users should be moved to.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<select name="setting[register_group]">
+						<?php
+							foreach( $this->_ugmanager->getAllGroups() as $group ) {
+								if ( $group['id'] != UGManager::_ROOT_GID && $group['id'] != UGManager::_GUEST_GID ) {
+									printf( '<option value="%d" %s>%s</option>',
+											$group['id'],
+											($group['id'] == $register_group ? 'selected="selected"' : ''),
+											$group['name']
+										  );
+								}
+							}
+						?>
+					</select>
+				</td>
+			</tr>
+			<tr class="even">
+				<td>
+					<dl>
+						<dt>{L_[Allow duplicate email addresses?]}</dt>
+						<dd>{L_[If set to 'Yes' this means new users can register an account with an email address that is already registered.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="radio" id="session-duplicate-yes" name="setting[duplicate_email]" value="1" <?php echo $duplicate_email ? 'checked="checked"' : ''; ?>>
+					<label class="horizontal" for="session-duplicate-yes">{L_[Yes]}</label>
+					<br>
+					<input type="radio" id="session-duplicate-no" name="setting[duplicate_email]" value="0" <?php echo $duplicate_email ? '' : 'checked="checked"'; ?>>
+					<label class="horizontal" for="session-duplicate-no">{L_[No]}</label>
+				</td>
+			</tr>
+			<tr class="odd">
+				<td>
+					<dl>
+						<dt>{L_[Validation Method]}</dt>
+						<dd>{L_[How should users be validated once they have registered?]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<select name="setting[validation_method]">
+						<?php
+							$methods = array(
+											'user'	=> t('E-Mail Confirmation'),
+											'admin'	=> t('Admin Validation'),
+											'none'	=> t('No Validation'),
+											);
+							foreach( $methods as $key=>$tmp_method ) {
+								printf( '<option value="%s" %s>%s</option>',
+										$key,
+										($key == $validation_method ? 'selected="selected"' : ''),
+										$tmp_method
+									  );
+							}
+						?>
+					</select>
+				</td>
+			</tr>
+			<tr class="even">
+				<td>
+					<dl>
+						<dt>{L_[Terms and Conditions]}</dt>
+						<dd>{L_[If set, the terms and conditions will be displayed which a user has to agree to.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<textarea name="setting[register_terms]">{REGISTER_TERMS}</textarea>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<div class="actions"><input type="submit" value="{L_[Update]}"></div>
+	{CSRF}
+</form>

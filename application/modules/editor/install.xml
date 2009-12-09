@@ -1,0 +1,11 @@
+<?xml version="1.0" ?>
+<install>
+	<dependencies>
+		<zula>
+			<version operator=">=">0.7.6</version>
+		</zula>
+	</dependencies>
+	<aclResources>
+		<resource roleHint="guest">editor_global</resource>
+	</aclResources>
+</install>

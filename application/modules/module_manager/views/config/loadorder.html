@@ -1,0 +1,44 @@
+<form action="{ACTION}" method="post">
+	<ul>
+		<li>{L_[Drag and Drop the table rows to adjust the order.]}</li>
+	</ul>
+	<table class="contentdata" id="module_manager-loadorder">
+		<thead>
+			<tr>
+				<th class="order">{L_[Order]}</th>
+				<th>{L_[Module]}</th>
+			</tr>
+		</thead>
+		<tbody>
+			<?php if ( empty($modules) ) { ?>
+				<tr class="even">
+					<td colspan="2">{L_[There are currently no modules which can have the load order changed.]}</th>
+				</tr>
+			<?php } else {
+				$i = 0;
+				$count = count( $modules );
+				foreach( $modules as $tmpModule ) {
+					$module = new Module( $tmpModule );
+			?>
+					<tr class="<?php echo zula_odd_even($i); ?>">
+						<td class="order">
+							<select name="module_manager[modules][<?php echo $module->name; ?>]">
+								<?php
+									for( $o = 0; $o < $count; $o++ ) {
+										printf( '<option value="%1$d" %2$s>%1$d</option>',
+												$o,
+												($i == $o ? 'selected="selected"' : '')
+											  );
+									}
+								?>
+							</select>
+						</td>
+						<td><?php echo $module->title.' ('.$module->name.')'; ?></td>
+					</tr>
+			<?php ++$i; } } ?>
+		</tbody>
+	</table>
+	<div class="actions">
+		<input type="submit" value="{L_[Update Orders]}">
+	</div>
+</form>

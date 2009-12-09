@@ -1,0 +1,35 @@
+<form action="<?php echo $this->_router->makeUrl( 'menu', 'config', 'deletecat'); ?>" method="post">
+	<table class="contentdata">
+		<thead>
+			<tr>
+				<th class="checkcol"></th>
+				<th>{L_[Category Name]}</th>
+				<th>{L_[Manage]}</th>
+			</tr>
+		</thead>
+		<tbody>
+			<?php if ( empty( $categories ) ) { ?>
+				<tr class="even">
+					<td colspan="3">{L_[No menus to display.]}</td>
+				</tr>
+			<?php } else { $i = 0; foreach( $categories as $cat ) { ?>
+				<tr class="<?php echo zula_odd_even($i); ?>">
+					<td class="checkcol">
+						<input type="checkbox" name="menu_cids[]" value="<?php echo $cat['id']; ?>">
+					</td>
+					<td><?php echo zula_snippet( $cat['name'], 50, true ); ?></td>
+					<td class="managecol">
+						<a href="<?php echo $this->_router->makeUrl( 'menu', 'config', 'editcat', null, array('id' => $cat['id']) ); ?>">{L_[Edit]}</a> |
+						<a href="<?php echo $this->_router->makeUrl( 'menu', 'config', 'additem', null, array('id' => $cat['id']) ); ?>">{L_[Add Item]}</a>
+					</td>
+				</tr>
+			<?php ++$i; } } ?>
+		</tbody>
+	</table>
+
+	<?php if ( !empty($categories) ) { ?>
+		<div class="actions"><input type="submit" value="{L_[Delete Selected]}"></div>
+		{CSRF}
+	<?php } ?>
+
+</form>

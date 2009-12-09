@@ -1,0 +1,15 @@
+<?xml version="1.0" ?>
+<install>
+	<dependencies>
+		<zula>
+			<version operator=">=">0.7.6</version>
+		</zula>
+	</dependencies>
+	<aclResources>
+		<resource roleHint="group_admin">module_manager_global</resource>
+		<resource>module_manager_edit_permissions</resource>
+		<resource roleHint="group_admin">module_manager_enable_modules</resource>
+		<resource roleHint="group_admin">module_manager_view_permissions</resource>
+		<resource roleHint="group_admin">module_manager_disable_modules</resource>
+	</aclResources>
+</install>

@@ -1,0 +1,215 @@
+/* $Id: screen.css 2830 2009-12-05 15:45:10Z alexc $ */
+
+/**
+ * TangoCMS "innocent" theme
+ *
+ * @copyright Copyright (C) 2008, 2009 Alex Cartwright
+ * @license X11/MIT (see COPYING file)
+ * @package TangoCMS_Themes
+*/
+
+@import url(base.css);
+@import url(module.css);
+
+body {
+	background-color: #fff;
+	background-image: url(images/background.png);
+	background-repeat: repeat-x;
+	color: #000;
+	font-family: "Bitstream Vera Sans", Lucida, Verdana, sans-serif;
+	margin: 0 10px 5px;
+	padding: 0;
+}
+
+#header {
+	background-color: #413d35;
+	background-image: url(images/header-background.png);
+	background-repeat: repeat;
+	color: #222;
+	height: 50px;
+	margin: 0;
+	padding: 1px 16px;
+}
+
+#header > a {
+	color: #CFEA17;
+	display: inline-block;
+	font-size: 1.5em;
+	font-weight: bold;
+	margin: 15px 0 0;
+}
+
+#header > a:hover {
+	text-decoration: none;
+}
+
+#navbar {
+	background-color: #e9f3b6;
+	background-image: url(images/top-bar.png);
+	background-repeat: repeat-x;
+	border: 1px solid #baca9d;
+	border-bottom-left-radius: 8px;
+	border-bottom-right-radius: 8px;
+	-khtml-border-bottom-left-radius: 8px;
+	-khtml-border-bottom-right-radius: 8px;
+	-moz-border-radius: 0 0 8px 8px;
+	-webkit-border-bottom-left-radius: 8px;
+	-webkit-border-bottom-right-radius: 8px;
+	font-size: 1.1em;
+	overflow: hidden;
+	padding: 6px 0;
+}
+
+#wrap {
+	background-color: #f8f8f8;
+	border: 1px solid #cbd2d8;
+	border-top-left-radius: 8px;
+	border-top-right-radius: 8px;
+	-khtml-border-top-left-radius: 8px;
+	-khtml-border-top-right-radius: 8px;
+	-moz-border-radius: 8px 8px 0 0;
+	-webkit-border-top-left-radius: 8px;
+	-webkit-border-top-right-radius: 8px;
+	color: #222;
+	font-size: 1.15em;
+	margin: 8px 0 0 0;
+	overflow: hidden;
+	padding: 10px;
+}
+
+#sidebar {
+	float: left;
+	padding: 2px;
+	width: 210px;
+}
+
+#content {
+	background-color: #fff;
+	border: 1px solid #e0e0e0;
+	border-top-left-radius: 8px;
+	border-top-right-radius: 8px;
+	-khtml-border-top-left-radius: 8px;
+	-khtml-border-top-right-radius: 8px;
+	-moz-border-radius: 8px 8px 0 0;
+	-webkit-border-top-left-radius: 8px;
+	-webkit-border-top-right-radius: 8px;	
+	margin: 0 0 0 223px;
+	padding: 10px;
+}
+
+#content.fullwidth {
+	margin: 0;
+}
+
+#footer {
+	clear: both;
+	font-size: 1em;
+	margin: 10px auto 0 auto;
+	text-align: center;
+}
+
+#content, #sidebar .module-wrap-body {
+	box-shadow: 0 3px 10px #EAEAEA;
+	-moz-box-shadow: 0 3px 10px #EAEAEA;
+	-webkit-box-shadow: 0 3px 10px #EAEAEA;
+}
+
+#wrap {
+	box-shadow: 0 3px 10px #f3f3f3;
+	-moz-box-shadow: 0 3px 10px #f3f3f3;
+	-webkit-box-shadow: 0 3px 10px #f3f3f3;
+}
+
+/** Navbar menu */
+#navbar ul {
+	color: #000;
+	list-style-type: none;
+	margin: 0 0 0 4px;
+	padding: 0;
+}
+
+#navbar ul li {
+	float: left;
+	margin: 0 0.7em;
+}
+
+#navbar a {
+	display: block;
+}
+
+/** Sidebar menu */
+#sidebar ul, #sidebar ol {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+
+#sidebar ol {
+	list-style-type: decimal;
+}
+
+#sidebar li {
+	border-color: #7291a6;
+	border-style: solid;
+	border-width: 0 0 1px 0;
+	color: #284e66;
+	font-weight: bold;
+	margin: 7px 0;
+}
+
+#sidebar ol li {
+	font-weight: normal;
+}
+
+#sidebar li a {
+	color: #284e66;
+	display: block;
+	padding: 2px 0 2px 20px;
+}
+
+#sidebar li a:hover {
+	background-color: #fff;
+	text-decoration: none;
+}
+
+/**
+ * Module Wrap
+ */
+.module-wrap {
+}
+
+#sidebar .module-wrap {
+	margin: 15px 0 0;
+}
+
+#sidebar .module-wrap:first-child {
+	margin-top: 0;
+}
+
+#sidebar .module-wrap:last-child {
+	margin-bottom: 0;
+}
+
+#sidebar .module-wrap > h2 {
+	background-color: #7c7b7a;
+	border-top-left-radius: 4px;
+	border-top-right-radius: 4px;
+	-khtml-border-top-left-radius: 4px;
+	-khtml-border-top-right-radius: 4px;
+	-moz-border-radius: 4px 4px 0 0;
+	-webkit-border-top-left-radius: 4px;
+	-webkit-border-top-right-radius: 4px;	
+	border-width: 0;
+	color: #fff;
+	font-size: 0.95em;
+	margin: 0;
+	padding: 4px 6px;
+	text-align: right;
+}
+
+#sidebar .module-wrap-body {
+	background-color: #e5ecf4;
+	border: 1px solid #d0dce8;
+	color: #698696;
+	padding: 10px;
+}

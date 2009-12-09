@@ -1,0 +1,13 @@
+<form action="{ACTION}" method="post">
+	<ul>
+		<?php foreach( $options as $option ) { ?>
+			<li>
+				<input type="radio" id="poll-option-<?php echo $option['id']; ?>" name="poll[oid]" value="<?php echo $option['id']; ?>">
+				<label class="horizontal" for="poll-option-<?php echo $option['id']; ?>"><?php echo $option['title']; ?></label>
+			</li>
+		<?php } ?>
+	</ul>
+	<div class="actions">
+		<input type="submit" value="{L_[Vote]}">
+	</div>
+</form>

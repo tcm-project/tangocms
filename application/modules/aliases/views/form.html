@@ -1,0 +1,49 @@
+<form action="" method="post">
+	<table>
+		<tbody>
+			<tr class="even">
+				<td>
+					<dl>
+						<dt>{L_[Alias]}</dt>
+						<dd>{L_[Enter in the alias that you want to use instead of the longer URL.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="text" name="alias[alias]" value="{ALIAS.ALIAS}">
+				</td>
+			</tr>
+			<tr class="odd">
+				<td>
+					<dl>
+						<dt>{L_[Real URL]}</dt>
+						<dd>{L_[Enter the real URL you want this alias to be linked to.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="text" name="alias[url]" value="{ALIAS.URL}">
+				</td>
+			</tr>
+			<tr class="even">
+				<td>
+					<dl>
+						<dt>{L_[Redirect]}</dt>
+						<dd>{L_[If set to 'yes', the alias will redirect the user to the provided real URL.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="radio" id="aliases-r-yes" name="alias[redirect]" value="1" <?php echo $alias['redirect'] ? 'checked="checked"' : ''; ?>>
+					<label class="horizontal" for="aliases-r-yes">{L_[Yes]}</label>
+					<br>
+					<input type="radio" id="aliases-r-no" name="alias[redirect]" value="0" <?php echo $alias['redirect'] ? '' : 'checked="checked"'; ?>>
+					<label class="horizontal" for="aliases-r-no">{L_[No]}</label>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	{AMC.TABLE}
+
+	<div class="actions">
+		<input type="submit" value="<?php echo $op == 'add' ? t('Add Alias') : t('Edit Alias'); ?>">
+	</div>
+</form>

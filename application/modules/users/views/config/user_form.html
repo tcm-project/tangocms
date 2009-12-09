@@ -1,0 +1,155 @@
+<form action="" method="post">
+	<table>
+		<thead>
+			<tr>
+				<th colspan="2">{L_[General Details]}</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr class="even">
+				<td>
+					<dl>
+						<dt>{L_[Username]}</dt>
+						<dd>{L_[The username of this user that will get displayed.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="text" name="users[username]" value="{USERS.USERNAME}">
+				</td>
+			</tr>
+			<tr class="odd">
+				<td>
+					<dl>
+						<dt>{L_[Group]}</dt>
+						<dd>{L_[Select the group that this user should be in.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<select name="users[group]" <?php echo ($id == UGManager::_ROOT_ID || $id == UGManager::_GUEST_ID) ? 'disabled="disabled"' : ''; ?>>
+						<?php
+							$format = '<option value="%d" %s>%s</option>';
+							foreach( $this->_ugmanager->getAllGroups() as $group ) {
+								if (
+									$id == UGManager::_GUEST_ID || $id == UGManager::_ROOT_ID ||
+									$id != UGManager::_GUEST_ID && !in_array( $group['id'], array(UGmanager::_GUEST_GID, UGManager::_ROOT_GID) )
+								) {
+									$selected = $users['group'] == $group['id'] ? 'selected="selected"' : '';
+									printf( $format, $group['id'], $selected, $group['name'] );
+								}
+							}
+						?>
+					</select>
+				</td>
+			</tr>
+			<tr class="even">
+				<td>
+					<dl>
+						<dt>{L_[First Name]}</dt>
+						<dd>{L_[Enter your first name that will be displayed to others.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="text" name="users[first_name]" value="{USERS.FIRST_NAME}">
+				</td>
+			</tr>
+			<tr class="odd">
+				<td>
+					<dl>
+						<dt>{L_[Last Name]}</dt>
+						<dd>{L_[Enter your last name that will be displayed to others.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="text" name="users[last_name]" value="{USERS.LAST_NAME}">
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<table>
+		<thead>
+			<tr>
+				<th colspan="2">{L_[Email]}</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr class="even">
+				<td>
+					<dl>
+						<dt>{L_[Email]}</dl>
+						<dd>{L_[Enter the email address you would like to use for this account.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="text" name="users[email]" value="{USERS.EMAIL}">
+				</td>
+			</tr>
+			<tr class="odd">
+				<td>
+					<dl>
+						<dt>{L_[Repeat Email]}</dt>
+						<dd>
+							<?php echo empty($id) ? t('Repeat the email address for this account') : t('If you are changing your email address, please repeat it.'); ?>
+						</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="text" name="users_email_confirm">
+				</td>
+			</tr>
+			<tr class="even">
+				<td>
+					<dl>
+						<dt>{L_[Hide Email Address]}</dt>
+						<dd>{L_[If set to 'Yes', only users with permission to view your email address will be able to see it.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="radio" id="users-hide_yes" name="users[hide_email]" value="1" <?php echo $users['hide_email'] ? 'checked="checked"' : ''; ?>>
+					<label for="users-hide_yes" class="horizontal">{L_[Yes]}</label>
+					<br>
+					<input type="radio" id="users-hide_no" name="users[hide_email]" value="0" <?php echo $users['hide_email'] ? '' : 'checked="checked"'; ?>>
+					<label for="users-hide_no" class="horizontal">{L_[No]}</label>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<table>
+		<thead>
+			<tr>
+				<th colspan="2">{L_[Password]}</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr class="even">
+				<td>
+					<dl>
+						<dt>{L_[New Password]}</dt>
+						<dd>{L_[Enter the password you would like for this account.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="password" name="users[password]" value="{USERS.PASSWORD}">
+				</td>
+			</tr>
+			<tr class="odd">
+				<td>
+					<dl>
+						<dt>{L_[Repeat Password]}</dt>
+						<dd>{L_[Please repeat the password.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="password" name="users_password_confirm">
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	{AMC.TABLE}
+
+	<div class="actions">
+		<input type="submit" value="<?php echo $op == 'add' ? t('Add User') : t('Edit User'); ?>">
+	</div>
+</form>

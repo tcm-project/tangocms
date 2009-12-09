@@ -1,0 +1,10 @@
+<?xml version="1.0" ?>
+<details>
+	<detail>
+		<name>upgrade</name>
+		<title>Upgrade</title>
+		<description>Upgrade controller for Zula Framework</description>
+		<author>Evangelos Foutras</author>
+		<category>system</category>
+	</detail>
+</details>

@@ -1,0 +1,17 @@
+<form id="session-login" action="{FORM_URL}" method="post">
+	<p>
+		<label for="session-identifier"><?php echo $login_by == 'username' ? t('Username') : t('E-Mail Address'); ?></label>
+		<input type="text" id="session-identifier" name="session[identifier]">
+	</p>
+	<p><label for="session-password">{L_[Password]}</label><input type="password" id="session-password" name="session[password]"></p>
+	<div class="actions">
+		<input type="checkbox" id="session-remember" name="session[remember]" value="1" checked="checked"> <label class="horizontal" for="session-remember">{L_[Remember me?]}</label>
+		<input type="submit" value="{L_[Login]}">
+	</div>
+</form>
+<p>
+	<a href="{FORGOT_URL}" title="{L_[Reset your password]}">{L_[Forgotten your password?]}</a>
+	<?php if ( $this->_config->has( 'session/allow_register' ) && $this->_config->get( 'session/allow_register' ) ) { ?>
+		<br>{L_[Not yet registered?]} <a href="{REGISTER_URL}" title="{L_[Register an account]}">{L_[Register]}</a>.
+	<?php } ?>
+</p>

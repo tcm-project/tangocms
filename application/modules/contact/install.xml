@@ -1,0 +1,16 @@
+<?xml version="1.0" ?>
+<install>
+	<dependencies>
+		<zula>
+			<version operator=">=">0.7.6</version>
+		</zula>
+	</dependencies>
+	<aclResources>
+		<resource roleHint="guest">contact_global</resource>
+		<resource roleHint="group_admin">contact_add</resource>
+		<resource roleHint="group_admin">contact_edit</resource>
+		<resource roleHint="group_admin">contact_delete</resource>
+		<!-- Default Content Resources -->
+		<resource roleHint="guest">contact-form-1</resource>
+	</aclResources>
+</install>

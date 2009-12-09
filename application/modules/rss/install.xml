@@ -1,0 +1,19 @@
+<?xml version="1.0" ?>
+<install>
+	<dependencies>
+		<zula>
+			<version operator=">=">0.7.6</version>
+		</zula>
+	</dependencies>
+	<aclResources>
+		<resource roleHint="guest">rss_global</resource>
+		<resource roleHint="group_admin">rss_edit</resource>
+	</aclResources>
+	<config>
+		<sql>
+			<conf key="rss/global_agg_enable">true</conf>
+			<conf key="rss/default_feed">global</conf>
+			<conf key="rss/items_per_feed">10</conf>
+		</sql>
+	</config>
+</install>

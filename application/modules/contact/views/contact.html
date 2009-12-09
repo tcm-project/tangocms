@@ -1,0 +1,49 @@
+<?php if ( empty( $fields ) ) { ?>
+	<p>{L_[There are no fields for this contact form]}</p>
+<?php } else { ?>
+	<p>{L_[Fields marked with a * are required.]}</p>
+	<form action="{ACTION}" method="post" id="contact">
+		<p>
+			<label for="contact-field-email"><span>*</span> {L_[Your Email Address]}:</label>
+			<input type="text" id="contact-field-email" name="contact[email]" value="{CONTACT.EMAIL}">
+		</p>
+		<?php
+			$html = new Html( 'contact[fields][%s]' );
+			foreach( $fields as $field ) {
+				if ( $field['required'] ) {
+					$field['name'] = '<span>*</span> '.$field['name'];
+				}
+				$default = $contact['fields'][ $field['id'] ];
+				switch( $field['type'] ) {
+					case 'password':
+						$element = $html->inputPassword( $field['id'], $default, 'contact-field-'.$field['id'] );
+						break;
+					case 'textarea':
+						$element = $html->textarea( $field['id'], $default, 'contact-field-'.$field['id'] );
+						break;
+					case 'radio':
+						$element = $html->radio( $field['id'], $default, $field['options'] );
+						break;
+					case 'checkbox':
+						$element = $html->checkbox( $field['id'], $default, $field['options'] );
+						break;
+					case 'select':
+						$element = $html->select( $field['id'], $default, $field['options'] );
+						break;
+					case 'textbox':
+					default:
+						$element = $html->input( $field['id'], $default, 'contact-field-'.$field['id'] );
+				}
+				printf( '<p><label for="contact-field-%1$d">%2$s</label>%3$s</p>',
+						$field['id'],
+						$field['name'],
+						$element
+					  );
+			}
+		?>
+		{ANTISPAM}
+		<div class="actions">
+			<input type="submit" value="{L_[Submit Form]}">
+		</div>
+	</form>
+<?php } ?>

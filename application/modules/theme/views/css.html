@@ -1,0 +1,35 @@
+<table class="contentdata">
+	<thead>
+		<tr>
+			<th>{L_[File]}</th>
+			<th>{L_[Manage]}</th>
+		</tr>
+	</thead>
+	<tbody>
+		<?php $i=0;
+			foreach( $css_files as $file ) {
+				$editUrl = $this->_router->makeUrl( 'theme', 'css', $theme['name'], null, array('file' => $file['name']) );
+		?>
+			<tr class="<?php echo zula_odd_even( $i ); ?>">
+				<td>
+					<a href="<?php echo $editUrl; ?>" title="{L_[Edit CSS file]}">
+						<?php echo $file['path']; ?>
+					</a>
+				</td>
+				<td class="managecol">
+					<a href="<?php echo $editUrl; ?>" title="{L_[Edit CSS file]}">{L_[Edit]}</a>
+				</td>
+			</tr>
+		<?php $i++; } ?>
+	</tbody>
+</table>
+
+<h3><?php printf( t('Stylesheet "%1$s"'), $css_name ); ?></h3>
+<form action="" method="post">
+	<div>
+		<textarea id="theme-stylesheet" name="theme[body]" rows="30" cols="20">{THEME.BODY}</textarea>
+	</div>
+	<div class="actions">
+		<input type="submit" value="{L_[Edit]}">
+	</div>
+</form>

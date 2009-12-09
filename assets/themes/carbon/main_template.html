@@ -1,0 +1,55 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+
+	<head>
+		<title>{PAGE_TITLE}</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta name="description" content="{META_DESCRIPTION}">
+		<meta name="keywords" content="{META_KEYWORDS}">
+
+		<base href="<?php echo $this->_router->getBaseUrl(); ?>">
+		<link rel="icon" type="image/png" href="{DIR_BASE}favicon.png">
+		<link rel="StyleSheet" href="{DIR_CUR_THEME}/screen.css" type="text/css" media="screen">
+
+		{HEAD}
+	</head>
+
+	<body id="{PAGE_ID}">
+
+		<div id="stickyWrap">
+			<div id="header-wrap">
+				<div id="header">
+					<h2 class="logo"><a href="<?php echo $this->_router->makeFullUrl( '/' ); ?>">{SITE_TITLE}</a></h2>
+
+					<?php if ( trim( $site_slogan ) ) { ?>
+						<h2 class="slogan">{SITE_SLOGAN}</h2>
+					<?php } ?>
+				</div>
+			</div>
+
+			<?php echo empty($s1) ? '' : '<div id="navbar">'.$s1.'</div>'; ?>
+
+			<div id="container">
+				<div id="wrap">
+					<div id="content" <?php echo empty($s2) ? 'class="fullwidth"' : ''; ?>>
+						<?php echo $controller_title ? '<h1>'.$controller_title.'</h1>' : ''; ?>
+						{EVENT_FEEDBACK}
+						{PAGE_LINKS}
+						{SC}
+					</div>
+				</div>
+				<?php if ( !empty($s2) ) { ?>
+					<div id="sidebar">
+						{S2}
+					</div>
+				<?php } ?>
+			</div>
+			<div id="stickyPush"></div>
+		</div>
+		<div id="footer">
+			<p>Powered by <a href="http://tangocms.org" title="Open Source CMS">TangoCMS</a>. Copyright &copy; 2007, 2008, 2009.</p>
+		</div>
+
+	</body>
+
+</html>

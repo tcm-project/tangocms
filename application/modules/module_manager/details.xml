@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<details>
+	<detail>
+		<name>module_manager</name>
+		<title>Module Manager</title>
+		<description>Displays all modules, enabled/disable modules and alter permissions.</description>
+		<author>Alex Cartwright</author>
+		<category>System</category>
+	</detail>
+</details>

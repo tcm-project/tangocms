@@ -1,0 +1,30 @@
+<?xml version="1.0" ?>
+<install>
+	<dependencies>
+		<zula>
+			<version operator=">=">0.7.6</version>
+		</zula>
+	</dependencies>
+	<aclResources>
+		<resource roleHint="guest">article_global</resource>
+		<resource roleHint="group_admin">article_add_article</resource>
+		<resource roleHint="group_admin">article_add_cat</resource>
+		<resource roleHint="group_admin">article_delete_article</resource>
+		<resource roleHint="group_admin">article_delete_cat</resource>
+		<resource roleHint="group_admin">article_edit_article</resource>
+		<resource roleHint="group_admin">article_edit_cat</resource>
+		<resource roleHint="group_admin">article_manage_settings</resource>
+		<!-- Default Content Resources -->
+		<resource roleHint="guest">article-cat-1</resource>
+	</aclResources>
+	<config>
+		<sql>
+			<conf key="article/display">latest</conf>
+			<conf key="article/headline_limit">3</conf>
+			<conf key="article/jump_box_position">top</conf>
+			<conf key="article/per_page">3</conf>
+			<conf key="article/show_cat_desc">true</conf>
+			<conf key="article/sort_by">Latest</conf>
+		</sql>
+	</config>
+</install>

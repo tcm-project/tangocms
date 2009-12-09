@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<details>
+	<detail>
+		<name>editor</name>
+		<title>Editor</title>
+		<description>Provides a graphical editor for content</description>
+		<author>Alex Cartwright</author>
+		<category>plugins</category>
+	</detail>
+</details>

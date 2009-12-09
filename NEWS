@@ -1,0 +1,113 @@
+------------------------
+$Id: NEWS 2817 2009-12-02 14:01:51Z alexc $
+TangoCMS NEWS (Basic ChangeLog for Users)
+------------------------
+
+A complete ChangeLog can be found at http://tangocms.org/changelog
+
+2.4.0 (2009-12-xx)
+========================
+
+-- Security Fixes
+
+	* Security #188: Media item physical files can be viewed outside of TCM, bypasses ACL checks
+	
+-- Feature Improvements/Modifications
+
+	* Feature #145: True 'remember me' feature
+	* Feature #149: Different anti-spam methods
+	* Feature #150: Custom module wrap class names via Content Layout
+	* Feature #152: Allow redirectable URL Aliases
+	* Feature #164: Show user id/username in contact email
+	* Feature #165: Menu items 'title' attribute text
+	* Feature #178: Search/Filter in modules configuration
+	* Feature #182: Clone/Copy Layout in Content Layout
+	* Feature #186: Add support for Google's CDN
+	* Feature #191: Lightbox support for Media module
+
+-- Bug Fixes
+
+	* Bug #167: Editor URLs are incorrect with 'standard' router
+	* Bug #176: Incorrect query string delimiter with 'standard' router in many places
+	* Bug #177: Innocent theme: 'white-space: nowrap' makes media item titles unreadable
+	* Bug #179: Ugmanager lib issue with duplicate usernames that are digit
+	* Bug #183: Page at frontpage, tags are not displayed
+	* Bug #184: Tags keep loosing first value when editing a page
+	* Bug #185: Unable to remove any tags from a page
+	* Bug #189: Poll only allows 1 vote from guests (IPv6 IP addresses only)
+	* Bug #190: CST != CET
+	* Bug #193: Validator_Is lib will not work with IPv6 addresses
+	* Bug #201: PHP bug causes pre-installation checks false positive on Windows
+
+
+
+2.3.3 (2009-09-03)
+========================
+
+-- Bug Fixes
+
+	* Bug #170: Invalid translation id in aliases module
+	* Bug #172: RSS fatal error when 'Number of items per feed' set to 0
+	* Bug #173: Incorrect pagination URL at frontpage with 'standard' router
+	* Bug #174: Issue with table prefix over 12 chars long when installing
+	
+	
+2.3.2 (2009-08-04)
+========================
+
+-- Bug Fixes
+
+	* Bug #168: Installation will fail if 'tmp' is not writable to start with
+
+
+2.3.1 (2009-07-26)
+========================
+
+-- Bug Fixes
+
+	* Bug #154: Installer doesn't check if './tmp' subdirectories are writable
+    * Bug #155: Installer Cappuccino theme needs polish/fixes
+    * Bug #156: Menu item URL '/' does not link to frontpage
+    * Bug #157: Article part picker URL, query string is encoded
+    * Bug #158: Display/Force title does not effect frontpage/requested module
+    * Bug #159: Pagination URL is incorrect at URL '/admin'
+    * Bug #160: WYSIWYG Editor styles need improving
+    * Bug #162: Only modules in SC should use pagination page arg
+    * Bug #163: '+' char is allowed in URL, causes 404 error
+    * Bug #166: Possible login redirection loop
+
+
+2.3.0 (2009-06-29)
+========================
+
+-- Security Fixes
+
+	* #149 "XSS issue in Html lib (and so Contact module)"
+
+-- Feature Improvements/Modifications
+
+	* #42 "Content Tagging"
+	* #54 "Different layout on pages"
+	* #62 "Simple WYSIWYG content editor"
+	* #64 "Rewrite comments to be a module"
+	* #66 "Submission to news sites"
+	* #67 "Finish Internationalisation/Localisation support."
+	* #73 "Reduce HTTP requests for CSS and JS files"
+	* #86 "Restricted logins after failed attempts"
+	* #95 "SSL Support with Login"
+	* #109 "Configurable Login Destination"
+	* #129 "TLS/SSL option in Email settings"
+	* #134 "Session Register Terms and Conditions"
+
+-- Bug Fixes
+
+	* #51 "Permission issues when admin inherits from root"
+	* #82 "Users module doesn't check if username exists upon edit/add"
+	* #91 "Windows only Issue: view file does not exist (when it actually does) for poll module"
+	* #96 "Installer gives wrong URL at last stage for 'AdminCP' when using 'standard' router"
+	* #100 "Simple Profile instead of 403 Permission error show if logged in and no permission"
+	* #104 "The install doesn't work on a Windows Server 2003 box with IIS 6.0"
+	* #111 "No pages and articles with umlauts"
+	* #118 "Internal error when no media category is selected for deletion"
+	* #132 "Problem Installing on WAMPserver 2.0 with Windows Vista"
+	* #138 "Cappucino theme - H1 is white"

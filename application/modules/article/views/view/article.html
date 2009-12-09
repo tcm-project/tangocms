@@ -1,0 +1,54 @@
+<?php
+	// Build the jump box
+	if ( count( $article_parts ) > 1 ) {
+		$url = new Router_Url( $this->_router->getRawRequestPath() );
+		// Add in all needed query args we need
+		$queryArgs = $this->_input->getAll( 'get' );
+		$queryArgs['part'] = ''; # New value will be taken from them select option
+		unset( $queryArgs['url'] );
+		$url->queryArgs( $queryArgs );
+		$url = $url->make();
+		// Build all options
+		$options = '';
+		foreach( $article_parts as $key=>$part ) {
+			if ( !trim( $part['title'] ) ) {
+				$part['title'] = sprintf( t('Part %d'), $key+1 );
+			}
+			$options .= sprintf(
+								'<option value="%1$s" %2$s>%3$s</option>',
+								$url.($key+1),
+								($part['id'] == $requested_part['id'] ? 'selected="selected"' : ''),
+								$part['title']
+							   );
+		}
+		$jumpBox = '<p>'.t('View part:').' <select id="article-jumpbox">'.$options.'</select></p>';
+	} else {
+		$jumpBox = '';
+	}
+?>
+
+<div id="article-header">
+	<p><em>
+		<?php
+			printf( t('Published %1$s by %2$s in %3$s'),
+					$this->_date->formatStamp( $article['date'] ),
+					$this->_helper('user')->link( $article['author']),
+					'<a href="'.$this->_router->makeUrl( 'article', 'cat', $category['clean_title'] ).'">'.$category['title'].'</a>'
+				);
+		?>
+	</em></p>
+	<?php echo $this->_config->get( 'article/jump_box_position' ) == 'top' ? $jumpBox : ''; ?>
+</div>
+
+<hr>
+
+<div id="article-body">
+	<?php if ( trim( $requested_part['title'] ) ) { ?>
+		<h3>{REQUESTED_PART.TITLE}</h3>
+	<?php } ?>
+	{BODY}
+</div>
+
+<?php echo $this->_config->get( 'article/jump_box_position' ) == 'bottom' ? '<hr>'.$jumpBox : ''; ?>
+
+{PAGINATION}

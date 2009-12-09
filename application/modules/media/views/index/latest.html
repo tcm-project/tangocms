@@ -1,0 +1,58 @@
+<div class="media-wrap">
+	<?php
+		if ( empty( $items ) ) {
+			echo t('There are no latest media items to display');
+		} else {
+			if ( isset($category['clean_name']) ) {
+				echo '<ul class="'.$category['clean_name'].'">';
+			} else {
+				echo '<ul>';
+			}
+			foreach( $items as $item ) {
+				$url = $this->_router->makeUrl( 'media', 'view', $item['clean_name'] );
+				if ( $item['type'] == 'image' && $this->_config->get( 'media/use_lightbox' ) ) {
+					$url->queryArgs( array('f' => 'large') );
+				}
+		?>
+				<li class="media-thumb">
+					<a class="imglink" <?php echo ($lightbox && $item['type'] == 'image') ? 'rel="modalImage"' : ''; ?> href="<?php echo $url; ?>">
+						<img src="<?php echo $this->_router->makeUrl( 'media', 'view', $item['clean_name'] )->queryArgs( array('f' => 'thumb') ); ?>" alt="<?php echo $item['name']; ?>">
+					</a>
+					<?php if ( $show_details ) { ?>
+						<ul>
+							<li class="title">
+								<a href="<?php echo $this->_router->makeUrl( 'media', 'view', $item['clean_name'] ); ?>">
+									<?php echo $item['name']; ?>
+								</a>
+							</li>
+							<?php if ( $item['description'] ) { ?>
+								<li class="desc">
+									<?php echo zula_snippet( $item['description'], 150, true ); ?>
+								</li>
+							<?php } ?>
+							<li>
+								<a href="<?php echo $this->_router->makeUrl( 'media', 'view', $item['clean_name'] ); ?>">
+									<?php
+										switch( $item['type'] ) {
+											case 'image':
+												echo t('View image');
+												break;
+											case 'audio':
+												echo t('Listen to audio');
+												break;
+											case 'video':
+												echo t('Watch video');
+												break;
+											default:
+												echo t('View item');
+										}
+									?>
+								</a>
+							</li>
+						</ul>
+					<?php } ?>
+				</li>
+	<?php } echo '</ul>'; } ?>
+</div>
+
+{PAGINATION}

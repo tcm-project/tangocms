@@ -1,0 +1,114 @@
+<form action="<?php echo $this->_router->makeUrl( 'settings', 'update', 'cache' ); ?>" method="post">
+	<table>
+		<thead>
+			<tr>
+				<th colspan="2">{L_[Content Caching]}</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr class="even">
+				<td>
+					<dl>
+						<dt>{L_[Cache Type]}</dt>
+						<dd>{L_[The caching method to be used.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<select name="setting[cache/type]">
+						<?php
+							$format = '<option value="%s" %s>%s</option>';
+							foreach( Cache::getAvailable() as $type ) {
+								$selected = ($type == $config['type']) ? 'selected="selected"' : '';
+								printf( $format, $type, $selected, ucfirst($type) );
+							}
+						?>
+					</select>
+				</td>
+			</tr>
+			<tr class="odd">
+				<td>
+					<dl>
+						<dt>{L_[Time To Live (TTL)]}</dt>
+						<dd>{L_[How long cache should be valid for.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<select name="setting[cache/ttl]">
+						<?php
+							$opts = array(
+										86400	=> t('1 Day'),
+										604800	=> t('1 Week'),
+										1209600 => t('2 Weeks'),
+										2419200	=> t('1 Month'),
+										);
+							$format = '<option value="%1$d" %2$s>%3$s</option>';
+							foreach( $opts as $seconds=>$name ) {
+								$selected = $config['ttl'] == $seconds ? 'selected="selected"' : '';
+								printf( $format, $seconds, $selected, $name );
+							}
+						?>
+					</select>
+				</td>
+			</tr>
+			<tr class="even">
+				<td>
+					<dl>
+						<dt>{L_[Purge Current Cache?]}</dt>
+						<dd>{L_[If set to 'yes', all current cache will be purged.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="radio" id="settings-purge-yes" name="cache_purge" value="1">
+					<label class="horizontal" for="settings-purge-yes">{L_[Yes]}</label>
+					<br>
+					<input type="radio" id="settings-purge-no" name="cache_purge" value="0" checked="checked">
+					<label class="horizontal" for="settings-purge-no">{L_[No]}</label>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<table>
+		<thead>
+			<tr>
+				<th colspan="2">{L_[JavaScript Aggregation & Google CDN]}</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr class="even">
+				<td>
+					<dl>
+						<dt>{L_[Aggregate JavaScript Files?]}</dt>
+						<dd>{L_[If set to 'yes', all JavaScript files will be merged into one, reducing HTTP requests.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="radio" id="settings-aggregate-yes" name="setting[cache/js_aggregate]" value="1" <?php echo $config['js_aggregate'] ? 'checked="checked"' : ''; ?>>
+					<label class="horizontal" for="settings-aggregate-yes">{L_[Yes]}</label>
+					<br>
+					<input type="radio" id="settings-aggregate-no" name="setting[cache/js_aggregate]" value="0" <?php echo $config['js_aggregate'] ? '' : 'checked="checked"'; ?>>
+					<label class="horizontal" for="settings-aggregate-no">{L_[No]}</label>
+				</td>
+			</tr>
+			<tr class="odd">
+				<td>
+					<dl>
+						<dt>{L_[Use Google's CDN for common JavaScript libraries?]}</dt>
+						<dd>{L_[Making use of Google's servers for JavaScript files (such as jQuery) can help speed up page load times, whilst taking load off your servers.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="radio" id="settings-gcdn-yes" name="setting[cache/google_cdn]" value="1" <?php echo $config['google_cdn'] ? 'checked="checked"' : ''; ?>>
+					<label class="horizontal" for="settings-gcdn-yes">{L_[Yes]}</label>
+					<br>
+					<input type="radio" id="settings-gcdn-no" name="setting[cache/google_cdn]" value="0" <?php echo $config['google_cdn'] ? '' : 'checked="checked"'; ?>>
+					<label class="horizontal" for="settings-gcdn-no">{L_[No]}</label>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<div class="actions"><input type="submit" value="{L_[Update]}"></div>
+	{CSRF}
+
+</form>

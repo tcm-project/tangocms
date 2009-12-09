@@ -1,0 +1,99 @@
+<form action="" method="post">
+	<table>
+		<tbody>
+			<tr class="even">
+				<td>
+					<dl>
+						<dt>{L_[Article Title]}</dt>
+						<dd>{L_[Title of the article that will be displayed.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="text" name="article[title]"  value="{ARTICLE.TITLE}">
+				</td>
+			</tr>
+			<tr class="odd">
+				<td>
+					<dl>
+						<dt>{L_[Category]}</dt>
+						<dd>{L_[Select the category the article will be in.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<select name="article[cid]">
+						<?php
+							foreach( $categories as $cat ) {
+								printf( '<option value="%1$d" %2$s>%3$s</option>',
+										$cat['id'],
+										($article['cid'] == $cat['id'] ? 'selected="selected"' : ''),
+										$cat['title']
+									   );
+							}
+						?>
+					</select>
+				</td>
+			</tr>
+			<tr class="even">
+				<td>
+					<dl>
+						<dt>{L_[Publish Article?]}</dt>
+						<dd>{L_[If set to 'yes' users will be able to view the article. When set to 'no', you will only be able to edit it from the Article Configuration.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="radio" id="article-published-yes" name="article[published]" value="1" <?php echo $article['published'] ? 'checked="checked"' : ''; ?>>
+					<label class="horizontal" for="article-published-yes">{L_[Yes]}</label>
+					<br>
+					<input type="radio" id="article-published-no" name="article[published]" value="0" <?php echo $article['published'] ? '' : 'checked="checked"'; ?>>
+					<label class="horizontal" for="article-published-no">{L_[No]}</label>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	{AMC.TABLE}
+
+	<div class="actions"><input type="submit" value="{L_[Update]}"></div>
+</form>
+
+<h3>{L_[Article Parts]}</h3>
+
+<form action="<?php echo $this->_router->makeUrl( 'article', 'config', 'deletepart'); ?>" method="post">
+	<table class="contentdata">
+		<thead>
+			<tr>
+				<th class="checkcol"></th>
+				<th>{L_[Title]}</th>
+				<th>{L_[Manage]}</th>
+			</tr>
+		</thead>
+		<tbody>
+			<?php if ( empty( $parts ) ) { ?>
+				<tr class="even">
+					<td colspan="3">{L_[There are no parts for this article.]}</td>
+				</tr>
+			<?php } else {
+					$i = 0; foreach( $parts as $key=>$part ) {
+						if ( empty( $part['title'] ) ) {
+							$part['title'] = sprintf( t('Part %d'), $i+1 );
+						}
+						?>
+						<tr class="<?php echo zula_odd_even( $i ); ?>">
+							<td class="checkcol">
+								<input type="checkbox" name="article_pids[]" value="<?php echo $part['id']; ?>">
+							</td>
+							<td><?php echo $part['title']; ?></td>
+							<td class="managecol">
+								<a href="<?php echo $this->_router->makeUrl( 'article', 'config', 'editpart', null, array('id' => $part['id']) ); ?>">{L_[Edit]}</a>
+							</td>
+						</tr>
+				<?php ++$i; } } ?>
+		<tbody>
+	</table>
+
+	<div class="actions">
+		<input type="hidden" name="article_id" value="{ARTICLE_ID}">
+		<a class="general-button" href="<?php echo $this->_router->makeUrl( 'article', 'config', 'addpart', null, array('id' => $article_id) ); ?>">{L_[Add Article Part]}</a>
+		<input type="submit" value="{L_[Delete Selected]}">
+	</div>
+</form>

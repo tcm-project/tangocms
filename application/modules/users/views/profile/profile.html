@@ -1,0 +1,29 @@
+<div id="users-profile" style="overflow: auto;">
+	<div id="users-info" style="float: left;">
+		<h3>{L_[User Info]}</h3>
+		<dl>
+			<dt>{L_[Username]}</dt>
+			<dd><?php echo $username; ?></dd>
+			<dt>{L_[Group]}</dt>
+			<dd><?php echo $group_name; ?></dd>
+			<dt>{L_[Joined]}</dt>
+			<dd><?php echo $this->_date->formatStamp( $joined ); ?></dd>
+			<dt>{L_[Last Logged In]}</dt>
+			<dd><?php echo empty($last_login) ? t('Unknown') : $this->_date->formatStamp( $last_login ); ?></dd>
+		</dl>
+	</div>
+	<div id="users-contact" style="float: left; margin-left: 80px;">
+		<h3>{L_[Contact Info]}</h3>
+		<dl>
+			<?php if ( !empty( $first_name ) ) { ?>
+				<dt>{L_[First Name]}</dt>
+				<dd><?php echo $first_name; } ?>
+			<?php if ( !empty( $last_name ) ) { ?>
+				<dt>{L_[Last Name]}</dt>
+				<dd><?php echo $last_name; } ?>
+			<dt>{L_[Email Address]}</dt>
+			<dd><?php echo $email; ?></dd>
+		</dl>
+	</div>
+</div>
+

@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<controllers>
+  <controller id="119" sector="S1" order="1">
+    <mod>menu</mod>
+    <con>index</con>
+    <sec>index</sec>
+    <config>
+      <displayTitle>false</displayTitle>
+      <customTitle/>
+      <display_category>3</display_category>
+    </config>
+  </controller>
+</controllers>

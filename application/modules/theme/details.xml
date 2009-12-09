@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<details>
+	<detail>
+		<name>theme</name>
+		<title>Theme</title>
+		<description>Manage and change a site types theme.</description>
+		<author>Alex Cartwright</author>
+		<category>system</category>
+	</detail>
+</details>

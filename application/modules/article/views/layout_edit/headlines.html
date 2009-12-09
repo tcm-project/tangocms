@@ -1,0 +1,43 @@
+<table>
+	<tbody>
+		<tr class="even">
+			<td>
+				<dl>
+					<dt>{L_[Headline limit]}</dt>
+					<dd>{L_[Limit the amount of headlines you wish to display.]}</dd>
+				</dl>
+			</td>
+			<td class="confcol">
+				<input type="text" name="content_layout[config][headline_limit]" value="{LIMIT}">
+			</td>
+		</tr>
+		<tr class="odd">
+			<td>
+				<dl>
+					<dt>{L_[Category]}</dt>
+					<dd>{L_[Select the category you want to display headlines from.]}</dd>
+				</dl>
+			</td>
+			<td class="confcol">
+				<select name="content_layout[config][display_cat]">
+					<option value="all">{L_[All Categories]}</option>
+					<?php
+						$format = '<option value="%d" %s>%s</option>';
+						foreach( $categories as $category ) {
+							$selected = '';
+							if ( $this->_input->has( 'post', 'display_cat' ) && $this->_input->post( 'display_cat' ) == $category['id'] ) {
+								$selected = 'selected="selected"';
+							}
+							printf( $format, $category['id'], $selected, $category['title'] );
+						}
+					?>
+				</select>
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+<div>
+	<input type="hidden" name="content_layout[cntrlr]" value="headlines">
+	<input type="hidden" name="content_layout[section]" value="index">
+</div>

@@ -1,0 +1,37 @@
+<form action="<?php echo $this->_router->makeUrl( 'users', 'profile', 'edit' ); ?>" method="post">
+	<table>
+		<thead>
+			<tr>
+				<td colspan="2">{L_[General Profile]}</td>
+			</tr>
+		</thead>
+		<tbody>
+			<tr class="even">
+				<td>
+					<dl>
+						<dt>{L_[First Name]}</dt>
+						<dd>{L_[Enter your first name that will be displayed to others]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="text" name="users[first_name]" value="{USERS.FIRST_NAME}">
+				</td>
+			</tr>
+			<tr class="odd">
+				<td>
+					<dl>
+						<dt>{L_[Last Name]}</dt>
+						<dd>{L_[Enter your last name that will be displayed to others]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="text" name="users[last_name]" value="{USERS.LAST_NAME}">
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<div class="actions">
+		<input type="submit" value="{L_[Update]}">
+	</div>
+</form>

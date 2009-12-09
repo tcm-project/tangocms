@@ -1,0 +1,24 @@
+<form action="" method="post">
+	<table>
+		<tbody>
+			<tr class="even">
+				<td>
+					<dl>
+						<dt>{L_[Title]}</dt>
+						<dd>{L_[Title of the option that will be displayed.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="text" name="poll[title]" value="{POLL.TITLE}">
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	{AMC.TABLE}
+
+	<div class="actions">
+		<input type="hidden" name="poll[option-id]" value="{ID}">
+		<input type="submit" value="<?php echo $op == 'add' ? t('Add Option') : t('Edit Option'); ?>">
+	</div>
+</form>

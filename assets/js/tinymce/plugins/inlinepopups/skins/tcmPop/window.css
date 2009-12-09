@@ -1,0 +1,353 @@
+/** Resets */
+.tcmPop div, .tcmPop dl, .tcmPop dt, .tcmPop dd, .tcmPop ul, .tcmPop ol, .tcmPop li, .tmcPop a
+.tcmPop h1, .tcmPop h2, .tcmPop h3, .tcmPop h4, .tcmPop h5, .tcmPop h6, .tcmPop pre, .tcmPop form,
+.tcmPop fieldset, .tcmPop input, .tcmPop textarea, .tcmPop p, .tcmPop blockquote, .tcmPop th, .tcmPop td {
+	background: none;
+	border: 0;
+	color: #333;
+	direction: ltr;
+	font-family: "Bitstream Vera Sans", Lucida, Verdana, sans-serif;
+	font-size: 11px;
+	height: auto;
+	line-height: 1.3em;
+	margin: 0;
+	overflow: hidden;
+	padding: 0;
+	text-align: left;
+	text-decoration: none;
+	width: auto;
+}
+
+.tcmPop fieldset, .tcmPop img, .tcmPop abbr, .tcmPop acronym {
+	border: 0;
+}
+
+.tcmPop caption, .tcmPop th {
+	text-align: left;
+}
+
+.tcmPop q:before, .tcmPop q:after {
+	content: '';
+}
+
+/** Main Styles */
+.tcmPop, .tcmPop div, .tcmPop span, .tcmPop a {
+	position: absolute;
+}
+
+.tcmPop .mceWrapper {
+	position: static;
+}
+
+.tcmPop_modalBlocker {
+	background: #010101;
+	display: none;
+	filter: alpha(opacity=60);
+	height: 100%;
+	left: 0;
+	-ms-filter: 'alpha(opacity=60)';
+	opacity: 0.6;
+	position: fixed;
+	top: 0;
+	width: 100%;
+}
+
+.mceEventBlocker {
+	background: url(img/horizontal.gif) no-repeat 0 -75px;
+	height: 100%;
+	left: 0;
+	position: fixed;
+	top: 0;
+	width: 100%;
+}
+.tcmPop .mcePlaceHolder {
+	background: #888;
+	border: 1px solid #000;
+	filter: alpha(opacity=50);
+	left: 0;
+	-ms-filter: 'alpha(opacity=50)';
+	opacity: 0.5;
+	top: 0;
+}
+
+/** Top Bar */
+.tcmPop .mceTop {
+	height: 21px;
+	top: 0;
+	width: 100%;
+}
+
+.tcmPop .mceTop .mceLeft, .tcmPop .mceTop .mceRight, .tcmPop .mceTop .mceCenter {
+	background-image: url(img/header.png);
+	background-repeat: repeat-x;
+	border-color: #818080;
+	border-style: solid;
+	display: block;
+	width: 50%;
+	height: 21px;
+	top: 0;
+}
+
+.tcmPop .mceTop .mceLeft {
+	border-width: 1px 0 0 1px;
+	-moz-border-radius: 5px 0 0 0;
+}
+
+.tcmPop .mceTop .mceCenter {
+	display: none;
+}
+
+.tcmPop .mceTop .mceRight {
+	border-width: 1px 1px 0 0;
+	-moz-border-radius: 0 5px 0 0;
+	right: 0;
+}
+
+.tcmPop .mceTop span {
+	color: #c9c9c9;
+	margin: 5px 8px;
+	width: auto;
+}
+
+.tcmPop .mceFocus .mceTop span {
+	color: #fafaf9;
+	font-weight: bold;
+}
+
+.tcmPop .mceClose, .tcmPop .mceMin, .tcmPop .mceMed, .tcmPop .mceMax {
+	height: 17px;
+	top: 3px;
+	width: 21px;
+}
+
+.tcmPop .mceMin {
+	background: url(img/buttons.png) 0 0;
+	display: none;
+	right: 48px;
+}
+
+.tcmPop .mceMax, .tcmPop .mceMed {
+	background: url(img/buttons.png) 42px 0;
+	display: none;
+	right: 27px;
+}
+
+.tcmPop .mceClose {
+	background: url(img/buttons.png) 21px 0;
+	right: 6px;
+}
+
+/** Middle */
+.tcmPop .mceMiddle {
+	clip: rect(23px auto auto auto);
+	height: 100%;
+	width: 100%;
+	top: 0;
+}
+
+.tcmPop .mceMiddle .mceLeft, .tcmPop .mceMiddle .mceRight {
+	background-color: #bbb;
+	border-color: #818080;
+	border-style: solid;
+	top: 0;
+	height: 100%;
+	width: 5px;
+}
+
+.tcmPop .mceMiddle .mceLeft {
+	border-left-width: 1px;
+	left: 0;
+}
+
+.tcmPop .mceMiddle .mceRight {
+	border-right-width: 1px;
+	right: 0;
+}
+
+.tcmPop .mceMiddle span {
+	background: #FFF;
+	height: 100%;
+	left: 5px;
+	top: 23px;
+	width: 100%;
+}
+
+/** Bottom */
+.tcmPop .mceBottom {
+	background-color: #bbb;
+	border-bottom: 1px solid #818080;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	height: 5px;
+}
+
+.tcmPop .mceBottom .mceLeft, .tcmPop .mceBottom .mceRight {
+	border-color: #818080;
+	border-style: solid;
+	height: 100%;
+}
+
+.tcmPop .mceBottom .mceLeft {
+	left: 0;
+	border-left-width: 1px;
+}
+
+.tcmPop .mceBottom .mceRight {
+	right: 0;
+	border-right-width: 1px;
+}
+
+.tcmPop .mceBottom .mceCenter {
+	display: none;
+}
+
+.tcmPop .mceBottom span {
+	display: none;
+}
+
+/** Statusbar */
+.tcmPop .mceStatusbar .mceBottom, .tcmPop .mceStatusbar .mceBottom div {
+	height: 23px;
+}
+
+.tcmPop .mceStatusbar .mceBottom span {
+	display: block;
+	font-size: 11px;
+	left: 7px;
+	line-height: 23px;
+}
+
+/** Movement and Resize */
+.tcmPop .mceMove {
+	cursor: move;
+	display: none;
+	width: 100%;
+	height: 17px;
+}
+
+.tcmPop .mceMovable .mceMove {
+	display: block;
+}
+
+.tcmPop .mceResize {
+	display: none;
+	height: 5px;
+	left: auto;
+	top: auto;
+	width: 5px;
+}
+.tcmPop .mceResizable .mceResize {
+	display: block;
+}
+.tcmPop .mceResizable .mceMin, .tcmPop .mceMax {
+	display: none;
+}
+.tcmPop .mceMinimizable .mceMin {
+	display: block;
+}
+.tcmPop .mceMaximizable .mceMax {
+	display: block;
+}
+.tcmPop .mceMaximized .mceMed {
+	display: block;
+}
+.tcmPop .mceMaximized .mceMax {
+	display: none;
+}
+.tcmPop a.mceResizeN {
+	cursor: n-resize;
+	left: 0;
+	top: 0;
+	width: 100%;
+}
+.tcmPop a.mceResizeNW {
+	cursor: nw-resize;
+	left: 0;
+	top: 0;
+}
+.tcmPop a.mceResizeNE {
+	cursor: ne-resize;
+	right: 0;
+	top: 0;
+}
+.tcmPop a.mceResizeW {
+	cursor: w-resize;
+	height: 100%;
+	left: 0;
+	top: 0;
+}
+.tcmPop a.mceResizeE {
+	cursor: e-resize;
+	height: 100%;
+	right: 0;
+	top: 0;
+}
+.tcmPop a.mceResizeS {
+	bottom: 0;
+	cursor: s-resize;
+	left: 0;
+	width: 100%;
+}
+.tcmPop a.mceResizeSW {
+	bottom: 0;
+	cursor: sw-resize;
+	left: 0;
+}
+.tcmPop a.mceResizeSE {
+	bottom: 0;
+	cursor: se-resize;
+	right: 0;
+}
+.tcmPop .mceButton {
+	bottom: 10px;
+	font-weight: bold;
+	height: 30px;
+	line-height: 30px;
+	outline: 0;
+	text-align: center;
+	vertical-align: middle;
+	width: 80px;
+}
+.tcmPop .mceMiddle .mceIcon {
+	height: 32px;
+	left: 15px;
+	top: 35px;
+	width: 32px;
+}
+.tcmPop .mceAlert .mceMiddle span, .tcmPop .mceConfirm .mceMiddle span {
+	background: transparent;
+	font-weight: bold;
+	height: 50px;
+	left: 60px;
+	overflow: auto;
+	top: 35px;
+	white-space: normal;
+	width: 320px;
+}
+.tcmPop a:hover {
+	font-weight: bold;
+}
+.tcmPop .mceAlert .mceMiddle, .tcmPop .mceConfirm .mceMiddle {
+	background: #fbfbfb;
+}
+.tcmPop .mceAlert .mceOk {
+	left: 50%;
+	margin-left: -40px;
+	top: auto;
+}
+.tcmPop .mceAlert .mceIcon {
+	background: url(img/alert.gif);
+}
+.tcmPop .mceConfirm .mceOk {
+	left: 50%;
+	margin-left: -90px;
+	top: auto;
+}
+.tcmPop .mceConfirm .mceCancel {
+	left: 50%;
+	top: auto;
+}
+.tcmPop .mceConfirm .mceIcon {
+	background: url(img/confirm.gif);
+}

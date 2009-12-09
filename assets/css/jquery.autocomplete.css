@@ -1,0 +1,38 @@
+.autocomplete-w1 {
+	margin: 6px 0 0 6px;
+	position: absolute;
+	font-size: 1.15em;
+}
+.autocomplete {
+	background-color: #fff;
+	border-width: 0 1px 2px 1px;
+	border-style: solid;
+	border-color: #7FAACB;
+	cursor: default;
+	margin: -6px 6px 6px -6px;
+	max-height: 350px;
+	overflow: auto;
+	opacity: 0.8;
+	text-align: left;
+}
+.autocomplete .selected {
+	background: #F0F0F0;
+}
+
+.autocomplete div {
+	padding: 2px 5px;
+	white-space: nowrap;
+}
+.autocomplete strong {
+	color: #284E66;
+}
+
+.autocomplete, .autocomplete > div:last-child {
+	border-bottom-left-radius: 8px;
+	border-bottom-right-radius: 8px;
+	-khtml-border-bottom-left-radius: 8px;
+	-khtml-border-bottom-right-radius: 8px;
+	-moz-border-radius: 0 0 8px 8px;
+	-webkit-border-bottom-left-radius: 8px;
+	-webkit-border-bottom-right-radius: 8px;
+}

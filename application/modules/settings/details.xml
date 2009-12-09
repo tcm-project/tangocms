@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<details>
+	<detail>
+		<name>settings</name>
+		<title>Settings</title>
+		<description>Modify various settings to configure TangoCMS.</description>
+		<author>Alex Cartwright</author>
+		<category>system</category>
+	</detail>
+</details>

@@ -1,0 +1,76 @@
+<?php if ( !empty( $disabled ) ) { ?>
+	<h3>{L_[Disabled Modules]}</h3>
+
+	<form action="<?php echo $this->_router->makeUrl( 'module_manager', 'config', 'enmod' ); ?>" method="post">
+		<table class="contentdata">
+			<thead>
+				<tr>
+					<th class="checkcol"></th>
+					<th>{L_[Name/Title]}</th>
+					<th>{L_[Category]}</th>
+					<th>{L_[Author]}</th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php $i = 0; foreach( $disabled as $name ) { $module = new Module( $name ); ?>
+					<tr class="<?php echo zula_odd_even( $i ); ?>">
+							<td class="checkcol">
+								<input type="checkbox" value="<?php echo $module->name; ?>" name="modules[]">
+							</td>
+							<td>
+								<dl>
+									<dt><?php echo $module->title.' ('.$module->name.')'; ?></dt>
+									<dd><?php echo $module->description; ?></dd>
+								</dl>
+							</td>
+							<td><?php echo ucfirst( strtolower($module->category) ); ?></td>
+							<td><?php echo $module->author; ?></td>
+						</tr>
+				<?php $i++; } ?>
+			</tbody>
+		</table>
+
+		<div class="actions"><input type="submit" value="{L_[Enable Selected Modules]}"></div>
+		{CSRF.DISABLE}
+	</form>
+
+<?php } if ( !empty( $enabled ) ) { ?>
+	<h3>{L_[Enabled Modules]}</h3>
+
+	<form action="<?php echo $this->_router->makeUrl( 'module_manager', 'config', 'dismod' ); ?>" method="post">
+		<table class="contentdata">
+			<thead>
+				<tr>
+					<th class="checkcol"></th>
+					<th>{L_[Name/Title]}</th>
+					<th>{L_[Category]}</th>
+					<th>{L_[Author]}</th>
+					<th>{L_[Permissions]}</th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php $i = 0; foreach( $enabled as $name ) { $module = new Module( $name ); ?>
+					<tr class="<?php echo zula_odd_even( $i ); ?>">
+						<td class="checkcol">
+							<input type="checkbox" value="<?php echo $module->name; ?>" name="modules[]">
+						</td>
+						<td>
+							<dl>
+								<dt><?php echo $module->title.' ('.$module->name.')'; ?></dt>
+								<dd><?php echo $module->description; ?></dd>
+							</dl>
+						</td>
+						<td><?php echo ucfirst( strtolower($module->category) ); ?></td>
+						<td><?php echo $module->author; ?></td>
+						<td>
+							<a href="<?php echo $this->_router->makeUrl( 'module_manager', 'permission', $module->name ); ?>">Permissions</a>
+						</td>
+					</tr>
+				<?php $i++; } ?>
+			</tbody>
+		</table>
+
+		<div class="actions"><input type="submit" value="{L_[Disable Selected Modules]}"></div>
+		{CSRF.ENABLE}
+	</form>
+<?php } ?>

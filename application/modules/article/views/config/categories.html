@@ -1,0 +1,37 @@
+<form method="post" action="">
+	<table class="contentdata">
+		<thead>
+			<tr>
+				<th class="checkcol"></th>
+				<th>{L_[Title]}</th>
+				<th>{L_[Articles]}</th>
+				<th>{L_[Manage]}</th>
+			</tr>
+		</thead>
+		<tbody>
+			<?php if ( empty( $categories ) ) { ?>
+				<tr class="even">
+					<td colspan="4">{L_[No article categories to display.]}</td>
+				</tr>
+			<?php } else { $i = 0; foreach( $categories as $cat ) { ?>
+				<tr class="<?php echo zula_odd_even( $i ); ?>">
+					<td class="checkcol">
+						<input type="checkbox" name="article_cids[]" value="<?php echo $cat['id']; ?>">
+					</td>
+					<td title="<?php echo $cat['clean_title']; ?>">
+						<a href="<?php echo $this->_router->makeUrl( 'article', 'cat', $cat['clean_title'], 'main' ); ?>"><?php echo zula_snippet( $cat['title'], 50, true ); ?></a>
+					</td>
+					<td><?php echo number_format( $cat['count'] ); ?></td>
+					<td class="confcol">
+						<a href="<?php echo $this->_router->makeUrl( 'article', 'config', 'editcat', null, array('id' => $cat['id']) ); ?>">{L_[Edit]}</a>
+					</td>
+				</tr>
+			<?php ++$i; } } ?>
+		</tbody>
+	</table>
+
+	<?php if ( !empty( $categories ) ) { ?>
+		<div class="actions"><input type="submit" value="{L_[Delete Selected]}"></div>
+		{CSRF}
+	<?php } ?>
+</form>

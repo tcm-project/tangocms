@@ -1,0 +1,37 @@
+<div id="media-item">
+	<?php if ( $item['type'] == 'external' ) { ?>
+		<div id="media-flash-item">
+			<object type="application/x-shockwave-flash" data="http://www.youtube.com/v/{ITEM.EXTERNAL_ID}" width="425" height="355">
+				<param name="movie" value="http://www.youtube.com/v/{ITEM.EXTERNAL_ID}">
+				<param name="wmode" value="transparent">
+			</object>
+		</div>
+	<?php } else if ( $item['type'] == 'image' ) { ?>
+		<a class="imglink" <?php echo $lightbox ? 'rel="modalImage"' : ''; ?> href="<?php echo $this->_router->makeUrl( 'media', 'view', $item['clean_name'] )->queryArgs( array('f' => 'large') ); ?>" title="{L_[View larger image]}">
+			<img src="<?php echo $this->_router->makeUrl( 'media', 'view', $item['clean_name'] )->queryArgs( array('f' => 'medium') ); ?>" alt="{ITEM.NAME}">
+		</a>
+	<?php } else { ?>
+		<a class="media_player"
+			style="display: inline-block; width: 470px; height: <?php echo $item['type'] == 'audio' ? 28 : 355; ?>px;"
+			href="<?php echo $this->_router->makeUrl( 'media', 'view', $item['clean_name'] )->queryArgs( array('f' => 'stream') ); ?>"></a>
+	<?php } ?>
+</div>
+
+<div id="media-item-details">
+	<p>
+		<strong>{L_[Title]}:</strong> {ITEM.NAME}<br>
+		<strong>{L_[Category]}:</strong> <a href="<?php echo $this->_router->makeUrl( 'media', 'cat', $category['clean_name'] ); ?>">{CATEGORY.NAME}</a>
+	</p>
+
+	<?php if ( trim($item['description']) ) { ?>
+		<dl>
+			<dt>{L_[Description]}</dt>
+			<dd>
+				<?php
+					$editor = new Editor( "#!plaintext\n".$item['description'], array('nofollow' => true) );
+					echo $editor->parse();
+				?>
+			</dd>
+		</dl>
+	<?php } ?>
+</div>

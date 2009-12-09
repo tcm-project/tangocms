@@ -1,0 +1,117 @@
+<form action="<?php echo $this->_router->makeUrl( 'users', 'profile', 'settings' ); ?>" method="post">
+	<table>
+		<thead>
+			<tr>
+				<td colspan="2">{L_[Password]}</td>
+			</tr>
+		</thead>
+		<tbody>
+			<tr class="even">
+				<td>
+					<dl>
+						<dt>{L_[New Password]}</dt>
+						<dd>{L_[Enter the new password you would like for this account.]}</dd>
+					</d>
+				</td>
+				<td class="confcol">
+					<input type="password" name="users[password]" value="{USERS.PASSWORD}">
+				</td>
+			</tr>
+			<tr class="odd">
+				<td>
+					<dl>
+						<dt>{L_[Repeat Password]}</dt>
+						<dd>{L_[Please repeat the password.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="password" name="users[password_confirm]">
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<table>
+		<thead>
+			<tr>
+				<td colspan="2">{L_[Email]}</td>
+			</tr>
+		</thead>
+		<tbody>
+			<tr class="even">
+				<td>
+					<dl>
+						<dt>{L_[Email Address]}</dt>
+						<dd>{L_[Enter the email address you would like to use for this account.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="text" name="users[email]" value="{USERS.EMAIL}">
+				</td>
+			</tr>
+			<tr class="odd">
+				<td>
+					<dl>
+						<dt>{L_[Repeat Email]}</dt>
+						<dd>{L_[If you are changing your email address, please repeat it.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="text" name="users[email_confirm]">
+				</td>
+			</tr>
+			<tr class="even">
+				<td>
+					<dl>
+						<dt>{L_[Hide Email Address]}</dt>
+						<dd>{L_[If set to 'Yes', only users with permission to view your email address will be able to see it.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<dd>
+						<input type="radio" id="hide_yes" name="users[hide_email]" value="1" <?php echo $users['hide_email'] ? 'checked="checked"' : ''; ?>>
+						<label class="horizontal" for="hide_yes">{L_[Yes]}</label>
+					</dd>
+					<dd>
+						<input type="radio" id="hide_no" name="users[hide_email]" value="0" <?php echo $users['hide_email'] ? '' : 'checked="checked"'; ?>>
+						<label class="horizontal" for="hide_no">{L_[No]}</label>
+					</dd>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<?php if ( $this->_config->get( 'theme/allow_user_override' ) ) { ?>
+		<table>
+			<thead>
+				<tr>
+					<td colspan="2">{L_[Theme]}</td>
+				</tr>
+			</thead>
+			<tbody>
+			<tr class="even">
+				<td>
+					<dl>
+						<dt>{L_[Theme Preference]}</dt>
+						<dd>{L_[This setting chooses the theme that is displayed to you while you're logged into the site. This overrides the site owner's default theme setting.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<select name="users[theme]">
+						<?php
+							$format = '<option value="%s" %s>%s</option>';
+							printf( $format, '', empty($users['theme']) ? 'selected="selected"' : '', t('Site Default') );
+							foreach( Theme::getAll() as $themeOption ) {
+								$theme = new theme( $themeOption );
+								$selected = $themeOption == $users['theme'] ? 'selected="selected"' : '';
+								printf( $format, $themeOption, $selected, $theme->getDetail( 'title' ) );
+							}
+						?>
+					</select>
+				</td>
+			</tr>
+		</table>
+	<?php } ?>
+
+	<div class="actions"><input type="submit" value="{L_[Update]}"></div>
+</form>

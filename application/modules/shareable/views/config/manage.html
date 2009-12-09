@@ -1,0 +1,35 @@
+<form action="{ACTION}" method="post">
+	<ul>
+		<li>{L_[Toggle the sites you wish to enable, drag and drop to alter the display order.]}</li>
+	</ul>
+	<table id="shareable-sites" class="contentdata">
+		<tbody>
+			<?php $i = 0; $siteCount = count($sites); foreach( $sites as $site ) { ?>
+				<tr class="<?php echo zula_odd_even($i); ?>">
+					<td class="checkcol">
+						<input type="checkbox" name="shareable[enabled][]" <?php echo $site['disabled'] ? '' : 'checked="checked"'; ?>
+							   value="<?php echo $site['id']; ?>">
+					</td>
+					<td class="order">
+						<select name="shareable[order][<?php echo $site['id']; ?>]">
+							<?php
+								for( $o = 1; $o <= $siteCount; $o++ ) {
+									printf( '<option value="%1$d" %2$s>%1$d</option>',
+											$o,
+											($o == $site['order'] ? 'selected="selected"' : '')
+										   );
+								}
+							?>
+						</select>
+					</td>
+					<td>
+						<?php echo $site['name']; ?>
+					</td>
+				</tr>
+			<?php ++$i; } ?>
+		</tbody>
+	</table>
+	<div class="actions">
+		<input type="submit" value="{L_[Update]}">
+	</div>
+</form>

@@ -1,0 +1,10 @@
+<?xml version="1.0" ?>
+<details>
+	<detail>
+		<name>index</name>
+		<title>Index</title>
+		<description>Index controller for Zula Framework installation</description>
+		<author>Alex Cartwright</author>
+		<category>system</category>
+	</detail>
+</details>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<details>
+	<detail>
+		<name>poll</name>
+		<title>Poll</title>
+		<description>Users can vote on various polls.</description>
+		<author>Alex Cartwright</author>
+		<category>content</category>
+	</detail>
+</details>

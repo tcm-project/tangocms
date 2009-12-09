@@ -1,0 +1,64 @@
+<?php if ( !empty( $aliases ) ) { ?>
+	<div class="jsSearchBox">
+		<p><label class="horizontal" for="aliases-alias">{L_[Search aliases:]}</label> <input type="text" id="aliases-alias"></p>
+	</div>
+<?php } ?>
+<form method="post" action="<?php echo $this->_router->makeUrl( 'aliases', 'index', 'delete' ); ?>">
+	<table class="contentdata">
+		<thead>
+			<tr>
+				<th class="checkcol"></th>
+				<th>{L_[Alias]}</th>
+				<th>{L_[Real URL]}</th>
+				<th>{L_[Is Redirect?]}</th>
+				<th>{L_[Manage]}</th>
+			</tr>
+		</thead>
+		<tbody>
+			<?php if ( empty( $aliases ) ) { ?>
+				<tr class="even">
+					<td colspan="5">{L_[No URL Aliases configured.]}</td>
+				</tr>
+			<?php } else { $i = 0; foreach( $aliases as $alias ) { ?>
+				<tr class="<?php echo zula_odd_even( $i ); ?>">
+					<td class="checkcol">
+						<input type="checkbox" name="alias_ids[]" value="<?php echo $alias['id']; ?>">
+					</td>
+					<td>
+						<a href="<?php echo $this->_router->makeUrl( '/'.$alias['alias'] ); ?>">
+							<?php echo $alias['alias']; ?>
+						</a>
+					</td>
+					<td>
+						<?php
+							if ( zula_url_has_scheme( $alias['url'] ) ) {
+								$url = $alias['url'];
+							} else {
+								$url = $this->_router->getBaseUrl();
+								if ( $this->_router->getType() == 'standard' ) {
+									$base .= 'index.php?url=';
+								}
+								$url .= $alias['url'];
+							}
+						?>
+						<a href="<?php echo $url; ?>">
+							<?php echo $alias['url']; ?>
+						</a>
+					</td>
+					<td><?php echo $alias['redirect'] ? t('Yes') : t('No'); ?></td>
+					<td class="confcol">
+						<a href="<?php echo $this->_router->makeUrl( 'aliases', 'index', 'edit', null, array( 'id' => $alias['id'] ) ); ?>" title="{L_[Edit Alias]}">{L_[Edit]}</a>
+					</td>
+				</tr>
+			<?php $i++; } } ?>
+		</tbody>
+	</table>
+
+	<?php if ( !empty( $aliases ) ) { ?>
+		{PAGINATION}
+		<div class="actions"><input type="submit" value="{L_[Delete Selected]}"></div>
+		{CSRF}
+	<?php } ?>
+</form>
+
+

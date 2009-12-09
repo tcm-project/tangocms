@@ -1,0 +1,49 @@
+<form action="{ACTION}" method="post">
+	<table>
+		<tbody>
+			<tr class="even">
+				<td>
+					<dl>
+						<dt>{L_[Module]}</dt>
+						<dd>{L_[Select the module you wish to attach to a new sector]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<select name="content_layout[module]">
+						<?php
+							$format = '<option value="%1$s">%2$s</option>';
+							foreach( Module::getModules( true ) as $modName ) {
+								$module = new Module( $modName );
+								printf( $format, $module->name, $module->title );
+							}
+						?>
+					</select>
+				</td>
+			</tr>
+			<tr class="odd">
+				<td>
+					<dl>
+						<dt>{L_[Sector]}</dt>
+						<dd>{L_[The sector you wish to attach the above module to]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<select name="content_layout[sector]">
+						<?php
+							$format = '<option value="%1$s">%2$s</option>';
+							foreach( $sectors as $sector ) {
+								printf( $format, $sector['id'], $sector['description'] );
+							}
+						?>
+					</select>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	{AMC.TABLE}
+
+	<div class="actions">
+		<input type="submit" value="{L_[Attach Module]}">
+	</div>
+</form>

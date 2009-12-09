@@ -1,0 +1,80 @@
+<form action="<?php echo $this->_router->makeUrl( 'settings', 'update', 'general' ); ?>" method="post">
+	<table>
+		<thead>
+			<tr>
+				<th colspan="2">{L_[Website Details]}</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr class="even">
+				<td>
+					<dl>
+						<dt>{L_[Title]}</dt>
+						<dd>{L_[Title of the website to be displayed.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="text" name="setting[config/title]" value="{CONFIG.TITLE}">
+				</td>
+			</tr>
+			<tr class="odd">
+				<td>
+					<dl>
+						<dt>{L_[Title Format]}</dt>
+						<dd>{L_[Enter the format you would like for the title of each page. Use [PAGE] for the page title, and [SITE_TITLE] for your website title.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="text" name="setting[config/title_format]" value="{CONFIG.TITLE_FORMAT}">
+				</td>
+			</tr>
+			<tr class="even">
+				<td>
+					<dl>
+						<dt>{L_[Website Slogan]}</dt>
+						<dd>{L_[Some themes display a slogan, you can set it here.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="text" name="setting[config/slogan]" value="{CONFIG.SLOGAN}">
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<table>
+		<thead>
+			<tr>
+				<th colspan="2">{L_[Meta Data]}</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr class="even">
+				<td>
+					<dl>
+						<dt>{L_[Description]}</dt>
+						<dd>{L_[Short description of your website.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="text" name="setting[meta/description]" value="{CONFIG.DESCRIPTION}">
+				</td>
+			</tr>
+			<tr class="odd">
+				<td>
+					<dl>
+						<dt>{L_[Keywords]}</dt>
+						<dd>{L_[Common keywords that users are most likely to search for (Comma separated).]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="text" name="setting[meta/keywords]" value="{CONFIG.KEYWORDS}">
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<div class="actions"><input type="submit" value="{L_[Update]}"></div>
+	{CSRF}
+
+</form>

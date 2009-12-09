@@ -1,0 +1,73 @@
+<form action="" method="post">
+	<table>
+		<tbody>
+			<tr class="even">
+				<td>
+					<dl>
+						<dt>{L_[Name]}</dt>
+						<dd>{L_[The name of the item that will be displayed.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="text" name="menu[name]"  value="{MENU.NAME}">
+				</td>
+			</tr>
+			<tr class="odd">
+				<td>
+					<dl>
+						<dt>{L_[Parent heading]}</dt>
+						<dd>{L_[Select the parent heading this item should go under (if any).]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<select name="menu[parent]">
+						<option value="0">No Parent</option>
+						<?php
+							foreach( $headings as $heading ) {
+								if ( $heading['id'] != $menu['id'] ) {
+									printf( '<option value="%d" %s>%s</option>',
+											$heading['id'],
+											($heading['id'] == $menu['parent'] ? 'selected="selected"' : ''),
+											str_repeat( '--', $heading['depth'] ).' '.$heading['name']
+										  );
+								}
+							}
+						?>
+					</select>
+				</td>
+			</tr>
+			<tr class="even">
+				<td>
+					<dl>
+						<dt>{L_[URL]}</dt>
+						<dd>{L_[Enter the URL the item should link to. Enter [FRONT_PAGE] or / to link to the front page]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="text" name="menu[url]"  value="{MENU.URL}">
+				</td>
+			</tr>
+			<tr class="odd">
+				<td>
+					<dl>
+						<dt>{L_[Custom 'title' attribute text value to use.]}</dt>
+						<dd>{L_[Specify a value to use for the HTML 'title' attribute. If left blank the item name will be used.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="text" name="menu[attr_title]" value="{MENU.ATTR_TITLE}">
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	{AMC.TABLE}
+	{ACL_FORM}
+
+	<div class="actions">
+		<input type="hidden" name="menu[id]" value="{MENU.ID}">
+		<input type="hidden" name="menu[cat_id]" value="{MENU.CAT_ID}">
+		<input type="submit" value="<?php echo $op == 'add' ? t('Add Menu Item') : t('Edit Menu Item'); ?>">
+	</div>
+
+</form>

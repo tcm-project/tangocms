@@ -1,0 +1,35 @@
+<form action="<?php echo $this->_router->makeUrl( 'comments', 'edit' ); ?>" method="post">
+	<?php if ( $edit_inline ) { ?>
+		<p>
+			<label for="comments-website">{L_[Website]}</label>
+			<input type="text" id="comments-website" name="comments[website]" value="{COMMENTS.WEBSITE}">
+		</p>
+		<label for="comments-body">{L_[Message]}</label>
+	<?php } else { ?>
+		<table>
+			<tbody>
+				<tr class="even">
+					<td>
+						<dl>
+							<dt>{L_[Website]}</dt>
+							<dd>{L_[The URL that the username will be linked to. If blank it will link to the users profile.]}</dd>
+						</dl>
+					</td>
+					<td class="confcol">
+						<input type="text" id="comments-website" name="comments[website]" value="{COMMENTS.WEBSITE}">
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<h3>{L_[Message]}</h3>
+	<?php } ?>
+	<textarea id="comments-body" name="comments[body]">{COMMENTS.BODY}</textarea>
+
+	<div class="actions">
+		<input type="hidden" name="comments[id]" value="{COMMENTS.ID}">
+		<?php if ( $edit_inline ) { ?>
+			<input type="hidden" name="comments_inline" value="1">
+		<?php } ?>
+		<input type="submit" value="{L_[Submit]}">
+	</div>
+</form>

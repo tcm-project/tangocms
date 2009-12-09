@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<details>
+	<detail>
+		<name>article</name>
+		<title>Article</title>
+		<description>Create articles (or blog entries) with multiple parts.</description>
+		<author>Alex Cartwright</author>
+		<category>content</category>
+	</detail>
+</details>

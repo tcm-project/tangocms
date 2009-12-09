@@ -1,0 +1,47 @@
+<table>
+	<thead>
+		<tr>
+			<th>{L_[Name]}</th>
+			<th>{L_[Version/Info]}</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr class="subheading">
+			<td colspan="2">{L_[General Environment]}</td>
+		</tr>
+		<tr class="even">
+			<td>TangoCMS</td>
+			<td>{TCM_VERSION} (<?php echo zula_version_type($tcm_version); ?>)</td>
+		</tr>
+		<tr class="odd">
+			<td>Zula Framework</td>
+			<td>{ZULA_VERSION} (<?php echo zula_version_type($zula_version); ?>)</td>
+		</tr>
+		<tr class="even">
+			<td>{L_[Web Server]}</td>
+			<td>{WEBSERVER}</td>
+		</tr>
+		<tr class="odd">
+			<td>PHP</td>
+			<td>{PHP_VERSION}</td>
+		</tr>
+
+		<tr class="subheading">
+			<td colspan="2">{L_[PHP Specific]}</td>
+		</tr>
+		<?php
+			$i = 0;
+			foreach( $php as $key=>$val ) {
+				if ( !trim($val) ) {
+					$val = t('Off');
+				} else if ( $val == 1 ) {
+					$val = t('On');
+				}
+		 ?>
+				<tr class="<?php echo zula_odd_even($i); ?>">
+					<td><?php echo $key; ?></td>
+					<td><?php echo $val; ?></td>
+				</tr>
+		<?php $i++; } ?>
+	</tbody>
+</table>

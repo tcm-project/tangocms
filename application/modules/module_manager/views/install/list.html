@@ -1,0 +1,26 @@
+<table>
+	<thead>
+		<tr>
+            <th>{L_[Module]}</th>
+            <th>{L_[Author]}</th>
+            <th>{L_[Description]}</th>
+            <th>{L_[Manage]}</th>
+        </tr>
+	</thead>
+	<tbody>
+        <?php if ( empty( $modules ) ) { ?>
+        	<tr class="even">
+        		<td colspan="4">{L_[There are currently no new modules to be installed.]}</td>
+        	</tr>
+        <?php } else { $i = 0; foreach( $modules as $modname ) { $module = new Module( $modname ); ?>
+            <tr class="<?php echo zula_odd_even( $i ); ?>">
+                    <td><?php echo $module->title.' ('.$module->name.')' ?></td>
+                    <td><?php echo $module->author; ?></td>
+                    <td><?php echo $module->description; ?></td>
+                    <td>
+						<a href="<?php echo $this->_router->makeUrl( 'module_manager', 'install', 'module', null, array('name' => $module->name) ); ?>">{L_[Install Module]}</a>
+                    </td>
+            </tr>
+        <?php $i++; } } ?>
+	</tbody>
+</table>

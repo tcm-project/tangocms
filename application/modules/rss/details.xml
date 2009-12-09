@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<details>
+	<detail>
+		<name>rss</name>
+		<title>RSS Feeds</title>
+		<description>Manage RSS feeds.</description>
+		<author>Robert Clipsham</author>
+		<category>Plugins</category>
+	</detail>
+</details>

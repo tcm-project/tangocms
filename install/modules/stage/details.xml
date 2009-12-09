@@ -1,0 +1,10 @@
+<?xml version="1.0" ?>
+<details>
+	<detail>
+		<name>stage</name>
+		<title>Stage</title>
+		<description>Install controller for Zula Framework</description>
+		<author>Alex Cartwright</author>
+		<category>system</category>
+	</detail>
+</details>

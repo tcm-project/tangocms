@@ -1,0 +1,82 @@
+<form action="<?php echo $this->_router->makeUrl( 'comments', 'config' ); ?>" method="get">
+	<p>
+		<label for="comments-type" class="horizontal">{L_[Type]}:</label>
+		<select id="comments-type" name="type">
+			<?php
+				foreach( array('all', 'accepted', 'moderation') as $key ) {
+					printf( '<option value="%1$s" %2$s>%3$s</option>',
+							$key,
+							($key == $type ? 'selected="selected"' : ''),
+							ucfirst($key)
+						  );
+				}
+			?>
+		</select>
+		<input type="submit" value="{L_[Update]}">
+	</p>
+</form>
+
+<form action="<?php echo $this->_router->makeUrl( 'comments', 'config' ); ?>" method="post">
+	<table class="contentdata">
+		<thead>
+			<tr>
+				<th class="checkcol">
+				<th>{L_[Author]}</th>
+				<?php if ( $type == 'all' ) { ?>
+					<th>{L_[Status]}</th>
+				<?php } ?>
+				<th>{L_[Comment Preview]}</th>
+				<th>{L_[Manage]}</th>
+			</tr>
+		</thead>
+		<tbody>
+			<?php if ( !$count ) { ?>
+				<tr class="even">
+					<td colspan="<?php echo $type == 'all' ? 5 : 4; ?>">{L_[There are currently no comments.]}</td>
+				</tr>
+			<?php } else { $i = 0; foreach( $comments as $comment ) { ?>
+				<tr class="<?php echo zula_odd_even($i); ?>">
+					<td>
+						<input type="checkbox" name="comments[ids][]" value="<?php echo $comment['id']; ?>">
+					</td>
+					<td>
+						<?php
+							if ( $comment['user_id'] != UGManager::_GUEST_ID ) {
+								$comment['website'] = null;
+							}
+							echo $this->_helper( 'user' )->link( $comment['user_id'], $comment['name'], $comment['website'] );
+						?>
+					</td>
+					<?php if ( $type == 'all' ) { ?>
+						<td>
+							<?php echo $comment['status'] == 'moderation' ? t('Moderation') : t('Accepted'); ?>
+						</td>
+					<?php } ?>
+					<td>
+						<?php
+							preg_match( '#<p>(.*?)</p>#si', $comment['body'], $match );
+							echo zula_snippet( strip_tags($match[1]), 150, true );
+						?>
+					</td>
+					<td class="managecol">
+						<?php if ( $comment['status'] != 'moderation' ) { ?>
+							<a href="<?php echo $this->_router->makeUrl( $comment['url'] )->fragment( 'comment-'.$comment['id'] ); ?>">View Comment</a> |
+						<?php } ?>
+						<a href="<?php echo $this->_router->makeUrl( 'comments', 'edit', $comment['id'] ); ?>">Edit</a>
+					</td>
+				</tr>
+			<?php ++$i; } } ?>
+		</tbody>
+	</table>
+
+	<?php if ( count( $comments ) ) { ?>
+		{PAGINATION}
+		<div class="actions">
+			<?php if ( $type != 'accepted' ) { ?>
+				<input type="submit" name="comments[approve]" value="{L_[Approve Selected]}">
+			<?php } ?>
+			<input type="submit" value="{L_[Delete Selected]}">
+		</div>
+		{CSRF}
+	<?php } ?>
+</form>

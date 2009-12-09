@@ -1,0 +1,46 @@
+<div class="jsSearchBox">
+	<p><label class="horizontal" for="users-username">{L_[Search users:]}</label> <input type="text" id="users-username"></p>
+</div>
+<form action="<?php echo $this->_router->makeUrl( 'users', 'config', 'delete' ); ?>" method="post">
+	<table class="contentdata">
+		<thead>
+			<tr>
+				<th class="checkcol"></th>
+				<th>{L_[Username]}</th>
+				<th>{L_[Joined]}</th>
+				<th>{L_[Group]}</th>
+				<th>{L_[Email]}</th>
+				<th>{L_[Account Status]}</th>
+				<th>{L_[Manage]}</th>
+			</tr>
+		</thead>
+		<tbody>
+			<?php
+				$i = 0;
+				foreach( $users as $user ) {
+					if ( $user['id'] != UGManager::_GUEST_ID ) {
+			?>
+				<tr class="<?php echo zula_odd_even( $i ); ?>">
+					<td class="checkcol">
+						<?php
+							$format = '<input type="checkbox" name="user_ids[]" value="%d" %s>';
+							printf( $format, $user['id'], ($user['id'] == UGManager::_ROOT_ID ? 'disabled="disabled"' : '') );
+						?>
+					</td>
+					<td><?php echo $this->_helper('user')->link( $user['id'] ); ?></td>
+					<td><?php echo $this->_date->formatStamp( $user['joined'] ); ?></td>
+					<td><?php echo $this->_ugmanager->gidName( $user['group'] ); ?></td>
+					<td><?php echo $user['email']; ?></td>
+					<td><?php echo empty($user['activate_code']) ? t('Activated') : t('Awaiting Validation'); ?></td>
+					<td class="managecol">
+						<a href="<?php echo $this->_router->makeUrl( 'users', 'config', 'edit', null, array( 'id' => $user['id'] ) ); ?>" title="{L_[Edit User]}">{L_[Edit]}</a>
+					</td>
+				</tr>
+			<?php $i++; } } ?>
+		</tbody>
+	</table>
+
+	{PAGINATION}
+	<div class="actions"><input type="submit" value="{L_[Delete Selected]}"></div>
+	{CSRF}
+</form>

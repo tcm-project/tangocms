@@ -1,0 +1,29 @@
+<ul>
+	<?php
+		foreach( $options as $option ) {
+			printf( '<li %1$s>%2$s</li>'."\n",
+					($voted_on == $option['id'] ? 'class="poll-voted-on"' : ''),
+					$option['title'].' - '.$option['percent'].'% ('.$option['votes'].')'
+				  );
+		}
+	?>
+</ul>
+
+<?php
+	if ( $sector == 'SC' ) {
+		if ( $poll['duration'] > 0 ) {
+			$endDate = $this->_date->formatStamp( $poll['start_date'].' +'.$poll['duration'].' weeks' );
+		} else {
+			$endDate = t('Never');
+		}
+	?>
+	<h3>{L_[Statistics]}</h3>
+	<ul>
+		<li>{L_[Total number of votes:]} {TOTAL_VOTES}</li>
+		<li>{L_[Start date:]} <?php echo $this->_date->formatStamp( $poll['start_date'] ); ?></li>
+		<li>{L_[End date:]} <?php echo $endDate; ?></li>
+	</ul>
+
+<?php } else { ?>
+	<p><a href="<?php echo $this->_router->makeUrl( 'poll', 'view', $poll['id'] ); ?>">{L_[View Detailed Results]}</a></p>
+<?php } ?>

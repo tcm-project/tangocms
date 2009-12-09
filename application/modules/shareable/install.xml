@@ -1,0 +1,12 @@
+<?xml version="1.0" ?>
+<install>
+	<dependencies>
+		<zula>
+			<version operator=">=">0.7.6</version>
+		</zula>
+	</dependencies>
+	<aclResources>
+		<resource roleHint="guest">shareable_global</resource>
+		<resource roleHint="group_admin">shareable_manage</resource>
+	</aclResources>
+</install>

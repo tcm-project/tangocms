@@ -1,0 +1,34 @@
+<table>
+	<tbody>
+		<tr class="even">
+			<td>
+				<dl>
+					<dt>{L_[Category]}</dt>
+					<dd>{L_[Select the category you want to display.]}</dd>
+				</dl>
+			</td>
+			<td class="confcol">
+				<select name="content_layout[section]">
+					<?php
+						try {
+							$curCat = $this->_input->post( 'sec' );
+						} catch ( Input_KeyNoExist $e ) {
+							$curCat = null;
+						}
+						foreach( $categories as $category ) {
+							printf( '<option value="%1$s" %2$s>%3$s</option>',
+									$category['clean_title'],
+									($curCat == $category['clean_title'] ? 'selected="selected"' : ''),
+									$category['title']
+								  );
+						}
+					?>
+				</select>
+			</td>
+		</tr>
+	<tbody>
+</table>
+
+<div>
+	<input type="hidden" name="content_layout[cntrlr]" value="index">
+</div>

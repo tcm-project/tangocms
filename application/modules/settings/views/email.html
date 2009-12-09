@@ -1,0 +1,158 @@
+<form action="<?php echo $this->_router->makeUrl( 'settings', 'update', 'email' ); ?>" method="post">
+	<table>
+		<thead>
+			<tr>
+				<th colspan="2">{L_[Email Addresses]}</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr class="even">
+				<td>
+					<dl>
+						<dt>{L_[Outgoing]}</dt>
+						<dd>{L_[The email address all out-going email will appear from.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="text" name="setting[mail/outgoing]" value="{CONFIG.OUTGOING}">
+				</td>
+			</tr>
+			<tr class="odd">
+				<td>
+					<dl>
+						<dt>{L_[Incoming]}</dt>
+						<dd>{L_[The email address all incoming mail should come to.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="text" name="setting[mail/incoming]" value="{CONFIG.INCOMING}">
+				</td>
+			</tr>
+			<tr class="even">
+				<td>
+					<dl>
+						<dt>{L_[Prefix email subject with site title?]}</dt>
+						<dd>{L_[Should the subject of every email sent be prefixed with the site title?]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="radio" id="prefix_yes" name="setting[mail/subject_prefix]" value="1" <?php echo $config['prefix'] ? 'checked="checked"' : ''; ?>>
+					<label class="horizontal" for="prefix_yes">{L_[Yes]}</label>
+					<br>
+					<input type="radio" id="prefix_no" name="setting[mail/subject_prefix]" value="0" <?php echo !$config['prefix'] ? 'checked="checked"' : ''; ?>>
+					<label class="horizontal" for="prefix_no">{L_[No]}</label>
+				</td>
+			</tr>
+			<tr class="odd">
+				<td>
+					<dl>
+						<dt>{L_[Email signature]}</dt>
+						<dd>{L_[Signature to be appended to all outgoing emails.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<textarea name="setting[mail/signature]">{CONFIG.SIGNATURE}</textarea>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<?php if ( $this->_acl->check( 'settings_access_smtp' ) ) { ?>
+		<table>
+			<thead>
+				<tr>
+					<th colspan="2">{L_[Method & SMTP]}</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr class="even">
+					<td>
+						<dl>
+							<dt>{L_[Use SMTP?]}</dt>
+							<dd>{L_[Should mail be delivered via SMTP?]}</dd>
+						</dl>
+					</td>
+					<td class="confcol">
+						<input type="radio" id="smtp_yes" name="setting[mail/type]" value="smtp" <?php echo $config['type'] == 'smtp' ? 'checked="checked"' : ''; ?>>
+						<label class="horizontal" for="smtp_yes">{L_[Yes]}</label>
+						<br>
+						<input type="radio" id="smtp_no" name="setting[mail/type]" value="mail" <?php echo $config['type'] == 'mail' ? 'checked="checked"' : ''; ?>>
+						<label class="horizontal" for="smtp_no">{L_[No]}</label>
+					</td>
+				</tr>
+				<tr class="odd">
+					<td>
+						<dl>
+							<dt>{L_[Host]}</dt>
+							<dd>{L_[Default is 'localhost'.]}</dd>
+						</dl>
+					</td>
+					<td class="confcol">
+						<input type="text" name="setting[mail/smtp_host]" value="{CONFIG.SMTP_HOST}">
+					</td>
+				</tr>
+				<tr class="even">
+					<td>
+						<dl>
+							<dt>{L_[Port]}</dt>
+							<dd>{L_[Default is '25'.]}</dd>
+						</dl>
+					</td>
+					<td class="confcol">
+						<input type="text" name="setting[mail/smtp_port]" value="{CONFIG.SMTP_PORT}">
+					</td>
+				</tr>
+				<tr class="odd">
+					<td>
+						<dl>
+							<dt>{L_[Username]}</dt>
+							<dd>{L_[Username to use when connecting to SMTP server.]}</dd>
+						</dl>
+					</td>
+					<td class="confcol">
+						<input type="text" name="setting[mail/smtp_username]" value="{CONFIG.SMTP_USERNAME}">
+					</td>
+				</tr>
+				<tr class="even">
+					<td>
+						<dl>
+							<dt>{L_[Password]}</dt>
+							<dd>{L_[Password that will be used to authenticate the above user.]}</dd>
+						</dl>
+					</td>
+					<td class="confcol">
+						<input type="password" name="setting[mail/smtp_password]" value="{CONFIG.SMTP_PASSWORD}">
+					</td>
+				</tr>
+				<tr class="odd">
+					<td>
+						<dl>
+							<dt>{L_[Encryption]}</dt>
+							<dd>{L_[Select the encryption method to use when connecting.]}</dd>
+						</dl>
+					</td>
+					<td class="confcol">
+						<select name="setting[mail/smtp_encryption]">
+						<?php
+							$format = '<option value="%s" %s>%s</option>';
+							$opts = array(
+										t('None')	=> false,
+										'SSL'		=> 'ssl',
+										'TLS'		=> 'tls',
+										);
+							foreach( $opts as $key=>$val ) {
+								$selected = $val == $config['smtp_encryption'] ? 'selected="selected"' : '';
+								printf( $format, $val, $selected, $key );
+							}
+						?>
+					</select>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	<?php } ?>
+
+	<div class="actions"><input type="submit" value="{L_[Update]}"></div>
+	{CSRF}
+
+</form>

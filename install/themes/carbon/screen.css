@@ -1,0 +1,208 @@
+/* $Id: screen.css 2620 2009-09-12 14:21:00Z alexc $ */
+
+/**
+ * TangoCMS "carbon" theme
+ *
+ * @copyright Copyright (C) 2009 Alex Cartwright
+ * @license X11/MIT (see COPYING file)
+ * @package TangoCMS_Themes
+*/
+
+@import url(base.css);
+@import url(module.css);
+
+body {
+	color: #1b2002;
+	font-family: Georgia,"Times New Roman",serif;
+	margin: 0;
+	padding: 0;
+}
+
+/** Sticky Footer */
+html, body {
+	height: 100%;
+}
+
+#stickyWrap {
+	background: #fff url(images/background.png) repeat-x bottom;
+	min-height: 100%;
+	margin: 0 auto -35px;
+	min-width: 900px;
+}
+
+#stickyPush {
+	height: 35px; /* .push must be the same height as .footer */
+}
+/** End Sticky Footer */
+
+#header-wrap {
+	background: #393a38 url(images/header-background.png) repeat-x;
+	border-bottom: 3px solid #b5b5b5;
+	color: #f0f0f0;
+	font-size: 1.3em;
+	min-width: 900px;
+	overflow: hidden;
+	padding: 15px 0 0;
+}
+
+#header {
+	margin: 0 auto;
+	overflow: hidden;
+	width: 900px;
+}
+
+#header h2 {
+	float: left;
+}
+
+#header h2.logo {
+	background-image: url(images/logo-background.png);
+	background-repeat: no-repeat;
+	color: #f0f0f0;
+	font-size: 1.7em;
+	min-width: 164px;
+	min-height: 38px;
+	padding-left: 10px;
+	padding-top: 15px;
+}
+
+#header h2.logo a {
+	color: #f0f0f0;
+}
+
+#header h2.logo a:hover {
+	border: none;
+	padding-top: 1px;
+}
+
+#header h2.slogan {
+	color: #BFBEBE;
+	float: right;
+	font-size: 1em;
+	font-weight: normal;
+	font-style: italic;
+	margin: 50px 0 4px;
+}
+
+#container {
+	font-family: "Lucida Grande","Lucida Sans Unicode",Arial,Verdana,sans-serif;
+	font-size: 1.3em;
+	margin: 20px auto 0;
+	overflow: hidden;
+	width: 900px;
+}
+
+#wrap {
+	background-color: #f6f6f6;
+	float: left;
+	padding: 5px;
+}
+
+#content {
+	background-color: #fff;
+	border: 1px solid #d3d6d0;
+	padding: 15px;
+	width: 620px;
+}
+
+#content > h1 {
+	color: #393a38;
+	font-family: Georgia,"Times New Roman",serif;
+	font-size: 1.3em;
+	text-transform: uppercase;
+	letter-spacing: 3px;
+}
+
+#content > h1:first-letter {
+	color: #a4260e;
+	font-size: 1.6em;
+}
+
+#wrap, #content {
+	border-radius: 8px;
+	-khtml-border-radius: 8px;
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+}
+
+#content.fullwidth {
+	width: 857px;
+}
+
+#sidebar {
+	color: #7a7875;
+	float: right;
+	margin-top: 5px;
+	width: 220px;
+}
+
+#footer {
+	background-color: #393a38;
+	display: block;
+	color: #bfbebe;
+	clear: both;
+	font-family: "Lucida Grande","Lucida Sans Unicode",Arial,Verdana,sans-serif;
+	font-size: 1.1em;
+	height: 20px;
+	margin: 5px auto 0;
+	min-width: 900px;
+	padding: 8px 0 2px;
+	text-align: center;
+}
+
+#footer a {
+	color: #d1d1d1;
+	border-bottom: 1px dashed #d1d1d1;
+	padding-bottom: 0;
+}
+
+/** Sidebar menu */
+#sidebar ul, #sidebar ol {
+	list-style-type: none;
+	margin: 5px 0 10px 20px;
+	padding: 0;
+}
+
+#sidebar ol {
+	list-style-type: decimal;
+}
+
+#sidebar li {
+	border-bottom: 1px solid #d3d6d0;
+	font-weight: bold;
+	margin: 7px 0;
+	padding: 4px 0;
+}
+
+#sidebar ol li {
+	font-weight: normal;
+}
+
+#sidebar li a {
+	padding: 3px;
+}
+
+/**
+ * Module Wrap
+ */
+.module-wrap {
+	background-color: #f6f6f6;
+	border: 1px solid #d3d6d0;
+	border-radius: 8px;
+	-khtml-border-radius: 8px;
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+	margin-bottom: 15px;
+	padding: 10px;
+}
+
+.module-wrap h2 {
+	color: #A4260E;
+	border-bottom: 1px solid #d3d6d0;
+	font-family: Georgia,"Times New Roman",serif;
+	font-size: 1.1em;
+	font-weight: bold;
+	letter-spacing: -0.02em;
+	padding-bottom: 2px;
+	margin: 0 0 0.8em;
+}

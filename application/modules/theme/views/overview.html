@@ -1,0 +1,60 @@
+<form action="<?php echo $this->_router->makeUrl( 'theme', 'index', 'delete' ); ?>" method="post">
+	<table class="contentdata">
+		<thead>
+			<tr>
+				<th class="checkcol"></th>
+				<th>{L_[Title]}</th>
+				<th>{L_[Author]}</th>
+				<th>{L_[Manage]}</th>
+			</tr>
+		</thead>
+		<tbody>
+			<?php $i=0; foreach( $themes as $theme ) { $themeObj = new Theme( $theme ); ?>
+				<tr class="<?php echo zula_odd_even( $i ); ?>">
+					<td class="checkcol">
+						<input type="checkbox" name="themes[]" value="<?php echo $theme; ?>">
+					</td>
+					<td>
+						<dl>
+							<dt><?php echo $themeObj->getDetail( 'title' ); ?></dt>
+							<dd><?php echo $themeObj->getDetail( 'description' ); ?></dd>
+						</dl>
+					<td><?php echo $themeObj->getDetail( 'author' );  ?></td>
+					<td class="managecol">
+						<a href="<?php echo $this->_router->makeUrl( 'theme', 'css', $theme ); ?>" title="{L_[Edit CSS]}">{L_[Edit CSS]}</a>
+					</td>
+				</tr>
+			<?php $i++; } ?>
+		</tbody>
+	</table>
+	<div class="actions">
+		<input type="submit" value="{L_[Delete Selected]}">
+	</div>
+	{CSRF}
+</form>
+
+<h3>{L_[Change Theme]}</h3>
+
+<form action="<?php echo $this->_router->makeUrl( 'theme', 'index', 'update' ); ?>" method="post">
+	<dl>
+		<?php foreach( $site_types as $val ) { ?>
+			<dt><?php echo $val['name']; ?></dt>
+			<dd>
+				<select id="theme-<?php echo $val['site']; ?>" name="theme[<?php echo $val['site']; ?>]">
+					<?php
+						$format = '<option value="%1$s" %2$s>%3$s</option>';
+						foreach( $themes as $theme ) {
+							$themeObj = new Theme( $theme );
+							$selected = $theme == $val['theme'] ? 'selected="selected"' : '';
+							printf( $format, $theme, $selected, $themeObj->getDetail( 'title' ) );
+						}
+					?>
+				</select>
+			</dd>
+		<?php } ?>
+	</dl>
+	<div class="actions">
+		<input type="submit" value="{L_[Update]}">
+	</div>
+	{CSRF}
+</form>

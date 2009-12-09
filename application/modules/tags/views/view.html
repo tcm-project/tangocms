@@ -1,0 +1,10 @@
+<div class="tag-view">
+	<p><?php printf( t('The following links show content that have been tagged with "%1$s"'), $tag ); ?></p>
+	<ul>
+	<?php
+		foreach( $urls as $url ) {
+			printf( '<li><a href="%1$s">%1$s</a></li>', $this->_router->getBaseUrl() . $url );
+		}
+	?>
+	</ul>
+</div>

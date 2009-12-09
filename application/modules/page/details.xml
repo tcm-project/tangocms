@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<details>
+	<detail>
+		<name>page</name>
+		<title>Page</title>
+		<description>Manage static pages.</description>
+		<author>Alex Cartwright</author>
+		<category>content</category>
+	</detail>
+</details>

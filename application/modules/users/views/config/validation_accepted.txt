@@ -1,0 +1,10 @@
+<?php printf( t('Hello, %1$s!'), $username ); ?>
+
+
+{L_[You have recently registered for an account with us and your account has now been activated and accepted! With your new account you can now login by going to the following URL:]}
+
+<?php echo $this->_router->makeFullUrl( 'session', 'index', 'index', 'main' )."\r\n"; ?>
+
+{L_[If you ever forget your password, or need to reset it for any reason you can do so by going to the following URL:]}
+
+<?php echo $this->_router->makeFullUrl( 'session', 'reset', '', 'main' );; ?>

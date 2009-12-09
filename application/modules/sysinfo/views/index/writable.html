@@ -1,0 +1,41 @@
+<table>
+	<thead>
+		<tr>
+			<th>{L_[Item]}</th>
+			<th>{L_[Result]}</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr class="subheading">
+			<td colspan="2">{L_[Writable Files]}</td>
+		</tr>
+		<?php $i=0; foreach( $files as $file ) { ?>
+		<tr class="<?php echo zula_odd_even( $i ); ?>">
+			<td><?php echo $file['path']; ?></td>
+			<td>
+				<?php if ( $file['result'] ) { ?>
+					<span style="color: green;">{L_[Writable]}</span>
+				<?php } else { ?>
+					<strong style="color: red;">{L_[Not Writable]}</strong>
+				<?php } ?>
+			</td>
+		</tr>
+		<?php $i++; } ?>
+
+		<tr class="subheading">
+			<td colspan="2">{L_[Writable Directories]}</td>
+		</tr>
+		<?php $i=0; foreach( $dirs as $dir ) { ?>
+		<tr class="<?php echo zula_odd_even( $i ); ?>">
+			<td><?php echo $dir['path']; ?></td>
+			<td>
+				<?php if ( $dir['result'] ) { ?>
+					<span style="color: green;">{L_[Writable]}</span>
+				<?php } else { ?>
+					<strong style="color: red;">{L_[Not Writable]}</strong>
+				<?php } ?>
+			</td>
+		</tr>
+		<?php $i++; } ?>
+	</tbody>
+</table>

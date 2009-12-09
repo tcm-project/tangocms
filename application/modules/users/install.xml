@@ -1,0 +1,15 @@
+<?xml version="1.0" ?>
+<install>
+	<dependencies>
+		<zula>
+			<version operator=">=">0.7.6</version>
+		</zula>
+	</dependencies>
+	<aclResources>
+		<resource roleHint="guest">users_global</resource>
+		<resource roleHint="group_admin">users_delete</resource>
+		<resource roleHint="group_admin">users_add</resource>
+		<resource roleHint="group_admin">users_edit</resource>
+		<resource roleHint="group_admin">users_manage_validations</resource>
+	</aclResources>
+</install>

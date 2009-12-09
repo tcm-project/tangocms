@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<install>
+	<dependencies>
+		<zula>
+			<version operator=">=">0.7.6</version>
+		</zula>
+	</dependencies>
+	<aclResources>
+		<resource roleHint="guest">aliases_global</resource>
+		<resource roleHint="group_admin">aliases_add</resource>
+		<resource roleHint="group_admin">aliases_edit</resource>
+		<resource roleHint="group_admin">aliases_delete</resource>
+	</aclResources>
+</install>

@@ -1,0 +1,102 @@
+<form action="{ACTION}" method="post">
+	<table>
+		<tbody>
+			<tr class="even">
+				<td>
+					<dl>
+						<dt>{L_[Name]}</dt>
+						<dd>{L_[The name of the contact form that will get displayed.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="text" name="contact[name]" value="{CONTACT.NAME}">
+				</td>
+			</tr>
+
+			<tr class="odd">
+				<td>
+					<dl>
+						<dt>{L_[Email Address]}</dt>
+						<dd>{L_[Enter the email address that this form will get emailed to.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="text" name="contact[email]" value="{CONTACT.EMAIL}">
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	{AMC.TABLE}
+	{ACL_FORM}
+
+	<div class="actions">
+		<input type="hidden" name="id" value="{ID}">
+		<input type="submit" value="<?php echo $op == 'add' ? t('Add Contact Form') : t('Edit Contact Form'); ?>">
+	</div>
+</form>
+
+<?php if ( !is_null( $fields ) ) { ?>
+	<h3>{L_[Form Fields]}</h3>
+	<ul>
+		<li>{L_[Drag and Drop the table rows to adjust the order of the fields.]}</li>
+	</ul>
+
+	<form action="<?php echo $this->_router->makeUrl( 'contact', 'config', 'bridge', null, array('fid' => $id) ); ?>" method="post">
+		<table id="contact-form-fields" class="contentdata">
+			<thead>
+				<tr class="nodrag nodrop">
+					<th class="checkcol"></th>
+					<th class="order">{L_[Order]}</th>
+					<th>{L_[Name]}</th>
+					<th>{L_[Type]}</th>
+					<th>{L_[Manage]}</th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php if ( empty($fields) ) { ?>
+					<tr class="even">
+						<td colspan="5">{L_[Currently no fields to display.]}</td>
+					</tr>
+				<?php
+					} else {
+						$i = 0;
+						$f_count = count( $fields );
+						foreach( $fields as $field ) {
+							$edit_url = $this->_router->makeUrl( 'contact', 'config', 'editfield', null, array( 'id' => $field['id'] ) );
+				?>
+							<tr class="<?php echo zula_odd_even($i); ?>">
+								<td class="checkcol">
+									<input type="checkbox" name="contact_field_ids[]" value="<?php echo $field['id']; ?>">
+								</td>
+								<td class="order">
+									<select name="contact_order[<?php echo $field['id']; ?>]">
+										<?php
+											$format = '<option value="%1$d" %2$s>%1$d</option>';
+											for( $a=1; $a <= $f_count; $a++ ) {
+												$selected = $a == $field['order'] ? 'selected="selected"' : '';
+												printf( $format, $a, $selected );
+											}
+										?>
+									</select>
+								</td>
+								<td><?php echo $field['name']; ?></td>
+								<td><?php echo $field['type']; echo ($field['required'] == 1) ? ' ('.t('Required').')' : ''; ?></td>
+								<td class="managecol">
+									<a href="<?php echo $edit_url ?>" title="{L_[Edit]}">{L_[Edit]}</a>
+								</td>
+							</tr>
+				<?php $i++; } } ?>
+			</tbody>
+		</table>
+
+		<div class="actions">
+			<a class="general-button" href="<?php echo $this->_router->makeUrl( 'contact', 'config', 'addfield', null, array('id' => $id) ); ?>">{L_[Add New Field]}</a>
+			<?php if ( !empty( $fields ) ) { ?>
+				<input type="submit" name="contact_del_selected" value="{L_[Delete Selected]}">
+			<?php } ?>
+			<input type="submit" name="contact_update_order" value="{L_[Update Order]}">
+		</div>
+
+	</form>
+<?php } ?>

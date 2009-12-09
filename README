@@ -1,0 +1,64 @@
+------------------------
+$Id: README 2842 2009-12-09 15:25:34Z alexc $
+TangoCMS README (General Information)
+------------------------
+
+
+Details
+========================
+
+	* TangoCMS, http://tangocms.org, is an Open Source (GNU/GPL 2.1) PHP Content Management System (CMS).
+	* Version, 2.4.0
+	* Advised to read the User Guide/Manual, http://manual.tangocms.org, prior to installation.
+	* For more support, see http://tangocms.org/community for details on how to get community support on any issue you may have.
+
+
+Requirements, http://manual.tangocms.org/getting-started/requirements
+========================
+
+	* PHP			>= 5.2.0
+	* Webserver		Tested on Apache & Lighttpd (recommended mod_rewrite for SEF, Search Engine Friendly, URLs)
+	* MySQL 		>= 4.1 (recommended 5+)
+
+	* PHP Extensions: ctype, date, dom, filter, hash, pdo, pdo_mysql, pcre, session, simplexml, [gd], [FileInfo]
+
+
+Installation, http://manual.tangocms.org/installation
+========================
+
+	1) To install TangoCMS you will need to upload/move all files and folders to a directory in your web/document root, (eg - public_html).
+		-> Installation to a sub-directory is perfectly fine!
+
+	2) Go to the 'install' directory, eg: http://example.com/install/
+
+	3) Follow the simple steps to installing TangoCMS.
+
+	4) Once installed, remove the installation directory (/install).
+
+	5) To get to the AdminCP (Control Panel) you will need to go to /admin, for example: http://example.org/admin
+		-> If you are using the 'standard' router (no SEF URLs) you will need to go to /index.php?url=admin
+
+
+Troubleshooting, http://manual.tangocms.org/troubleshooting
+========================
+
+	1) I can't get passed the first Checks that TangoCMS makes
+		* If the checks fail at the Extensions then you will have to make sure that you have all needed extensions installed for PHP.
+
+		* When the checks fail for Directories, it means that those directories are not writeable, the correct permissions and ownership for directories should be:
+			owner: The user the script is running as
+			group: The group the script is running as
+			permission/chmod: 0775
+
+			You can do this on any Unix/Linux/BSD operating system with 2 simple commands. Replace 'USER' and 'GROUP' with the correct user and group respectively:
+			chown -R USER:GROUP /path/to/needed/directory
+			chmod -R 0775 /path/to/needed/directory
+
+		* If it fails for files, this again means you don't have the correct permissions setup so that they are writeable, the permissions should be for the files:
+			owner: The user the script is running as
+			group: The group the script is running as
+			permission/chmod: 0664
+
+			You can do this on any Unix/Linux/BSD operating system with 2 simple commands. Replace 'USER' and 'GROUP' with the correct user and group respectively:
+			chown -R USER:GROUP /path/to/needed/directory
+			chmod -R 0664 /path/to/needed/directory

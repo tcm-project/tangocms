@@ -1,0 +1,10 @@
+<?xml version="1.0" ?>
+<details>
+	<detail>
+		<name>progress</name>
+		<title>Progress</title>
+		<description>Simple progress notifier</description>
+		<author>Alex Cartwright</author>
+		<category>system</category>
+	</detail>
+</details>

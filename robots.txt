@@ -1,0 +1,8 @@
+# $Id: robots.txt 2768 2009-11-13 18:12:34Z alexc $
+
+User-agent: *
+Disallow: /application/
+Disallow: /admin/
+Disallow: /assets/
+Disallow: /install/
+Disallow: /tmp/

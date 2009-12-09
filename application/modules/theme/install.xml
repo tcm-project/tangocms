@@ -1,0 +1,15 @@
+<?xml version="1.0" ?>
+<install>
+	<dependencies>
+		<zula>
+			<version operator=">=">0.7.6</version>
+		</zula>
+	</dependencies>
+	<aclResources>
+		<resource roleHint="group_admin">theme_global</resource>
+		<resource roleHint="group_admin">theme_edit_css</resource>
+		<resource roleHint="group_admin">theme_update</resource>
+		<resource roleHint="group_admin">theme_delete</resource>
+		<resource roleHint="group_admin">theme_view_css</resource>
+	</aclResources>
+</install>

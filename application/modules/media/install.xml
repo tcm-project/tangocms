@@ -1,0 +1,30 @@
+<?xml version="1.0" ?>
+<install>
+	<dependencies>
+		<zula>
+			<version operator=">=">0.7.6</version>
+		</zula>
+	</dependencies>
+	<aclResources>
+		<resource roleHint="guest">media_global</resource>
+		<resource roleHint="group_admin">media_add_category</resource>
+		<resource roleHint="group_admin">media_delete_category</resource>
+		<resource roleHint="group_admin">media_edit_category</resource>
+		<resource roleHint="group_admin">media_manage_settings</resource>
+		<resource roleHint="group_admin">media_purge_category</resource>
+		<!-- Default Content Resources -->
+		<resource roleHint="guest">media-cat_view_1</resource>
+		<resource roleHint="group_admin">media-cat_upload_1</resource>
+		<resource roleHint="group_admin">media-cat_moderate_1</resource>
+	</aclResources>
+	<config>
+		<sql>
+			<conf key="media/per_page">6</conf>
+			<conf key="media/use_lightbox">true</conf>
+			<conf key="media/medium_size_x">600</conf>
+			<conf key="media/medium_size_y"></conf>
+			<conf key="media/thumb_size_x">80</conf>
+			<conf key="media/thumb_size_y">80</conf>
+		</sql>
+	</config>
+</install>

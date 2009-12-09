@@ -1,0 +1,59 @@
+<form action="<?php echo $this->_router->makeUrl( 'article', 'config', 'settings' ); ?>" method="post">
+	<table>
+		<thead>
+			<tr>
+				<th colspan="2">{L_[Display]}</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr class="even">
+				<td>
+					<dl>
+						<dt>{L_[Articles per page]}</dt>
+						<dd>{L_[How many articles should be displayed per page.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					{S_PERPAGE}
+				</td>
+			</tr>
+			<tr class="odd">
+				<td>
+					<dl>
+						<dt>{L_[Jump box position]}</dt>
+						<dd>{L_[When an article has more than 1 part, a jump-box is shown to quickly navigate to the different parts. Select the position of where it should appear.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					{S_JUMP_POS}
+				</td>
+			</tr>
+			<tr class="even">
+				<td>
+					<dl>
+						<dt>{L_[Limit Headlines]}</dt>
+						<dd>{L_[Enter how many headlines should be displayed.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					{S_HEADLINE}
+				</td>
+			</tr>
+			<tr class="odd">
+				<td>
+					<dl>
+						<dt>{L_[Show Category Description?]}</dt>
+						<dd>{L_[Toggles whether the article category description should be displayed.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					{S_CAT_DESC}
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<div class="actions">
+		<input type="submit" value="{L_[Update]}">
+	</div>
+	{CSRF}
+</form>

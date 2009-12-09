@@ -1,0 +1,127 @@
+<form action="" method="post">
+	<table>
+		<tbody>
+			<tr class="even">
+				<td>
+					<dl>
+						<dt>{L_[Title]}</dt>
+						<dd>{L_[Title of the poll that will be displayed.]}</dd>
+					</dl>
+				<td class="confcol">
+					<input type="text" name="poll[title]" value="{POLL.TITLE}">
+				</td>
+			</tr>
+			<tr class="odd">
+				<td>
+					<dl>
+						<dt>{L_[Duration]}</dt>
+						<dd>{L_[Select how long the poll should run for. It will automatically close after the time set here.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<select name="poll[duration]">
+						<option value="0">{L_[Forever]}</option>
+						<?php
+							for( $i=1; $i <= 7; $i++ ) {
+								printf( '<option value="%1$d" %2$s>'.nt('1 week', '%1$d weeks', $i).'</option>',
+										$i,
+										($selected = $i == $poll['duration'] ? 'selected="selected"' : '')
+										);
+							}
+						?>
+					</select>
+				</td>
+			</tr>
+			<tr class="even">
+				<td>
+					<dl>
+						<dt>{L_[Poll Status]}</dt>
+						<dd>{L_[Close or open the poll. If set to 'close' then users will no longer be able to vote.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="radio" id="poll-status-active" name="poll[status]" value="active" <?php echo $poll['status'] == 'active' ? 'checked="checked"' : ''; ?>>
+					<label for="poll-status-active" class="horizontal">{L_[Active]}</label>
+					<br>
+					<input type="radio" id="poll-status-closed" name="poll[status]" value="closed" <?php echo $poll['status'] == 'closed' ? 'checked="checked"' : ''; ?>>
+					<label for="poll-status-closed" class="horizontal">{L_[Closed]}</label>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	{AMC.TABLE}
+	{ACL_FORM}
+
+<?php if ( $op == 'add' ) { ?>
+
+	<h3>{L_[Poll Options]}</h3>
+	<p>{L_[Enter the poll options that users can vote on. More options can be added after the poll has been created.]}</p>
+
+	<ol id="poll-option-list">
+		<?php if ( empty( $poll['options'] ) ) { ?>
+			<li>
+				<input type="text"  name="poll[options][]">
+			</li>
+			<li style="margin-top: 8px; ">
+				<input type="text"  name="poll[options][]"> <input type="button" value="{L_[Remove]}">
+			</li>
+		<?php } else { foreach( $poll['options'] as $option ) { ?>
+			<li>
+				<input type="text"  name="poll[options][]" value="<?php echo $option; ?>"> <input type="button" value="{L_[Remove]}">
+			</li>
+		<?php } } ?>
+	</ol>
+
+	<div class="actions">
+		<input type="button" id="poll-add-option" value="{L_[Add Option]}">
+		<input type="submit" value="{L_[Add Poll]}">
+	</div>
+</form>
+
+<?php } else { ?>
+
+	<div class="actions">
+		<input type="submit" value="{L_[Edit Poll]}">
+	</div>
+
+</form>
+
+<form action="<?php echo $this->_router->makeUrl( 'poll', 'config', 'delopt', null, array('id' => $id) ); ?>" method="post">
+	<h3>{L_[Poll Options]}</h3>
+	<table class="contentdata">
+		<thead>
+			<tr>
+				<th class="checkcol"></th>
+				<th>{L_[Title]}</th>
+				<th class="confcol">{L_[Manage]}</th>
+			</tr>
+		</thead>
+		<tbody>
+			<?php if ( empty( $poll['options'] ) ) { ?>
+			<tr class="even">
+				<td colspan="4">{L_[There are no poll options to display.]}</td>
+			</tr>
+			<?php } else { $i = 0; foreach( $poll['options'] as $opt ) { ?>
+				<tr class="<?php echo zula_odd_even($i); ?>">
+					<td class="checkcol">
+						<input type="checkbox" name="option_ids[]" value="<?php echo $opt['id']; ?>">
+					</td>
+					<td><?php echo $opt['title']; ?></td>
+					<td class="confcol">
+						<a href="<?php echo $this->_router->makeUrl( 'poll', 'config', 'editopt', null, array('id'=> $opt['id']) ); ?>">{L_[Edit]}</a>
+					</td>
+				</tr>
+			<?php $i++; } } ?>
+		</tbody>
+	</table>
+
+	<div class="actions">
+		<a class="general-button" href="<?php echo $this->_router->makeUrl( 'poll', 'config', 'addopt', null, array('id' => $id) ); ?>">{L_[Add Option]}</a>
+		<?php if ( !empty( $poll['options'] ) ) { ?>
+			<input type="submit" value="{L_[Delete Selected]}">
+		<?php } ?>
+	</div>
+</form>
+<?php } ?>
+

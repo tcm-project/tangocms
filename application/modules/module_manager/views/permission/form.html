@@ -1,0 +1,8 @@
+<form action="<?php echo $this->_router->makeUrl( 'module_manager', 'permission', 'update' ); ?>" method="post">
+	{ACL_FORM}
+	<div class="actions">
+		<input type="hidden" name="module" value="{MODULE.NAME}">
+		<input type="submit" value="{L_[Update Permissions]}">
+	</div>
+	{CSRF}
+</form>

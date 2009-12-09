@@ -1,0 +1,18 @@
+<div class="shareable">
+	<?php echo empty($sector) ? '<h3>'.t('Share This!').'</h3>' : null; ?>
+
+	<ul class="shareable">
+		<?php
+			$format = '<li>
+							<a href="%1$s" class="shareable-%3$s" title="%2$s"
+							style="background-image: url('.$this->getIcon( 'shareable/sites' ).');">%2$s</a>
+					</li>';
+			$url = $this->_router->getRawCurrentUrl();
+			$title = urlencode( $title );
+			foreach( $sites as $site ) {
+				$submitUrl = str_replace( array('{TITLE}', '{URL}'), array($title, $url), $site['url'] );
+				printf( $format, $submitUrl, $site['name'], $site['icon'] );
+			}
+		?>
+	</ul>
+</div>

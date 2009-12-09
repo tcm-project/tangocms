@@ -1,0 +1,72 @@
+<form action="{ACTION}" method="post">
+	<table>
+		<tbody>
+			<tr class="even">
+				<td>
+					<dl>
+						<dt>{L_[Name]}</dt>
+						<dd>{L_[The name of the field that will be displayed.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="text" name="contact[name]" value="{CONTACT.NAME}">
+				</td>
+			</tr>
+			<tr class="odd">
+				<td>
+					<dl>
+						<dt>{L_[Required?]}</dt>
+						<dd>{L_[Should the user be required to fill out this field?]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="radio" id="required_yes" name="contact[required]" value="1" <?php echo $contact['required'] ? 'checked="checked"' : ''; ?>>
+					<label class="horizontal" for="required_yes">{L_[Yes]}</label>
+					<br>
+					<input type="radio" id="required_no" name="contact[required]" value="0" <?php echo $contact['required'] ? '' : 'checked="checked"'; ?>>
+					<label class="horizontal" for="required_no">{L_[No]}</label>
+				</td>
+			</td>
+			<tr class="even">
+				<td>
+					<dl>
+						<dt>{L_[Type]}</dt>
+						<dd>{L_[Select the type you would like this field to be displayed as.]}<dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<select name="contact[type]">
+					<?php
+						foreach( $types as $name=>$type ) {
+							printf( '<option value="%s" %s>%s</option>',
+									$name,
+									($name == $contact['type'] ? 'selected="selected"' : ''),
+									$type
+								  );
+						}
+					?>
+					</select>
+				</td>
+			</tr>
+			<tr class="odd">
+				<td>
+					<dl>
+						<dt>{L_[Options]}</dt>
+						<dd>{L_[Enter the options to be used for the field. Use this for drop down boxes and other multiple elements. Separate with a semi-colon ';']}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="text" name="contact[options]" value="{CONTACT.OPTIONS}">
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	{AMC.TABLE}
+
+	<div class="actions">
+		<input type="hidden" value="{FORM_ID}" name="form_id">
+		<input type="hidden" value="{ID}" name="contact_field_id">
+		<input type="submit" value="<?php echo $op == 'add' ? t('Add Field') : t('Edit Field'); ?>">
+	</div>
+</form>

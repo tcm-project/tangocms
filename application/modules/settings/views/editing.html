@@ -1,0 +1,52 @@
+<form action="<?php echo $this->_router->makeUrl( 'settings', 'update', 'editing' ); ?>" method="post">
+	<table>
+		<thead>
+			<tr>
+				<th colspan="2">{L_[General]}</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr class="even">
+				<td>
+					<dl>
+						<dt>{L_[Default editor type]}</dt>
+						<dd>{L_[Select the editor that you prefer to use.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<select name="setting[editor/default]">
+						<?php
+							foreach( Editor::availableFormats() as $editor ) {
+								printf( '<option value="%1$s" %2$s>%3$s</option>',
+										$editor,
+										($editor == strtolower($config['default']) ? 'selected="selected"' : ''),
+										ucfirst($editor)
+									   );
+							}
+						?>
+					</select>
+				</td>
+			</tr>
+
+			<tr class="odd">
+				<td>
+					<dl>
+						<dt>{L_[Allow PHP to be parsed?]}</dt>
+						<dd>{L_[Enabling this can be a huge security risk, only do so if you know what you're doing!]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="radio" id="settings-php-yes" name="setting[editor/parse_php]" value="1" <?php echo $config['parse_php'] ? 'checked="checked"' : ''; ?>>
+					<label class="horizontal" for="settings-php-yes">{L_[Yes]}</label>
+					<br>
+					<input type="radio" id="settings-php-no" name="setting[editor/parse_php]" value="0" <?php echo $config['parse_php'] ? '' : 'checked="checked"'; ?>>
+					<label class="horizontal" for="settings-php-no">{L_[No]}</label>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<div class="actions"><input type="submit" value="{L_[Update]}"></div>
+	{CSRF}
+
+</form>

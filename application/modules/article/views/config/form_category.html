@@ -1,0 +1,37 @@
+<form action="{ACTION}" method="post">
+	<table>
+		<tbody>
+			<tr class="even">
+				<td>
+					<dl>
+						<dt>{L_[Category Name]}</dt>
+						<dd>{L_[The name of the article category.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="text" name="article[title]"  value="{ARTICLE.TITLE}">
+				</td>
+			</tr>
+			<tr class="odd">
+				<td>
+					<dl>
+						<dt>{L_[Description]}</dt>
+						<dd>{L_[Enter a short description of the category.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="text" name="article[description]"  value="{ARTICLE.DESCRIPTION}">
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	{AMC.TABLE}
+	{ACL_FORM}
+
+	<div class="actions">
+		<input type="submit" value="<?php echo $op == 'add' ? t('Add Category') : t('Edit Category'); ?>">
+	</div>
+</form>
+
+

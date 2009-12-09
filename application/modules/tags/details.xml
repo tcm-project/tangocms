@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<details>
+	<detail>
+		<name>tags</name>
+		<title>Tags</title>
+		<description>Add tags to content.</description>
+		<author>Robert Clipsham</author>
+		<category>plugins</category>
+	</detail>
+</details>

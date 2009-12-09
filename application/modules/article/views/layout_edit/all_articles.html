@@ -1,0 +1,37 @@
+<table>
+	<tbody>
+		<tr class="even">
+			<td>
+				<dl>
+					<dt>{L_[Display category selector]}</dt>
+					<dd>{L_[Select if the category selector should be displayed.]}</dd>
+				</dl>
+			</td>
+			<td class="confcol">
+				<?php
+					try {
+						if ( $this->_input->post( 'display_cat_selector' ) ) {
+							$yes_checked = 'checked="checked"';
+							$no_checked = '';
+						} else {
+							throw new Exception;
+						}
+					} catch ( Exception $e ) {
+						$yes_checked = '';
+						$no_checked = 'checked="checked"';
+					}
+				?>
+				<input type="radio" id="cat_selector_yes" name="content_layout[config][display_cat_selector]" value="1" <?php echo $yes_checked; ?>>
+				<label class="horizontal" for="cat_selector_yes">{L_[Yes]}</label>
+				<br>
+				<input type="radio" id="cat_selector_no" name="content_layout[config][display_cat_selector]" value="0" <?php echo $no_checked; ?>>
+				<label class="horizontal" for="cat_selector_no">{L_[No]}</label>
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+<div>
+	<input type="hidden" name="content_layout[cntrlr]" value="index">
+	<input type="hidden" name="content_layout[section]" value="index">
+</div>

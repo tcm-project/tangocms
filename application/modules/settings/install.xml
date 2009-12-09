@@ -1,0 +1,13 @@
+<?xml version="1.0" ?>
+<install>
+	<dependencies>
+		<zula>
+			<version operator=">=">0.7.6</version>
+		</zula>
+	</dependencies>
+	<aclResources>
+		<resource roleHint="group_admin">settings_global</resource>
+		<resource roleHint="group_admin">settings_update</resource>
+		<resource>settings_access_smtp</resource>
+	</aclResources>
+</install>

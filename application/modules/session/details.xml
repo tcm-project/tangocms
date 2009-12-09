@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<details>
+	<detail>
+		<name>session</name>
+		<title>Session</title>
+		<description>Allow users to login and register.</description>
+		<author>Alex Cartwright</author>
+		<category>Users &amp; Groups</category>
+	</detail>
+</details>

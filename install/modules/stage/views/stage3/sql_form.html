@@ -1,0 +1,77 @@
+<p>{L_[Enter the details needed to connect to the SQL database you wish to use. Please make sure this database is created first.]}</p>
+
+<form action="<?php echo $this->_router->makeUrl( 'stage', 'three' ); ?>" method="post">
+	<table>
+		<tbody>
+			<tr class="even">
+				<td>
+					<dl>
+						<dt>{L_[SQL Host]}</strong>
+						<dd>{L_[Enter the SQL host to attempt to connect to. Default 'localhost']}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="text" name="host" value="{HOST}">
+				</td>
+			</tr>
+			<tr class="odd">
+				<td>
+					<dl>
+						<dt>{L_[SQL Port]}</strong>
+						<dd>{L_[The port to connect to. Default '3306']}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="text" name="port" value="{PORT}">
+				</td>
+			</tr>
+			<tr class="even">
+				<td>
+					<dl>
+						<dt>{L_[SQL Username]}</strong>
+						<dd>{L_[The username to use when connecting to the SQL database]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="text" name="user" value="{USER}">
+				</td>
+			</tr>
+			<tr class="odd">
+				<td>
+					<dl>
+						<dt>{L_[SQL Password]}</strong>
+						<dd>{L_[Password to be used for the above user]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="password" name="pass">
+				</td>
+			</tr>
+			<tr class="even">
+				<td>
+					<dl>
+						<dt>{L_[SQL Database]}</strong>
+						<dd>{L_[The database that will be selected once connected]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="text" name="database" value="{DATABASE}">
+				</td>
+			</tr>
+			<tr class="odd">
+				<td>
+					<dl>
+						<dt>{L_[Table Prefix]}</strong>
+						<dd>{L_[Prefix to use for tables, if any. Default 'tcm_']}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="text" name="prefix" value="{PREFIX}">
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<div class="actions">
+		<input type="submit" value="{L_[Next]}">
+	</div>
+</form>

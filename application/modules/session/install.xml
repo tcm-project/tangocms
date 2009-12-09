@@ -1,0 +1,26 @@
+<?xml version="1.0" ?>
+<install>
+	<dependencies>
+		<zula>
+			<version operator=">=">0.7.6</version>
+		</zula>
+	</dependencies>
+	<aclResources>
+		<resource roleHint="guest">session_global</resource>
+		<resource roleHint="group_admin">session_manage_config</resource>
+	</aclResources>
+	<config>
+		<sql>
+			<conf key="session/allow_register">true</conf>
+			<conf key="session/duplicate_email">false</conf>
+			<conf key="session/register_group">4</conf>
+			<conf key="session/validation_method">user</conf>
+			<conf key="session/login_by">username</conf>
+			<conf key="session/max_login_attempts">5</conf>
+			<conf key="session/force_https">0</conf>
+			<conf key="session/login_destination">previous</conf>
+			<conf key="session/login_destination_url"></conf>
+			<conf key="session/register_terms"></conf>
+		</sql>
+	</config>
+</install>

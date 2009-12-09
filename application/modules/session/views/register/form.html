@@ -1,0 +1,34 @@
+<form action="{ACTION}" method="post" id="session-register">
+	<p>
+		<label for="session-username">{L_[Username]}</label> <input type="text" name="session[username]" id="session-username" value="{SESSION.USERNAME}">
+	</p>
+	<p>
+		<label for="session-password">{L_[Password]}</label> <input type="password" name="session[password]" id="session-password" value="{SESSION.PASSWORD}">
+	</p>
+	<p>
+		<label for="session-password2">{L_[Confirm password]}</label> <input type="password" name="session[password_confirm]" id="session-password2">
+	</p>
+	<p>
+		<label for="session-email">{L_[Email]}</label> <input type="text" name="session[email]" id="session-email" value="{SESSION.EMAIL}">
+	</p>
+	<p>
+		<label for="session-email2">{L_[Confirm email]}</label> <input type="text" name="session[email_confirm]" id="session-email2">
+	</p>
+
+	<?php if ( $terms ) { ?>
+		<h4>{L_[Terms and Conditions]}</h4>
+		<div>
+			<textarea id="session-terms" readonly="readonly" cols="30" rows="20">{TERMS}</textarea>
+		</div>
+		<p>
+			<input type="checkbox" id="session-terms-agree" name="session[terms]"
+				   value="1" <?php echo $session['terms_agree'] ? 'checked="checked"' : ''; ?>>
+			<label for="session-terms-agree" class="horizontal">{L_[I agree to the terms and conditions.]}</label>
+		</p>
+	<?php } ?>
+
+	{ANTISPAM}
+	<div class="actions">
+		<input type="submit" value="{L_[Register]}">
+	</div>
+</form>

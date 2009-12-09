@@ -1,0 +1,8 @@
+<p>{L_[If you have forgotten your password, you can reset it by entering your username below. An email will be sent to the address that is set in your profile with instructions on how to reset your password.]}</p>
+
+<form action="<?php echo $this->_router->makeUrl( 'session', 'reset' ); ?>" method="post">
+	<p>
+		<label for="session-username">{L_[Username]}</label><input type="text" id="session-username" name="session[username]" value="{SESSION.USERNAME}">
+	</p>
+	<div class="actions"><input type="submit" value="{L_[Send Code]}"></div>
+</form>

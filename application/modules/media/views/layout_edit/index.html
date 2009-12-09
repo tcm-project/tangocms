@@ -1,0 +1,34 @@
+<table>
+	<tobdy>
+		<tr class="even">
+			<td>
+				<dl>
+					<dt>{L_[Number of media items to display per page]}</dt>
+					<dd>{L_[Enter the number of media items you would like to display per page.]}</dd>
+				</dl>
+			</td>
+			<td class="confcol">
+				<input type="text" name="content_layout[config][per_page]" value="{PER_PAGE}">
+			</td>
+		</tr>
+		<tr class="odd">
+			<td>
+				<dl>
+					<dt>{L_[Use a lightbox effect for images?]}</dt>
+					<dd>{L_[If set to 'Yes', a lightbox effect will be used when displaying the large media item.]}</dd>
+				</dl>
+			</td>
+			<td class="confcol">
+				<input type="radio" id="lightbox_yes" name="content_layout[config][use_lightbox]" value="true" <?php echo empty($lightbox) ? '' : 'checked="checked"'; ?>>
+				<label for="lightbox_yes" class="horizontal">{L_[Yes]}</label>
+				<br>
+				<input type="radio" id="lightbox_no" name="content_layout[config][use_lightbox]" value="false" <?php echo empty($lightbox) ? 'checked="checked"' : ''; ?>>
+				<label for="lightbox_no" class="horizontal">{L_[No]}</label>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<p>
+	<input type="hidden" name="content_layout[cntrlr]" value="index">
+	<input type="hidden" name="content_layout[section]" value="index">
+</p>

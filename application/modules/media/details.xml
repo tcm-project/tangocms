@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<details>
+	<detail>
+		<name>media</name>
+		<title>Media</title>
+		<description>Display many types of media including Images, Video and Audio.</description>
+		<author>Alex Cartwright</author>
+		<category>content</category>
+	</detail>
+</details>

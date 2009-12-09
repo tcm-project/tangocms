@@ -1,0 +1,7 @@
+ALTER TABLE {SQL_PREFIX}mod_aliases
+	CHANGE name alias VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL ,
+	CHANGE value url VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+	ADD redirect BOOL NOT NULL DEFAULT '0';
+
+ALTER TABLE {SQL_PREFIX}mod_menu
+	ADD attr_title VARCHAR( 255 ) NOT NULL DEFAULT '' AFTER `order`;

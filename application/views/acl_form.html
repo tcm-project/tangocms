@@ -1,0 +1,51 @@
+<div class="acl">
+	<table>
+		<thead>
+			<tr>
+				<th colspan="<?php echo count($roles)+2; ?>">{L_[Select the groups which will have permission to:]}</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr class="subheading">
+				<td></td>
+				<?php foreach( $roles as $role ) { ?>
+					<td class="aclrole">
+						<a href="#" class="acltoggle" onclick="acl_toggle( 'aclrole_<?php echo $role['name']; ?>' ); return false;">
+							<?php echo $role['short_name']; ?>
+						</a>
+					</td>
+				<?php } ?>
+				<td class="checkcol"></td>
+			</tr>
+			<!-- All of the ACL resources for this form -->
+			<?php foreach( $resources as $key=>$resource ) { ?>
+				<tr class="aclresource <?php echo zula_odd_even( $key ); ?>">
+					<td>
+						<?php
+							if ( substr( $resource['name'], strrpos($resource['name'], '_'), 7 ) == '_global' ) {
+								$title = t('Global Permission', Locale::_DTD);
+							} else {
+								$title = $resource['title'];
+							}
+							printf( '<span title="%s">%s</span>', $resource['name'], $title );
+						?>
+					</td>
+					<?php
+						$format = '<input type="checkbox" class="aclrole_%1$s aclresource_%2$s" name="acl_resources[%2$s][]" value="%1$s" %3$s>';
+						foreach( $resource['roles'] as $role ) {
+							$checked = $role['access'] ? 'checked="checked"' : '' ;
+							echo '<td class="aclrole">';
+							printf( $format, $role['name'], $resource['name'], $checked );
+							echo '</td>';
+						}
+					?>
+					<td class="checkcol">
+						<a href="" class="acltoggle" onclick="acl_toggle( 'aclresource_<?php echo $resource['name']; ?>' ); return false;" title="{L_[Toggle]}">
+							<img src="<?php echo zula_get_icon( 'misc/refresh' ); ?>" height="16" width="16" alt="{L_[Toggle]}">
+						</a>
+					</td>
+				</tr>
+			<?php } ?>
+		</tbody>
+	</table>
+</div>

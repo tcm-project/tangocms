@@ -1,0 +1,93 @@
+<form action="<?php echo $this->_router->makeUrl( 'settings', 'update', 'security' ); ?>" method="post">
+	<table>
+		<thead>
+			<tr>
+				<th colspan="2">{L_[General Security]}</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr class="even">
+				<td>
+					<dl>
+						<dt>{L_[Antispam/Captcha method to use]}</dt>
+						<dd>{L_[Select the type of Antispam/Captcha method you prefer to use, if any.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<select name="setting[antispam/backend]">
+						<?php
+							$opts = array(
+										'disabled'	=> t('Disabled'),
+										'captcha'	=> t('Captcha (traditional)'),
+										'recaptcha'	=> 'reCAPTCHA',
+										);
+							foreach( $opts as $val=>$name ) {
+								printf( '<option value="%1$s" %2$s>%3$s</option>',
+										$val,
+										($config['anti_backend'] == $val ? 'selected="selected"' : ''),
+										$name
+									  );
+							}
+						?>
+					</select>
+				</td>
+			</tr>
+			<tr class="odd">
+				<td>
+					<dl>
+						<dt>{L_[reCAPTCHA Public Key]}</dt>
+						<dd>{L_[Enter the public key for your domain name, found in your reCAPTCHA account details.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="text" name="setting[antispam/recaptcha/public]" value="{CONFIG.RECAP_PUB}">
+				</td>
+			</tr>
+			<tr class="even">
+				<td>
+					<dl>
+						<dt>{L_[reCAPTCHA Private Key]}</dt>
+						<dd>{L_[Enter the private key for your domain name, found in your reCAPTCHA account details.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="text" name="setting[antispam/recaptcha/private]" value="{CONFIG.RECAP_PRI}">
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<table>
+		<thead>
+			<tr>
+				<th colspan="2">{L_[Server]}</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr class="even">
+				<td>
+					<dl>
+						<dt>{L_[Server Protocol]}</dt>
+						<dd>{L_[Set the protocol that the server is using. Defaults to 'HTTP'.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<select name="setting[config/protocol]">
+						<?php
+							foreach( array('HTTP', 'HTTPS') as $protocol ) {
+								printf( '<option value="%1$s" %2$s>%3$s</option>',
+										strtolower($protocol),
+										($config['protocol'] == strtolower($protocol) ? 'selected="selected"' : ''),
+										$protocol
+									  );
+							}
+						?>
+					</select>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<div class="actions"><input type="submit" value="{L_[Update]}"></div>
+	{CSRF}
+
+</form>

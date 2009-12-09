@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+<install>
+	<dependencies>
+		<zula>
+			<version operator=">=">0.7.6</version>
+		</zula>
+	</dependencies>
+	<aclResources>
+		<resource roleHint="guest">comments_global</resource>
+		<resource roleHint="group_admin">comments_manage</resource>
+		<resource roleHint="guest">comments_post</resource>
+	</aclResources>
+	<config>
+		<sql>
+			<conf key="comments/moderate">0</conf>
+		</sql>
+	</config>
+</install>

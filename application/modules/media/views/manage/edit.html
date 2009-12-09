@@ -1,0 +1,30 @@
+<h3>{L_[Details]}</h3>
+
+<form action="" method="post">
+	<table>
+		<tbody>
+			<tr class="even">
+				<td>
+					<dl>
+						<dt>{L_[Title/Name]}</dt>
+						<dd>{L_[Enter the title/name of the media item that will be displayed.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="text" name="media[title]" value="{MEDIA.TITLE}">
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<h3>{L_[Description]}</h3>
+	<p>{L_[Enter the description you would like to be displayed.]}</p>
+
+	<textarea name="media[desc]" rows="30" cols="20">{MEDIA.DESC}</textarea>
+
+	<p>
+		<input type="hidden" name="media[id]" value="{MEDIA.ID}">
+		<input type="submit" value="{L_[Edit Media]}">
+	</p>
+
+</form>

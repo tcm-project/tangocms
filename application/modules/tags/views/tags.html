@@ -1,0 +1,13 @@
+<div class="tag-list">
+	<span>{L_[Tags:]}</span>
+	<?php
+		$count = count( $tags );
+		foreach( $tags as $k=>$tag ) {
+			printf( '<a href="%1$s" class="tag-link-normal" title="%2$s">%2$s</a>%3$s',
+					$this->_router->makeUrl( 'tags', 'view', urlencode( $tag ) ),
+					$tag,
+					($k == $count - 1 ? '' : ", \n")
+				  );
+		}
+	?>
+</div>

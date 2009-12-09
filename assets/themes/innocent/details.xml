@@ -1,0 +1,9 @@
+<?xml version="1.0" ?>
+<themes>
+	<theme>
+		<name>innocent</name>
+		<title>Innocent</title>
+		<author>Alex Cartwright</author>
+		<description>TangoCMS default, clean style designed for administrative tasks.</description>
+	</theme>
+</themes>

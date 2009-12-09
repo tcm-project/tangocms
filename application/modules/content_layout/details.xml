@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<details>
+	<detail>
+		<name>content_layout</name>
+		<title>Content Layout</title>
+		<description>Allows complete organisation of the sites layout.</description>
+		<author>Alex Cartwright</author>
+		<category>system</category>
+	</detail>
+</details>

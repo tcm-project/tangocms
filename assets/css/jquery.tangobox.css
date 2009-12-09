@@ -1,0 +1,76 @@
+#tbOverlay {
+	display: none;
+	height: 100%;
+	left: 0;	
+	position: fixed;
+	top: 0;
+	width: 100%;
+	z-index: 8000;
+}
+
+#tbWrap {
+	left: 0;
+	position: absolute;
+	text-align: center;
+	top: 0;
+	width: 100%;
+	z-index: 8001;
+}
+
+#tbOuter {
+	background: #fff;
+	box-shadow: 5px 5px 5px #666;
+	-moz-box-shadow: 5px 5px 5px #666;
+	-webkit-box-shadow: 5px 5px 5px #666;	
+	display: none;
+	margin: 0 auto;
+	padding: 10px;
+	position: relative;
+	z-index: 70;
+	width: 250px;
+	height: 250px;
+}
+
+#tbOuter.typeInline, #tbOuter.typeAjax {
+	overflow: auto;
+}
+
+#tbOuter.inProgress {
+	background: #fff url(images/tangobox/loading.gif) no-repeat;
+	background-position: center;
+}
+
+#tbContent {
+	text-align: left;
+}
+
+#tbInline {
+	padding: 10px;
+}
+
+#tbNav > a {
+	padding-bottom: 0;
+}
+
+#tbNav > a:hover {
+	border: 0;
+	text-decoration: none;
+}
+
+#tbNavPrev, #tbNavNext {
+	background: transparent url(images/tangobox/buttons.png) no-repeat;
+	display: none;
+	position: absolute;	
+	height: 32px;
+	top: 20%;
+	width: 63px;
+}
+
+#tbNavPrev {
+	background-position: 0 -32px;
+	left: 0;
+}
+
+#tbNavNext {
+	right: 0;
+}

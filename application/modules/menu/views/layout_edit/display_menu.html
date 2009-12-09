@@ -1,0 +1,34 @@
+<table>
+	<tbody>
+		<tr class="even">
+			<td>
+				<dl>
+					<dt>{L_[Menu category]}</dt>
+					<dd>{L_[Select the menu category you wish to display]}</dd>
+				</dl>
+			</td>
+			<td class="confcol">
+				<select name="content_layout[config][display_category]">
+				<?php
+					$format = '<option value="%d" %s>%s</option>';
+					foreach( $categories as $category ) {
+						$selected = '';
+						if ( $this->_input->has( 'post', 'display_category' ) ) {
+							$tmp_cat = $this->_input->post( 'display_category' );
+							if ( $tmp_cat == $category['id'] ) {
+								$selected = 'selected="selected"';
+							}
+						}
+						printf( $format, $category['id'], $selected, $category['name'] );
+					}
+				?>
+				</select>
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+<div>
+	<input type="hidden" name="content_layout[cntrlr]" value="index">
+	<input type="hidden" name="content_layout[section]" value="index">
+</div>

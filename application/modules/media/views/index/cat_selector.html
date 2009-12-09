@@ -1,0 +1,17 @@
+<?php
+	if ( empty( $categories ) ) {
+		echo t('There are currently no media items or categories to display');
+	} else {
+?>
+		<h3>{L_[Categories]}</h3>
+
+		<div class="categorylist">
+			<ul>
+			<?php foreach( $categories as $cat ) { ?>
+				<li>
+					<a href="<?php echo $this->_router->makeUrl( 'media', 'cat', $cat['clean_name'] ); ?>" title="{L_[View Category]}"><?php echo $cat['name']; ?></a>
+				</li>
+			<?php } ?>
+			</ul>
+		</div>
+<?php } ?>

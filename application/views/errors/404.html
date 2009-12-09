@@ -1,0 +1,26 @@
+<h3>{L_[404 - Page Not Found]}</h3>
+
+<p>
+	<?php
+		printf(
+				t('Sorry, it appears the requested page "%s" does not exist.', Locale::_DTD),
+				'<strong>'.$module.'::'.$cntrlr.'::'.$section.'</strong>'
+			  );
+	?>
+</p>
+
+<h3>{L_[Useful links]}</h3>
+
+<ul>
+	<li>
+		<a href="<?php echo $this->_router->getbaseUrl(); ?>">{L_[Homepage]}</a>
+	</li>
+	<?php
+		foreach( (array) Hooks::notifyAll( 'error_useful_links', 404 ) as $entry ) {
+			printf( '<li><a href="%1$s">%2$s</a></li>',
+					$entry['url'],
+					$entry['title']
+				  );
+		}
+	?>
+</ul>

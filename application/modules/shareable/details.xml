@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<details>
+	<detail>
+		<name>shareable</name>
+		<title>Shareable</title>
+		<description>Share content with other users.</description>
+		<author>Alex Cartwright</author>
+		<category>plugins</category>
+	</detail>
+</details>

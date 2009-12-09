@@ -1,0 +1,13 @@
+<?xml version="1.0" ?>
+<install>
+	<dependencies>
+		<zula>
+			<version operator=">=">0.7.6</version>
+		</zula>
+	</dependencies>
+	<aclResources>
+		<resource roleHint="guest">tags_global</resource>
+		<resource roleHint="group_admin">tags_add</resource>
+		<resource roleHint="group_admin">tags_edit</resource>
+	</aclResources>
+</install>

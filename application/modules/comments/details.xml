@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<details>
+	<detail>
+		<name>comments</name>
+		<title>Comments</title>
+		<description>Allow users to comment on content.</description>
+		<author>Alex Cartwright</author>
+		<category>Plugins</category>
+	</detail>
+</details>

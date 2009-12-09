@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<details>
+	<detail>
+		<name>groups</name>
+		<title>Groups</title>
+		<description>Configure all of the groups within TangoCMS.</description>
+		<author>Alex Cartwright</author>
+		<category>Users &amp; Groups</category>
+	</detail>
+</details>

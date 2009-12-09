@@ -1,0 +1,43 @@
+<?xml version="1.0" ?>
+<install>
+	<dependencies>
+		<zula>
+			<version operator=">=">0.7.6</version>
+		</zula>
+	</dependencies>
+	<aclResources>
+		<resource roleHint="guest">menu_global</resource>
+		<resource roleHint="group_admin">menu_add_cat</resource>
+		<resource roleHint="group_admin">menu_add_item</resource>
+		<resource roleHint="group_admin">menu_delete_cat</resource>
+		<resource roleHint="group_admin">menu_delete_item</resource>
+		<resource roleHint="group_admin">menu_edit_cat</resource>
+		<resource roleHint="group_admin">menu_edit_item</resource>
+		<!-- Default Content Resources -->
+		<resource roleHint="group_admin">menu-cat-1</resource>
+		<resource roleHint="group_admin">menu-cat-2</resource>
+		<resource roleHint="guest">menu-cat-3</resource>
+
+		<resource roleHint="group_admin">menu-item-1</resource>
+		<resource roleHint="group_admin">menu-item-2</resource>
+		<resource roleHint="group_admin">menu-item-3</resource>
+		<resource roleHint="group_admin">menu-item-4</resource>
+		<resource roleHint="group_admin">menu-item-5</resource>
+
+		<resource roleHint="group_admin">menu-item-6</resource>
+		<resource roleHint="group_admin">menu-item-7</resource>
+		<resource roleHint="group_admin">menu-item-8</resource>
+
+		<resource roleHint="guest">menu-item-9</resource>
+		<resource roleHint="guest">menu-item-10</resource>
+		<resource roleHint="guest">menu-item-11</resource>
+		<resource roleHint="guest">menu-item-12</resource>
+		<resource roleHint="guest">menu-item-13</resource>
+		<resource roleHint="group_admin">menu-item-14</resource>
+	</aclResources>
+	<config>
+		<sql>
+			<conf key="menu/default_category">1</conf>
+		</sql>
+	</config>
+</install>

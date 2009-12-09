@@ -1,0 +1,27 @@
+<div class="comments-form">
+	<h4>{L_[Leave a comment]}</h4>
+	<form action="<?php echo $this->_router->makeUrl( 'comments', 'post' ); ?>" method="post">
+		<?php if ( !$this->_session->isLoggedIn() ) { ?>
+			<p>
+				<label for="comments-name">{L_[Name]}</label>
+				<input type="text" id="comments-name" name="comments[name]" value="{COMMENTS.NAME}">
+			</p>
+		<?php } ?>
+		<p>
+			<label for="comments-website">{L_[Website]}</label>
+			<input type="text" id="comments-website" name="comments[website]" value="{COMMENTS.WEBSITE}">
+		</p>
+		<div>
+			<label for="comments-body">{L_[Message]}</label>
+			<textarea id="comments-body" name="comments[body]" rows="30" cols="20">{COMMENTS.BODY}</textarea>
+		</div>
+
+		<?php if ( isset($antispam) ) { echo $antispam; } ?>
+
+		<div class="actions">
+			<input type="hidden" name="comments[hash]" value="{COMMENTS.HASH}">
+			<input type="submit" value="{L_[Submit]}">
+		</div>
+		<?php if ( isset($csrf) ) { echo $csrf; } ?>
+	</form>
+</div>

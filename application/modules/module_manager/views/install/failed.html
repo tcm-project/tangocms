@@ -1,0 +1,42 @@
+<p>{L_[Please make sure all dependencies are satisfied for the module you are attempting to install. Details of these dependencies are shown below.]}</p>
+
+<table>
+	<thead>
+		<tr>
+			<th>{L_[Required]}</th>
+			<th>{L_[Result]}</th>
+			<th>{L_[Current Version]}</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr class="subheading">
+			<td colspan="3">{L_[Software Versions]}</td>
+		</tr>
+		<tr class="even">
+			<td>PHP {PHP.OPERATOR} {PHP.VERSION}</td>
+			<td>
+				<?php if ( $php['passed'] ) { ?>
+					<span style="color: green;">{L_[Pass]}</span>
+				<?php } else { ?>
+					<strong style="color: red;">{L_[Fail]}</strong>
+				<?php } ?>
+			</td>
+			<td class="confcol"><?php echo PHP_VERSION; ?></td>
+		</tr>
+		<tr class="odd">
+			<td>Zula Framework {ZULA.OPERATOR} {ZULA.VERSION}</td>
+			<td>
+				<?php if ( $zula['passed'] ) { ?>
+					<span style="color: green;">{L_[Pass]}</span>
+				<?php } else { ?>
+					<strong style="color: red;">{L_[Fail]}</strong>
+				<?php } ?>
+			</td>
+			<td class="confcol"><?php echo Zula::_VERSION; ?></td>
+		</tr>
+	</tbody>
+</table>
+
+<div class="actions">
+	<a class="general-button" href="<?php echo $this->_router->makeUrl( 'module_manager', 'install', 'module', null, array( 'name' => $module_name ) ); ?>">{L_[Retry Installation]}</a>
+</div>

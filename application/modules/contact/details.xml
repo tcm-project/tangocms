@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<details>
+	<detail>
+		<name>contact</name>
+		<title>Contact</title>
+		<description>Allows users to send feedback/get in contact with you.</description>
+		<author>Alex Cartwright</author>
+		<category>content</category>
+	</detail>
+</details>

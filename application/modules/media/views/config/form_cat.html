@@ -1,0 +1,36 @@
+<form action="" method="post">
+	<table>
+		<tbody>
+			<tr class="even">
+				<td>
+					<dl>
+						<dt>{L_[Category Name]}</dt>
+						<dd>{L_[Enter the name that will be displayed for this category.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="text" name="media[name]" value="{MEDIA.NAME}">
+				</td>
+			</tr>
+			<tr class="odd">
+				<td>
+					<dl>
+						<dt>{L_[Description]}</dt>
+						<dd>{L_[A brief description of the category.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="text" name="media[desc]" value="{MEDIA.DESC}">
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<h3>{L_[Permissions]}</h3>
+
+	{ACL_FORM}
+
+	<div class="actions">
+		<input type="submit" value="<?php echo $op == 'add' ? t('Add Category') : t('Edit Category'); ?>">
+	</div>
+</form>

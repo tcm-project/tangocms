@@ -1,0 +1,506 @@
+/* $Id: base.css 2828 2009-12-04 22:17:05Z alexc $ */
+
+/**
+ * TangoCMS "innocent" theme
+ *
+ * @copyright Copyright (C) 2008, 2009 Alex Cartwright
+ * @license X11/MIT (see COPYING file)
+ * @package TangoCMS_Themes
+*/
+
+/** Resets */
+body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre,
+form, fieldset, input, textarea, p, blockquote, th, td {
+	line-height: 1.3em;
+	margin: 0;
+	padding: 0;
+}
+
+fieldset, img, abbr, acronym {
+	border: 0;
+}
+
+caption, th {
+	text-align: left;
+}
+
+/** Main */
+body {
+	font-size: 62.5%;
+	line-height: 1em;
+}
+
+p {
+	line-height: 1.8em;
+	margin: 0 0 1em 0;
+}
+
+* p:last-child {
+	margin-bottom: 0;
+}
+
+hr {
+	border: 1px solid #ddd;
+	color: #eee;
+	margin: 15px;
+}
+
+img {
+	border-width: 0;
+}
+
+ul, ol {
+	margin: 1em;
+}
+
+li {
+	margin: 0.2em 0 0.2em 1.5em;
+}
+
+dt {
+	font-weight: bold;
+}
+
+dd {
+	margin-bottom: 10px;
+	margin-left: 1em;
+}
+
+.hidden {
+	display: none;
+}
+
+label {
+	display: block;
+	font-weight: bold;
+	margin-bottom: 3px;
+}
+
+label.horizontal {
+	display: inline;
+	margin: 0 0 2px 0;
+}
+
+blockquote {
+	background-color: #f9f9f9;
+	border-left: 2px solid #ccc;
+	margin-left: 10px;
+	padding: 3px 6px;
+}
+
+code, pre {
+	background-color: #F8F6F2;
+	border-width: 1px 1px 1px 3px;
+	border-style: solid;
+	border-color: #BFB5AB;
+	display: block;
+	font-size: 1.1em;
+	padding: 3px 6px;
+	margin: 1em 0;
+}
+
+/**
+ * All Headings
+ */
+h1, h2, h3, h4, h5 {
+	line-height: 1.1;
+}
+
+h1, h2 {
+	color: #514943;
+	font-size: 1.5em;
+	margin-bottom: 1em;
+}
+
+h2 {
+	font-size: 1.35em;
+}
+
+h3 {
+	border-bottom: 1px dotted #555;
+	color: #555;
+	font-size: 1.25em;
+	margin: 1.3em 0 0.5em 0.3em;
+	padding-bottom: 3px;
+	width: auto;
+}
+
+h4 {
+	font-size: 1.15em;
+	margin: 1.2em 0.8em 0.5em 0;
+}
+
+/**
+ * Generic Link Styles
+ */
+a[href] {
+	color: #1d1d1e;
+	outline: none;
+	text-decoration: none;
+}
+
+a[href]:hover {
+	color: #444;
+	text-decoration: underline;
+}
+
+h1 a[href], h1 a[href]:hover {
+	color: #cfea17;
+	text-decoration: none;
+}
+
+/**
+ * Various Input styles
+ */
+input[type="text"], input[type="password"] {
+	background-color: #fff;
+	border: 1px solid #bbb;
+	color: #000;
+	font-size: 1.15em;
+	padding: 2px 3px;
+	width: 175px;
+}
+
+input[type="text"].error, input[type="password"].error {
+	border-color: #cd310d !important;
+	color: #cd310d;
+}
+
+textarea {
+	background-color: #fff;
+	border: 1px solid #bbb;
+	font-size: 1.5em;
+	height: 160px;
+	padding: 2px 3px;
+	width: 99%;
+}
+
+textarea.editor_body {
+	height: 200px;
+}
+
+input[type="submit"], input[type="button"], a.general-button {
+	background-image: url(images/button-background.png );
+	background-repeat: repeat-x;
+	background-color: #eff3f6;
+	border: 1px solid #c9c8c2;
+	border-radius: 3px;
+	-khtml-border-radius: 3px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	color: #6a6a63;
+	font-size: 1em;
+	margin: 5px 0;
+	padding: 3px;
+}
+
+a.general-button {
+	display: inline-block;
+	padding: 3px 6px 4px;
+}
+
+input[type="radio"], input[type="checkbox"] {
+	margin-bottom: 3px;
+	margin-right: 3px;
+}
+
+option {
+	font-size: 1.0em;
+	padding-right: 0.8em;
+}
+
+input[type="submit"]:hover, input[type="button"]:hover, a.general-button:hover {
+	border-color: #b3b2ac;
+	color: #1d1d1b;
+	cursor: pointer;
+	text-decoration: none;
+}
+
+input[type="text"]:hover, input[type="text"]:focus,
+input[type="password"]:hover, input[type="password"]:focus,
+textarea:hover, textarea:focus {
+	border-color: #7faacb;
+	border-width: 1px;
+}
+
+input[type="text"][readonly], input[type="password"][readonly], textarea[readonly],
+input[type="text"][readonly]:hover, input[type="password"][readonly]:hover, textarea[readonly]:hover,
+input[type="text"][readonly]:focus, input[type="password"][readonly]:focus, textarea[readonly]:focus {
+	border-color: #bbb;
+	background-color: #F8F8F8;
+}
+
+/**
+ * All Table styles
+ */
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+	margin: 6px 0;
+	width: 100%;
+}
+
+thead {
+	border-bottom: 1px dotted #92a0ab;
+	color: #3a4146;
+	font-size: 1.15em;
+	font-weight: bold;
+}
+
+th, td {
+	padding: 0.6em;
+	text-align: left;
+}
+
+th {
+	padding-bottom: 0.2em;
+	white-space: nowrap;
+}
+
+tr.even, tr.odd {
+	border-bottom: 1px solid #d7e1ea;
+	color: #3c637c;
+}
+
+tr.even {
+	background-color: #e3ecf2;
+}
+
+tr.odd {
+	background-color: #fbfcfd;
+}
+
+tr.ondrop {
+	background-color: #f3f9d1;
+	border-color: #dae9c6;
+	color: #4e5e32;
+}
+
+table.contentdata tbody tr:hover {
+	background-color: #f9f9db;
+}
+
+td.confcol {
+	width: 24%;
+}
+
+td.checkcol, th.checkcol {
+	width: 1em;
+}
+
+td.managecol {
+	white-space: nowrap;
+}
+
+tr.subheading {
+	background-color: #bac7cf;
+	background-image: url(images/table_background.png);
+	background-repeat: repeat;
+	border-bottom: 1px solid #94afc1;
+	color: #3c637c;
+	font-weight: bold;
+	margin-bottom: 10px;
+}
+
+/** Table specific element overrides */
+td.confcol input[type="text"], td.confcol input[type="password"] {
+	width: 244px;
+}
+
+td.confcol textarea {
+	height: 100px;
+	width: 244px;
+}
+
+table dd {
+	margin-bottom: 0;
+}
+
+/**
+ * Pages Links. These are those links you find
+ * on some modules that provide a sub-menu.
+ */
+#pagelinks {
+	background-color: #fbfdf2;
+	border-color: #c2d284;
+	border-style: solid;
+	border-width: 1px 1px 1px 5px;
+	box-shadow: 0 3px 10px #f3f3f3;
+	-moz-box-shadow: 0 3px 10px #f3f3f3;
+	-webkit-box-shadow: 0 3px 10px #f3f3f3;
+	color: #4e4c46;
+	font-weight: bold;
+	list-style-type: none;
+	margin: 10px 0;
+	overflow: auto;
+	padding: 4px 2px;
+}
+
+#pagelinks li {
+	float: left;
+	margin: 0 0.7em;
+}
+
+#pagelinks li a {
+	color: #42403b;
+}
+
+/**
+ * Event Feedback, such as Error and Success messages
+ */
+#eventmsg {
+	border-style: solid;
+	border-width: 1px 0;
+	font-weight: bold;
+	margin: 15px auto;
+	padding: 6px 2px;
+	text-align: center;
+}
+
+#eventmsg p {
+	margin: 0;
+}
+
+#eventmsg.error {
+	background-color: #CFA59F;
+	border-color: #B04D40;
+	color: #9B382B;
+}
+
+#eventmsg.success {
+	background-color: #E9F8C6;
+	border-color: #B7D05E;
+	color: #769311;
+}
+
+/**
+ * Pagination
+ */
+.pagination {
+	list-style-type: none;
+	margin: 3px 2px 10px;
+}
+
+.pagination li {
+	display: inline-block;
+	line-height: 1.2em;
+	margin: 0 2px 0 0;
+	padding: 2px 4px 1px;
+}
+
+.pagination li.digit, .pagination li.current {
+	border: solid 1px #c7c7c7;
+}
+
+.pagination li.digit a {
+	color: #000;
+}
+
+.pagination li:hover {
+	background-color: #E4E6EC;
+	border-color: #666;
+	font-weight: bold;
+}
+
+.pagination li.digit a:hover {
+	text-decoration: none;
+}
+
+.pagination li.current {
+	background-color: #E3ECF2;
+	border-color: #7FA0B8;
+	color: #7B8F9C;
+	font-weight: bold;
+}
+
+.pagination li.first, .pagination li.previous, .pagination li.next, .pagination li.last {
+	background: none;
+	border: none;
+	font-weight: normal;
+}
+
+/**
+ * Captcha
+ */
+.captcha {
+	overflow: hidden;
+}
+
+.captcha .image {
+	float: left;
+	padding: 0;
+	position: relative;
+	top: 5px;
+}
+
+.captcha .input {
+	float: left;
+	margin-left: 10px;
+}
+
+/**
+ * General rules for the ACL form/table
+ */
+div.acl table td > span {
+	font-weight: bold;
+	white-space: nowrap;
+}
+
+div.acl table td.checkcol {
+	width: 2em;
+}
+
+div.acl table td.aclrole {
+	width: 10em;
+}
+
+/**
+ * Category selector list that gets displayed sometimes
+ * when a module wants to display breifly it's category
+ * Such as /article and /media
+ */
+.categorylist {
+	background-color: #f9f9f4;
+	border: 7px solid #e0e0cf;
+	color: #d29c33;
+	font-size: 1em;
+	font-weight: bold;
+	margin: 15px;
+	overflow: hidden;
+	padding: 14px 25px;
+}
+
+.categorylist a {
+	color: #d29c33;
+	margin: 0;
+	padding: 0;
+}
+
+.categorylist a:hover {
+	background-color: #F9F9F4;
+	color: #B38026;
+}
+
+.categorylist ul {
+	margin: 0;
+	padding: 0;
+}
+
+.categorylist li {
+	float: left;
+	list-style-type: circle;
+	margin: 0 20px 0 0;
+	padding: 0;
+}
+
+/**
+ * Commom Search/Filter box that takes advantage of JavaScript
+ */
+div.jsSearchBox {
+	margin: 20px 5px 5px 5px;
+	display: none;
+}
+
+div.jsSearchBox input[type="text"] {
+	width: 250px;
+}

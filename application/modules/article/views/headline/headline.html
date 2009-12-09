@@ -1,0 +1,29 @@
+<?php
+	if ( empty( $articles ) ) {
+		echo '<p>'.t('There are no headlines to display').'</p>';
+	} else { ?>
+		<dl class="article-headlines">
+			<?php foreach( $articles as $article ) { ?>
+				<dt>
+					<a href="<?php echo $this->_router->makeUrl( 'article', 'view', $article['clean_title'] ); ?>" title="{L_[View Article]}">
+						<?php echo zula_snippet( $article['title'], 35, true ); ?>
+					</a>
+				</dt>
+				<dd>
+					<em>
+						<?php
+							printf( t('Published by %1$s, %2$s'),
+									$this->_helper('user')->link( $article['author'] ),
+									$this->_date->formatStamp( $article['date'] )
+								   );
+						?>
+					</em>
+				</dd>
+			<?php } ?>
+		</dl>
+		<?php
+			if ( count( $articles ) < $article_count ) {
+				$url = $this->_router->makeUrl( 'article', 'cat', (empty($category) ? 'index' : $category['clean_title']) ); ?>
+				<a href="<?php echo $url; ?>">{L_[View More Articles]} &raquo;</a>
+		<?php } ?>
+<?php } ?>

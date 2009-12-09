@@ -1,0 +1,37 @@
+<form action="<?php echo $this->_router->makeUrl( 'media', 'config', 'bridge' ); ?>" method="post">
+	<table class="contentdata">
+		<thead>
+			<tr>
+				<th class="checkcol"></th>
+				<th>{L_[Name]}</th>
+				<th>{L_[Manage]}</th>
+			</tr>
+		</thead>
+		<tbody>
+			<?php if ( empty( $categories ) ) { ?>
+				<tr class="even">
+					<td colspan="3">{L_[No media categories to display.]}</td>
+				</tr>
+			<?php } else {
+				$i = 0;
+				foreach( $categories as $cat ) {
+					$edit_url = $this->_router->makeUrl( 'media', 'config', 'editcat', null, array('id' => $cat['id']) );
+			 ?>
+					<tr class="<?php echo zula_odd_even( $i ); ?>">
+						<td class="checkcol">
+							<input type="checkbox" name="media_cat_ids[]" value="<?php echo $cat['id']; ?>">
+						</td>
+						<td><?php echo zula_snippet( $cat['name'], 80, true ); ?></td>
+						<td class="managecol">
+							<a href="<?php echo $edit_url; ?>" title="{L_[Edit Category]}">{L_[Edit]}</a>
+						</td>
+					</tr>
+			<?php $i++; } } ?>
+		</tbody>
+	</table>
+	<p>
+		<input type="submit" name="media_purge" value="{L_[Purge Selected]}">
+		<input type="submit" name="media_delete" value="{L_[Delete Selected]}">
+	</p>
+	{CSRF}
+</form>

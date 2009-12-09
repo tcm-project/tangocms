@@ -1,0 +1,94 @@
+<script type="text/javascript">
+	var content_layout_config = '{JS_CONFIG}';
+</script>
+
+<form action="<?php echo $this->_router->makeUrl( 'content_layout', 'edit', $layout_name ); ?>" method="post">
+	<table>
+		<thead>
+			<tr>
+				<th colspan="2">{L_[Display Details]}</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr class="even">
+				<td>
+					<dl>
+						<dt>{L_[Title to Display]}</dt>
+						<dd>{L_[Select which title should be displayed, if any.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<select name="content_layout[config][displayTitle]" id="content_layout_title">
+						<?php
+							$format = '<option value="%1$s" %2$s>%3$s</option>';
+							$opts = array(
+										t('Default (from module)')	=> true,
+										t('No Title')				=> false,
+										t('Custom...')				=> 'custom',
+										);
+							foreach( $opts as $name=>$val) {
+								printf( $format,
+										(is_bool($val) ? zula_bool2str($val) : $val),
+										($val === $content_layout['config']['displaytitle'] ? 'selected="selected"' : ''),
+										$name
+										);
+							}
+						?>
+					</select>
+					<input type="text" id="content_layout_custom" name="content_layout[config][customTitle]" value="{CONTENT_LAYOUT.CONFIG.CUSTOMTITLE}">
+				</td>
+			</tr>
+			<tr class="odd">
+				<td>
+					<dl>
+						<dt>{L_[Additional HTML 'class' attribute values.]}</dt>
+						<dd>{L_[Enter additional HTML class names to help ease styling of this attached module.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="text" name="content_layout[config][htmlWrapClass]" value="{CONTENT_LAYOUT.CONFIG.HTMLWRAPCLASS}">
+				</td>
+			</tr>
+			<tr class="even">
+				<td>
+					<dl>
+						<dt>{L_[Display Mode]}</dt>
+						<dd>{L_[Select what you want the module to display.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<select id="content_layout-display-mode">
+						<?php
+							foreach( $display_modes as $name=>$title ) {
+								printf( '<option value="%s" %s>%s</option>',
+										$this->_router->makeFullUrl( 'content_layout', 'edit', 'modeConfig', null, array('module' => $module['name'], 'mode' => $name) ),
+										($name == $current_mode ? 'selected="selected"' : ''),
+										$title
+									  );
+							}
+						?>
+					</select>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	{AMC.TABLE}
+	{ACL_FORM}
+
+	<h3>{L_[Configuration Details]}</h3>
+
+	<div>
+		<input type="hidden" name="content_layout[cntrlr]" value="index">
+		<input type="hidden" name="content_layout[section]" value="index">
+		<input type="hidden" name="content_layout[cid]" value="{CID}">
+	</div>
+
+	<div id="content_layout-module-config">
+		<p>{L_[There are no configuration values for this display mode]}</p>
+	</div>
+
+	<div class="actions">
+		<input type="submit" value="{L_[Update]}">
+	</div>
+</form>

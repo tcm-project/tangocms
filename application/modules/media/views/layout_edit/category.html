@@ -1,0 +1,84 @@
+<table>
+	<tbody>
+		<tr class="even">
+			<td>
+				<dl>
+					<dt>{L_[Category]}</dt>
+					<dd>{L_[Select the category you want to display media items from.]}</dd>
+				</dl>
+			</td>
+			<td class="confcol">
+				<select name="content_layout[config][display_cat]">
+					<?php
+						try {
+							$curCategory = $this->_input->post( 'display_cat' );
+						} catch ( Input_KeyNoExist $e ) {
+							$curCategory = null;
+						}
+						array_unshift( $categories, array('clean_name' => '', 'name' => t('All categories')) );
+						foreach( $categories as $cat ) {
+							printf( '<option value="%1$s" %2$s>%3$s</option>',
+									$cat['clean_name'],
+									($curCategory == $cat['clean_name'] ? 'selected="selected"' : ''),
+									$cat['name']
+								);
+						}
+					?>
+				</select>
+			</td>
+		</tr>
+		<tr class="odd">
+			<td>
+				<dl>
+					<dt>{L_[Show item details?]}</dt>
+					<dd>{L_[If set to 'yes' details (such as the Title) will be shown as well]}</dd>
+				</dl>
+			</td>
+			<td class="confcol">
+				<input type="radio" id="details_yes" name="content_layout[config][show_item_details]" value="true" <?php echo empty($show_details) ? '' : 'checked="checked"'; ?>>
+				<label for="details_yes" class="horizontal">{L_[Yes]}</label>
+				<br>
+				<input type="radio" id="details_no" name="content_layout[config][show_item_details]" value="false" <?php echo empty($show_details) ? 'checked="checked"' : ''; ?>>
+				<label for="details_no" class="horizontal">{L_[No]}</label>
+			</td>
+		</tr>
+		<tr class="even">
+			<td>
+				<dl>
+					<dt>{L_[Number of media items to display per page]}</dt>
+					<dd>{L_[Enter the number of media items you would like to display per page.]}</dd>
+				</dl>
+			</td>
+			<td class="confcol">
+				<?php
+					try {
+						$perPage = abs( $this->_input->post('per_page') );
+					} catch ( Input_KeyNoExist $e ) {
+						$perPage = 6;
+					}
+				?>
+				<input type="text" name="content_layout[config][per_page]" value="<?php echo $perPage; ?>">
+			</td>
+		</tr>
+		<tr class="odd">
+			<td>
+				<dl>
+					<dt>{L_[Use a lightbox effect for images?]}</dt>
+					<dd>{L_[If set to 'Yes', a lightbox effect will be used when displaying the large media item.]}</dd>
+				</dl>
+			</td>
+			<td class="confcol">
+				<input type="radio" id="lightbox_yes" name="content_layout[config][use_lightbox]" value="true" <?php echo empty($lightbox) ? '' : 'checked="checked"'; ?>>
+				<label for="lightbox_yes" class="horizontal">{L_[Yes]}</label>
+				<br>
+				<input type="radio" id="lightbox_no" name="content_layout[config][use_lightbox]" value="false" <?php echo empty($lightbox) ? 'checked="checked"' : ''; ?>>
+				<label for="lightbox_no" class="horizontal">{L_[No]}</label>
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+<p>
+	<input type="hidden" name="content_layout[cntrlr]" value="index">
+	<input type="hidden" name="content_layout[section]" value="cat">
+</p>

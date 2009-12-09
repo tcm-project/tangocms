@@ -1,0 +1,103 @@
+<form action="<?php echo $this->_router->makeUrl( 'media', 'config', 'settings' ); ?>" method="post">
+	<table>
+		<thead>
+			<tr>
+				<th colspan="2">{L_[Display]}</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr class="even">
+				<td>
+					<dl>
+						<dt>{L_[Media items per page]}</dt>
+						<dd>{L_[Set how many media items to display per page.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					{S_PER_PAGE}
+				</td>
+			</tr>
+			<tr class="odd">
+				<td>
+					<dl>
+						<dt>{L_[Use a lightbox effect for images?]}</dt>
+						<dd>{L_[If set to 'Yes', a lightbox effect will be used when displaying the large media item.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					{S_LIGHTBOX}
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<table>
+		<thead>
+			<tr>
+				<th colspan="2">{L_[Thumbnail Sizes]}</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr class="even">
+				<td>
+					<dl>
+						<dt>{L_[Width]}</dt>
+						<dd>{L_[Set the width that the thumbnail images should be created at (In pixels).]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					{S_THUMB_WIDTH}
+				</td>
+			</tr>
+			<tr class="odd">
+				<td>
+					<dl>
+						<dt>{L_[Height]}</dt>
+						<dd>{L_[Set the height that the thumbnail images should be created at (In pixels).]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					{S_THUMB_HEIGHT}
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<table>
+		<thead>
+			<tr>
+				<th colspan="2">{L_[Image Post-Processing]}</th>
+			</tr>
+		</thead>
+		<tbody>			
+			<tr class="even">
+				<td>
+					<dl>
+						<dt>{L_[Image Width]}</dt>
+						<dd>{L_[Set the Width for the medium/preview image (Smaller than original, and bigger than thumbnail). If this is left blank, the width will scale to the Height set.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					{S_MEDIUM_WIDTH}
+				</td>
+			</tr>
+			<tr class="odd">
+				<td>
+					<dl>
+						<dt>{L_[Image Height]}</dt>
+						<dd>{L_[Set the Height for the medium/preview image (Smaller than original, and bigger than thumbnail). If this is left blank, the height will scale to the Width set.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					{S_MEDIUM_HEIGHT}
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	{CSRF}
+
+	<p>
+		<input type="submit" value="{L_[Update]}">
+	</p>
+</form>

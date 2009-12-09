@@ -1,0 +1,11 @@
+<div class="tag-cloud">
+	<?php
+		foreach( $cloud as $tag=>$class ) {
+			printf( '<a href="%1$s" class="%2$s" rel="tag" title="%3$s">%3$s</a>'."\n",
+					$this->_router->makeUrl( 'tags', 'view', urlencode( $tag ) ),
+					$class,
+					$tag
+				);
+		}
+	?>
+</div>

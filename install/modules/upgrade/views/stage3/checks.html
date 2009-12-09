@@ -1,0 +1,53 @@
+<p>{L_[If any of these checks fail then please make sure you have set the correct permissions on the files/folders and have the needed PHP Extensions installed before continuing.]}</p>
+
+<h3>{L_[Results]}</h3>
+
+<table>
+	<thead>
+		<tr>
+			<th>{L_[Item]}</th>
+			<th>{L_[Result]}</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr class="subheading">
+			<td colspan="2">{L_[Writable Directories]}</td>
+		</tr>
+		<?php $i=0; foreach( $dir_results as $dir=>$result ) { ?>
+			<tr class="<?php echo zula_odd_even( $i ); ?>">
+				<td><?php echo $dir; ?></td>
+				<td>
+					<?php if ( $result ) { ?>
+						<span style="color: green;">{L_[Writable]}</span>
+					<?php } else { ?>
+						<strong style="color: red;">{L_[Not Writable]}</strong>
+					<?php } ?>
+				</td>
+			</tr>
+		<?php $i++; } ?>
+
+		<tr class="subheading">
+			<td colspan="2">{L_[Writable Files]}</td>
+		</tr>
+		<?php $i=0; foreach( $file_results as $file=>$result ) { ?>
+			<tr class="<?php echo zula_odd_even( $i ); ?>">
+				<td><?php echo $file; ?></td>
+				<td>
+					<?php if ( $result ) { ?>
+						<span style="color: green;">{L_[Writable]}</span>
+					<?php } else { ?>
+						<strong style="color: red;">{L_[Not Writable]}</strong>
+					<?php } ?>
+				</td>
+			</tr>
+		<?php $i++; } ?>
+	</tbody>
+</table>
+
+<div class="actions">
+	<?php if ( $passed ) { ?>
+		<a href="<?php echo $this->_router->makeUrl( 'upgrade', 'stage4' ); ?>" class="general-button" title="{L_[Next Stage]}">{L_[Next]}</a>
+	<?php } else { ?>
+		<a href="<?php echo $this->_router->makeUrl( 'upgrade', 'stage3' ); ?>" class="general-button" title="{L_[Retry]}">{L_[Retry]}</a>
+	<?php } ?>
+</div>

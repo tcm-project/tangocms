@@ -1,0 +1,27 @@
+<tr class="{STYLE}">
+	<td class="checkcol">
+		<input type="checkbox" name="page_ids[]" value="<?php echo $child['id']; ?>">
+	</td>
+	<td>
+		<select name="page_order[{CHILD.ID}]">
+		<?php
+			for( $i=1; $i <= $count; $i++ ) {
+				printf( '<option value="%1$s" %2$s>%1$s</option>',
+						$i,
+						($i == $orderid ? 'selected="selected"' : '')
+					  );
+			}
+		?>
+		</select>
+	</td>
+	<td>
+		{PREFIX}
+		<a href="<?php echo $this->_router->makeUrl( 'page', 'index', $child['clean_title'], 'main' ); ?>">
+			<?php echo zula_snippet( $child['title'], 50, true ); ?>
+		</a>
+	</td>
+	<td class="managecol">
+		<a href="<?php echo $this->_router->makeUrl( 'page', 'config', 'edit', null, array('id' => $child['id']) ); ?>">{L_[Edit]}</a> |
+		<a href="<?php echo $this->_router->makeUrl( 'page', 'config', 'add', null, array('pid' => $child['id']) ); ?>">{L_[Add Child]}</a>
+	</td>
+</tr>
