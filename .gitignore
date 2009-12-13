@@ -1,0 +1,6 @@
+# Ignore application logs, temp files, uploads and configuration directories
+application/logs/*.log
+assets/uploads/*
+/config/*
+tmp/*
+
