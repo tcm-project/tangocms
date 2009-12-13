@@ -540,7 +540,7 @@ ERR;
 					$tmpFile = @tempnam( $path, 'zwc' );
 					if ( $tmpFile !== false && is_file( $tmpFile ) ) {
 						unlink( $tmpFile );
-						return strpos( $tmpFile, $file ) === 0;
+						return strpos( $tmpFile, $path ) === 0;
 					}
 				} else {
 					$fHandle = @fopen( $file, 'r+' );
