@@ -22,7 +22,7 @@
 		 * Version of jQuery to load (used only when use of Google CDN is allowed)
 		 */
 		const _JQUERY_VERSION = 1.3;
-		
+
 		/**
 		 * Name of the current theme
 		 * @var string
@@ -52,13 +52,13 @@
 		 * @var bool
 		 */
 		protected $aggregateJs = false;
-		
+
 		/**
 		 * Toggles if Google's CDN should be used
 		 * @var bool
 		 */
 		protected $googleCdn = false;
-		
+
 		/**
 		 * Stores all loaded JS files from Google's CDN
 		 * @var array
@@ -85,7 +85,7 @@
 			}
 			if ( $this->_config->has( 'cache/google_cdn' ) ) {
 				$this->googleCdn = (bool) $this->_config->get( 'cache/google_cdn' );
-			}		
+			}
 		}
 
 		/**
@@ -306,13 +306,18 @@
 		 * Wrapper for Theme::addHead() to easily add a CSS file from
 		 * CSS assets directory.
 		 *
-		 * @param string $file
-		 * @return bool
+		 * @param string|array $file
+		 * @return int
 		 */
 		public function addCssFile( $file ) {
-			return $this->addHead( 'css',
-								   array('href' => $this->_zula->getDir('assets', true).'/css/'.$file)
-								 );
+			$numAdded = 0;
+			$path = $this->_zula->getDir( 'assets', true );
+			foreach( (array) $file as $css ) {
+				if ( $this->addHead('css', array('href' => $path.'/'.$css)) ) {
+					++$numAdded;
+				}
+			}
+			return $numAdded;
 		}
 
 		/**
@@ -334,8 +339,8 @@
 		 * @param string $module		JS file is a virtual asset for specified module
 		 * @return int|bool				Number of JS files added
 		 */
-		public function addJsFile( $file, $merge=true, $module=null ) {	
-			$numberAdded = 0;		
+		public function addJsFile( $file, $merge=true, $module=null ) {
+			$numberAdded = 0;
 			foreach( (array) $file as $jsFile ) {
 				$isLocal = substr( $jsFile, -3 ) == '.js';
 				if ( !$isLocal && strpos( $jsFile, 'jquery.' ) === 0 ) {
@@ -355,7 +360,7 @@
 				} else {
 					$type = $this->aggregateJs && $merge ? 'merging' : 'standalone';
 				}
-				// Get the right path for the JS file and store it correctly			
+				// Get the right path for the JS file and store it correctly
 				$jsFileDir = $module == null ? $this->_zula->getDir( 'js' ) : Module::getDirectory().'/'.$module.'/assets';
 				$jsPath = $jsFileDir.'/'.$jsFile;
 				if ( _APP_MODE == 'development' ) {
@@ -597,12 +602,12 @@
 							$content = null;
 							foreach( $this->loadedJsFiles[ $type ] as $file ) {
 								$content .= file_get_contents( $file );
-							}	
+							}
 							file_put_contents( $jsFilePath['real'], $content );
 						}
 						$this->addHead( 'js', array('src' => $jsFilePath['html']) );
 					}
-				}				
+				}
 			}
 			$details = array(
 							'page_links'	=> '',

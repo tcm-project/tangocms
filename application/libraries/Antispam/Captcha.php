@@ -80,17 +80,12 @@
 			$this->fonts = glob( $this->_zula->getDir( 'fonts' ).'/captcha/*.ttf' );
 			$this->font = $this->fonts[ array_rand( $this->fonts ) ];
 			// Remove old timmed out images
-			$images = glob( $this->tmpDir.'/captcha-*.png' );
-			if ( is_array( $images ) ) {
-				foreach( $images as $file ) {
-					if ( (time() - filemtime( $file )) > $this->timeout ) {
-						$filename = pathinfo( $file, PATHINFO_FILENAME );
-						$captchaId = substr( $filename, strpos($filename, '-') );
-						unset( $_SESSION['antispam']['captcha'][ $captchaId ] );
-						if ( !@unlink( $file ) ) {
-							$this->_log->message( 'Captcha::__construct() could not remove old captcha file', Log::L_WARNING );
-						}
-					}
+			foreach( (array) glob($this->tmpDir.'/captcha-*.png') as $file ) {
+				if ( $file !== false && (time() - filemtime( $file )) > $this->timeout ) {
+					$filename = pathinfo( $file, PATHINFO_FILENAME );
+					$captchaId = substr( $filename, strpos($filename, '-') );
+					unset( $_SESSION['antispam']['captcha'][ $captchaId ] );
+					@unlink( $file );
 				}
 			}
 		}
