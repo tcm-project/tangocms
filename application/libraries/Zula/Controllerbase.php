@@ -143,7 +143,6 @@
 
 		/**
 		 * Returns the text domain that should be used for this controller
-		 * or module
 		 *
 		 * @return string
 		 */
@@ -155,10 +154,11 @@
 		 * Sets the output type for the controller
 		 *
 		 * @param int $type
-		 * @return bool
+		 * @return object
 		 */
 		public function setOutputType( $type ) {
 			$this->outputType = abs( $type );
+			return $this;
 		}
 
 		/**
@@ -177,11 +177,10 @@
 		 * @return string
 		 */
 		public function getDetail( $detail ) {
-			if ( $this->detailExists( $detail ) ) {
+			if ( isset( $this->moduleDetails[$detail] ) ) {
 				return $this->moduleDetails[ $detail ];
 			} else {
-				trigger_error( 'Zula_ControllerBase::getDetail() detail "'.$detail.'" does not exist', E_USER_WARNING );
-				return false;
+				throw new Zula_DetailNoExist( $detail );
 			}
 		}
 
@@ -210,16 +209,9 @@
 		 * @param array $links
 		 * @return bool
 		 */
-		public function setPageLinks( $links ) {
-			if ( !is_array( $links ) ) {
-				trigger_error( 'Zula_ControllerBase::setPageLink() could not set page links. Value given is not an array', E_USER_WARNING );
-				return false;
-			} else if ( empty( $this->pageLinks ) ) {
-				$this->pageLinks = $links;
-			} else {
-				$this->pageLinks = array_merge( $this->pageLinks, $links );
-				return true;
-			}
+		public function setPageLinks( array $links ) {
+			$this->pageLinks = array_merge( $this->pageLinks, $links );
+			return true;
 		}
 
 		/**
@@ -232,13 +224,43 @@
 		}
 
 		/**
-		 * Removes/Purges all currently set page links
+		 * Changes the title that will be displayed for the controller
+		 * (if anywhere is set to show it). Default will be the controllers name
 		 *
+		 * @param string $title
+		 * @return object
+		 */
+		public function setTitle( $title ) {
+			$this->moduleDetails['title'] = (string) $title;
+			return $this;
+		}
+
+		/**
+		 * Gets the title that is set for this controller
+		 *
+		 * @return string
+		 */
+		public function getTitle() {
+			return $this->moduleDetails['title'];
+		}
+
+		/**
+		 * Checks if the controller is running in the specified sector
+		 *
+		 * @param string $sector
 		 * @return bool
 		 */
-		public function purgePageLinks() {
-			$this->pageLinks = array();
-			return true;
+		public function inSector( $sector ) {
+			return strtoupper($sector) == $this->getSector();
+		}
+
+		/**
+		 * Gets the sector that the controller is running in
+		 *
+		 * @return string
+		 */
+		public function getSector() {
+			return $this->sector;
 		}
 
 		/**
@@ -254,38 +276,6 @@
 		protected function loadView( $viewFile ) {
 			$tmpView = new View( $viewFile, $this->getDetail( 'name' ) );
 			return $tmpView;
-		}
-
-		/**
-		 * Changes the title that will be displayed for the controller
-		 * (if anywhere is set to show it). Default will be the controllers name
-		 * The string given is also sent for translation.
-		 *
-		 * @param string $title
-		 * @return bool
-		 */
-		public function setTitle( $title ) {
-			$this->moduleDetails['title'] = (string) $title;
-			return true;
-		}
-
-		/**
-		 * Checks if the controller is running in the specified sector
-		 *
-		 * @param string $sector
-		 * @return bool
-		 */
-		public function inSector( $sector ) {
-			return strtoupper( $sector ) == $this->getSector();
-		}
-
-		/**
-		 * Gets the sector that the controller is running in
-		 *
-		 * @return string
-		 */
-		public function getSector() {
-			return $this->sector;
 		}
 
 		/**

@@ -21,6 +21,7 @@
  	class Zula_DirectoryNoExist extends Exception {}
 
 	class Zula_ModelNoExist extends Exception {}
+	class Zula_DetailNoExist extends Exception {}
 
 	final class Zula {
 

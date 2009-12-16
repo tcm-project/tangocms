@@ -571,7 +571,7 @@
 									'ident'		=> $this->name.'::'.$cntrlr.'::'.$sec,
 									'output'	=> self::$currentCntrlrObj->$method(),
 									'outputType'=> self::$currentCntrlrObj->getOutputType(),
-									'title'		=> self::$currentCntrlrObj->getDetail( 'title' ), # This *has* to be below 'output'
+									'title'		=> self::$currentCntrlrObj->getTitle(), # This *has* to be below 'output'
 									);
 					/**
 					 * Trigger output hooks. Listeners should return a string with the
