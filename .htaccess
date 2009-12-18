@@ -27,5 +27,7 @@
 </IfModule>
 
 ### Stop people accessing various directories
-RedirectMatch 403 (?:/application/logs(?:/.*?\.log)?|/tmp/cache/.*?|/config/.*?/(?:layouts/.*\.xml|config\.ini\.php)|/application/modules/.*?/install\.(?:xml|sql)|/assets/uploads/media/.*?)(?:/|$)
-RedirectMatch 403 \.svn/?
+<ifModule mod_alias.c>
+	RedirectMatch 403 (?:/application/logs(?:/.*?\.log)?|/tmp/cache/.*?|/config/.*?/(?:layouts/.*\.xml|config\.ini\.php)|/application/modules/.*?/install\.(?:xml|sql)|/assets/uploads/media/.*?)(?:/|$)
+	RedirectMatch 403 \.svn/?
+</IfModule>

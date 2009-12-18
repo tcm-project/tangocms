@@ -420,6 +420,7 @@ ERR;
 			return false;
 		}
 		$libLog = Registry::get( 'log' );
+		$file = realpath( $file );
 		if ( extension_loaded( 'fileinfo' ) ) {
 			try {
 				$finfo = finfo_open( FILEINFO_MIME, Registry::get( 'config' )->get( 'mime/magic_file' ) );
@@ -438,7 +439,7 @@ ERR;
 			}
 		}
 		// Attempt to get mime type via the 'file' command (will not work on Windows)
-		$mime = exec( 'file -bi '.escapeshellarg( realpath($file) ) );
+		$mime = exec( 'file -bi '.escapeshellarg($file) );
 		if ( preg_match( '#^([A-Z0-9+.\-]+/[A-Z0-9+.\-]+);?#i', $mime, $matches ) ) {
 			return $matches[1];
 		} else if ( function_exists( 'mime_content_type' ) ) {
@@ -555,7 +556,7 @@ ERR;
 			return is_writable( $file );
 		}
 	}
-	
+
 	/**
 	 * Checks if a file can be deleted
 	 *
@@ -1129,7 +1130,7 @@ ERR;
 			return false;
 		}
 	}
-	
+
 	/**
 	 * Gets the IP address of a domain name
 	 *
