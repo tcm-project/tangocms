@@ -50,6 +50,18 @@
 	padding: 10px;
 }
 
+#tbInner a[href] {
+	color: #A4260E;
+	outline: none;
+	text-decoration: none;
+	padding-bottom: 1px;
+}
+
+#tbInner a[href]:hover {
+	border-bottom: 1px dashed #A4260E;
+	padding-bottom: 0;
+}
+
 /** Navigation */
 #tbNav > a {
 	padding-bottom: 0;
@@ -91,4 +103,10 @@
 
 #tbMetaTitle {
 	font-weight: bold;
+}
+
+#tbMetaInfo > span {
+	border-left: 2px solid #ddd;
+	margin-left: 5px;
+	padding-left: 5px;
 }

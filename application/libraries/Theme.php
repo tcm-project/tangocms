@@ -311,7 +311,7 @@
 		 */
 		public function addCssFile( $file ) {
 			$numAdded = 0;
-			$path = $this->_zula->getDir( 'assets', true );
+			$path = $this->_zula->getDir( 'assets', true ).'/css/';
 			foreach( (array) $file as $css ) {
 				if ( $this->addHead('css', array('href' => $path.'/'.$css)) ) {
 					++$numAdded;

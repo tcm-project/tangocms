@@ -31,7 +31,7 @@ jQuery(document).ready(
 									overlayOpacity:			0.7,
 									overlayColor:			'#444',
 									slideshowAutostart:		false,
-									slideshowDelay:			4500, // Delay of 0 disables slideshow
+									slideshowDelay:			5200, // Delay of 0 disables slideshow
 									displayMeta:			true, // Display title and controls for images?
 									callbackOnStart:		null,
 									callbackOnShow:			null,
@@ -241,20 +241,22 @@ jQuery(document).ready(
 				tbOuterCssTop = (tbOuterCssTop - tbMeta.outerHeight()/2)+"px";
 				tbMeta.html('<p id="tbMetaTitle">'+cTitle+'</p>');
 				if ( itemArray.length > 1 ) {
-					tbMeta.append('<p id="tbMetaControls">Viewing '+(itemIndex+1)+' of '+itemArray.length+' :: </p>');
-					tbMeta.find("p:last").append( $('<a href="" id="tbMetaSlideshow">'+(slideshowId ? "Stop" : "Start")+' slideshow</a>') );
-					tbMeta.find("p:last a").click(function() {
-													if ( slideshowId ) {
-														$(this).html("Start slideshow");
-														$("#tbNav").show();
-														tbStopSlideshow();
-													} else {
-														$(this).html("Stop slideshow");
-														$("#tbNav").hide();
-														tbStartSlideshow();
-													}
-													return false;
-												  });
+					tbMeta.append('<p id="tbMetaInfo">Viewing '+(itemIndex+1)+' of '+itemArray.length+'</p>');
+					if ( settings.slideshowDelay ) {
+						tbMeta.find("p:last").append( $('<span><a href="" id="tbMetaSlideshow">'+(slideshowId ? "Stop" : "Start")+' slideshow</a></span>') );
+						tbMeta.find("p:last a").click(function() {
+														if ( slideshowId ) {
+															$(this).html("Start slideshow");
+															$("#tbNav").show();
+															tbStopSlideshow();
+														} else {
+															$(this).html("Stop slideshow");
+															$("#tbNav").hide();
+															tbStartSlideshow();
+														}
+														return false;
+													});
+					}
 				}
 			} else {
 				tbOuterCssTop += "px";
@@ -323,10 +325,7 @@ jQuery(document).ready(
 			/**
 			 * Setup the navigation (Next/Prev) buttons for images only
 			 */
-			if (
-				slideshowId == null &&
-				itemArray[ itemIndex ].rel == "modalImage" || itemArray[ itemIndex ].href.match(imageRegExp)
-			) {
+			if ( itemArray[ itemIndex ].rel == "modalImage" || itemArray[ itemIndex ].href.match(imageRegExp) ) {
 				if ( itemIndex !== 0 ) {
 					$("#tbNavPrev").show().unbind().click( function() {
 																--itemIndex;
@@ -343,6 +342,9 @@ jQuery(document).ready(
 															}
 														  );
 				}
+			}
+			if ( slideshowId ) {
+				$("#tbNav").hide();
 			}
 			// Different ways of closing the modal box
 			$(document).bind("keyup", tbClose);
