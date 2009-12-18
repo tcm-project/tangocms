@@ -54,20 +54,21 @@
 	color: #A4260E;
 	outline: none;
 	text-decoration: none;
-	padding-bottom: 1px;
+	padding: 0 0 1px 0;
 }
 
 #tbInner a[href]:hover {
+	border: 0;
 	border-bottom: 1px dashed #A4260E;
-	padding-bottom: 0;
+	padding: 0;
 }
 
 /** Navigation */
-#tbNav > a {
+#tbNav > a[href] {
 	padding-bottom: 0;
 }
 
-#tbNav > a:hover {
+#tbNav > a[href]:hover {
 	border: 0;
 	text-decoration: none;
 }

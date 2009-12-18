@@ -269,7 +269,8 @@ jQuery(document).ready(
 				}
 			}
 			tbOuter.show();
-			tbContent.fadeOut("normal", function() {
+			tbContent.css("opacity", 1)
+					 .fadeOut("normal", function() {
 											tbContent.empty()
 											tbContent.html( $(content) ).hide();
 											tbOuter.animate( dimSettings, settings.zoomSpeedIn, tbAnimateLoading );
@@ -343,7 +344,7 @@ jQuery(document).ready(
 														  );
 				}
 			}
-			if ( slideshowId ) {
+			if ( slideshowId != null ) {
 				$("#tbNav").hide();
 			}
 			// Different ways of closing the modal box
@@ -366,12 +367,13 @@ jQuery(document).ready(
 			if ( e.keyCode === 27 || e.button === 0 ) {
 				tbStopSlideshow();
 				$(document).unbind();
-				tbContent.unbind().empty();
-				tbOuter.css( {height: "250px", width: "250px", top: "0"} ).hide().removeAttr("class");
+				tbContent.unbind().empty().stop();
+				tbOuter.stop().css( {height: "250px", width: "250px", top: "0"} ).hide().removeAttr("class");
 				$("#tbOverlay").fadeOut( settings.zoomSpeedOut );
 				if ( $.isFunction( settings.callbackOnClose ) ) {
 					settings.callbackOnClose( itemArray[ itemIndex ] );
 				}
+				busy = false;
 			}
 		};
 
