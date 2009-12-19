@@ -4,7 +4,7 @@
 
 ----------
 
-{L_[Form Name:]} {FORM.NAME}
+{L_[Form Name:]} {form.name}
 {L_[Username:]} <?php echo $this->_session->getUser( 'username' ); ?>
 
 

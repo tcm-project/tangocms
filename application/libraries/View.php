@@ -52,6 +52,12 @@
 		protected $parsePhp = true;
 
 		/**
+		 * Sets if assigned tags should be case-sensitive
+		 * @var bool
+		 */
+		protected $caseSensitive = false;
+
+		/**
 		 * Constructor function
 		 * Attempts to load the view file and sets which module this is for
 		 *
@@ -130,6 +136,17 @@
 		}
 
 		/**
+		 * Sets if this views tags should be case-sensitive
+		 *
+		 * @param bool $cs
+		 * @return bool
+		 */
+		public function caseSensitive( $cs=true ) {
+			$this->caseSensitive = (bool) $cs;
+			return true;
+		}
+
+		/**
 		 * Assigns a new tag to use that will get replaced, all array keys
 		 * will get converted to lower case!
 		 *
@@ -140,7 +157,9 @@
 		 * @return bool
 		 */
 		public function assign( array $tags, $overwrite=true, $allowHtml=false, $prepend=false ) {
-			zula_array_key_case( $tags, CASE_LOWER );
+			if ( $this->caseSensitive === false ) {
+				zula_array_key_case( $tags, CASE_LOWER );
+			}
 			foreach( $tags as $tag=>$val ) {
 				if ( $allowHtml == false ) {
 					$val = $this->cleanTagValue( $val );
@@ -272,7 +291,11 @@
 					// Prepare the tags for the PHP class
 					$phpTags = array();
 					foreach( $this->assignedTags as $tag=>$val ) {
-						$phpTags[ zula_strtolower( str_replace('-', '_', $tag) ) ] = $val;
+						$tag = str_replace( '-', '_', $tag );
+						if ( $this->caseSensitive === false ) {
+							$tag = zula_strtolower( $tag );
+						}
+						$phpTags[ $tag ] = $val;
 					}
 					$tmpView = new View_OB( $phpTags, $this->viewPath, $this->module );
 					$tmpViewContent = $tmpView->getOutput(); # Return content of the parsed PHP view file
@@ -374,7 +397,9 @@
 			if ( is_array( $tag ) ) {
 				$strTag = implode( '.', $tag );
 				foreach( $tag as $val ) {
-					$val = zula_strtolower( $val );
+					if ( $this->caseSensitive === false ) {
+						$val = zula_strtolower( $val );
+					}
 					if ( !isset( $tmpTagValue ) && isset( $this->assignedTags[ $val ] ) ) {
 						$tmpTagValue = &$this->assignedTags[ $val ];
 					} else if ( isset( $tmpTagValue ) ) {
@@ -390,7 +415,7 @@
 				$value = $tmpTagValue;
 				$tag = $strTag;
 			} else {
-				$strTag = ($langTag === false) ? zula_strtolower( $tag ) : $tag;
+				$strTag = ($langTag === false && $this->caseSensitive === false) ? zula_strtolower($tag) : $tag;
 				if ( array_key_exists( $strTag, $this->assignedTags ) ) {
 					$value = $this->assignedTags[ $strTag ];
 				} else {

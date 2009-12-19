@@ -61,6 +61,7 @@
 			 * Begin adding validation of all the form fields
 			 */
 			$form = new View_form( 'contact.html', 'contact' );
+			$form->caseSensitive();
 			$form->action( $this->_router->makeUrl( 'contact', 'index', $details['id'] ) )
 				 ->antispam( true );
 			$form->addElement( 'contact/email', $this->_session->getUser('email'), t('Email Address'), new Validator_Email );
@@ -84,13 +85,13 @@
 					case 'textarea':
 						$validator = new Validator_Length(1, 3000);
 						break;
-									
+
 					case 'radio':
 					case 'select':
 					case 'checkbox':
 						$validator = new Validator_InArray( array_values($tmpField['options']) );
 						break;
-						
+
 					default:
 						$validator = null;
 				}
@@ -102,10 +103,10 @@
 				 */
 				$mailBody = $this->loadView( 'email_body.txt' );
 				$mailBody->assign( array(
-										'FORM'		=> $details,										
-										'FIELDS'	=> $fields,
+										'form'		=> $details,
+										'fields'	=> $fields,
 										));
-				$mailBody->assignHtml( array('CONTACT' => $form->getValues('contact')) );
+				$mailBody->assignHtml( array('contact' => $form->getValues('contact')) );
 				try {
 					$message = new Email_message( sprintf( t('Contact Form "%s"'), $details['name'] ), $mailBody->getOutput(), 'text/plain' );
 					$message->setTo( $details['email'] );
@@ -120,8 +121,8 @@
 				return zula_redirect( $this->_router->makeUrl( 'contact', 'index', $details['id'] ) );
 			}
 			$form->assign( array(
-								'FORM'		=> $details,
-								'FIELDS'	=> $fields,
+								'form'		=> $details,
+								'fields'	=> $fields,
 								));
 			return $form->getOutput();
 		}
