@@ -73,6 +73,9 @@
 				$cntrlr = $layout->getControllerDetails( $cntrlrId );
 				$module = new Module( $cntrlr['mod'] );
 				$this->setTitle( sprintf( t('Configure Attached Module "%1$s"'), $module->title ) );
+				if ( !isset( $cntrlr['config']['clDescription'] ) ) {
+					$cntrlr['config']['clDescription'] = '';
+				}
 			} catch ( Theme_Layout_ControllerNoExist $e ) {
 				$this->_event->error( sprintf( t('Unable to edit controller "%1$d" as it does not exist'), $cntrlrId ) );
 				return zula_redirect( $this->_router->makeUrl( 'content_layout', 'manage', $layoutName ) );
@@ -91,6 +94,7 @@
 							);
 			$form->addElement( 'content_layout/config/customTitle', $cntrlr['config']['customTitle'], t('Custom Title'), new Validator_Length(0, 255) );
 			$form->addElement( 'content_layout/config/htmlWrapClass', $cntrlr['config']['htmlWrapClass'], t('HTML Class'), new Validator_Length(0, 500) );
+			$form->addElement( 'content_layout/config/clDescription', $cntrlr['config']['clDescription'], t('Description'), new Validator_Length(0, 255) );
 			$form->addElement( 'content_layout/cntrlr', null, t('Controller'), new Validator_Alphanumeric('_-.!+') );
 			$form->addElement( 'content_layout/section', null, t('Section'), new Validator_Alphanumeric('_-.!+') );
 			$form->addElement( 'content_layout/config', null, t('Config'), new Validator_Is('array'), false );

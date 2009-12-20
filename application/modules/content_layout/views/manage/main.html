@@ -32,6 +32,7 @@
 				<th class="checkcol"></th>
 				<th>{L_[Sector/Module]}</th>
 				<th class="order">{L_[Order & Placement]}</th>
+				<th>{L_[Description]}</th>
 				<th>{L_[Manage]}</th>
 			</tr>
 		</thead>
@@ -44,7 +45,7 @@
 					}
 			?>
 				<tr class="subheading nodrag <?php echo $s_count == 0 ? 'nodrop' : ''; ?>">
-					<td colspan="4">
+					<td colspan="5">
 						<?php echo $sector['id'].'::'.$sector['description']; ?>
 						<input class="sector" type="hidden" value="<?php echo $sector['id']; ?>">
 					</td>
@@ -79,6 +80,7 @@
 								?>
 							</select>
 						</td>
+						<td><?php echo empty($cntrlr['config']['clDescription']) ? '' : $cntrlr['config']['clDescription']; ?></td>
 						<td class="managecol">
 							<a href="<?php echo $this->_router->makeUrl( 'content_layout', 'edit', $layout->getName(), null, array('id' => $cntrlr['id']) ); ?>" title="{L_[Configure Module Details]}">{L_[Configure]}</a>
 						</td>
