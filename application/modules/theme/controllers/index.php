@@ -108,7 +108,7 @@
 							++$delCount;
 						} catch ( Theme_UnableToDelete $e ) {
 							if ( $e->getCode() === 1 ) {
-								$msg = t('You can not delete the last remaining theme');
+								$msg = t('You cannot delete the last remaining theme');
 							} else if ( $e->getCode() === 2 ) {
 								$msg = t('Theme directory could not be deleted, please check permissions');
 							} else {
