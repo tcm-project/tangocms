@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #---
 # Zula Command line upgrader
 #
@@ -43,7 +43,7 @@ check_extensions() {
 			FAIL=1
 		fi
 	done
-	
+
 	OPT_EXTS=( gd )
 	becho 'Optional Extensions'
 	for ext in ${OPT_EXTS[@]}
@@ -75,7 +75,7 @@ help() {
 	becho "Options"
 	echo -e "\t--downloader <command>\tThe command used to download files."
 	echo -e "\t--no-check-extensions\tDo not check if the necesary extensions exist"
-	echo -e "\t--no-svn\t\tDo not use SVN for upgrades. If neither --use-svn or --nosvn are specified " 
+	echo -e "\t--no-svn\t\tDo not use SVN for upgrades. If neither --use-svn or --nosvn are specified "
 	echo -e "\t\t\t\tor --nosvn are specified then the installer will attempt to autodetect it."
 	echo -e "\t--php-path <path>\tSpecify the path to php"
 	echo -e "\t--use-svn\t\tUse SVN for upgrades"
@@ -131,7 +131,7 @@ upgrade_script() {
 #---
 usage() {
 	echo "Usage: $0 [OPTIONS]"
-	exit 1	
+	exit 1
 }
 
 #---
@@ -139,7 +139,7 @@ usage() {
 #---
 writable_files_dirs() {
 	FAIL=0
-	FILES=( ../config/default/main_frontpage_map.xml 
+	FILES=( ../config/default/main_frontpage_map.xml
 		../config/default/admin_frontpage_map.xml
 		../config/default/config.ini.php
 		../config/default/main_sector_map.xml
@@ -150,7 +150,7 @@ writable_files_dirs() {
 		../html/uploads/
 		)
 
-	becho Files	
+	becho Files
 	# Check each file is writable
 	for file in "${FILES[@]}"
 	do
@@ -170,7 +170,7 @@ writable_files_dirs() {
 			FAIL=1
 		fi
 	done
-	
+
 	becho Directories
 	# Check each directory is writable
 	for dir in "${DIRS[@]}"
@@ -190,7 +190,7 @@ writable_files_dirs() {
 			FAIL=1
 		fi
 	done
-	
+
 	return $FAIL
 }
 
@@ -250,12 +250,12 @@ do
 		--help)
 			help
 			exit 0
-		;;	
+		;;
 		*)
 		die "Unrecognised option: $1"
 		;;
 	esac
-	shift	
+	shift
 done
 
 if [ -n "$USER" ]

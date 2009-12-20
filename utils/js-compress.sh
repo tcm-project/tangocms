@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 #---
 # Zula JavaScript source compressor
