@@ -276,9 +276,7 @@
 			$form = new View_Form( 'config/form_page.html', 'page', ($op == 'add') );
 			$form->addElement( 'page/id', $id, 'ID', new Validator_Int, ($op == 'edit') );
 			$form->addElement( 'page/title', $title, t('Title'), new Validator_Length(2, 255) );
-			if ( $isQuickEdit == false ) {
-				$form->addElement( 'page/parent', $parent, t('Parent'), new Validator_InArray($validParents), !empty($parent) );
-			}
+			$form->addElement( 'page/parent', $parent, t('Parent'), new Validator_InArray($validParents), !empty($parent) );
 			$form->addElement( 'page/body', $body, t('Body'), new Validator_Length(1, 65535) );
 			$form->assign( array(
 								'OP'		=> $op,
