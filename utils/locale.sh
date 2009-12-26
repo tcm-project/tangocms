@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #---
 # Zula Locale Tools
 #
@@ -359,7 +359,7 @@ output() {
 #---
 usage() {
 	echo "Usage: $0 [OPTIONS]"
-	exit 1	
+	exit 1
 }
 
 SPELL_CHECK=0
@@ -419,11 +419,11 @@ do
 		--project-id)
 			if [ -z "$2" ]; then
 				help
-				exit 1	
+				exit 1
 			fi
 			PROJECT_ID=$2
 			shift
-		;;	
+		;;
 		--project-version)
 			if [ -z "$2" ]; then
 				help
@@ -436,12 +436,12 @@ do
 			ASPELL=`which aspell 2>/dev/null`
 			$ASPELL usage &>/dev/null || die "Aspell is required when using $1"
 			SPELL_CHECK=1
-		;;	
+		;;
 		*)
 		die "Unrecognised option: $1"
 		;;
 	esac
-	shift	
+	shift
 done
 
 if [ "$SPELL_CHECK" != "0" ]; then
