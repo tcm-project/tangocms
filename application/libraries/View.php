@@ -312,7 +312,7 @@
 
 			// Remove all <noparse> text
 			$tmpViewContent = preg_replace_callback( '#<noparse>(.*?)</noparse>#s', array( $this, 'extractNoparse' ), $tmpViewContent );
-			preg_match_all( '@{(?!%)(.*?)(?<!%)}@', $tmpViewContent, $templateTags );
+			preg_match_all( '@{(?!(?:%|\s|}))(.*?)(?<!%)}@', $tmpViewContent, $templateTags );
 			if ( !empty( $templateTags[0] ) ) {
 				foreach( $templateTags[0] as $key=>$tag ) {
 					if ( zula_substr( $tag, 0, 4 ) == '{L_[' ) {
