@@ -434,7 +434,7 @@
 		 * to the resource, the role will to.
 		 *
 		 * @param string|int $resource
-		 * @param string|int $role	
+		 * @param string|int $role
 		 * @param bool $allowRoot	Toggles if root user has access to everything
 		 * @return bool
 		 */
@@ -539,7 +539,7 @@
 				if ( is_array( $details ) ) {
 					// We have a provided RESOURCE [0] and ROLE HINT [1]
 					$tmpResource = $details[0];
-					if ( $this->roleExists( $details[1] ) ) {					
+					if ( $this->roleExists( $details[1] ) ) {
 						$tmpRoleHint = array( $rootRole['id'] );
 						foreach( $this->getRoleTree( $details[1], true ) as $role ) {
 							array_unshift( $tmpRoleHint, $role['id'] );
@@ -563,7 +563,7 @@
 					} catch ( Input_KeyNoExist $e ) {
 						try {
 							$role['access'] = $this->check( $tmpResource, $role['name'], false );
-						} catch ( Acl_ResourceNoExist $e ) {							
+						} catch ( Acl_ResourceNoExist $e ) {
 							$role['access'] = in_array( $role['id'], (isset($tmpRoleHint) ? $tmpRoleHint : $roleHint) );
 						}
 					}

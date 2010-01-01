@@ -16,7 +16,7 @@
 	class Session extends Zula_LibraryBase {
 
 		/**
-		 * Authentication key to use when identifying
+		 * Authentication key currently in use when identifying
 		 * @var string
 		 */
 		protected $authKey = null;
@@ -89,18 +89,26 @@
 			if ( _AJAX_REQUEST === true ) {
 				// Set default to not store previous URL when in AJAX request
 				$this->storePrevious = false;
-			}			
+			}
 			// Get which user (key + for) is being used
-			if ( !isset( $_SESSION['auth']['remember'] ) || $_SESSION['auth']['remember'] == true ) {
+			if ( !isset( $_SESSION['auth'] ) ) {
+				$_SESSION['auth'] = array(
+										'key' 		=> null,
+										'for' 		=> null,
+										'remember' 	=> true
+										);
+			}
+			if ( $_SESSION['auth']['remember'] == true ) {
 				if ( $this->_input->has( 'cookie', 'zulaAuthKey' ) ) {
-					$this->authKey = $this->_input->cookie( 'zulaAuthKey' );
+					$_SESSION['auth']['key'] = $this->_input->cookie( 'zulaAuthKey' );
 					if ( $this->_input->has( 'cookie', 'zulaAuthFor' ) ) {
-						$this->authFor = $this->_input->cookie( 'zulaAuthFor' );
+						$_SESSION['auth']['for'] = $this->_input->cookie( 'zulaAuthFor' );
 					}
 				}
-			} else {
-				$this->authKey = $_SESSION['auth']['key'];
-				$this->authFor = $_SESSION['auth']['for'];
+			}
+			if ( isset( $_SESSION['last_activity'] ) && $_SESSION['last_activity'] + $this->timeout < time() ) {
+				// User has timed out
+				$this->destroy();
 			}
 		}
 
@@ -139,46 +147,39 @@
 		 */
 		public function isLoggedIn() {
 			return $this->getUserId() != Ugmanager::_GUEST_ID;
-		}		
+		}
 
 		/**
 		 * Takes the authentication details from the cookie and checks if the
 		 * provided session key (not ID) is valid and the uid matches up.
 		 *
-		 * If anything fails, the user will be identified as a guest user.
+		 * If no authkey is provided the user will be identified as guest.
 		 *
-		 * @return int
+		 * @param string $authKey
+		 * @param string $authFor
+		 * @return int|bool
 		 */
-		public function identify() {
-			$this->user = $this->group = array();
-			if ( isset( $_SESSION['last_activity'] ) && $_SESSION['last_activity'] + $this->timeout < time() ) {
-				// User has timed out
-				$this->destroy();
-			}			
-			if ( $this->authKey && $this->authFor ) {
+		public function identify( $authKey=null, $authFor=null ) {
+			if ( $authKey ) {
 				$pdoSt = $this->_sql->prepare( 'SELECT uid FROM {SQL_PREFIX}sessions WHERE session_key = ?' );
-				$pdoSt->execute( array($this->authKey) );
+				$pdoSt->execute( array($authKey) );
 				$uid = $pdoSt->fetch( PDO::FETCH_COLUMN );
-				if ( $uid == false || zula_hash($uid) != $this->authFor ) {
-					$uid = Ugmanager::_GUEST_ID;
+				if ( $uid == false || zula_hash($uid) != $authFor ) {
+					return false;
 				}
 			} else {
 				// Initial identify, do so as guest
 				$uid = Ugmanager::_GUEST_ID;
 			}
-			try {
-				$this->user = $this->_ugmanager->getUser( $uid );
-				$this->group = $this->_ugmanager->getGroup( $this->user['group'] );
-				return $this->user['id'];
-			} catch ( Ugmanager_UserNoExist $e ) {
-				if ( $uid == Ugmanager::_GUEST_ID ) {
-					trigger_error( 'Session::identify() user '.$uid.' does not exist', E_USER_ERROR );
-				} else {
-					$this->authKey = $this->authFor = null;
-					return $this->identify();
-				}
-			} catch ( Ugmanager_GroupNoExist $e ) {
-				trigger_error( 'Session::identify() group '.$this->user['group'].' does not exist', E_USER_ERROR );
+			$user = $this->_ugmanager->getUser( $uid );
+			$group = $this->_ugmanager->getGroup( $user['group'] );
+			if ( $user['id'] != Ugmanager::_ROOT_ID && $user['status'] == 'locked' ) {
+				return false;
+			} else {
+				// Now store the user/group details since we know no exception was thrown.
+				$this->user = $user;
+				$this->group = $group;
+				return (int) $this->user['id'];
 			}
 		}
 
@@ -195,6 +196,7 @@
 			$this->destroy(); # Destroy the current session/user first
 			session_start();
 			$_SESSION = $session;
+			unset( $_SESSION['auth'] );
 			// Create the needed unique keys for this session, if any
 			$uid = abs( $uid );
 			if ( $uid == Ugmanager::_GUEST_ID ) {
@@ -202,25 +204,26 @@
 				return $this->identify();
 			} else {
 				$authKey = zula_hash( uniqid(mt_rand().$uid.microtime(true), true) );
+				$authFor = zula_hash( $uid );
 				$pdoSt = $this->_sql->prepare( 'INSERT INTO {SQL_PREFIX}sessions (uid, session_key, session_id) VALUES(?, ?, ?)' );
 				$pdoSt->execute( array($uid, $authKey, session_id()) );
-				if ( $pdoSt->rowCount() ) {
+				// Attempt to identify the user we are switching to
+				if ( $this->identify($authKey, $authFor) === $uid ) {
 					$this->_sql->query( 'UPDATE {SQL_PREFIX}users SET last_login = UNIX_TIMESTAMP() WHERE id = '.$uid );
 					$this->authKey = $authKey;
-					$this->authFor = zula_hash( $uid );
+					$this->authFor = $authFor;
 					$_SESSION['auth'] = array(
 											'remember'	=> (bool) $remember,
 											'key'		=> $this->authKey,
 											'for'		=> $this->authFor,
 											);
-					if ( $_SESSION['auth']['remember'] ) { 
+					if ( $_SESSION['auth']['remember'] ) {
 						// Set cookie for 28 days
 						setcookie( 'zulaAuthKey', $this->authKey, time()+2419200, _BASE_DIR, '', '', true );
 						setcookie( 'zulaAuthFor', $this->authFor, time()+2419200, _BASE_DIR, '', '', true );
 					}
-					return $this->identify();
+					return (int) $uid;
 				} else {
-					// Failed to add session entry.
 					return false;
 				}
 			}
@@ -234,7 +237,7 @@
 		 */
 		public function destroy() {
 			$_SESSION = array();
-			foreach( array('zulaAuthKey', 'zulaAuthFor', session_name()) as $cookie ) { 
+			foreach( array('zulaAuthKey', 'zulaAuthFor', session_name()) as $cookie ) {
 				setcookie( $cookie, '', time()-42000, _BASE_DIR );
 			}
 			session_regenerate_id( true );

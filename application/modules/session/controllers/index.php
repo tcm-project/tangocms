@@ -98,7 +98,7 @@
 				} else {
 					$formUrl = $this->_router->makeUrl( 'session', 'index', 'login' );
 					$registerUrl = $this->_router->makeUrl( 'session', 'register' );
-				}				
+				}
 				$view = $this->loadView( 'index/login.html' );
 				$view->assign( array(
 									'FORM_URL' 		=> $formUrl,
@@ -133,10 +133,14 @@
 																  $this->_input->post('session/password', false),
 																  $this->loginMethod
 																);
-						$this->_session->switchUser( $uid, $this->_input->has('post', 'session/remember') );
-						$loggedIn = true;
+						$rememberMe = $this->_input->has( 'post', 'session/remember' );
+						if ( $this->_session->switchUser( $uid, $rememberMe ) === false ) {
+							$this->_event->error( t('This user account is currently locked') );
+						} else {
+							$loggedIn = true;
+						}
 					} catch ( Session_UserNotActivated $e ) {
-						$this->_event->error( t('User account has not yet been activated') );
+						$this->_event->error( t('This user account has not yet been activated') );
 					} catch ( Session_InvalidCredentials $e ) {
 						$this->_event->error( t('Username and/or password provided are incorrect') );
 					}

@@ -31,9 +31,19 @@
 					<td><?php echo $this->_date->formatStamp( $user['joined'] ); ?></td>
 					<td><?php echo $this->_ugmanager->gidName( $user['group'] ); ?></td>
 					<td><?php echo $user['email']; ?></td>
-					<td><?php echo empty($user['activate_code']) ? t('Activated') : t('Awaiting Validation'); ?></td>
+					<td>
+						<?php
+							if ( !empty($user['activate_code']) ) {
+								echo t('Awaiting Validation');
+							} else if ( $user['status'] == 'active' ) {
+								echo t('Activated');
+							} else if ( $user['status'] == 'locked' ) {
+								echo t('Locked');
+							}
+						?>
+					</td>
 					<td class="managecol">
-						<a href="<?php echo $this->_router->makeUrl( 'users', 'config', 'edit', null, array( 'id' => $user['id'] ) ); ?>" title="{L_[Edit User]}">{L_[Edit]}</a>
+						<a href="<?php echo $this->_router->makeUrl( 'users', 'config', 'edit', null, array('id' => $user['id']) ); ?>" title="{L_[Edit User]}">{L_[Edit]}</a>
 					</td>
 				</tr>
 			<?php $i++; } } ?>

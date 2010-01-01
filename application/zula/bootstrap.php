@@ -20,7 +20,7 @@
 		}
 	} catch ( Input_KeyNoExist $e ) {
 	}
-	$zula->loadLib( 'session' );
+
 	/**
 	 * Check if SQL is enable, if so attempt to connect to the server provided
 	 * in the main configuration files. Extra configuration values will be loaded
@@ -72,6 +72,7 @@
 		}
 	} catch ( Config_KeyNoExist $e ) {}
 
+	$session = $zula->loadLib( 'session' );
 	$dispatcher = Registry::get( 'dispatcher' );
 	if ( _APP_MODE == 'installation' ) {
 		/**
@@ -86,7 +87,14 @@
 		}
 	} else {
 		$zula->loadLib( 'ugmanager' );
-		Registry::get( 'session' )->identify();
+		try {
+			$uid = $session->identify( $_SESSION['auth']['key'], $_SESSION['auth']['for'] );
+			if ( $uid === false ) {
+				throw new Exception;
+			}
+		} catch ( Exception $e ) {
+			$uid = $session->identify(); # Identify as guest for fail safe
+		}
 	}
 
 	/**
@@ -118,7 +126,7 @@
 		define( '_THEME_NAME', $themeName );
 		try {
 			$theme = new Theme( $themeName );
-			Registry::register( 'theme', $theme );			
+			Registry::register( 'theme', $theme );
 			$dispatchContent = $dispatcher->dispatch();
 			if ( $dispatchContent !== false ) {
 				header( 'Content-Type: text/html; charset=utf-8' );
