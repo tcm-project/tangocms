@@ -1,6 +1,12 @@
 <?xml version="1.0" ?>
 <install>
 	<dependencies>
+		<php>
+			<version operator=">=">5.2.0</version>
+			<extensions>
+				<name>gd</name>
+			</extensions>
+		</php>
 		<zula>
 			<version operator=">=">0.7.6</version>
 		</zula>

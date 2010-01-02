@@ -367,42 +367,43 @@
 			if ( in_array( $this->name, self::getModules(self::_INSTALLABLE) ) ) {
 				$details = $this->getInstallDetails();
 				/**
-				 * Generate a results array to confirm that all
-				 * dependencies are met for this module.
+				 * Generate a results array to confirm that all dependencies are met
 				 */
-				$passed = true;
 				$results = $details['dependencies'];
+				$passed = true;
 				foreach( $results as $pkg=>$val ) {
-					switch( $pkg ) {
-						case 'php':
-							$version = PHP_VERSION;
-							break;
-						case 'zula':
-							$version = Zula::_VERSION;
-							break;
-						case 'tcm':
-						case 'project':
-							$version = _PROJECT_VERSION;
-							break;
-						default:
-							$version = null;
+					if ( $pkg == 'php' ) {
+						if ( version_compare(PHP_VERSION, $val['version'], $val['operator']) ) {
+							foreach( $val['extensions'] as $phpExt ) {
+								if ( !extension_loaded( $phpExt ) ) {
+									$results[ $pkg ]['passed'] = false;
+									break;
+								}
+							}
+						} else {
+							$results[ $pkg ]['passed'] = false;
+						}
+					} else {
+						$version = ($pkg == 'zula') ? Zula::_VERSION : _PROJECT_VERSION;
+						$results[ $pkg ]['passed'] = version_compare( $version, $val['version'], $val['operator'] );
 					}
-					$results[ $pkg ]['passed'] = version_compare( $version, $val['version'], $val['operator'] );
 					if ( $results[ $pkg ]['passed'] === false ) {
 						$passed = false;
-						break;
 					}
 				}
 				if ( $passed === false ) {
-					// Dependency checks failed.
 					return $results;
 				}
+				/**
+				 * Continue with the installation, firstly doing all SQL queries needed
+				 */
 				$sqlFile = $this->path.'/install.sql';
 				if ( is_readable( $sqlFile ) ) {
 					$this->_sql->loadSqlFile( $sqlFile );
 				}
 				$this->_sql->query( 'INSERT INTO {SQL_PREFIX}modules (name) VALUES("'.$this->name.'")
-									 ON DUPLICATE KEY UPDATE name=name' )->closeCursor();
+									 ON DUPLICATE KEY UPDATE name=name' )
+						   ->closeCursor();
 				// Add all of the new ACL resources and run the install.sql file
 				$guestGroup = $this->_ugmanager->getGroup( UGManager::_GUEST_GID );
 				foreach( $details['aclResources'] as $resource=>$roleHint ) {
@@ -454,15 +455,18 @@
 							'file'	=> $file,
 							'dependencies'	=> array(
 													'php'	=> array(
+																	'passed'		=> true,
 																	'version'		=> '5.2.0',
 																	'operator'		=> '>=',
-																	#'extensions'	=> array(),
+																	'extensions'	=> array(),
 																	),
 													'zula'	=> array(
+																	'passed'		=> true,
 																	'version'		=> Zula::_VERSION,
 																	'operator'		=> '>=',
 																	),
 													'tcm'	=> array(
+																	'passed'		=> true,
 																	'version'		=> _PROJECT_VERSION,
 																	'operator'		=> '>='
 																	),
@@ -479,6 +483,12 @@
 					$operator = $pkg->version['operator'];
 					if ( in_array( $operator, $allowedOperators ) ) {
 						$details['dependencies'][ $pkg->getName() ]['operator'] = (string) $pkg->version['operator'];
+					}
+					// Check if we have the needed PHP extensions
+					if ( isset( $pkg->extensions ) ) {
+						foreach( $pkg->extensions->children() as $phpExt ) {
+							$details['dependencies'][ $pkg->getName() ]['extensions'][] = (string) $phpExt;
+						}
 					}
 				}
 			}
