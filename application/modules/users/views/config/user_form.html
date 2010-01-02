@@ -20,6 +20,21 @@
 			<tr class="odd">
 				<td>
 					<dl>
+						<dt>{L_[Account status]}</dt>
+						<dd>{L_[Setting an account to 'Locked' means this user will not be able to login (equivalent to being banned).]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="radio" id="users-status-active" name="users[status]" value="active" <?php echo $users['status'] == 'active' ? 'checked="checked"' : ''; ?>>
+					<label for="users-status-active" class="horizontal">{L_[Active]}</label>
+					<br>
+					<input type="radio" id="users-status-locked" name="users[status]" value="locked" <?php echo $users['status'] == 'locked' ? 'checked="checked"' : ''; ?>>
+					<label for="users-status-locked" class="horizontal">{L_[Locked]}</label>
+				</td>
+			</tr>
+			<tr class="even">
+				<td>
+					<dl>
 						<dt>{L_[Group]}</dt>
 						<dd>{L_[Select the group that this user should be in.]}</dd>
 					</dl>
@@ -41,6 +56,16 @@
 					</select>
 				</td>
 			</tr>
+		</tbody>
+	</table>
+
+	<table>
+		<thead>
+			<tr>
+				<th colspan="2">{L_[General Profile]}</th>
+			</tr>
+		</thead>
+		<tbody>
 			<tr class="even">
 				<td>
 					<dl>
@@ -61,6 +86,38 @@
 				</td>
 				<td class="confcol">
 					<input type="text" name="users[last_name]" value="{USERS.LAST_NAME}">
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<table>
+		<thead>
+			<tr>
+				<th colspan="2">{L_[Password]}</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr class="even">
+				<td>
+					<dl>
+						<dt>{L_[New Password]}</dt>
+						<dd>{L_[Enter the password you would like for this account.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="password" name="users[password]" value="{USERS.PASSWORD}">
+				</td>
+			</tr>
+			<tr class="odd">
+				<td>
+					<dl>
+						<dt>{L_[Repeat Password]}</dt>
+						<dd>{L_[Please repeat the password.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="password" name="users_password_confirm">
 				</td>
 			</tr>
 		</tbody>
@@ -110,38 +167,6 @@
 					<br>
 					<input type="radio" id="users-hide_no" name="users[hide_email]" value="0" <?php echo $users['hide_email'] ? '' : 'checked="checked"'; ?>>
 					<label for="users-hide_no" class="horizontal">{L_[No]}</label>
-				</td>
-			</tr>
-		</tbody>
-	</table>
-
-	<table>
-		<thead>
-			<tr>
-				<th colspan="2">{L_[Password]}</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr class="even">
-				<td>
-					<dl>
-						<dt>{L_[New Password]}</dt>
-						<dd>{L_[Enter the password you would like for this account.]}</dd>
-					</dl>
-				</td>
-				<td class="confcol">
-					<input type="password" name="users[password]" value="{USERS.PASSWORD}">
-				</td>
-			</tr>
-			<tr class="odd">
-				<td>
-					<dl>
-						<dt>{L_[Repeat Password]}</dt>
-						<dd>{L_[Please repeat the password.]}</dd>
-					</dl>
-				</td>
-				<td class="confcol">
-					<input type="password" name="users_password_confirm">
 				</td>
 			</tr>
 		</tbody>

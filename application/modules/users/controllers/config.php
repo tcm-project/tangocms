@@ -237,6 +237,7 @@
 			$details = zula_merge_recursive( array(
 												'id'			=> null,
 												'username'		=> null,
+												'status'		=> 'active',
 												'group'			=> null,
 												'first_name'	=> null,
 												'last_name'		=> null,
@@ -248,6 +249,7 @@
 			$form->addElement( 'users/username', $details['username'], t('Username'),
 								array(new Validator_Alphanumeric('_()!:@.^-'), new Validator_Length(2, 32), array($this, 'validateUsername'))
 							 );
+			$form->addElement( 'users/status', $details['status'], t('Status'), new Validator_InArray(array('active', 'locked')) );
 			$form->addElement( 'users/group', $details['group'], t('Group'), new Validator_Int, false );
 			$form->addElement( 'users/first_name', $details['first_name'], t('First Name'), new Validator_Length(0, 255) );
 			$form->addElement( 'users/last_name', $details['last_name'], t('Last Name'), new Validator_Length(0, 255) );

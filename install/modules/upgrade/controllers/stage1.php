@@ -19,16 +19,18 @@
 		 * Versions supported by the upgrade wizard
 		 */
 		protected $supportedVersions = array(
-											# Stable versions											
+											# Stable versions
 											'2.3.0', '2.3.1', '2.3.2', '2.3.3',
 											'2.4.0',
 
-											# Dev versions											
+											# Dev versions
 											'2.3.50', '2.3.51', '2.3.52', '2.3.53', '2.3.54', '2.3.55', '2.3.56',
 											'2.3.60', '2.3.61', '2.3.62', '2.3.63', '2.3.64',
 											'2.3.70', '2.3.71', '2.3.72', '2.3.73',
 											'2.3.80', '2.3.81',
 											'2.3.90',
+
+											'2.4.50',
 											);
 
 		/**

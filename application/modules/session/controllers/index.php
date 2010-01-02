@@ -135,7 +135,7 @@
 																);
 						$rememberMe = $this->_input->has( 'post', 'session/remember' );
 						if ( $this->_session->switchUser( $uid, $rememberMe ) === false ) {
-							$this->_event->error( t('This user account is currently locked') );
+							$this->_event->error( t('Sorry, this user account is currently locked') );
 						} else {
 							$loggedIn = true;
 						}

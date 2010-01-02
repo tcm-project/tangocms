@@ -22,8 +22,7 @@ INSERT INTO {SQL_PREFIX}acl_roles (id, name, parent_id) VALUES
 (1, 'group_guest', 0),
 (2, 'group_member', 1),
 (3, 'group_admin', 2),
-(4, 'group_root', 0),
-(5, 'group_banned', 0);
+(4, 'group_root', 0);
 
 DROP TABLE IF EXISTS {SQL_PREFIX}acl_rules;
 CREATE TABLE {SQL_PREFIX}acl_rules (
@@ -85,8 +84,7 @@ INSERT INTO {SQL_PREFIX}groups (id, name, role_id) VALUES
 (1, 'root', 4),
 (2, 'admin', 3),
 (3, 'guest', 1),
-(4, 'member', 2),
-(5, 'banned', 5);
+(4, 'member', 2);
 
 DROP TABLE IF EXISTS {SQL_PREFIX}layouts;
 CREATE TABLE {SQL_PREFIX}layouts (
@@ -119,13 +117,13 @@ CREATE TABLE {SQL_PREFIX}sessions (
 DROP TABLE IF EXISTS {SQL_PREFIX}users;
 CREATE TABLE {SQL_PREFIX}users (
   id mediumint(6) NOT NULL AUTO_INCREMENT,
-  `status` enum('active','locked','closed') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'active',
+  `status` enum('active','locked') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'active',
   username varchar(32) COLLATE utf8_unicode_ci NOT NULL,
   `password` char(64) COLLATE utf8_unicode_ci NOT NULL,
   email varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `group` int(4) NOT NULL DEFAULT '0',
   joined datetime NOT NULL,
-  hide_email tinyint(1) NOT NULL DEFAULT '1', 
+  hide_email tinyint(1) NOT NULL DEFAULT '1',
   first_name varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   last_name varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   theme varchar(20) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',

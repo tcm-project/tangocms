@@ -20,7 +20,7 @@
 	define( '_PATH_APPLICATION', '../application' );
 	define( '_APP_MODE', 'installation' );
 
-	define( '_PROJECT_LATEST_VERSION', '2.4.50' );
+	define( '_PROJECT_LATEST_VERSION', '2.4.51' );
 
 	// Include the main index.php file
 	require_once '../index.php';
