@@ -1,0 +1,5 @@
+<MSDeploy.iisApp>
+	<iisApp path="tangocms" />
+	<!--<dbmysql path="base.sql" />-->
+	<!--<dbmysql path="modules.sql" />-->
+</MSDeploy.iisApp>

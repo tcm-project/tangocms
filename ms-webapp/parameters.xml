@@ -1,0 +1,26 @@
+<parameters>
+	<parameter name="AppPath" defaultValue="TangoCMS" tags="iisapp">
+		<parameterEntry type="ProviderPath" scope="iisapp" match="tangocms" />
+	</parameter>
+	<!-- Database configuration -->
+	<parameter name="dbServer" defaultValue="localhost" tags="MySQL, dbServer">
+		<parameterEntry type="TextFile" scope="tangocms\\config\\default\\config.ini.php" match="{DB_SERVER}" />
+	</parameter>
+	<parameter name="dbName" defaultValue="tangocms" tags="MySQL, dbName">
+		<parameterValidation type="RegularExpression" validationString="^[A-Za-z0-9_]{1,64}$" />
+		<parameterEntry type="TextFile" scope="tangocms\\config\\default\\config.ini.php" match="{DB_NAME}" />
+	</parameter>
+	<parameter name="dbUsername" defaultValue="tangocms" tags="MySQL, dbUsername">
+		<parameterValidation type="RegularExpression" validationString="^[A-Za-z0-9_\-]{1,16}$" />
+		<parameterEntry type="TextFile" scope="tangocms\\config\\default\\config.ini.php" match="{DB_USER}" />
+	</parameter>
+	<parameter name="dbUserPassword" tags="New, Password, MySQL, dbUserPassword">
+		<parameterEntry type="TextFile" scope="tangocms\\config\\default\\config.ini.php" match="{DB_PASS}" />
+	</parameter>
+	<parameter name="dbTag" friendlyName="Table Prefix" defaultValue="tcm_" tags="MySQL">
+		<parameterEntry type="TextFile" scope="tangocms\\config\\default\\config.ini.php" match="{DB_PREFIX}" />
+	</parameter>
+	<!-- Admin DB, used when the database/user needs creating -->
+	<parameter name="dbAdminUsername" defaultValue="root" tags="MySQL, dbAdminUsername" />
+	<parameter name="dbAdminPassword" tags="MySQL, dbAdminPassword" />
+</parameters>
