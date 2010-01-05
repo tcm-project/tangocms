@@ -1,26 +1,50 @@
 <parameters>
-	<parameter name="AppPath" defaultValue="TangoCMS" tags="iisapp">
+	<parameter name="AppPath" defaultValue="tangocms" tags="iisapp">
 		<parameterEntry type="ProviderPath" scope="iisapp" match="tangocms" />
 	</parameter>
+
 	<!-- Database configuration -->
 	<parameter name="dbServer" defaultValue="localhost" tags="MySQL, dbServer">
-		<parameterEntry type="TextFile" scope="tangocms\\config\\default\\config.ini.php" match="{DB_SERVER}" />
-	</parameter>
-	<parameter name="dbName" defaultValue="tangocms" tags="MySQL, dbName">
-		<parameterValidation type="RegularExpression" validationString="^[A-Za-z0-9_]{1,64}$" />
-		<parameterEntry type="TextFile" scope="tangocms\\config\\default\\config.ini.php" match="{DB_NAME}" />
+		<parameterEntry type="TextFile" scope="tangocms\\config\\default\\config.ini.php" match="(?<=^host\s=\s)127\.0\.0\.1" />
 	</parameter>
 	<parameter name="dbUsername" defaultValue="tangocms" tags="MySQL, dbUsername">
 		<parameterValidation type="RegularExpression" validationString="^[A-Za-z0-9_\-]{1,16}$" />
-		<parameterEntry type="TextFile" scope="tangocms\\config\\default\\config.ini.php" match="{DB_USER}" />
+		<parameterEntry type="TextFile" scope="tangocms\\config\\default\\config.ini.php" match="(?<=^user\s=\s)\Z" />
 	</parameter>
 	<parameter name="dbUserPassword" tags="New, Password, MySQL, dbUserPassword">
-		<parameterEntry type="TextFile" scope="tangocms\\config\\default\\config.ini.php" match="{DB_PASS}" />
+		<parameterEntry type="TextFile" scope="tangocms\\config\\default\\config.ini.php" match="(?<=^pass\s=\s)\Z" />
+	</parameter>
+	<parameter name="dbName" defaultValue="tangocms" tags="MySQL, dbName">
+		<parameterValidation type="RegularExpression" validationString="^[A-Za-z0-9_]{1,64}$" />
+		<parameterEntry type="TextFile" scope="tangocms\\config\\default\\config.ini.php" match="(?<=^database\s=\s)\Z" />
 	</parameter>
 	<parameter name="dbTag" friendlyName="Table Prefix" defaultValue="tcm_" tags="MySQL">
-		<parameterEntry type="TextFile" scope="tangocms\\config\\default\\config.ini.php" match="{DB_PREFIX}" />
+		<parameterEntry type="TextFile" scope="tangocms\\config\\default\\config.ini.php" match="(?<=^prefix\s=\s)tcm_" />
 	</parameter>
 	<!-- Admin DB, used when the database/user needs creating -->
 	<parameter name="dbAdminUsername" defaultValue="root" tags="MySQL, dbAdminUsername" />
-	<parameter name="dbAdminPassword" tags="MySQL, dbAdminPassword" />
+	<parameter name="dbAdminPassword" tags="MySQL, Password, dbAdminPassword" />
+
+	<!-- ACL files and directories -->
+	<parameter name="SetAclParameter1" defaultValue="{AppPath}/config/default/layouts" tags="Hidden">
+		<parameterEntry type="ProviderPath" scope="setAcl" match="tangocms/config/default/layouts" />
+	</parameter>
+	<parameter name="SetAclParameter2" defaultValue="{AppPath}/applocation/logs" tags="Hidden">
+		<parameterEntry type="ProviderPath" scope="setAcl" match="tangocms/application/logs" />
+	</parameter>
+	<parameter name="SetAclParameter3" defaultValue="{AppPath}/tmp" tags="Hidden">
+		<parameterEntry type="ProviderPath" scope="setAcl" match="tangocms/tmp" />
+	</parameter>
+	<parameter name="SetAclParameter4" defaultValue="{AppPath}/assets/uploads" tags="Hidden">
+		<parameterEntry type="ProviderPath" scope="setAcl" match="tangocms/assets/uploads" />
+	</parameter>
+	<parameter name="SetAclParameter5" defaultValue="{AppPath}/config/default/config.ini.php" tags="Hidden">
+		<parameterEntry type="ProviderPath" scope="setAcl" match="tangocms/config/default/config.ini.php" />
+	</parameter>
+	<parameter name="SetAclParameter6" defaultValue="{AppPath}/config/default/layouts/main-default.xml" tags="Hidden">
+		<parameterEntry type="ProviderPath" scope="setAcl" match="tangocms/config/default/layouts/main-default.xml" />
+	</parameter>
+	<parameter name="SetAclParameter7" defaultValue="{AppPath}/config/default/layouts/admin-default.xml" tags="Hidden">
+		<parameterEntry type="ProviderPath" scope="setAcl" match="tangocms/config/default/layouts/admin-default.xml" />
+	</parameter>
 </parameters>

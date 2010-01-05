@@ -2,4 +2,19 @@
 	<iisApp path="tangocms" />
 	<!--<dbmysql path="base.sql" />-->
 	<!--<dbmysql path="modules.sql" />-->
+
+	<!-- ACL files and directories -->
+	<setAcl path="tangocms/config/default/layouts" setAclAccess="Modify" setAclUser="anonymousAuthenticationUser" />
+	<setAcl path="tangocms/application/logs" setAclAccess="Modify" setAclUser="anonymousAuthenticationUser" />
+	<setAcl path="tangocms/tmp" setAclAccess="Modify" setAclUser="anonymousAuthenticationUser" />
+	<setAcl path="tangocms/assets/uploads" setAclAccess="Modify" setAclUser="anonymousAuthenticationUser" />
+	<setAcl
+		path="tangocms/config/default/config.ini.php"
+		setAclResourceType="File" setAclAccess="Modify" setAclUser="anonymousAuthenticationUser" />
+	<setAcl
+		path="tangocms/config/default/layouts/main-default.xml"
+		setAclResourceType="File" setAclAccess="Modify" setAclUser="anonymousAuthenticationUser" />
+	<setAcl
+		path="tangocms/config/default/layouts/admin-default.xml"
+		setAclResourceType="File" setAclAccess="Modify" setAclUser="anonymousAuthenticationUser" />
 </MSDeploy.iisApp>
