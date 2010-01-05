@@ -4,22 +4,25 @@
 	</parameter>
 
 	<!-- Database configuration -->
-	<parameter name="dbServer" defaultValue="localhost" tags="MySQL, dbServer">
-		<parameterEntry type="TextFile" scope="tangocms\\config\\default\\config.ini.php" match="(?<=^host\s=\s)127\.0\.0\.1" />
+	<parameter name="tcmSqlEnable" defaultValue="1" tags="Hidden">
+		<parameterEntry type="TextFile" scope="tangocms\\config\\default\\config.ini.php" match="(?&lt;=enabled\s=\s)0" />
 	</parameter>
-	<parameter name="dbUsername" defaultValue="tangocms" tags="MySQL, dbUsername">
+	<parameter name="dbServer" defaultValue="localhost" tags="MySQL, dbServer">
+		<parameterEntry type="TextFile" scope="tangocms\\config\\default\\config.ini.php" match="(?&lt;=host\s=\s)127\.0\.0\.1" />
+	</parameter>
+	<parameter name="dbUsername" tags="MySQL, dbUsername">
 		<parameterValidation type="RegularExpression" validationString="^[A-Za-z0-9_\-]{1,16}$" />
-		<parameterEntry type="TextFile" scope="tangocms\\config\\default\\config.ini.php" match="(?<=^user\s=\s)\Z" />
+		<parameterEntry type="TextFile" scope="tangocms\\config\\default\\config.ini.php" match="(?&lt;=user\s=\s)db_user" />
 	</parameter>
 	<parameter name="dbUserPassword" tags="New, Password, MySQL, dbUserPassword">
-		<parameterEntry type="TextFile" scope="tangocms\\config\\default\\config.ini.php" match="(?<=^pass\s=\s)\Z" />
+		<parameterEntry type="TextFile" scope="tangocms\\config\\default\\config.ini.php" match="(?&lt;=pass\s=\s)db_pass" />
 	</parameter>
 	<parameter name="dbName" defaultValue="tangocms" tags="MySQL, dbName">
 		<parameterValidation type="RegularExpression" validationString="^[A-Za-z0-9_]{1,64}$" />
-		<parameterEntry type="TextFile" scope="tangocms\\config\\default\\config.ini.php" match="(?<=^database\s=\s)\Z" />
+		<parameterEntry type="TextFile" scope="tangocms\\config\\default\\config.ini.php" match="(?&lt;=database\s=\s)db_name" />
 	</parameter>
 	<parameter name="dbTag" friendlyName="Table Prefix" defaultValue="tcm_" tags="MySQL">
-		<parameterEntry type="TextFile" scope="tangocms\\config\\default\\config.ini.php" match="(?<=^prefix\s=\s)tcm_" />
+		<parameterEntry type="TextFile" scope="tangocms\\config\\default\\config.ini.php" match="(?&lt;=prefix\s=\s)tcm_" />
 	</parameter>
 	<!-- Admin DB, used when the database/user needs creating -->
 	<parameter name="dbAdminUsername" defaultValue="root" tags="MySQL, dbAdminUsername" />
@@ -29,7 +32,7 @@
 	<parameter name="SetAclParameter1" defaultValue="{AppPath}/config/default/layouts" tags="Hidden">
 		<parameterEntry type="ProviderPath" scope="setAcl" match="tangocms/config/default/layouts" />
 	</parameter>
-	<parameter name="SetAclParameter2" defaultValue="{AppPath}/applocation/logs" tags="Hidden">
+	<parameter name="SetAclParameter2" defaultValue="{AppPath}/application/logs" tags="Hidden">
 		<parameterEntry type="ProviderPath" scope="setAcl" match="tangocms/application/logs" />
 	</parameter>
 	<parameter name="SetAclParameter3" defaultValue="{AppPath}/tmp" tags="Hidden">
