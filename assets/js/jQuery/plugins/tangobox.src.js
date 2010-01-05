@@ -158,7 +158,7 @@ jQuery(document).ready(
 			}
 			busy = true;
 			var currentItem = itemArray[ itemIndex ];
-			var cTitle = currentItem.title || currentItem.alt
+			var cTitle = currentItem.title || currentItem.alt || "";
 			$("#tbNavPrev, #tbNavNext, #tbClose, #tbMeta").hide();
 			if ( tbOuter.is(":visible") === false ) {
 				tbOuter.css("top", "120px").show();
@@ -178,7 +178,6 @@ jQuery(document).ready(
 				imgPreload.onload = function() {
 											var imgX = imgPreload.width, imgY = imgPreload.height;
 											var vpX = $(window).width() - 120, vpY = $(window).height() - 120; // Viewport Height/Width
-											var cTitle = (currentItem.title || currentItem.alt);
 											if ( displayMetaBar ) {
 												// We will be displaying the meta title bar, so shrink image even more.
 												vpY -= tbMeta.outerHeight();
