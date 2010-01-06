@@ -28,7 +28,7 @@
 	<parameter name="dbTag" friendlyName="Table Prefix" description="Prefix to use for tables, if any." defaultValue="tcm_" tags="MySQL">
 		<parameterValidation type="RegularExpression" validationString="^[A-Za-z0-9_]{0,12}$" />
 		<parameterEntry type="TextFile" scope="tangocms\\config\\default\\config.ini.php" match="(?&lt;=prefix\s=\s)tcm_" />
-		<parameterEntry type="TextFile" scope="install.sql" match="\{SQL_PREFIX\}" />
+		<parameterEntry type="TextFile" scope="tangocms.sql" match="\{SQL_PREFIX\}" />
 	</parameter>
 
 	<!-- Database administration details and SQL connection string for the SQL files -->
@@ -43,26 +43,34 @@
 			<parameterEntry type="ProviderPath" scope="dbmysql" match="tangocms.sql" />
 	</parameter>
 
-	<!-- First user configuration -->
+	<!-- TangoCMS Basic Configuration -->
 	<parameter
-		name="TangoCMS administrator username."
+		name="Website title"
+		description="Title of the website to be displayed."
+		defaultValue="My TangoCMS Website">
+			<parameterEntry type="TextFile" scope="tangocms.sql" match="websiteTitle" />
+	</parameter>
+	<parameter
+		name="TangoCMS administrator username"
 		description="Username must be alphanumic (underscore and dash are allowed) between 2 and 32 characters long."
 		defaultValue="root">
 			<parameterValidation type="RegularExpression" validationString="^[A-Za-z0-9_\-]{2,32}$" />
-			<parameterEntry type="TextFile" scope="install.sql" match="rootUser" />
+			<parameterEntry type="TextFile" scope="tangocms.sql" match="rootUser" />
 	</parameter>
 	<parameter
-		name="TangoCMS administrator password."
+		name="TangoCMS administrator password"
 		description="Passwords must be between 4 and 32 characters."
 		tags="New, Password">
 			<parameterValidation type="RegularExpression" validationString="^.{1,16}$" />
-			<parameterEntry type="TextFile" scope="install.sql" match="rootPass" />
+			<parameterEntry type="TextFile" scope="tangocms.sql" match="rootPass" />
 	</parameter>
 	<parameter
-		name="TangoCMS administrator email."
+		name="TangoCMS administrator email"
 		description="Enter the email address for this user, e.g. tangocms@example.org">
 			<parameterValidation type="RegularExpression" validationString="^([a-zA-Z0-9])+([a-zA-Z0-9\.\\+=_-])*@([a-zA-Z0-9_-])+([a-zA-Z0-9\._-]+)+$" />
-			<parameterEntry type="TextFile" scope="install.sql" match="rootEmail" />
+			<parameterEntry type="TextFile" scope="tangocms.sql" match="rootEmail" />
+			<parameterEntry type="TextFile" scope="tangocms.sql" match="mailIncoming" />
+			<parameterEntry type="TextFile" scope="tangocms.sql" match="mailOutgoing" />
 	</parameter>
 
 	<!-- ACL files and directories -->
