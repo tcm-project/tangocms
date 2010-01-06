@@ -4,6 +4,8 @@
 	<dbmysql path="install.sql" commandDelimiter="$$" removeCommandDelimiter="true" />
 	<dbmysql path="tangocms.sql" commandDelimiter="$$" removeCommandDelimiter="true" />
 
+	<alias from="web.config" to="tangocms/web.config" />
+
 	<!-- ACL files and directories -->
 	<setAcl path="tangocms/config/default/layouts" setAclAccess="Modify" setAclUser="anonymousAuthenticationUser" />
 	<setAcl path="tangocms/application/logs" setAclAccess="Modify" setAclUser="anonymousAuthenticationUser" />

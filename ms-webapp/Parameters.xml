@@ -4,9 +4,6 @@
 	</parameter>
 
 	<!-- Database configuration -->
-	<parameter name="tcmSqlEnable" defaultValue="1" tags="Hidden">
-		<parameterEntry type="TextFile" scope="tangocms\\config\\default\\config.ini.php" match="(?&lt;=enabled\s=\s)0" />
-	</parameter>
 	<parameter name="dbServer" defaultValue="localhost" tags="MySQL, dbServer">
 		<parameterEntry type="TextFile" scope="tangocms\\config\\default\\config.ini.php" match="(?&lt;=host\s=\s)127\.0\.0\.1" />
 		<parameterEntry type="TextFile" scope="install.sql" match="dbServer" />
@@ -71,6 +68,11 @@
 			<parameterEntry type="TextFile" scope="tangocms.sql" match="rootEmail" />
 			<parameterEntry type="TextFile" scope="tangocms.sql" match="mailIncoming" />
 			<parameterEntry type="TextFile" scope="tangocms.sql" match="mailOutgoing" />
+	</parameter>
+
+	<!-- Hidden config.ini.php required changes -->
+	<parameter name="tcmSqlEnable" defaultValue="1" tags="Hidden">
+		<parameterEntry type="TextFile" scope="tangocms\\config\\default\\config.ini.php" match="(?&lt;=enable\s=\s)0" />
 	</parameter>
 
 	<!-- ACL files and directories -->
