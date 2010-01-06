@@ -18,4 +18,10 @@
 	<setAcl
 		path="tangocms/config/default/layouts/admin-default.xml"
 		setAclResourceType="File" setAclAccess="Modify" setAclUser="anonymousAuthenticationUser" />
+
+	<!-- Make the custom msInstall.php file writable so it can delete its self -->
+	<alias from="msInstall.php" to="tangocms/msInstall.php" />
+	<setAcl
+		path="tangocms/msInstall.php"
+		setAclResourceType="File" setAclAccess="Modify" setAclUser="anonymousAuthenticationUser" />
 </MSDeploy.iisApp>

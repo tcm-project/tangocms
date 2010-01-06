@@ -26,7 +26,7 @@
 		<parameterEntry type="TextFile" scope="install.sql" match="dbName" />
 	</parameter>
 	<parameter name="dbTag" friendlyName="Table Prefix" description="Prefix to use for tables, if any." defaultValue="tcm_" tags="MySQL">
-		<parameterValidation type="RegularExpression" validationString="^[A-Za-z0-9_]{0,12}$" />
+		<parameterValidation type="RegularExpression, AllowEmpty" validationString="^[A-Za-z0-9_]{0,12}$" />
 		<parameterEntry type="TextFile" scope="tangocms\\config\\default\\config.ini.php" match="(?&lt;=prefix\s=\s)tcm_" />
 		<parameterEntry type="TextFile" scope="tangocms.sql" match="\{SQL_PREFIX\}" />
 	</parameter>
@@ -45,27 +45,27 @@
 
 	<!-- TangoCMS Basic Configuration -->
 	<parameter
-		name="Website title"
+		name="Website Title"
 		description="Title of the website to be displayed."
 		defaultValue="My TangoCMS Website">
 			<parameterEntry type="TextFile" scope="tangocms.sql" match="websiteTitle" />
 	</parameter>
 	<parameter
-		name="TangoCMS administrator username"
+		name="TangoCMS Administrator Username"
 		description="Username must be alphanumic (underscore and dash are allowed) between 2 and 32 characters long."
 		defaultValue="root">
 			<parameterValidation type="RegularExpression" validationString="^[A-Za-z0-9_\-]{2,32}$" />
 			<parameterEntry type="TextFile" scope="tangocms.sql" match="rootUser" />
 	</parameter>
 	<parameter
-		name="TangoCMS administrator password"
+		name="TangoCMS Administrator Password"
 		description="Passwords must be between 4 and 32 characters."
 		tags="New, Password">
 			<parameterValidation type="RegularExpression" validationString="^.{1,16}$" />
 			<parameterEntry type="TextFile" scope="tangocms.sql" match="rootPass" />
 	</parameter>
 	<parameter
-		name="TangoCMS administrator email"
+		name="TangoCMS Administrator Email"
 		description="Enter the email address for this user, e.g. tangocms@example.org">
 			<parameterValidation type="RegularExpression" validationString="^([a-zA-Z0-9])+([a-zA-Z0-9\.\\+=_-])*@([a-zA-Z0-9_-])+([a-zA-Z0-9\._-]+)+$" />
 			<parameterEntry type="TextFile" scope="tangocms.sql" match="rootEmail" />
@@ -94,5 +94,9 @@
 	</parameter>
 	<parameter name="SetAclParameter7" defaultValue="{AppPath}/config/default/layouts/admin-default.xml" tags="Hidden">
 		<parameterEntry type="ProviderPath" scope="setAcl" match="tangocms/config/default/layouts/admin-default.xml" />
+	</parameter>
+
+	<parameter name="SetAclParameter8" defaultValue="{AppPath}/msInstall.php" tags="Hidden">
+		<parameterEntry type="ProviderPath" scope="setAcl" match="tangocms/msInstall.php" />
 	</parameter>
 </parameters>

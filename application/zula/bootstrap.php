@@ -79,12 +79,7 @@
 		 * Load some installation specific files as there may be things that need
 		 * changing/adding upon installation/upgrading of Zula/TCM versions
 		 */
-		$installFile = $zula->getDir( 'zula' ).'/install.php';
-		if ( is_readable( $installFile ) ) {
-			require $installFile;
-		} else {
-			trigger_error( 'Zula installation file "'.$installFile.'" does not exist or is not readable', E_USER_ERROR );
-		}
+		require $zula->getDir( 'zula' ).'/install.php';
 	} else {
 		$zula->loadLib( 'ugmanager' );
 		try {
@@ -96,16 +91,19 @@
 			$uid = $session->identify(); # Identify as guest for fail safe
 		}
 	}
-
-	/**
-	 * Check for ACL support, load all hooks and fire up the routers
-	 */
 	define( '_ACL_ENABLED', ($config->has( 'acl/enable' ) && $config->get( 'acl/enable' )) );
 	if ( Registry::has( 'sql' ) ) {
-		$zula->loadLib( 'acl' );
+		$acl = $zula->loadLib( 'acl' );
 	}
 	Hooks::load();
 	$router = $zula->loadLib( 'router' );
+
+	/**
+	 * Microsoft Web App Gallery (Feature #221) support.
+	 */
+	if ( strtoupper( substr(PHP_OS, 0, 3) ) === 'WIN' && file_exists('msInstall.php') ) {
+		return require 'msInstall.php';
+	}
 
 	/**
 	 * Main loading of the correct theme and requested controller
