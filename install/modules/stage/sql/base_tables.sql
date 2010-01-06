@@ -135,6 +135,6 @@ CREATE TABLE {SQL_PREFIX}users (
   INDEX `password` (`password`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
-INSERT INTO {SQL_PREFIX}users (username, `password`, `group`, joined) VALUES
-('guest', 'guest', 3, NOW() ),
-('root', 'root', 1, NOW() );
+INSERT INTO {SQL_PREFIX}users (username, `password`, email, `group`, joined) VALUES
+('guest', 'guest', '', 3, NOW() ),
+('rootUser', 'rootPass', 'rootEmail', 1, NOW() );

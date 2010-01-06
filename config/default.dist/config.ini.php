@@ -24,9 +24,9 @@
 [sql]
 enable = 0
 host = 127.0.0.1
-user = db_user
-pass = db_pass
-database = db_name
+user = dbUser
+pass = dbPass
+database = dbName
 type = mysql
 prefix = tcm_
 port = 3306

@@ -9,24 +9,61 @@
 	</parameter>
 	<parameter name="dbServer" defaultValue="localhost" tags="MySQL, dbServer">
 		<parameterEntry type="TextFile" scope="tangocms\\config\\default\\config.ini.php" match="(?&lt;=host\s=\s)127\.0\.0\.1" />
+		<parameterEntry type="TextFile" scope="install.sql" match="dbServer" />
 	</parameter>
 	<parameter name="dbUsername" tags="MySQL, dbUsername">
 		<parameterValidation type="RegularExpression" validationString="^[A-Za-z0-9_\-]{1,16}$" />
-		<parameterEntry type="TextFile" scope="tangocms\\config\\default\\config.ini.php" match="(?&lt;=user\s=\s)db_user" />
+		<parameterEntry type="TextFile" scope="tangocms\\config\\default\\config.ini.php" match="(?&lt;=user\s=\s)dbUser" />
+		<parameterEntry type="TextFile" scope="install.sql" match="dbUser" />
 	</parameter>
 	<parameter name="dbUserPassword" tags="New, Password, MySQL, dbUserPassword">
-		<parameterEntry type="TextFile" scope="tangocms\\config\\default\\config.ini.php" match="(?&lt;=pass\s=\s)db_pass" />
+		<parameterEntry type="TextFile" scope="tangocms\\config\\default\\config.ini.php" match="(?&lt;=pass\s=\s)dbPass" />
+		<parameterEntry type="TextFile" scope="install.sql" match="dbPass" />
 	</parameter>
 	<parameter name="dbName" defaultValue="tangocms" tags="MySQL, dbName">
 		<parameterValidation type="RegularExpression" validationString="^[A-Za-z0-9_]{1,64}$" />
-		<parameterEntry type="TextFile" scope="tangocms\\config\\default\\config.ini.php" match="(?&lt;=database\s=\s)db_name" />
+		<parameterEntry type="TextFile" scope="tangocms\\config\\default\\config.ini.php" match="(?&lt;=database\s=\s)dbName" />
+		<parameterEntry type="TextFile" scope="install.sql" match="dbName" />
 	</parameter>
-	<parameter name="dbTag" friendlyName="Table Prefix" defaultValue="tcm_" tags="MySQL">
+	<parameter name="dbTag" friendlyName="Table Prefix" description="Prefix to use for tables, if any." defaultValue="tcm_" tags="MySQL">
+		<parameterValidation type="RegularExpression" validationString="^[A-Za-z0-9_]{0,12}$" />
 		<parameterEntry type="TextFile" scope="tangocms\\config\\default\\config.ini.php" match="(?&lt;=prefix\s=\s)tcm_" />
+		<parameterEntry type="TextFile" scope="install.sql" match="\{SQL_PREFIX\}" />
 	</parameter>
-	<!-- Admin DB, used when the database/user needs creating -->
+
+	<!-- Database administration details and SQL connection string for the SQL files -->
 	<parameter name="dbAdminUsername" defaultValue="root" tags="MySQL, dbAdminUsername" />
 	<parameter name="dbAdminPassword" tags="MySQL, Password, dbAdminPassword" />
+
+	<parameter
+		name="ConnectionString"
+		defaultValue="Server={dbServer};Database={dbName};uid={dbAdminUsername};Pwd={dbAdminPassword};"
+		tags="Hidden, MySQLConnectionString, Validate">
+			<parameterEntry type="ProviderPath" scope="dbmysql" match="install.sql" />
+			<parameterEntry type="ProviderPath" scope="dbmysql" match="tangocms.sql" />
+	</parameter>
+
+	<!-- First user configuration -->
+	<parameter
+		name="TangoCMS administrator username."
+		description="Username must be alphanumic (underscore and dash are allowed) between 2 and 32 characters long."
+		defaultValue="root">
+			<parameterValidation type="RegularExpression" validationString="^[A-Za-z0-9_\-]{2,32}$" />
+			<parameterEntry type="TextFile" scope="install.sql" match="rootUser" />
+	</parameter>
+	<parameter
+		name="TangoCMS administrator password."
+		description="Passwords must be between 4 and 32 characters."
+		tags="New, Password">
+			<parameterValidation type="RegularExpression" validationString="^.{1,16}$" />
+			<parameterEntry type="TextFile" scope="install.sql" match="rootPass" />
+	</parameter>
+	<parameter
+		name="TangoCMS administrator email."
+		description="Enter the email address for this user, e.g. tangocms@example.org">
+			<parameterValidation type="RegularExpression" validationString="^([a-zA-Z0-9])+([a-zA-Z0-9\.\\+=_-])*@([a-zA-Z0-9_-])+([a-zA-Z0-9\._-]+)+$" />
+			<parameterEntry type="TextFile" scope="install.sql" match="rootEmail" />
+	</parameter>
 
 	<!-- ACL files and directories -->
 	<parameter name="SetAclParameter1" defaultValue="{AppPath}/config/default/layouts" tags="Hidden">

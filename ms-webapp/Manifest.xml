@@ -1,7 +1,8 @@
 <MSDeploy.iisApp>
 	<iisApp path="tangocms" />
-	<!--<dbmysql path="base.sql" />-->
-	<!--<dbmysql path="modules.sql" />-->
+
+	<dbmysql path="install.sql" commandDelimiter="$$" removeCommandDelimiter="true" />
+	<dbmysql path="tangocms.sql" commandDelimiter="$$" removeCommandDelimiter="true" />
 
 	<!-- ACL files and directories -->
 	<setAcl path="tangocms/config/default/layouts" setAclAccess="Modify" setAclUser="anonymousAuthenticationUser" />
