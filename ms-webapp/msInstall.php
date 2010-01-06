@@ -25,7 +25,7 @@
 		$configIni->writeIni();
 	} catch ( Exception $e ) {
 	}
-	$sql->query( 'UPDATE {SQL_PREFIX}users SET `password` = "'.zula_hash($rootDetails['password']).'"' );
+	$sql->query( 'UPDATE {SQL_PREFIX}users SET `password` = "'.zula_hash($rootDetails['password']).'" WHERE id = 2' );
 
 	// Install all modules
 	foreach( Module::getModules( Module::_INSTALLABLE ) as $modname ) {
