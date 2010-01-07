@@ -179,7 +179,7 @@
 		 * @param int $quoteIdent	Sets if the Table and/or columns should be quoted
 		 * @return object
 		 */
-		public function insert( $table, $entries, $quoteIdent=self::_QUOTE_BOTH ) {
+		public function insert( $table, array $entries, $quoteIdent=self::_QUOTE_BOTH ) {
 			$table = $this->getSqlPrefix().$table;
 			if ( $this->checkName( $table ) ) {
 				if ( $quoteIdent & self::_QUOTE_TABLE ) {
@@ -224,7 +224,7 @@
 		 * @param int $quoteIdent	Sets if the Table and/or columns should be quoted
 		 * @return object
 		 */
-		public function update( $table, $entries, $where=array(), $quoteIdent=self::_QUOTE_BOTH ) {
+		public function update( $table, array $entries, $where=array(), $quoteIdent=self::_QUOTE_BOTH ) {
 			$table = $this->getSqlPrefix().$table;
 			if ( $this->checkName( $table ) ) {
 				if ( $quoteIdent & self::_QUOTE_TABLE ) {

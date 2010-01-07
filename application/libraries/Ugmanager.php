@@ -561,7 +561,7 @@
 		 * @param array $details
 		 * @return bool
 		 */
-		public function editUser( $id, $details ) {
+		public function editUser( $id, array $details ) {
 			try {
 				$userDetails = $this->getUser( $id );
 				if ( $userDetails['id'] == UGManager::_GUEST_ID ) {
@@ -617,11 +617,11 @@
 				$details['password'] = zula_hash( $details['password'] );
 			}
 			$details['joined'] = date('Y-m-d H:i:s');
-			if ( $this->_sql->insert( 'users', $details ) ) {				
+			if ( $this->_sql->insert( 'users', $details ) ) {
 				$this->userCount = array();
 				$this->_cache->delete( 'ugmanager_users' );
 				$details['user_id'] = $this->_sql->lastInsertId();
-				Hooks::notifyAll( 'ugmanager_user_add', $details );				
+				Hooks::notifyAll( 'ugmanager_user_add', $details );
 				return $details['user_id'];
 			} else {
 				return false;

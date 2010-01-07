@@ -29,7 +29,7 @@
 		 * Current version of Zula being used
 		 */
 		const _VERSION = '0.7.65';
-		
+
 		/**
 		 * Holds the singleton instance of this class
 		 * @var object
@@ -211,7 +211,7 @@
 					$body .= "\nRaw Request Path: ".Registry::get( 'router' )->getRawRequestPath();
 				}
 				$body .= "\nException Thrown: ".get_class( $e );
-				$body .= "\nMessage: ".$e->getMessage();				
+				$body .= "\nMessage: ".$e->getMessage();
 				$body .= "\n\nStack Trace:\n";
 				$body .= $e->getTraceAsString();
 				file_put_contents( $file, $body );

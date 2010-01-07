@@ -15,9 +15,6 @@
  * @package TangoCMS
  */
 
-	$sql = Registry::get( 'sql' );
-	$rootDetails = $sql->query( 'SELECT `password`, email FROM {SQL_PREFIX}users WHERE id = 2' )
-					   ->fetch( PDO::FETCH_ASSOC );
 	// Create a new random salt, and hash the plaintext password from the installer.
 	try {
 		$salt = zula_make_salt();
@@ -27,7 +24,9 @@
 		$config->update( 'hashing/salt', $salt );
 	} catch ( Exception $e ) {
 	}
-	$sql->query( 'UPDATE {SQL_PREFIX}users SET `password` = "'.zula_hash($rootDetails['password']).'" WHERE id = 2' );
+	$ugm = Registry::get( 'ugmanager' );
+	$rootDetails = $ugm->getUser( Ugmanager::_ROOT_ID );
+	$ugm->editUser( $rootDetails['id'], array('password' => $rootDetails['password']) );
 
 	// Install all modules
 	foreach( Module::getModules( Module::_INSTALLABLE ) as $modname ) {
@@ -37,7 +36,7 @@
 			$module->setLoadOrder( 1 ); # Should force it below Shareable by default
 		} else if ( $modname == 'contact' ) {
 			// Update the contact form email address to that of the first user
-			$sql->query( 'UPDATE {SQL_PREFIX}mod_contact SET email = "'.$rootDetails['email'].'"' );
+			Registry::get( 'sql' )->query( 'UPDATE {SQL_PREFIX}mod_contact SET email = "'.$rootDetails['email'].'"' );
 		}
 	}
 
