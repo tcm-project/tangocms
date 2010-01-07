@@ -20,9 +20,11 @@
 					   ->fetch( PDO::FETCH_ASSOC );
 	// Create a new random salt, and hash the plaintext password from the installer.
 	try {
+		$salt = zula_make_salt();
 		$configIni = Registry::get( 'config_ini' );
-		$configIni->update( 'hashing/salt', zula_make_salt() );
+		$configIni->update( 'hashing/salt', $salt );
 		$configIni->writeIni();
+		$config->update( 'hashing/salt', $salt );
 	} catch ( Exception $e ) {
 	}
 	$sql->query( 'UPDATE {SQL_PREFIX}users SET `password` = "'.zula_hash($rootDetails['password']).'" WHERE id = 2' );
