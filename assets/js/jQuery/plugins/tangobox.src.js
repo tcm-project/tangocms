@@ -92,7 +92,7 @@ jQuery(document).ready(
 									elem: matchedGroup[i],
 									href: $(matchedGroup[i]).attr("href"),
 									title: $(matchedGroup[i]).attr("title"),
-									alt: $(matchedGroup[1]).attr("alt"),
+									alt: $(matchedGroup[i]).find("> img").attr("alt"),
 									rel: $(matchedGroup[i]).attr("rel")
 									};
 					if ( itemArray[i].href == $(elem).attr("href") ) {
@@ -101,7 +101,7 @@ jQuery(document).ready(
 				}
 				if ( settings.displayMeta ) {
 					// Display if we have more than 1, or a title is to be shown
-					displayMetaBar = itemArray.length > 1 || (itemArray[1].title || itemArray[1].alt);
+					displayMetaBar = itemArray.length > 1 || (itemArray[0].alt || itemArray[0].title);
 				}
 				tbChangeContent();
 				if ( settings.slideshowAutostart ) {
@@ -158,7 +158,7 @@ jQuery(document).ready(
 			}
 			busy = true;
 			var currentItem = itemArray[ itemIndex ];
-			var cTitle = currentItem.title || currentItem.alt || "";
+			var cTitle = currentItem.alt || currentItem.title || "";
 			$("#tbNavPrev, #tbNavNext, #tbClose, #tbMeta").hide();
 			if ( tbOuter.is(":visible") === false ) {
 				tbOuter.css("top", "120px").show();
