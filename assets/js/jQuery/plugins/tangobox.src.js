@@ -4,8 +4,10 @@
  * lightbox by Leandro Vieira Pinho.
  *
  * http://tangocms.org/projects/tangobox
+ * @patches submit all patches to patches@tangocms.org
  *
  * @author Alex Cartwright
+ * @copyright Copyright (C) 2009, 2010 Alex Cartwright
  * @license http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GNU/GPL 2
  */
 
@@ -79,10 +81,14 @@ jQuery(document).ready(
 				tbMeta = $("#tbMeta");
 				// Update the overlay and change item to the first one.
 				if ( settings.overlayShow ) {
-					$("#tbOverlay").css({
-										backgroundColor: 	settings.overlayColor,
-										opacity:			settings.overlayOpacity
-										}).fadeIn(200);
+					var overlayCss = {backgroundColor: settings.overlayColor};
+					if ( jQuery.support.opacity ) {
+						overlayCss.opacity = settings.overlayOpacity;
+					} else {
+						// Fixes Bug #222
+						overlayCss.filter = "alpha(opacity="+(settings.overlayOpacity*100)+")";
+					}
+					$("#tbOverlay").css(overlayCss).fadeIn(200);
 				} else {
 					$("tbOverlay").hide();
 				}
