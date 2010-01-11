@@ -41,6 +41,7 @@
 				// Content to add in some JavaScript tags.
 				$this->_theme->addHead( 'js', array(),
 										'var CKEDITOR_BASEPATH = "'.$this->_zula->getDir('js', true).'/ckeditor/"; '.
+										'var CKEDITOR_UPLOAD_URL = "'.$this->_router->makeUrl('editor', 'upload').'"; '.
 										'var tcmEditor = {defaultFormat: "'.Editor::defaultFormat().'"};'
 									  );
 				$usedEditors = Editor::usedEditors();

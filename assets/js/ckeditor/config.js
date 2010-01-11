@@ -8,6 +8,7 @@ CKEDITOR.editorConfig = function(c)
 	// Load any additional plugins, e.g. "foo,bar,car"
 	c.extraPlugins = "";
 	// Default configuration for TangoCMS
+	c.baseHref = $("head > base").attr("href");
 	c.docType = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">';
 	c.height = 130;
 	c.toolbarCanCollapse = false;
@@ -25,6 +26,9 @@ CKEDITOR.editorConfig = function(c)
 	// None of these exist in our ckeditor.js, so don't enable the, :)
 	c.removePlugins = "about,div,elementspath,find,forms,horizontalrule,maximize,newpage,pagebreak,pastefromword, \
 					   popup,preview,print,save,scayt,showblocks,smiley,stylescombo,tab,templates,wsc";
+	if ( typeof CKEDITOR_UPLOAD_URL !== "undefined" ) {
+		c.filebrowserUploadUrl = CKEDITOR_UPLOAD_URL;
+	}
 };
 
 CKEDITOR.on("instanceReady",
