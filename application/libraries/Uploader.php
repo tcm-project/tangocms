@@ -118,14 +118,8 @@
 		 * @return bool|object
 		 */
 		public function maxFileSize( $fileSize ) {
-			$fileSize = zula_byte_value( $fileSize );
-			if ( $fileSize <= 1 ) {
-				trigger_error( 'Uploader::maxFileSize() provided size must be a value above 1 byte, given "'.$fileSize.'"' );
-				return false;
-			} else {
-				$this->config['max_file_size'] = $fileSize;
-				return $this;
-			}
+			$this->config['max_file_size'] = zula_byte_value( $fileSize );
+			return $this;
 		}
 
 		/**

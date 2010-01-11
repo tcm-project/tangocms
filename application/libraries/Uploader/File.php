@@ -32,13 +32,10 @@
 		 * @var array
 		 */
 		protected $errorMsg = array(
-									'ini_size'		=> 'requested file "%s" exceeds the upload_max_filesize in php.ini',
-									'form_size'		=> 'requested file "%s" exceeds the MAX_FILE_SIZE specified in the HTML form',
 									'partial'		=> 'requested file "%s" was only partially uploaded',
 									'no_tmp_dir'	=> 'no temp directory for file "%s" to be uploaded to',
 									'cant_write'	=> 'failed to write file "%s" to disk',
 									'extension'		=> 'PHP extension blocked file upload for "%s"',
-									'file_size'		=> 'requested file "%s" exceeds the max file size set of "%d"',
 									'mime'			=> 'requested file "%s" has invalid mime of "%s"',
 									'file_ext'		=> 'requested file "%s" has an invalid file extension',
 									);
@@ -99,10 +96,10 @@
 		public function upload( $fileName=null ) {
 			switch( $this->error ) {
 				case UPLOAD_ERR_INI_SIZE:
-					throw new Uploader_MaxFileSize( sprintf( $this->errorMsg['ini_size'], $this->name ) );
+					throw new Uploader_MaxFileSize( zula_byte_value( ini_get('upload_max_filesize') ) );
 
 				case UPLOAD_ERR_FORM_SIZE:
-					throw new Uploader_MaxFileSize( sprintf( $this->errorMsg['form_size'], $this->name ) );
+					throw new Uploader_MaxFileSize( abs( $this->_input->post('MAX_FILE_SIZE') ) );
 
 				case UPLOAD_ERR_PARTIAL:
 					throw new Uploader_PartialUpload( sprintf( $this->errorMsg['partial'], $this->name ) );
@@ -134,7 +131,7 @@
 			 * they all pass, if not - stop the upload
 			 */
 			if ( $this->checkFileSize( $this->size ) === false ) {
-				throw new Uploader_MaxFileSize( sprintf( $this->errorMsg['file_size'], $this->name, $this->uploadConfig['max_file_size'] ) );
+				throw new Uploader_MaxFileSize( $this->uploadConfig['max_file_size'] );
 			} else if ( $this->checkMime( $this->mime ) === false ) {
 				throw new Uploader_InvalidMime( sprintf( $this->errorMsg['mime'], $this->name, $this->mime ) );
 			} else if ( $this->checkExtension( $this->name ) === false ) {

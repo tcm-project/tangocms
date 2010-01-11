@@ -25,8 +25,10 @@
 				_OT_CONTENT_INDEX	= 8,
 				_OT_CONTENT			= 14,
 				_OT_COLLECTIVE		= 16,
-				_OT_CONFIG			= 32,
-				_OT_INFORMATIVE		= 64;
+				_OT_CONFIG_ADD		= 32,
+				_OT_CONFIG_EDIT		= 64,
+				_OT_CONFIG			= 96,
+				_OT_INFORMATIVE		= 128;
 
 		/**
 		 * Details about the parent module this controller belongs to

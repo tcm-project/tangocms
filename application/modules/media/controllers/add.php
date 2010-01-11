@@ -158,20 +158,7 @@
 			} catch ( Uploader_NotEnabled $e ) {
 				$msg = t('Sorry, it appears file uploads are disabled within your PHP configuration');
 			} catch ( Uploader_MaxFileSize $e ) {
-				$maxSize = zula_byte_value( ini_get('upload_max_filesize') );
-				if ( $maxSize >= pow(1024, 3) ) {
-					$suffix = 'GiB';
-					$maxSize /= pow(1024, 3);
-				} else if ( $maxSize >= pow(1024, 2) ) {
-					$suffix = 'MiB';
-					$maxSize /= pow(1024, 2);
-				} else if ( $maxSize >= 1024 ) {
-					$suffix = 'KiB';
-					$maxSize /= 1024;
-				} else {
-					$suffix = 'bytes';
-				}
-				$msg = sprintf( t('Selected file exceeds the maximum allowed file size of %s'), number_format($maxSize).$suffix );
+				$msg = sprintf( t('Selected file exceeds the maximum allowed file size of %s'), zula_human_readable($e) );
 			} catch ( Uploader_Exception $e ) {
 				$logMsg = $e->getMessage();
 				$msg = t('Oops, an error occurred while uploading your files');

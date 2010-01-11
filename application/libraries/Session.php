@@ -16,18 +16,6 @@
 	class Session extends Zula_LibraryBase {
 
 		/**
-		 * Authentication key currently in use when identifying
-		 * @var string
-		 */
-		protected $authKey = null;
-
-		/**
-		 * User ID (hashed) to what the auth key is for
-		 * @var string
-		 */
-		protected $authFor = null;
-
-		/**
 		 * Contains all info about the curernt user
 		 * @var array
 		 */
@@ -150,10 +138,12 @@
 		}
 
 		/**
-		 * Takes the authentication details from the cookie and checks if the
-		 * provided session key (not ID) is valid and the uid matches up.
+		 * Takes the provided authKey and checks if it exists and the UID
+		 * matches up against authFor. If no authkey is provided the user
+		 * will be identified as guest.
 		 *
-		 * If no authkey is provided the user will be identified as guest.
+		 * bool false will be returned if the authKey UID does not match
+		 * authFor, or if the user account status is 'locked'.
 		 *
 		 * @param string $authKey
 		 * @param string $authFor
@@ -200,7 +190,6 @@
 			// Create the needed unique keys for this session, if any
 			$uid = abs( $uid );
 			if ( $uid == Ugmanager::_GUEST_ID ) {
-				$this->authKey = $this->authFor = null;
 				return $this->identify();
 			} else {
 				$authKey = zula_hash( uniqid(mt_rand().$uid.microtime(true), true) );
@@ -210,17 +199,15 @@
 				// Attempt to identify the user we are switching to
 				if ( $this->identify($authKey, $authFor) === $uid ) {
 					$this->_sql->query( 'UPDATE {SQL_PREFIX}users SET last_login = UNIX_TIMESTAMP() WHERE id = '.$uid );
-					$this->authKey = $authKey;
-					$this->authFor = $authFor;
 					$_SESSION['auth'] = array(
 											'remember'	=> (bool) $remember,
-											'key'		=> $this->authKey,
-											'for'		=> $this->authFor,
+											'key'		=> $authKey,
+											'for'		=> $authFor,
 											);
 					if ( $_SESSION['auth']['remember'] ) {
 						// Set cookie for 28 days
-						setcookie( 'zulaAuthKey', $this->authKey, time()+2419200, _BASE_DIR, '', '', true );
-						setcookie( 'zulaAuthFor', $this->authFor, time()+2419200, _BASE_DIR, '', '', true );
+						setcookie( 'zulaAuthKey', $authKey, time()+2419200, _BASE_DIR, '', '', true );
+						setcookie( 'zulaAuthFor', $authFor, time()+2419200, _BASE_DIR, '', '', true );
 					}
 					return (int) $uid;
 				} else {
@@ -230,24 +217,26 @@
 		}
 
 		/**
-		 * Completly destroys a session and all user/group info
-		 * a long with it. Also removes the session cookie.
+		 * Completely destroys a session and all user/group info
+		 * a long with it, including all authentication/session
+		 * cookies.
+		 *
+		 * User shall be identified as 'guest' afterwards.
 		 *
 		 * @return bool
 		 */
 		public function destroy() {
+			if ( isset($_SESSION['auth']['key']) ) {
+				$pdoSt = $this->_sql->prepare( 'DELETE FROM {SQL_PREFIX}sessions WHERE session_key = ?' );
+				$pdoSt->execute( array($_SESSION['auth']['key']) );
+				$pdoSt->closeCursor();
+			}
 			$_SESSION = array();
 			foreach( array('zulaAuthKey', 'zulaAuthFor', session_name()) as $cookie ) {
 				setcookie( $cookie, '', time()-42000, _BASE_DIR );
 			}
 			session_regenerate_id( true );
 			session_destroy();
-			if ( $this->authKey ) {
-				$pdoSt = $this->_sql->prepare( 'DELETE FROM {SQL_PREFIX}sessions WHERE session_key = ?' );
-				$pdoSt->execute( array($this->authKey) );
-				$pdoSt->closeCursor();
-			}
-			$this->authKey = $this->authFor = null;
 			$this->identify();
 			return true;
 		}

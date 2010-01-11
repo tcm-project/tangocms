@@ -694,7 +694,38 @@ ERR;
 			case 'k':
 				$val *= 1024;
 		}
-		return (int) $val;
+		return abs( $val );
+	}
+	
+	/**
+	 * Converts a byte interger value to a human readable
+	 * version such as 4MiB, 16.84GiB etc
+	 *
+	 * @param int $val
+	 * @param int $precision
+	 * @return string
+	 */
+	function zula_human_readable( $val, $precision=2 ) {
+		$val = abs( $val );
+		if ( $val >= pow(1024, 5) ) {
+			$suffix = 'PiB';
+			$val /= pow(1024, 5);
+		} else if ( $val >= pow(1024, 4) ) {
+			$suffix = 'TiB';
+			$val /= pow(1024, 4);
+		} else if ( $val >= pow(1024, 3) ) {
+			$suffix = 'GiB';
+			$val /= pow(1024, 3);
+		} else if ( $val >= pow(1024, 2) ) {
+			$suffix = 'MiB';
+			$val /= pow(1024, 2);
+		} else if ( $val >= 1024 ) {
+			$suffix = 'KiB';
+			$val /= 1024;
+		} else {
+			$suffix = 'B';
+		}
+		return number_format($val, $precision).$suffix
 	}
 
 	/**
