@@ -696,7 +696,7 @@ ERR;
 		}
 		return abs( $val );
 	}
-	
+
 	/**
 	 * Converts a byte interger value to a human readable
 	 * version such as 4MiB, 16.84GiB etc
@@ -725,7 +725,7 @@ ERR;
 		} else {
 			$suffix = 'B';
 		}
-		return number_format($val, $precision).$suffix
+		return number_format($val, $precision).$suffix;
 	}
 
 	/**
