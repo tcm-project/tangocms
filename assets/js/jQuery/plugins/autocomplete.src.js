@@ -36,9 +36,9 @@
     this.isLocal = false;
     this.options = {
       autoSubmit: false,
-      minChars: 1,
+      minChars: 2,
       maxHeight: 300,
-      deferRequestBy: 0,
+      deferRequestBy: 200,
       width: 0,
       highlight: true,
       params: {},
@@ -175,10 +175,12 @@
       switch (e.keyCode) {
         case 38: //KEY_UP:
         case 40: //KEY_DOWN:
-          return;
+			if ( $(this.container).find("> div").length == 0 ) {
+				return;
+			}
       }
       clearInterval(this.onChangeInterval);
-      if (this.currentValue !== this.el.val()) {
+      if (this.currentValue !== this.el.val() || e.keyCode == 40) {
         if (this.options.deferRequestBy > 0) {
           // Defer lookup in case when value changes very quickly:
           var me = this;
