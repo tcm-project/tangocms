@@ -21,7 +21,7 @@
 		/**
 		 * Version of jQuery to load (used only when use of Google CDN is allowed)
 		 */
-		const _JQUERY_VERSION = 1.3;
+		const _JQUERY_VERSION = 1.4;
 
 		/**
 		 * Name of the current theme
