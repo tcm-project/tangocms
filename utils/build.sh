@@ -12,6 +12,7 @@
 ## All options and tasks with their default values
 OPT_PATH_CLOSURE=/usr/bin/closure
 OPT_VERBOSE=false
+OPT_PACKAGE_MODE=
 
 TASK_JS_COMPRESS=false
 TASK_PACKAGE=false
@@ -22,7 +23,7 @@ if [ ! -f "index.php" ]; then
 	exit 1
 fi
 
-while getopts ":jpvxh" OPTION
+while getopts ":jp:vxh" OPTION
 do
 	case "$OPTION" in
 		j)
@@ -33,6 +34,7 @@ do
 			;;
 		p)
 			TASK_PACKAGE=true
+			OPT_PACKAGE_MODE="$OPTARG"
 			;;
 		v)
 			OPT_VERBOSE=true
@@ -44,7 +46,8 @@ do
 			echo -e "TangoCMS Project building tools.\nUsage: build.sh [-jpvxh]"
 			echo "Options:"
 			echo -e "\t-j\tCompress source JavaScript files using Google Closure Compiler."
-			echo -e "\t-p\tCreates .tar.gz, .tar.bz2 and .zip archives. This implies '-j' always."
+			echo -e "\t-p\tCreates .tar.gz, .tar.bz2 and .zip archives. This implies '-j' always. Zula" \
+					"\n\t\tapplication mode argument required, either 'development' or 'production.'"
 			echo -e "\t-x\tCheck all thrown PHP exceptions are defined, and list those not used."
 			echo -e "\t-v\tBe more verbose with output, providing more detail."
 			echo -e "\t-h\tDisplays this help text.\n"
@@ -94,7 +97,7 @@ if [ $TASK_CHECK_EXCEPTIONS == "true" ]; then
 				 sort | uniq | tr '\n' ' ' | sed 's/ $//')
 	## Classes which extend previously discovered exceptions
 	toCheck="$expDefined"
-	while [[ ! -z $toCheck ]]; do
+	while [ ! -z "$toCheck" ]; do
 		expDefinedTmp=$(find . -name '*.php' -not -path "*/3rd_party/*" -print0 | xargs -0 grep -iE "extends (${toCheck// /|})" |
 						perl -pi -e 's/.* ([^\(; ]+) extends.*/\1/' |
 						sort | uniq | tr '\n' ' ' | sed 's/ $//')
@@ -107,7 +110,7 @@ if [ $TASK_CHECK_EXCEPTIONS == "true" ]; then
 	echo ":: Exceptions that need to be defined"
 	for thrownException in $expThrown; do
 		for definedException in $expDefined; do
-			if [[ ${thrownException} == ${definedException} ]]; then
+			if [ ${thrownException} == ${definedException} ]; then
 				continue 2
 			fi
 		done
@@ -117,7 +120,7 @@ if [ $TASK_CHECK_EXCEPTIONS == "true" ]; then
 	echo ":: Exceptions that are unused"
 	for definedException in $expDefined; do
 		for thrownException in $expThrown; do
-			if [[ ${definedException} == ${thrownException} ]]; then
+			if [ ${definedException} == ${thrownException} ]; then
 				continue 2
 			fi
 		done
@@ -143,6 +146,19 @@ if [ $TASK_PACKAGE == "true" ]; then
 		   "${tmpDir}/assets/uploads/*" "${tmpDir}/.gitignore"
 	touch "${tmDir}/tmp/index.html" "${tmpDir}/assets/uploads/index.html"
 	mv "${tmpDir}/config/default.dist" "${tmpDir}/config/default"
+
+	## Edit and remove some files depending on required application mode
+	if [ "$OPT_PACKAGE_MODE" == "production" ]; then
+		find "${tmpDir}" -name "*.src.js" -delete
+		rm -rf "${tmpDir}/assets/js/ckeditor/_source"
+		confDebugFlag=0
+	else
+		OPT_PACKAGE_MODE=development
+		confDebugFlag=1
+	fi
+	sed -i "s/'\(development\|production\)'/'${OPT_PACKAGE_MODE}'/" "${tmpDir}/index.php"
+	sed -i -e "s/\(php_display_errors\|zula_detailed_error\|zula_show_errors\) = \([0-1]\{1\}\)/\1 = ${confDebugFlag}/" \
+		"${tmpDir}/config/default/config.ini.php"
 
 	tar -czf TangoCMS.tar.gz -C "${tmpDir}/../" tangocms && verbose || echo -ne "."
 	tar -cjf TangoCMS.tar.bz2 -C "${tmpDir}/../" tangocms && verbose || echo -ne "."
