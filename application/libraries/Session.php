@@ -128,8 +128,8 @@
 		}
 
 		/**
-		 * Checks if a user is 'logged in'. A user 'logged in' is basically
-		 * anyone not a guest.
+		 * Checks if a user is 'logged in'. Returns true if the current user
+		 * identified is not a guest.
 		 *
 		 * @return bool
 		 */
@@ -217,28 +217,43 @@
 		}
 
 		/**
-		 * Completely destroys a session and all user/group info
-		 * a long with it, including all authentication/session
-		 * cookies.
+		 * If no uid is provided, then the complete session will be destroyed
+		 * for the current user - including all authentication/session cookies
+		 * and shall be identified as 'guest' afterwards.
 		 *
-		 * User shall be identified as 'guest' afterwards.
+		 * Providing a uid shall clear all stored session authentication data
+		 * within the database, effectively logging that user out from all
+		 * locations. An int representing number of sessions closed is returned.
 		 *
-		 * @return bool
+		 * @param int|array $uid
+		 * @return bool|int
 		 */
-		public function destroy() {
-			if ( isset($_SESSION['auth']['key']) ) {
-				$pdoSt = $this->_sql->prepare( 'DELETE FROM {SQL_PREFIX}sessions WHERE session_key = ?' );
-				$pdoSt->execute( array($_SESSION['auth']['key']) );
+		public function destroy( $uid=null ) {
+			if ( $uid ) {
+				$pdoSt = $this->_sql->prepare( 'DELETE FROM {SQL_PREFIX}sessions WHERE uid = :uid' );
+				$sessionsClosed = 0;
+				foreach( (array) $uid as $user ) {
+					$pdoSt->bindValue( ':uid', $user, PDO::PARAM_INT );
+					$sessionsClosed += $pdoSt->rowCount();
+				}
 				$pdoSt->closeCursor();
+				return $sessionsClosed;
+			} else {
+				if ( isset($_SESSION['auth']['key']) ) {
+					$pdoSt = $this->_sql->prepare( 'DELETE FROM {SQL_PREFIX}sessions WHERE session_key = ?' );
+					$pdoSt->execute( array($_SESSION['auth']['key']) );
+					$pdoSt->closeCursor();
+				}
+				$_SESSION = array();
+				foreach( array('zulaAuthKey', 'zulaAuthFor', session_name()) as $cookie ) {
+					setcookie( $cookie, '', time()-42000, _BASE_DIR );
+				}
+				session_regenerate_id( true );
+				session_destroy();
+				$this->user = $this->group = array();
+				$this->identify();
+				return true;
 			}
-			$_SESSION = array();
-			foreach( array('zulaAuthKey', 'zulaAuthFor', session_name()) as $cookie ) {
-				setcookie( $cookie, '', time()-42000, _BASE_DIR );
-			}
-			session_regenerate_id( true );
-			session_destroy();
-			$this->identify();
-			return true;
 		}
 
 		/**

@@ -49,23 +49,23 @@
 
 	/**
 	 * Default directories in Zula should be fine, though you can configure
-	 * them from here if you want, via $zula->updateDir(); EG:
-	 * $zula->updateDir( 'lib', '/libaries' );
+	 * them from here if you want, via $zula->setDir(); EG:
+	 * $zula->setDir( 'lib', '/libaries' );
 	 */
-	$zula->updateDir( 'config', dirname(__FILE__).'/config' );
-	$zula->updateDir( 'uploads', './assets/uploads' );
+	$zula->setDir( 'config', dirname(__FILE__).'/config' );
+	$zula->setDir( 'uploads', './assets/uploads' );
 
 	if ( _APP_MODE == 'installation' ) {
 		define( '_REAL_MODULE_DIR', $zula->getDir( 'modules' ) );
 		// Reconfigure some directories so they work correctly when installing
-		$zula->updateDir( 'modules', './modules' );
-		$zula->updateDir( 'themes', './themes' );
-		$zula->updateDir( 'assets', '../assets' );
-		$zula->updateDir( 'js', '../assets/js' );
-		$zula->updateDir( 'tmp', '../tmp' );
-		$zula->updateDir( 'install', './' );
-		$zula->updateDir( 'uploads', '../assets/uploads' );
-		$zula->updateDir( 'config', '../config' );
+		$zula->setDir( 'modules', './modules' );
+		$zula->setDir( 'themes', './themes' );
+		$zula->setDir( 'assets', '../assets' );
+		$zula->setDir( 'js', '../assets/js' );
+		$zula->setDir( 'tmp', '../tmp' );
+		$zula->setDir( 'install', './' );
+		$zula->setDir( 'uploads', '../assets/uploads' );
+		$zula->setDir( 'config', '../config' );
 	}
 
 	Registry::register( 'zula', $zula );
@@ -88,7 +88,7 @@
 			$serverName .= _BASE_DIR;
 		}
 		$serverName = str_replace( '/', '.', rtrim($serverName, '/') );
-		if ( strlen( $serverName ) ) {			
+		if ( strlen( $serverName ) ) {
 			if ( substr( $serverName, -8 ) == '.install' ) {
 				$serverName = substr( $serverName, 0, -8 );
 			}
@@ -97,14 +97,14 @@
 			}
 		}
 	}
-	$zula->updateDir( 'config', $confDir );
+	$zula->setDir( 'config', $confDir );
 	// Load the main configuration file for the project and define version
 	$config = $zula->loadMainConfig( $zula->getDir( 'config' ).'/config.ini.php' );
 	define( '_PROJECT_VERSION', $config->get( 'config/version' ) );
 
 	/**
 	 * Load the default libraries that are most commonly needed if you wish to
-	 * load more, then simply use $zula->load_lib()
+	 * load more, then simply use $zula->loadLib()
 	 */
 	$zula->loadDefaultLibs();
 	Module::setDirectory( $zula->getDir( 'modules' ) );

@@ -684,7 +684,9 @@
 		 * @return string
 		 */
 		public function makePageLinks( array $links ) {
-			if ( !empty( $links ) ) {
+			if ( empty( $links ) ) {
+				return '';
+			} else {
 				$linkItems = array();
 				foreach( $links as $title=>$url ) {
 					$url = !trim( $url ) ? '#' : zula_htmlspecialchars( $url );
@@ -693,8 +695,6 @@
 					$linkItems[] = '<li><a href="'.$url.'" title="'.$title.'">'.$title.'</a></li>';
 				}
 				return '<ul id="pagelinks">'.implode( '', $linkItems ).'</ul>';
-			} else {
-				return '';
 			}
 		}
 

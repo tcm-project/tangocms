@@ -104,15 +104,33 @@
 		 * Please note, any PHP within the content will *not* be executed.
 		 *
 		 * @param string $content
-		 * @return bool
+		 * @return object
 		 */
 		public function loadString( $content ) {
-			if ( is_string( $content ) ) {
-				$this->loadedContent = $content;
-				return true;
-			} else {
-				return false;
-			}
+			$this->loadedContent = (string) $content;
+			return $this;
+		}
+
+		/**
+		 * Sets if PHP should be parsed/allowed in the view file
+		 *
+		 * @param bool $allow
+		 * @return object
+		 */
+		public function allowPhp( $allow=true ) {
+			$this->parsePhp = (bool) $allow;
+			return $this;
+		}
+
+		/**
+		 * Sets if this views tags should be case-sensitive
+		 *
+		 * @param bool $cs
+		 * @return ojbect
+		 */
+		public function caseSensitive( $cs=true ) {
+			$this->caseSensitive = (bool) $cs;
+			return $this;
 		}
 
 		/**
@@ -125,25 +143,24 @@
 		}
 
 		/**
-		 * Sets if PHP should be parsed/allowed in the view file
+		 * Checks if a tag has been assigned to this view file
 		 *
-		 * @param bool $allow
 		 * @return bool
 		 */
-		public function allowPhp( $allow=true ) {
-			$this->parsePhp = (bool) $allow;
-			return true;
-		}
-
-		/**
-		 * Sets if this views tags should be case-sensitive
-		 *
-		 * @param bool $cs
-		 * @return bool
-		 */
-		public function caseSensitive( $cs=true ) {
-			$this->caseSensitive = (bool) $cs;
-			return true;
+		public function isAssigned( $tag ) {
+			$tagTokens = explode( '.', $tag );
+			if ( count( $tagTokens ) <= 1 ) {
+				$tmpTag = $tag;
+			} else {
+				// Tag is in the format of {FOO.BAR.CAR}
+				$tmpTag = $tagTokens;
+			}
+			try {
+				$this->replaceTag( $tmpTag, '' );
+				return true;
+			} catch ( Exception $e ) {
+				return false;
+			}
 		}
 
 		/**
@@ -154,7 +171,7 @@
 		 * @param bool $overwrite If a tag already exists, should it be overwriten or appended?
 		 * @param bool $allowHtml should HTML be allowed in the tag value?
 		 * @param bool $prepend	Prepend content to the tag, instead of append
-		 * @return bool
+		 * @return object
 		 */
 		public function assign( array $tags, $overwrite=true, $allowHtml=false, $prepend=false ) {
 			if ( $this->caseSensitive === false ) {
@@ -169,7 +186,6 @@
 			}
 			if ( empty( $this->assignedTags ) ) {
 				$this->assignedTags = $tags;
-				return true;
 			} else if ( $overwrite == false ) {
 				/**
 				 * Allows tags that have been assigned more than once to be
@@ -194,11 +210,10 @@
 						$this->assignedTags[ $key ] = $val;
 					}
 				}
-				return true;
 			} else {
 				$this->assignedTags = zula_merge_recursive( $this->assignedTags, $tags );
-				return true;
 			}
+			return $this;
 		}
 
 		/**
@@ -207,7 +222,7 @@
 		 * @param array $tags
 		 * @param bool $overwrite If a tag already exists, should it be overwriten or appended?
 		 * @param bool $prepend	Prepend content to the tag, instead of append
-		 * @return bool
+		 * @return object
 		 */
 		public function assignHtml( $tags, $overwrite=true, $prepend=false ) {
 			return $this->assign( $tags, $overwrite, true, $prepend );
@@ -219,7 +234,7 @@
 		 * @param string $tag
 		 * @return string
 		 */
-		public function cleanTag( $tag ) {
+		protected function cleanTag( $tag ) {
 			return preg_replace( '#[^A-Z0-9_\-/ ]#i', '', $tag );
 		}
 
@@ -229,7 +244,7 @@
 		 * @param mixed $value
 		 * @return mixed
 		 */
-		public function cleanTagValue( $value ) {
+		protected function cleanTagValue( $value ) {
 			if ( is_array( $value ) ) {
 				foreach( $value as $key=>$val ) {
 					if ( is_array( $val ) ) {
@@ -243,27 +258,6 @@
 				return htmlspecialchars( $value, ENT_COMPAT, 'UTF-8' );
 			} else {
 				return $value;
-			}
-		}
-
-		/**
-		 * Checks if a tag has been assigned to this view file
-		 *
-		 * @return bool
-		 */
-		public function isAssigned( $tag ) {
-			$tagTokens = explode( '.', $tag );
-			if ( count( $tagTokens ) <= 1 ) {
-				$tmpTag = $tag;
-			} else {
-				// Tag is in the format of {FOO.BAR.CAR}
-				$tmpTag = $tagTokens;
-			}
-			try {
-				$this->replaceTag( $tmpTag, '' );
-				return true;
-			} catch ( Exception $e ) {
-				return false;
 			}
 		}
 
@@ -470,7 +464,7 @@
 		 *
 		 * @return array
 		 */
-		public function getDefaultTags() {
+		protected function getDefaultTags() {
 			if ( !$tags = $this->_cache->get( 'view_default_tags' ) ) {
 				try {
 					$tmpLang = explode( '.', $this->_config->get( 'locale/default' ) );
@@ -485,8 +479,6 @@
 								'DIR_JAVASCRIPT'		=> $this->_zula->getDir( 'js', true ),
 								'DIR_THEME'				=> $this->_zula->getDir( 'themes', true ),
 								'DIR_UPLOADS'			=> $this->_zula->getDir( 'uploads', true ),
-								'META_DESCRIPTION'		=> $this->_config->get( 'meta/description' ),
-								'META_KEYWORDS'			=> $this->_config->get( 'meta/keywords' ),
 								'SITE_SLOGAN'			=> $this->_config->get( 'config/slogan' ),
 								'SITE_TITLE'			=> $this->_config->get( 'config/title' ),
 								'URL_ADMIN'				=> $this->_router->makeUrl( null, null, null, 'admin' ),
@@ -498,13 +490,13 @@
 				$tags['plain'] = array(
 										'SITE_TITLE'		=> $tags['SITE_TITLE'],
 										'SITE_SLOGAN'		=> $tags['SITE_SLOGAN'],
-										'META_KEYWORDS'		=> $tags['META_KEYWORDS'],
-										'META_DESCRIPTION'	=> $tags['META_DESCRIPTION'],
 										);
 				$this->_cache->add( 'view_default_tags', $tags );
 			}
 			// Add in some tags which should not be cached
 			$tags['URL_CURRENT_ST'] = $this->_router->makeUrl( '' );
+			$tags['META_DESCRIPTION'] = $this->_config->get( 'meta/description' );
+			$tags['META_KEYWORDS'] = $this->_config->get( 'meta/keywords' );
 			if ( Registry::has( 'theme' ) ) {
 				$curTheme = Registry::get( 'theme' )->getDetail( 'name' );
 				$tags['DIR_CUR_THEME'] = $tags['DIR_THEME'].'/'.$curTheme;

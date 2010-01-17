@@ -13,22 +13,17 @@
  */
 
 	/** Exceptions */
-	class Zula_LibraryNoExist extends Exception {}
- 	class Zula_FailedDefaultLibs extends Exception {}
+	class Zula_Exception extends Exception {}
 
- 	class Zula_FailedSetDirectory extends Exception {}
- 	class Zula_FailedUpdateDirectory extends Exception {}
- 	class Zula_DirectoryNoExist extends Exception {}
-
-	class Zula_ModelNoExist extends Exception {}
-	class Zula_DetailNoExist extends Exception {}
+	class Zula_ModelNoExist extends Zula_Exception {}
+	class Zula_DetailNoExist extends Zula_Exception {}
 
 	final class Zula {
 
 		/**
 		 * Current version of Zula being used
 		 */
-		const _VERSION = '0.7.65';
+		const _VERSION = '0.7.70';
 
 		/**
 		 * Holds the singleton instance of this class
@@ -78,9 +73,7 @@
 		 * The default libraries the the framework will load upon startup
 		 * @var array
 		 */
-		private $defaultLibs = array(
-									'date', 'log', 'locale', 'cache', 'dispatcher', 'error', 'input',
-									);
+		private $defaultLibs = array('date', 'log', 'locale', 'cache', 'dispatcher', 'error', 'input');
 
 		/**
 		 * Path to the main configuration file that Zula will use
@@ -226,36 +219,32 @@
 		/**
 		 * Loads the default most commonly used libraries for the framework
 		 *
-		 * @return bool
+		 * @return object
 		 */
 		public function loadDefaultLibs() {
-			if ( is_array( $this->defaultLibs ) ) {
-				$config = Registry::get( 'config' );
-				foreach( $this->defaultLibs as $library ) {
-					if ( $library == 'cache' ) {
-						try {
-							$cache = Cache::factory( $config->get( 'cache/type' ) );
-						} catch ( Config_KeyNoExist $e ) {
-							// Revert to file based caching.
-							$cache = Cache::factory( 'file' );
-						}
-						try {
-							$cache->ttl( $config->get( 'cache/ttl' ) );
-						} catch ( Exception $e ) {}
-					} else if ( $library == 'locale' ) {
-						try {
-							Locale::factory( $config->get( 'locale/engine' ) );
-						} catch ( Config_KeyNoExist $e ) {
-							Locale::factory( 'failsafe' );
-						}
-					} else {
-						$this->loadLib( $library );
+			$config = Registry::get( 'config' );
+			foreach( $this->defaultLibs as $library ) {
+				if ( $library == 'cache' ) {
+					try {
+						$cache = Cache::factory( $config->get( 'cache/type' ) );
+					} catch ( Config_KeyNoExist $e ) {
+						// Revert to file based caching.
+						$cache = Cache::factory( 'file' );
 					}
+					try {
+						$cache->ttl( $config->get( 'cache/ttl' ) );
+					} catch ( Exception $e ) {}
+				} else if ( $library == 'locale' ) {
+					try {
+						Locale::factory( $config->get( 'locale/engine' ) );
+					} catch ( Config_KeyNoExist $e ) {
+						Locale::factory( 'failsafe' );
+					}
+				} else {
+					$this->loadLib( $library );
 				}
-				return true;
-			} else {
-				throw new Zula_FailedDefaultLibs( 'Zula::loadDefaultLibs() failed to load default libraries, value is not an array', 4 );
 			}
+			return $this;
 		}
 
 		/**
@@ -285,7 +274,7 @@
 				Registry::register( $regName, $tmpLib );
 				return $tmpLib;
 			} else {
-				throw new Zula_LibraryNoExist( 'Zula library "'.$className.'" must extend "Zula_LibraryBase"', 2 );
+				throw new Zula_Exception( 'Zula library "'.$className.'" must extend "Zula_LibraryBase"', 2 );
 			}
 		}
 
@@ -321,49 +310,38 @@
 				$config->load( $configIni );
 				Registry::register( 'config', $config );
 			} catch ( Config_Ini_FileNoExist $e ) {
-				throw new Exception( 'Zula configuration file "'.$configFile.'" does not exist or is not readable', 8);
-			} catch ( Exception $e ) {
-				throw new Exception( 'Zula configuration file could not be loaded "'.$e->getMessage().'"', 8);
+				throw new Zula_Exception( 'Zula configuration file "'.$configFile.'" does not exist or is not readable', 8);
 			}
 			return $config;
 		}
 
 		/**
-		 * Adds a new directory entry that can later be used
+		 * Updates the path to a named directory that can be used. If the path
+		 * does not exist, it shall attemp to create the directory
 		 *
 		 * @param string $name
 		 * @param string $dir
-		 * @return bool
+		 * @return object
 		 */
 		public function setDir( $name, $dir ) {
-			if ( isset( $this->directories[ $name ] ) ) {
-				return true;
-			} else if ( is_dir( $dir ) ) {
-				$this->directories[ $name ] = $dir;
-				return true;
-			} else if ( zula_make_dir( $dir ) === false ) {
-				throw new Zula_FailedSetDirectory( 'Zula was unable create directory "'.$dir.'" due to permissions. Please manually create the directory.', 5 );
-			} else {
-				return true;
+			if ( !is_dir( $dir ) && zula_make_dir( $dir ) === false ) {
+				throw new Zula_Exception( 'failed to create directory "'.$dir.'"' );
 			}
+			$this->directories[ $name ] = $dir;
+			unset( $this->htmlDirs[ $name ] );
+			return $this;
 		}
 
 		/**
-		 * Updates a stored directories directory, if given a new name
-		 * it will attempt to set it via set_dir().
+		 * Alias to Zula::setDir()
 		 *
 		 * @param string $name
 		 * @param string $dir
-		 * @return bool
+		 * @deprecated deprecated since 0.7.70
+		 * @return object
 		 */
 		public function updateDir( $name, $dir ) {
-			if ( isset( $this->htmlDirs[ $name ] ) ) {
-				unset( $this->htmlDirs[ $name ] );
-			}
-			if ( !isset( $this->directories[ $name ] ) ) {
-				return $this->setDir( $name, $dir );
-			}
-			return $this->directories[ $name ] = $dir;
+			return $this->setDir( $name, $dir );
 		}
 
 		/**
@@ -394,7 +372,7 @@
 				}
 				return rtrim( $this->directories[ $name ], '/' );
 			}
-			throw new Zula_DirectoryNoExist( 'Zula could not get directory "'.$name.'" as it does not exist', 6 );
+			throw new Zula_Exception( 'Zula named directory "'.$name.'" does not exist' );
 		}
 
 		/**
