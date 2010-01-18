@@ -11,10 +11,10 @@
  * @package Zula_ExternalMedia
  */
 
-	class Externalmedia_Exception extends Exception {}
+	class Externalmedia_Exception extends Zula_Exception {}
  	class ExternalMedia_NoDriver extends Externalmedia_Exception {}
 	class ExternalMedia_DriverError extends Externalmedia_Exception {}
-	
+
 	class ExternalMediaDriver_NoRead extends Externalmedia_Exception {}
 	class ExternalMediaDriver_InvalidID extends Externalmedia_Exception {}
 

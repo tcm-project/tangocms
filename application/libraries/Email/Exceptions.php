@@ -11,7 +11,7 @@
  * @package Zula_Email
  */
 
-	class Email_Exception extends Exception {}
+	class Email_Exception extends Zula_Exception {}
 	class Email_UnknownTransport extends Email_Exception {}
 
 ?>

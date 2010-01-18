@@ -11,9 +11,9 @@
  * @package Zula_Config
  */
 
-	class Config_InvalidObject extends exception {}
-	class Config_InvalidValue extends exception {}
+	class Config_InvalidObject extends Zula_Exception {}
+	class Config_InvalidValue extends Zula_Exception {}
 
-	class Config_KeyNoExist extends exception {}
+	class Config_KeyNoExist extends Zula_Exception {}
 
 ?>

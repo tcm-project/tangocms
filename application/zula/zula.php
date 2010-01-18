@@ -158,16 +158,12 @@
 		}
 
 		/**
-		 * Zula's Exception Handler for all uncaught exceptions
+		 * Zula Exception Handler for all uncaught exceptions
 		 *
-		 * Error Codes:
-		 *		000-019 = Internal Zula
-		 * 		020-029 = SQL
-		 *
-		 * @param callback $exception
+		 * @param object $exception
 		 * @return bool
 		 */
-		public function exceptionHandler( $e ) {
+		public function exceptionHandler( Exception $e ) {
 			$formatCode = sprintf( 'ZULA-%03d', $e->getCode() );
 			if ( !Registry::has( 'error' ) ) {
 				try {
@@ -175,15 +171,14 @@
 				} catch ( Exception $e ) {}
 			}
 			/**
-			 * Create the correct title for the exception based on
-			 * the error code provided by the exception
+			 * Create the correct title for the exception
 			 */
-			if ( $e->getCode() > 0 && $e->getcode() <= 19 ) {
-				$title = 'Internal Zula "'.$formatCode.'" uncaught exception';
-			} else if ( $e->getCode() >= 20 && $e->getCode() <= 29 ) {
-				$title = 'SQL "'.$formatCode.'" uncaught exception';
+			if ( $e instanceof Zula_Exception ) {
+				$title = 'Uncaught internal (Zula) exception';
+			} else if ( $e instanceof PDOException ) {
+				$title = 'Uncaught SQL (PDO) exception';
 			} else {
-				$title = 'Uncaught "'.get_class($e).'" Exception';
+				$title = 'Uncaught application exception';
 			}
 			// Attempt to write a dump log file
 			$logDir = $this->getDir( 'logs' );

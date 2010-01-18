@@ -11,6 +11,6 @@
  * @package Zula_Router
  */
 
-	class Router_ArgNoExist extends Exception {}
+	class Router_ArgNoExist extends Zula_Exception {}
 
 ?>

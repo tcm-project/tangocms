@@ -11,14 +11,14 @@
  * @package Zula_Theme
  */
 
-	class Theme_NoExist extends Exception {}
-	class Theme_DetailNoExist extends Exception {}
-	class Theme_SectorNoExist extends Exception {}
+	class Theme_NoExist extends Zula_Exception {}
+	class Theme_DetailNoExist extends Zula_Exception {}
+	class Theme_SectorNoExist extends Zula_Exception {}
 
-	class Theme_UnableToDelete extends Exception {}
-	class Theme_CssNoExist extends Exception {}
+	class Theme_UnableToDelete extends Zula_Exception {}
+	class Theme_CssNoExist extends Zula_Exception {}
 
-	class Theme_Layout_NoSectorMap extends Exception {}
-	class Theme_Layout_ControllerNoExist extends Exception {}
+	class Theme_Layout_NoSectorMap extends Zula_Exception {}
+	class Theme_Layout_ControllerNoExist extends Zula_Exception {}
 
 ?>

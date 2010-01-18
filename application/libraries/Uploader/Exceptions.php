@@ -12,7 +12,7 @@
  * @package Zula_Uploader
  */
 
-	class Uploader_Exception extends Exception {}
+	class Uploader_Exception extends Zula_Exception {}
 
 	## Uploader lib
 	class Uploader_NotEnabled extends Uploader_Exception {}
@@ -27,5 +27,5 @@
 
 	class Uploader_InvalidMime extends Uploader_Exception {}
 	class Uploader_InvalidExtension extends Uploader_Exception {}
-	
+
 ?>

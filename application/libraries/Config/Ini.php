@@ -12,8 +12,8 @@
  */
 
 	// Exceptions
-	class Config_ini_FileNoExist extends Exception {}
-	class Config_ini_FileNotWriteable extends Exception {}
+	class Config_ini_FileNoExist extends Zula_Exception {}
+	class Config_ini_FileNotWriteable extends Zula_Exception {}
 
 	class Config_ini extends Config_base {
 

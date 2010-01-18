@@ -12,19 +12,19 @@
  * @package Zula_UGManager
  */
 
-	class UGManager_UserExists extends Exception {}
+	class UGManager_UserExists extends Zula_Exception {}
 
-	class UGManager_GroupNoExist extends Exception {}
-	class UGManager_UserNoExist extends Exception {}
+	class UGManager_GroupNoExist extends Zula_Exception {}
+	class UGManager_UserNoExist extends Zula_Exception {}
 
-	class UGManager_InvalidActivationCode extends Exception {}
-	class UGManager_InvalidResetCode extends Exception {}
+	class UGManager_InvalidActivationCode extends Zula_Exception {}
+	class UGManager_InvalidResetCode extends Zula_Exception {}
 
-	class UGManager_GroupExists extends Exception {}
-	class UGManager_InvalidInheritance extends Exception {}
-	class UGManager_InvalidName extends Exception {}
+	class UGManager_GroupExists extends Zula_Exception {}
+	class UGManager_InvalidInheritance extends Zula_Exception {}
+	class UGManager_InvalidName extends Zula_Exception {}
 
-	class UGManager_InvalidGroup extends Exception {}
-	class UGManager_InvalidUser extends Exception {}
+	class UGManager_InvalidGroup extends Zula_Exception {}
+	class UGManager_InvalidUser extends Zula_Exception {}
 
 ?>

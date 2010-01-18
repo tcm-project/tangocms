@@ -11,13 +11,13 @@
  * @package Zula_Module
  */
 
- 	class Module_NoExist extends Exception {}
- 	class Module_Disabled extends Module_NoExist {}
- 	class Module_NotInstallable extends Exception {}
+	class Module_NoExist extends Zula_Exception {}
+	class Module_Disabled extends Module_NoExist {}
+	class Module_NotInstallable extends Zula_Exception {}
 
- 	class Module_UnableToLoad extends Exception {}
+	class Module_UnableToLoad extends Zula_Exception {}
  	class Module_ControllerNoExist extends Module_UnableToLoad {}
  	class Module_NoPermission extends Module_UnableToLoad {}
- 	class Module_AjaxOnly extends Module_UnableToLoad {}
+	class Module_AjaxOnly extends Module_UnableToLoad {}
 
 ?>

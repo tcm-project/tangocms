@@ -11,6 +11,6 @@
  * @package Zula_Input
  */
 
-	class Input_KeyNoExist extends Exception {}
+	class Input_KeyNoExist extends Zula_Exception {}
 
 ?>

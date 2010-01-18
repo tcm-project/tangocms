@@ -11,11 +11,11 @@
  * @package Zula_Image
  */
 
-	class Image_Exception extends Exception {}
-	
+	class Image_Exception extends Zula_Exception {}
+
 	class Image_LoadFailed extends Image_Exception {}
- 	class Image_NoGd extends Image_LoadFailed {}
- 	class Image_FileNoExist extends Image_LoadFailed {}	
- 	class Image_SaveFailed extends Image_Exception {}	
+	class Image_NoGd extends Image_LoadFailed {}
+	class Image_FileNoExist extends Image_LoadFailed {}
+	class Image_SaveFailed extends Image_Exception {}
 
 ?>

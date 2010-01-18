@@ -11,11 +11,11 @@
  * @package Zula_Sql
  */
 
- 	class SQL_InvalidDriver extends Exception {}
+	class SQL_InvalidDriver extends Zula_Exception {}
 	class SQL_UnableToConnect extends PDOException {}
 	class SQL_QueryFailed extends PDOException {}
-	class SQL_InvalidName extends Exception {} # Invalid Database table, column etc name
+	class SQL_InvalidName extends Zula_Exception {} # Invalid Database table, column etc name
 
-	class Sql_InvalidFile extends Exception {}
+	class Sql_InvalidFile extends Zula_Exception {}
 
 ?>

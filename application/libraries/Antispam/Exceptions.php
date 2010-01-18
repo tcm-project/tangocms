@@ -11,7 +11,7 @@
  * @package Zula_Antispam
  */
 
-	class Antispam_InvalidBackend extends Exception {}
-	class Antispam_Exception extends Exception {}
+	class Antispam_InvalidBackend extends Zula_Exception {}
+	class Antispam_Exception extends Zula_Exception {}
 
 ?>

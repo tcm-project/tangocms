@@ -11,11 +11,11 @@
  * @package Zula_Acl
  */
 
-	class Acl_ResourceAlreadyExists extends Exception {}
-	class Acl_ResourceNoExist extends Exception {}
-	class Acl_InvalidName extends Exception {}
-	class Acl_RoleNoExist extends Exception {}
-	class Acl_ParentNoExist extends Exception {}
-	class Acl_InvalidParent extends Exception {}
+	class Acl_ResourceAlreadyExists extends Zula_Exception {}
+	class Acl_ResourceNoExist extends Zula_Exception {}
+	class Acl_InvalidName extends Zula_Exception {}
+	class Acl_RoleNoExist extends Zula_Exception {}
+	class Acl_ParentNoExist extends Zula_Exception {}
+	class Acl_InvalidParent extends Zula_Exception {}
 
 ?>

@@ -11,6 +11,6 @@
  * @package Zula_Locale
  */
 
-	class Locale_InvalidEngine extends Exception {}
+	class Locale_InvalidEngine extends Zula_Exception {}
 
 ?>
