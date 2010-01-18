@@ -53,9 +53,7 @@
 									'libs'		=> '/libraries',
 									'locale'	=> '/locale',
 									'logs'		=> '/logs',
-									'models'	=> '/models',
 									'modules'	=> '/modules',
-									'plugin'	=> '/plugins',
 									'themes'	=> './assets/themes',
 									'tmp'		=> './tmp',
 									'uploads'	=> './assets/uploads',
@@ -317,14 +315,16 @@
 
 		/**
 		 * Updates the path to a named directory that can be used. If the path
-		 * does not exist, it shall attemp to create the directory
+		 * does not exist, it shall attemp to create the directory (only if the
+		 * 3rd argument is set to bool true)
 		 *
 		 * @param string $name
 		 * @param string $dir
+		 * @param bool $createDir
 		 * @return object
 		 */
-		public function setDir( $name, $dir ) {
-			if ( !is_dir( $dir ) && zula_make_dir( $dir ) === false ) {
+		public function setDir( $name, $dir, $createDir=false ) {
+			if ( $createDir && zula_make_dir( $dir ) === false ) {
 				throw new Zula_Exception( 'failed to create directory "'.$dir.'"' );
 			}
 			$this->directories[ $name ] = $dir;
@@ -337,11 +337,12 @@
 		 *
 		 * @param string $name
 		 * @param string $dir
+		 * @param bool $createDir
 		 * @deprecated deprecated since 0.7.70
 		 * @return object
 		 */
-		public function updateDir( $name, $dir ) {
-			return $this->setDir( $name, $dir );
+		public function updateDir( $name, $dir, $createDir=false ) {
+			return $this->setDir( $name, $dir, $createDir );
 		}
 
 		/**

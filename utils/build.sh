@@ -10,9 +10,9 @@
 #---
 
 ## All options and tasks with their default values
-OPT_PATH_CLOSURE=/usr/bin/closure
+OPT_PATH_CLOSURE=/usr/share/java/closure-compiler/closure-compiler.jar
 OPT_VERBOSE=false
-OPT_PACKAGE_MODE=
+OPT_PACKAGE_MODE=production
 
 TASK_JS_COMPRESS=false
 TASK_PACKAGE=false
@@ -23,39 +23,47 @@ if [ ! -f "index.php" ]; then
 	exit 1
 fi
 
-while getopts ":jp:vxh" OPTION
-do
-	case "$OPTION" in
-		j)
+while [[ $1 == -* ]]; do
+	case "$1" in
+		-j)
 			TASK_JS_COMPRESS=true
-			if [[ -n "$OPTARG" ]]; then
-				OPT_PATH_CLOSURE="$OPTARG"
+			if (($# > 1)); then
+				OPT_PATH_CLOSURE="$2"
+				shift 2;
+			else
+				shift
 			fi
 			;;
-		p)
+		-p)
 			TASK_PACKAGE=true
-			OPT_PACKAGE_MODE="$OPTARG"
+			if (($# > 1)); then
+				OPT_PACKAGE_MODE="$2"
+				shift 2;
+			fi
 			;;
-		v)
+		-v)
 			OPT_VERBOSE=true
+			shift
 			;;
-		x)
+		-x)
 			TASK_CHECK_EXCEPTIONS=true
+			shift
 			;;
-		h)
-			echo -e "TangoCMS Project building tools.\nUsage: build.sh [-jpvxh]"
+		-h)
+			echo -e "TangoCMS Project building tools.\nUsage: build.sh [-j [jar-path]] [-p [mode]] [-x] [-v] [-h]"
 			echo "Options:"
 			echo -e "\t-j\tCompress source JavaScript files using Google Closure Compiler."
 			echo -e "\t-p\tCreates .tar.gz, .tar.bz2 and .zip archives. This implies '-j' always. Zula" \
-					"\n\t\tapplication mode argument required, either 'development' or 'production.'"
+					"\n\t\tapplication mode argument optional, either 'development' or 'production which'" \
+					"\n\t\tdefaults to 'production'."
 			echo -e "\t-x\tCheck all thrown PHP exceptions are defined, and list those not used."
 			echo -e "\t-v\tBe more verbose with output, providing more detail."
 			echo -e "\t-h\tDisplays this help text.\n"
 			echo "Report bugs to <bugs@tangocms.org>"
 			exit 0
 			;;
-		*)
-			echo "Invalid argument or missing value for '$OPTARG'. See '-h' for help text."
+		-*)
+			echo "Invalid argument or missing value for '$1'. See '-h' for help text."
 			exit 1
 			;;
 	esac
@@ -75,8 +83,8 @@ if [ $TASK_JS_COMPRESS == "true" -o $TASK_PACKAGE == "true" ]; then
 	verbose || echo -ne ":: Compressing source JavaScript files (*.src.js) "
 	for sourceFile in `find . -name "*.src.js"`; do
 		fileName=`basename $sourceFile .src.js`.js
-		$OPT_PATH_CLOSURE --js $sourceFile --charset utf-8 --js_output_file `dirname $sourceFile`/$fileName \
-						  --warning_level QUIET
+		"$JAVA_HOME/bin/java" -jar $OPT_PATH_CLOSURE --js $sourceFile --charset utf-8 --js_output_file `dirname $sourceFile`/$fileName \
+							  --warning_level QUIET
 		verbose || echo -ne "."
 	done
 	verbose || echo " done!"

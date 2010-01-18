@@ -53,7 +53,6 @@
 	 * $zula->setDir( 'lib', '/libaries' );
 	 */
 	$zula->setDir( 'config', dirname(__FILE__).'/config' );
-	$zula->setDir( 'uploads', './assets/uploads' );
 
 	if ( _APP_MODE == 'installation' ) {
 		define( '_REAL_MODULE_DIR', $zula->getDir( 'modules' ) );
