@@ -31,7 +31,7 @@ jQuery(document).ready(
 									frameHeight:			340,
 									overlayShow:			true,
 									overlayOpacity:			0.7,
-									overlayColor:			'#444',
+									overlayColor:			"#444",
 									slideshowAutostart:		false,
 									slideshowDelay:			5200, // Delay of 0 disables slideshow
 									displayMeta:			true, // Display title and controls for images?

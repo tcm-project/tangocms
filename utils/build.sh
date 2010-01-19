@@ -52,7 +52,7 @@ while [[ $1 == -* ]]; do
 		-h)
 			echo -e "TangoCMS Project building tools.\nUsage: build.sh [-j [jar-path]] [-p [mode]] [-x] [-v] [-h]"
 			echo "Options:"
-			echo -e "\t-j\tCompress source JavaScript files using Google Closure Compiler."
+			echo -e "\t-j\tCompress source JavaScript files using Google Closure Compiler (requires Java)"
 			echo -e "\t-p\tCreates .tar.gz, .tar.bz2 and .zip archives. This implies '-j' always. Zula" \
 					"\n\t\tapplication mode argument optional, either 'development' or 'production which'" \
 					"\n\t\tdefaults to 'production'."
@@ -63,7 +63,7 @@ while [[ $1 == -* ]]; do
 			exit 0
 			;;
 		-*)
-			echo "Invalid argument or missing value for '$1'. See '-h' for help text."
+			echo "Invalid argument '$1'. See '-h' for help text."
 			exit 1
 			;;
 	esac
@@ -81,10 +81,23 @@ verbose() {
 ##
 if [ $TASK_JS_COMPRESS == "true" -o $TASK_PACKAGE == "true" ]; then
 	verbose || echo -ne ":: Compressing source JavaScript files (*.src.js) "
+	if [ -n "$JAVA_HOME" ]; then
+		javaBin="${JAVA_HOME}/bin/java"
+	else
+		javaBin=`which java`
+		if [ $? == "1" ]; then
+			echo -e "\n---- 'java' bin not found. Please set JAVA_HOME variable or install Java."
+			exit 1
+		fi
+	fi
+	if [ ! -f $OPT_PATH_CLOSURE ]; then
+		echo -e "\n---- jar file '$OPT_PATH_CLOSURE' does not exist."
+		exit 1
+	fi
 	for sourceFile in `find . -name "*.src.js"`; do
 		fileName=`basename $sourceFile .src.js`.js
-		"$JAVA_HOME/bin/java" -jar $OPT_PATH_CLOSURE --js $sourceFile --charset utf-8 --js_output_file `dirname $sourceFile`/$fileName \
-							  --warning_level QUIET
+		$javaBin -jar $OPT_PATH_CLOSURE --js $sourceFile --charset utf-8 --js_output_file `dirname $sourceFile`/$fileName \
+					  --warning_level QUIET
 		verbose || echo -ne "."
 	done
 	verbose || echo " done!"

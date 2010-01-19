@@ -73,10 +73,9 @@
 			$list = '<ul class="menu-category">'."\n\t";
 			foreach( $items as $item ) {
 				$item['url'] = ltrim( $item['url'], '/' );
+				$class = 'menu-'.$item['id'];
 				if ( (strtoupper($item['url']) == '[FRONT_PAGE]' || !trim($item['url'], '/') ) && !$curUrl || $item['url'] == $curUrl ) {
-					$class = 'class="menu-current"';
-				} else {
-					$class = null;
+					$class .= ' menu-current';
 				}
 				// Create the correct URL for the menu item to use
 				if ( $item['url'] == 'admin' ) {
@@ -94,8 +93,7 @@
 				}
 				// Gather children and append the list item
 				$children = empty($item['children']) ? '' : $this->buildItems( $item['children'] );
-				$list .= sprintf( '<li id="menu-item-%1$s" %2$s><a href="%3$s" title="%4$s">%5$s</a>%6$s</li>'."\n",
-								  $item['id'],
+				$list .= sprintf( '<li class="%1$s"><a href="%2$s" title="%3$s">%4$s</a>%5$s</li>'."\n",
 								  $class,
 								  $item['url'],
 								  zula_htmlspecialchars( ($item['attr_title'] ? $item['attr_title'] : $item['name']) ),
@@ -105,7 +103,7 @@
 			}
 			return $list.'</ul>';
 		}
-		
+
 	}
 
 ?>
