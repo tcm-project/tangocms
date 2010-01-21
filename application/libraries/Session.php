@@ -42,9 +42,8 @@
 
 		/**
 		 * Constructor
-		 * Sets certain configuration details, starts the session and then
-		 * attempts to get which user is currently in use (either from session
-		 * or details within cookies and session table)
+		 * Sets some configuration details and checks if there is any
+		 * authentication details to use.
 		 *
 		 * @return object
 		 */
@@ -57,27 +56,8 @@
 			} catch ( Exception $e ) {
 				$this->timeout = time(); # Set to a timeout that will never happen.
 			}
-			if ( session_id() == false ) {
-				$conf = array(
-							'lifetime'	=> null,
-							'path'		=> _BASE_DIR,
-							'domain'	=> null,
-							'secure'	=> null,
-							'httponly'	=> true,
-							);
-				foreach( $conf as $key=>$val ) {
-					if ( $this->_config->has( 'session/'.$key ) ) {
-						$conf[ $key ] = $this->_config->get( 'session/'.$key );
-					}
-				}
-				session_set_cookie_params( $conf['lifetime'], $conf['path'], $conf['domain'], $conf['secure'], $conf['httponly'] );
-				session_name( 'ZULA_'.md5(_BASE_DIR) );
-				session_start();
-			}
-			if ( _AJAX_REQUEST === true ) {
-				// Set default to not store previous URL when in AJAX request
-				$this->storePrevious = false;
-			}
+			$this->storePrevious = _AJAX_REQUEST === false;
+			$this->start();
 			// Get which user (key + for) is being used
 			if ( !isset( $_SESSION['auth'] ) ) {
 				$_SESSION['auth'] = array(
@@ -94,8 +74,8 @@
 					}
 				}
 			}
+			// Check if user has timed out
 			if ( isset( $_SESSION['last_activity'] ) && $_SESSION['last_activity'] + $this->timeout < time() ) {
-				// User has timed out
 				$this->destroy();
 			}
 		}
@@ -114,6 +94,32 @@
 				}
 				$_SESSION['last_activity'] = time();
 			}
+		}
+
+		/**
+		 * Starts or resumes a session
+		 *
+		 * @return int|string
+		 */
+		protected function start() {
+			if ( session_id() == false ) {
+				$conf = array(
+							'lifetime'	=> null,
+							'path'		=> _BASE_DIR,
+							'domain'	=> null,
+							'secure'	=> null,
+							'httponly'	=> true,
+							);
+				foreach( $conf as $key=>$val ) {
+					if ( $this->_config->has( 'session/'.$key ) ) {
+						$conf[ $key ] = $this->_config->get( 'session/'.$key );
+					}
+				}
+				session_set_cookie_params( $conf['lifetime'], $conf['path'], $conf['domain'], $conf['secure'], $conf['httponly'] );
+				session_name( 'ZULA_'.md5(_BASE_DIR) );
+				session_start();
+			}
+			return session_id();
 		}
 
 		/**
@@ -184,7 +190,7 @@
 		public function switchUser( $uid, $remember=true ) {
 			$session = $_SESSION;
 			$this->destroy(); # Destroy the current session/user first
-			session_start();
+			$this->start();
 			$_SESSION = $session;
 			unset( $_SESSION['auth'] );
 			// Create the needed unique keys for this session, if any

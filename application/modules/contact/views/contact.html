@@ -5,7 +5,7 @@
 	<form action="{ACTION}" method="post" id="contact">
 		<p>
 			<label for="contact-field-email"><span>*</span> {L_[Your Email Address]}:</label>
-			<input type="text" id="contact-field-email" name="contact[email]" value="{contact.email}">
+			<input type="email" id="contact-field-email" name="contact[email]" value="{contact.email}">
 		</p>
 		<?php
 			$html = new Html( 'contact[fields][%s]' );

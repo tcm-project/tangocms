@@ -7,9 +7,9 @@
 			<dt>{L_[Group]}</dt>
 			<dd><?php echo $group_name; ?></dd>
 			<dt>{L_[Joined]}</dt>
-			<dd><?php echo $this->_date->formatStamp( $joined ); ?></dd>
+			<dd><?php echo $this->_date->format( $joined ); ?></dd>
 			<dt>{L_[Last Logged In]}</dt>
-			<dd><?php echo empty($last_login) ? t('Unknown') : $this->_date->formatStamp( $last_login ); ?></dd>
+			<dd><?php echo empty($last_login) ? t('Unknown') : $this->_date->format( $last_login ); ?></dd>
 		</dl>
 	</div>
 	<div id="users-contact" style="float: left; margin-left: 80px;">

@@ -68,11 +68,11 @@
 		 */
 		public function cleanRules() {
 			$this->_cache->delete( 'acl_rules' );
-			return $this->_sql->query( 'DELETE rules
+			return $this->_sql->exec( 'DELETE rules
 										FROM {SQL_PREFIX}acl_rules AS rules
 											LEFT JOIN {SQL_PREFIX}acl_resources AS resources
 											ON rules.resource_id = resources.id
-										WHERE resources.id IS NULL' )->rowCount();
+										WHERE resources.id IS NULL' );
 		}
 
 		/**

@@ -151,7 +151,7 @@ h1 a[href], h1 a[href]:hover {
 /**
  * Various Input styles
  */
-input[type="text"], input[type="password"] {
+input[type="text"], input[type="password"], input[type="email"] {
 	background-color: #fff;
 	border: 1px solid #bbb;
 	color: #000;
@@ -160,7 +160,7 @@ input[type="text"], input[type="password"] {
 	width: 175px;
 }
 
-input[type="text"].error, input[type="password"].error {
+input[type="text"].error, input[type="password"].error, input[type="email"].error {
 	border-color: #cd310d !important;
 	color: #cd310d;
 }
@@ -222,9 +222,12 @@ textarea:hover, textarea:focus {
 	border-width: 1px;
 }
 
-input[type="text"][readonly], input[type="password"][readonly], textarea[readonly],
-input[type="text"][readonly]:hover, input[type="password"][readonly]:hover, textarea[readonly]:hover,
-input[type="text"][readonly]:focus, input[type="password"][readonly]:focus, textarea[readonly]:focus {
+input[type="text"][readonly], input[type="password"][readonly],
+input[type="email"][readonly], textarea[readonly],
+input[type="text"][readonly]:hover, input[type="password"][readonly]:hover,
+input[type="email"][readonly]:hover, textarea[readonly]:hover,
+input[type="text"][readonly]:focus, input[type="password"][readonly]:focus,
+input[type="email"][readonly]:focus, textarea[readonly]:focus {
 	border-color: #bbb;
 	background-color: #F8F8F8;
 }

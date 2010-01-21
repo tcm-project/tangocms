@@ -12,7 +12,7 @@
 <?php
 	if ( $sector == 'SC' ) {
 		if ( $poll['duration'] > 0 ) {
-			$endDate = $this->_date->formatStamp( $poll['start_date'].' +'.$poll['duration'].' weeks' );
+			$endDate = $this->_date->format( $poll['start_date'].' +'.$poll['duration'].' weeks' );
 		} else {
 			$endDate = t('Never');
 		}
@@ -20,7 +20,7 @@
 	<h3>{L_[Statistics]}</h3>
 	<ul>
 		<li>{L_[Total number of votes:]} {TOTAL_VOTES}</li>
-		<li>{L_[Start date:]} <?php echo $this->_date->formatStamp( $poll['start_date'] ); ?></li>
+		<li>{L_[Start date:]} <?php echo $this->_date->format( $poll['start_date'] ); ?></li>
 		<li>{L_[End date:]} <?php echo $endDate; ?></li>
 	</ul>
 

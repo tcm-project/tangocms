@@ -147,7 +147,7 @@ a[href]:hover {
 /**
  * Various Input styles
  */
-input[type="text"], input[type="password"] {
+input[type="text"], input[type="password"], input[type="email"] {
 	background-color: #fff;
 	border: 1px solid #bbb;
 	color: #000;
@@ -156,7 +156,7 @@ input[type="text"], input[type="password"] {
 	width: 190px;
 }
 
-input[type="text"].error, input[type="password"].error {
+input[type="text"].error, input[type="password"].error, input[type="email"].error {
 	border-color: #cd310d !important;
 	color: #cd310d;
 }
@@ -164,7 +164,7 @@ input[type="text"].error, input[type="password"].error {
 textarea {
 	background-color: #fff;
 	border: 1px solid #bbb;
-	font-size: 1.5em;
+	font-size: 1.3em;
 	height: 160px;
 	padding: 2px 3px;
 	width: 99%;
@@ -213,14 +213,18 @@ input[type="submit"]:hover, input[type="button"]:hover, a.general-button:hover {
 
 input[type="text"]:hover, input[type="text"]:focus,
 input[type="password"]:hover, input[type="password"]:focus,
+input[type="email"]:hover, input[type="email"]:focus,
 textarea:hover, textarea:focus {
 	border-color: #838271;
 	border-width: 1px;
 }
 
-input[type="text"][readonly], input[type="password"][readonly], textarea[readonly],
-input[type="text"][readonly]:hover, input[type="password"][readonly]:hover, textarea[readonly]:hover,
-input[type="text"][readonly]:focus, input[type="password"][readonly]:focus, textarea[readonly]:focus {
+input[type="text"][readonly], input[type="password"][readonly],
+input[type="email"][readonly], textarea[readonly],
+input[type="text"][readonly]:hover, input[type="password"][readonly]:hover,
+input[type="email"][readonly]:hover, textarea[readonly]:hover,
+input[type="text"][readonly]:focus, input[type="password"][readonly]:focus,
+input[type="email"][readonly]:focus, textarea[readonly]:focus {
 	border-color: #bbb;
 	background-color: #F8F8F8;
 }

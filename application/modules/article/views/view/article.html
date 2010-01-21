@@ -31,7 +31,7 @@
 	<p><em>
 		<?php
 			printf( t('Published %1$s by %2$s in %3$s'),
-					$this->_date->formatStamp( $article['date'] ),
+					$this->_date->format( $article['date'] ),
 					$this->_helper('user')->link( $article['author']),
 					'<a href="'.$this->_router->makeUrl( 'article', 'cat', $category['clean_title'] ).'">'.$category['title'].'</a>'
 				);

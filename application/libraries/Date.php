@@ -118,7 +118,7 @@
 		 * @param bool $overrideRelative
 		 * @return string
 		 */
-		public function formatStamp( $stamp=null, $format=null, $overrideRelative=false ) {
+		public function format( $stamp=null, $format=null, $overrideRelative=false ) {
 			if ( !trim( $stamp ) ) {
 				$stamp = time();
 			} else if ( !ctype_digit( (string) $stamp ) ) {
@@ -133,6 +133,20 @@
 				}
 				return date( $format, $stamp );
 			}
+		}
+
+		/**
+		 * Alias to Date::format()
+		 *
+		 * @deprecated Deprecated as of 0.7.71
+		 * @see Date::format()
+		 * @param int $stamp
+		 * @param string $format
+		 * @param bool $overrideRelative
+		 * @return string
+		 */
+		public function format( $stamp=null, $format=null, $overrideRelative=false ) {
+			return $this->format( $stamp, $format, $overrideRelative );
 		}
 
 		/**
@@ -175,7 +189,7 @@
 		public function relativeDate( $stamp, $format='' ) {
 			$differences = $this->difference( $stamp );
 			if ( $differences['unix_seconds'] > $this->relativeCutoff ) {
-				return $this->formatStamp( $stamp, $format, true );
+				return $this->format( $stamp, $format, true );
 			}
 			// Configure the formats used for relative date
 			$formats = array(

@@ -559,7 +559,7 @@
 		 * @return string
 		 */
 		protected function preParseSignature( $matches ) {
-			$date = Registry::get( 'date' )->formatStamp( null, null, true );
+			$date = Registry::get( 'date' )->format( null, null, true );
 			$userDetails = Registry::get( 'session' )->getCurrentUserInfo();
 			switch( zula_strlen( $matches[0] ) ) {
 				case 5:

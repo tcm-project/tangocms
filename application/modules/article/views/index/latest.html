@@ -24,7 +24,7 @@
 						<?php
 							$catLink = $this->_router->makeUrl( 'article', 'cat', $article['category_clean_title'] );
 						 	printf( t('Published %1$s by, %2$s in %3$s'),
-									$this->_date->formatStamp( $article['date'] ),
+									$this->_date->format( $article['date'] ),
 									$this->_helper('user')->link( $article['author'] ),
 									'<a href="'.$catLink.'">'.$article['category_title'].'</a>'
 								  );

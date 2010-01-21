@@ -28,7 +28,7 @@
 						?>
 					</td>
 					<td><?php echo $this->_helper('user')->link( $user['id'] ); ?></td>
-					<td><?php echo $this->_date->formatStamp( $user['joined'] ); ?></td>
+					<td><?php echo $this->_date->format( $user['joined'] ); ?></td>
 					<td><?php echo $this->_ugmanager->gidName( $user['group'] ); ?></td>
 					<td><?php echo $user['email']; ?></td>
 					<td>
