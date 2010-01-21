@@ -145,7 +145,7 @@
 		 * @param bool $overrideRelative
 		 * @return string
 		 */
-		public function format( $stamp=null, $format=null, $overrideRelative=false ) {
+		public function formatStamp( $stamp=null, $format=null, $overrideRelative=false ) {
 			return $this->format( $stamp, $format, $overrideRelative );
 		}
 
