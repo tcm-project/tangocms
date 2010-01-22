@@ -148,7 +148,7 @@ a[href]:hover {
 /**
  * Various Input styles
  */
-input[type="text"], input[type="password"], input[type="email"] {
+input {
 	background-color: #fff;
 	border: 1px solid #bbb;
 	color: #000;
@@ -157,7 +157,7 @@ input[type="text"], input[type="password"], input[type="email"] {
 	width: 190px;
 }
 
-input[type="text"].error, input[type="password"].error, input[type="email"].error {
+input.error {
 	border-color: #cd310d !important;
 	color: #cd310d;
 }
@@ -187,6 +187,7 @@ input[type="submit"], input[type="button"], a.general-button {
 	font-weight: bold;
 	margin: 5px 0;
 	padding: 3px;
+	width: auto;
 }
 
 a.general-button, a.general-button:hover {
@@ -196,8 +197,11 @@ a.general-button, a.general-button:hover {
 }
 
 input[type="radio"], input[type="checkbox"] {
-	margin-bottom: 3px;
-	margin-right: 3px;
+	background: transparent;
+	border: none;
+	font-size: auto;
+	margin: auto 3px 3px auto;
+	width: auto;
 }
 
 option {
@@ -212,22 +216,22 @@ input[type="submit"]:hover, input[type="button"]:hover, a.general-button:hover {
 	text-decoration: none;
 }
 
-input[type="text"]:hover, input[type="text"]:focus,
-input[type="password"]:hover, input[type="password"]:focus,
-input[type="email"]:hover, input[type="email"]:focus,
-textarea:hover, textarea:focus {
+input:hover, input:focus, textarea:hover, textarea:focus {
 	border-color: #838271;
 	border-width: 1px;
 }
 
-input[type="text"][readonly], input[type="password"][readonly],
-input[type="email"][readonly], textarea[readonly],
-input[type="text"][readonly]:hover, input[type="password"][readonly]:hover,
-input[type="email"][readonly]:hover, textarea[readonly]:hover,
-input[type="text"][readonly]:focus, input[type="password"][readonly]:focus,
-input[type="email"][readonly]:focus, textarea[readonly]:focus {
+input[readonly], input[readonly]:hover, input[readonly]:focus,
+textarea[readonly], textarea[readonly]:hover, textarea[readonly]:focus {
 	border-color: #bbb;
 	background-color: #F8F8F8;
+}
+
+input[disabled], input[disabled]:hover, input[disabled]:focus,
+textarea[disabled], textarea[disabled]:hover, textarea[disabled]:focus {
+	border-color: #a1a1a1;
+	background-color: #E6E6E6;
+	color: #515151;
 }
 
 /**

@@ -168,7 +168,7 @@
 				if ( $byRoleId === true ) {
 					$col = 'role_id';
 				} else {
-					$col = ctype_digit($group) ? 'id' : 'name';
+					$col = ctype_digit( (string) $group ) ? 'id' : 'name';
 				}
 				$pdoSt = $this->_sql->prepare(
 												'SELECT groups.*, COUNT(users.id) AS user_count
