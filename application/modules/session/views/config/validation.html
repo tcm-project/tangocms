@@ -1,4 +1,4 @@
-<form action="<?php echo $this->_router->makeUrl( 'users', 'config', 'validation' ); ?>" method="post">
+<form action="" method="post">
 	<table class="contentdata">
 		<thead>
 			<tr>
@@ -18,7 +18,7 @@
 					$i = 0; foreach( $validations as $user ) { ?>
 					<tr class="<?php echo zula_odd_even( $i ); ?>">
 						<td class="checkcol">
-							<input type="checkbox" value="<?php echo $user['id']; ?>" name="users[uids][]">
+							<input type="checkbox" value="<?php echo $user['id']; ?>" name="session[uids][]">
 						</td>
 						<td><?php echo $this->_helper('user')->link($user['id']); ?></td>
 						<td><?php echo $this->_date->format($user['joined']); ?></td>
@@ -31,7 +31,7 @@
 
 	<?php if ( !empty($validations) ) { ?>
 		<div class="actions">
-			<select name="users[action]">
+			<select name="session[action]">
 				<option value="accept">{L_[Accept]}</option>
 				<option value="decline">{L_[Decline]}</option>
 			</select>

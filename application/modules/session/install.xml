@@ -7,7 +7,7 @@
 	</dependencies>
 	<aclResources>
 		<resource roleHint="guest">session_global</resource>
-		<resource roleHint="group_admin">session_manage_config</resource>
+		<resource roleHint="group_admin">session_manage</resource>
 	</aclResources>
 	<config>
 		<sql>

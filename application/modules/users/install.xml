@@ -10,6 +10,5 @@
 		<resource roleHint="group_admin">users_delete</resource>
 		<resource roleHint="group_admin">users_add</resource>
 		<resource roleHint="group_admin">users_edit</resource>
-		<resource roleHint="group_admin">users_manage_validations</resource>
 	</aclResources>
 </install>

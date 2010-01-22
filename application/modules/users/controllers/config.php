@@ -31,7 +31,6 @@
 			$this->setPageLinks( array(
 										t('Latest Users')		=> $this->_router->makeUrl( 'users', 'config' ),
 										t('Add User')			=> $this->_router->makeUrl( 'users', 'config', 'add' ),
-										t('Manage Validations')	=> $this->_router->makeUrl( 'users', 'config', 'validation' ),
 										));
 		}
 
@@ -94,62 +93,6 @@
 			}
 			echo json_encode( $jsonObj );
 			return false;
-		}
-
-		/**
-		 * Manages a users validation, either to accept or decline. If declined
-		 * the user will be removed so another user can be added with that name.
-		 *
-		 * @return string
-		 */
-		public function validationSection() {
-			$this->_locale->textDomain( $this->textDomain() );
-			$this->setTitle( t('Manage Validations') );
-			$this->setOutputType( self::_OT_CONFIG );
-			if ( !$this->_acl->check( 'users_manage_validations' ) ) {
-				throw new Module_NoPermission;
-			}
-			// Build form validation
-			$form = new View_form( 'config/validation.html', 'users' );
-			$form->addElement( 'users/action', null, t('Action'), new Validator_InArray( array('accept', 'decline') ) );
-			$form->addElement( 'users/uids', null, t('Users'), new Validator_Is('array') );
-			if ( $form->hasInput() && $form->isValid() ) {
-				// Activate or Decline/Remove all selected users
-				foreach( $form->getValues( 'users/uids' ) as $user ) {
-					try {
-						$user = $this->_ugmanager->getUser( $user );
-						if ( $user['activate_code'] ) {
-							if ( $form->getValues( 'users/action' ) == 'accept' ) {
-								$this->_ugmanager->activateUser( $user['activate_code'] );
-								$viewFile = 'config/validation_accepted.txt';
-								$eventMsg = t('Selected users are now active');
-							} else {
-								$this->_ugmanager->deleteUser( $user['id'] );
-								$viewFile = 'config/validation_declined.txt';
-								$eventMsg = t('Selected users have been declined');
-							}
-							$msgView = $this->loadView( $viewFile );
-							$msgView->assign( array('USERNAME' => $user['username']) );
-							// Send off the correct email to the user, to notify them.
-							$message = new Email_Message( t('Account Status'), $msgView->getOutput() );
-							$message->setTo( $user['email'] );
-							$email = new Email;
-							$email->send( $message );
-						}
-					} catch ( UGManager_UserNoExist $e ) {
-						$this->_event->error( t('User does not exist') );
-					} catch ( Email_Exception $e ) {
-						$this->_event->error( t('An error occurred when sending the validation email') );
-						$this->_log->message( 'Unable to send validation email: '.$e->getMessage(), Log::L_WARNING );
-					} catch ( Exception $e ) {
-						$this->_event->error( $e->getMessage() );
-					}
-				}
-				$this->_event->success( $eventMsg );
-				return zula_redirect( $this->_router->makeUrl( 'users', 'config', 'validation' ) );
-			}
-			$form->assign( array('VALIDATIONS' => $this->_ugmanager->awaitingValidation()) );
-			return $form->getOutput();
 		}
 
 		/**
