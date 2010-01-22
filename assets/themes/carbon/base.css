@@ -157,7 +157,7 @@ input[type="text"], input[type="password"], input[type="email"] {
 	width: 190px;
 }
 
-input[type="text"].error, input[type="password"].error, input[type="email"] {
+input[type="text"].error, input[type="password"].error, input[type="email"].error {
 	border-color: #cd310d !important;
 	color: #cd310d;
 }

@@ -20,7 +20,6 @@
 		const
 			_GUEST_ID 		= 1,
 			_ROOT_ID		= 2,
-
 			_GUEST_GID		= 3,
 			_ROOT_GID		= 1;
 
@@ -53,161 +52,51 @@
 
 		/**
 		 * Constructor
-		 *
-		 * There can *NOT* be more than 1 user in the special 'root'
-		 * group, as this user has complete access to anything and
-		 * everything. The user in this group should have a very
-		 * strong password.
-		 *
-		 * There can also only be 1 user in the special group 'guest'
+		 * There must only ever be 1 user in the root and guest account. If
+		 * this differs then halt execution straight away.
 		 *
 		 * @return object
 		 */
 		public function __construct() {
-			$formats = array(
-							'multiple' 	=> 'Multiple "%1$s" users found, only one user can belong in the special "%1$s" group. Additional username: "%2$s"',
-							'zero'		=> 'Unable to find the special "%s" user',
-							);
-			foreach( array('root' => 1, 'guest' => 3) as $group=>$gid ) {
-				// Check for multiple root/guest users
-				$query = $this->_sql->query( 'SELECT COUNT(id) AS ucount, username FROM {SQL_PREFIX}users WHERE `group` = '.$gid .' GROUP BY id');
-				list( $result ) = $query->fetchAll( PDO::FETCH_ASSOC );
-				if ( $result['ucount'] > 1 ) {
-					trigger_error( sprintf( $formats['multiple'], $group, $result['username'] ), E_USER_ERROR );
-				} else if ( $result['ucount'] == 0 ) {
-					trigger_error( sprintf( $formats['zero'], $group ), E_USER_ERROR );
-				}
+			$query = $this->_sql->query( 'SELECT COUNT(id) FROM {SQL_PREFIX}users WHERE `group` IN(1,3)' );
+			$uCount = $query->fetchColumn();
+			$query->closeCursor();
+			if ( $uCount != 2 ) {
+				trigger_error( 'Zula Framework expects exactly 1 user in the root and guest group', E_USER_ERROR );
 			}
 		}
 
 		/**
-		 * Counts how many users there are for all groups
-		 * or a specified group
+		 * Returns how many users are in a group, or all groups.
 		 *
 		 * @param int $gid
 		 * @return int
 		 */
 		public function userCount( $gid=null ) {
-			$gid = !trim($gid) ? '*' : (int) $gid;
+			$gid = $gid ? abs($gid) : '*';
 			if ( !isset( $this->userCount[ $gid ] ) ) {
-				$stmt = 'SELECT COUNT(id) AS ucount FROM {SQL_PREFIX}users';
-				if ( is_int( $gid ) ) {
-					$stmt .= ' WHERE `group` = '.$gid;
-				}
-				$query = $this->_sql->query( $stmt );
-				list( $count ) = $query->fetchAll( PDO::FETCH_COLUMN );
-				$this->userCount[ $gid ] = $count;
+				$query = $this->_sql->query(
+											'SELECT COUNT(id) FROM {SQL_PREFIX}users
+											 WHERE `group` = '.(is_int($gid) ? $gid : '`group`')
+											);
+				$this->userCount[ $gid ] = $query->fetchColumn();
+				$query->closeCursor();
 			}
 			return $this->userCount[ $gid ];
 		}
 
 		/**
-		 * Counts how many groups there are
+		 * Returns how many groups there are
 		 *
 		 * @return int
 		 */
 		public function groupCount() {
 			if ( $this->groupCount == 0 ) {
-				$query = $this->_sql->query( 'SELECT COUNT(id) AS gcount FROM {SQL_PREFIX}groups' );
-				$result = $query->fetchAll( PDO::FETCH_COLUMN );
-				$this->groupCount = $result[0];
+				$query = $this->_sql->query( 'SELECT COUNT(id) FROM {SQL_PREFIX}groups' );
+				$this->groupCount = $query->fetchColumn();
+				$query->closeCursor();
 			}
 			return $this->groupCount;
-		}
-
-		/**
-		 * Gets details for a single user by username or ID
-		 *
-		 * @param string|int $user
-		 * @param bool $byId
-		 * @return array
-		 */
-		public function getUser( $user, $byId=true ) {
-			$user = trim( $user );
-			if ( $byId == false || !isset( $this->users[ $user ] ) ) {
-				$pdoSt = $this->_sql->prepare( 'SELECT * FROM {SQL_PREFIX}users WHERE '.($byId ? 'id' : 'username').' = ?' );
-				$pdoSt->execute( array($user) );
-				$userDetails = $pdoSt->fetch( PDO::FETCH_ASSOC );
-				$pdoSt->closeCursor();
-				if ( $userDetails ) {
-					if ( $userDetails['id'] == self::_GUEST_ID ) {
-						$userDetails['password'] = '';
-					}
-					$this->users[ $userDetails['id'] ] = $userDetails;
-					$user = $userDetails['id'];
-				} else {
-					throw new UGManager_UserNoExist( 'user '.$user.' does not exist' );
-				}
-			}
-			return $this->users[ $user ];
-		}
-
-		/**
-		 * Gets details for a group by name, id or role_id
-		 *
-		 * @param mixed $group
-		 * @param bool $byRoleId
-		 * @return array
-		 */
-		public function getGroup( $group, $byRoleId=false ) {
-			$group = trim( $group );
-			if ( $byRoleId === true || !isset( $this->groups[ $group ] ) ) {
-				if ( $byRoleId === true ) {
-					$col = 'role_id';
-				} else {
-					$col = ctype_digit($group) ? 'id' : 'name';
-				}
-				$pdoSt = $this->_sql->prepare(
-												'SELECT groups.*, COUNT(users.id) AS user_count
-												 FROM
-												 	{SQL_PREFIX}groups AS groups
-												 	LEFT JOIN {SQL_PREFIX}users AS users ON users.group = groups.id
-												 WHERE groups.'.$col.' = ?
-												 GROUP BY groups.id'
-											   );
-				$pdoSt->execute( array( $group ) );
-				$details = $pdoSt->fetchAll( PDO::FETCH_ASSOC );
-				if ( empty( $details ) ) {
-					throw new UGManager_GroupNoExist( 'Unable to get group details. Group/ID "'.$group.'" does not exist' );
-				} else {
-					$group = $details['0']['id'];
-					$this->groups[ $group ] = $details[0];
-				}
-			}
-			return $this->groups[ $group ];
-		}
-
-		/**
-		 * Gets the details of the groups that inherit from the
-		 * provided group ID. This is all done recursively.
-		 *
-		 * @param int $gid
-		 * @param int $level 	Should not really be set by a user
-		 * @return array|bool
-		 */
-		public function groupInherits( $gid, $level=1 ) {
-			$groupDetails = $this->getGroup( $gid );
-			try {
-				$roleDetails = $this->_acl->getRole( $groupDetails['role_id'] );
-				if ( empty( $roleDetails['parent_id'] ) ) {
-					return false;
-				} else {
-					$groups = array();
-					foreach( $this->getAllGroups() as $group ) {
-						if ( $group['role_id'] == $roleDetails['parent_id'] ) {
-							$group['depth'] = $level++;
-							$inherits = $this->groupInherits( $group['id'], $level );
-							if ( is_array( $inherits ) ) {
-								$group['inherits'] = $inherits;
-							}
-							$groups[] = $group;
-						}
-					}
-					return empty($groups) ? false : $groups;
-				}
-			} catch ( ACL_RoleNoExist $e ) {
-				throw new Exception( 'could not get which group "'.$gid.'" inherits. Group has a role_id that does not exist' );
-			}
 		}
 
 		/**
@@ -235,24 +124,83 @@
 		public function groupExists( $group ) {
 			try {
 				$this->getGroup( $group );
+				return true;
 			} catch ( UGManager_GroupNoExist $e ) {
 				return false;
 			}
-			return true;
 		}
 
 		/**
-		 * Gets all users for all groups, or a specified group
-		 * with the ability to limit how many are returned
+		 * Gets details for a single user by username or ID
 		 *
-		 * @param int $group	GroupID to limit by
-		 * @param int $limit	Number of users to return
+		 * @param string|int $user
+		 * @param bool $byId
+		 * @return array
+		 */
+		public function getUser( $user, $byId=true ) {
+			if ( $byId == false || !isset( $this->users[ $user ] ) ) {
+				$pdoSt = $this->_sql->prepare( 'SELECT * FROM {SQL_PREFIX}users WHERE '.($byId ? 'id' : 'username').' = ?' );
+				$pdoSt->execute( array($user) );
+				$userDetails = $pdoSt->fetch( PDO::FETCH_ASSOC );
+				$pdoSt->closeCursor();
+				if ( $userDetails ) {
+					if ( $userDetails['id'] == self::_GUEST_ID ) {
+						$userDetails['password'] = '';
+					}
+					$this->users[ $userDetails['id'] ] = $userDetails;
+					$user = $userDetails['id'];
+				} else {
+					throw new UGManager_UserNoExist( $user );
+				}
+			}
+			return $this->users[ $user ];
+		}
+
+		/**
+		 * Gets details for a group by name, id or role_id
+		 *
+		 * @param mixed $group
+		 * @param bool $byRoleId
+		 * @return array
+		 */
+		public function getGroup( $group, $byRoleId=false ) {
+			if ( $byRoleId === true || !isset( $this->groups[ $group ] ) ) {
+				if ( $byRoleId === true ) {
+					$col = 'role_id';
+				} else {
+					$col = ctype_digit($group) ? 'id' : 'name';
+				}
+				$pdoSt = $this->_sql->prepare(
+												'SELECT groups.*, COUNT(users.id) AS user_count
+												 FROM
+												 	{SQL_PREFIX}groups AS groups
+												 	LEFT JOIN {SQL_PREFIX}users AS users ON users.group = groups.id
+												 WHERE groups.'.$col.' = ?
+												 GROUP BY groups.id'
+											   );
+				$pdoSt->execute( array($group) );
+				$groupDetails = $pdoSt->fetch( PDO::FETCH_ASSOC );
+				if ( empty( $groupDetails ) ) {
+					throw new Ugmanager_GroupNoExist( $group );
+				} else {
+					return $this->groups[ $groupDetails['id'] ] = $groupDetails;
+				}
+			}
+			return $this->groups[ $group ];
+		}
+
+		/**
+		 * Gets all users for all groups, or a single specified group. The
+		 * result set can be limited.
+		 *
+		 * @param int $group
+		 * @param int $limit
 		 * @param int $offset
 		 * @param int $order
 		 * @return array
 		 */
 		public function getAllUsers( $group=0, $limit=0, $offset=0, $order=self::_SORT_LATEST ) {
-			$cacheable = ($group == 0 && $limit == 0 && $offset == 0 && $order == self::_SORT_LATEST); # Whether users can be got/stored from/in cache
+			$cacheable = ($group == 0 && $limit == 0 && $offset == 0 && $order == self::_SORT_LATEST);
 			if ( $cacheable && $users = $this->_cache->get( 'ugmanager_users' ) ) {
 				$this->users = $users;
 				return $users;
@@ -299,67 +247,50 @@
 		}
 
 		/**
-		 * Returns every stored group (or a section of them)
+		 * Returns every group
 		 *
-		 * @param int $limit
-		 * @param int $offset
 		 * @return array
 		 */
-		public function getAllGroups( $limit=null, $offset=null ) {
-			if ( !$groups = $this->_cache->get( 'ugmanager_groups' ) ) {
-				// Get groups from SQL database
-				$groups = array();
-				foreach( $this->_sql->query( 'SELECT * FROM {SQL_PREFIX}groups ORDER BY name', PDO::FETCH_ASSOC ) as $group ) {
-					$groups[ $group['id'] ] = $group;
+		public function getAllGroups() {
+			if ( !$this->groups || !($this->groups = $this->_cache->get('ugmanager_groups')) ) {
+				$this->groups = array();
+				foreach( $this->_sql->query('SELECT * FROM {SQL_PREFIX}groups ORDER BY name', PDO::FETCH_ASSOC) as $group ) {
+					$group['user_count'] = $this->userCount( $group['id'] );
+					$this->groups[ $group['id'] ] = $group;
 				}
-				$this->_cache->add( 'ugmanager_groups', $groups );
+				$this->_cache->add( 'ugmanager_groups', $this->groups );
 			}
-			foreach( $groups as $key=>$group ) {
-				// Add the amount of users to the array
-				$groups[ $key ]['user_count'] = $this->userCount( $group['id'] );
-			}
-			$this->groups = $groups;
-			if ( $limit === null && $offset === null ) {
-				return $this->groups;
-			} else {
-				return $limit === null ? array_slice( $groups, $offset ) : array_slice( $groups, $offset, $limit );
-			}
+			return $this->groups;
 		}
 
 		/**
-		 * Converts a GroupID to the Group Name
+		 * Converts a Group ID to the correct group name
 		 *
-		 * @param int $groupId
+		 * @param int $gid
 		 * @return string
 		 */
-		public function gidName( $groupId ) {
-			$grpDetails = $this->getGroup( $groupId );
-			return $grpDetails['name'];
+		public function gidName( $gid ) {
+			$group = $this->getGroup( $gid );
+			return $group['name'];
 		}
 
 		/**
-		 * Converts a RoleID to the corret Group ID, if it all
-		 * exists.
-		 *
-		 * If the provided Role ID dos not exist, or a group can
-		 * not be found, then bool false will be returned.
+		 * Converts an ACL role id to the correct group id. Each group
+		 * is attached to a role, which is how the connection is made.
 		 *
 		 * @param int $roleId
 		 * @return int|bool
 		 */
 		public function roleGid( $roleId ) {
-			$pdoSt = $this->_sql->prepare( 'SELECT id FROM {SQL_PREFIX}groups WHERE role_id = ?' );
-			if ( $pdoSt->execute( array((int) $roleId) ) ) {
-				$gid = $pdoSt->fetchAll( PDO::FETCH_COLUMN );
-				return empty($gid) ? false : (int) $gid[0];
-			} else {
-				return false;
-			}
+			$query = $this->_sql->query( 'SELECT id FROM {SQL_PREFIX}groups WHERE role_id = '.(int) $roleId );
+			$gid = $query->fetchColumn();
+			$query->closeCursor();
+			return $gid ? abs($gid) : false;
 		}
 
 		/**
-		 * Attempts to add a new group if it does not already exists,
-		 * and it will also add the needed ACL roles
+		 * Adds a new group if it does not already exists. An ACL role is also
+		 * created using the name of the group.
 		 *
 		 * The ID of the new group will be returned
 		 *
@@ -368,10 +299,8 @@
 		 * @return int|bool
 		 */
 		public function addGroup( $name, $inherits=null ) {
-			if ( !trim( $name ) ) {
-				throw new UGManager_InvalidName( 'provided group name is empty' );
-			} else if ( $this->groupExists( $name ) ) {
-				throw new UGManager_GroupExists( 'unable to add group "'.$name.'" since it already exists' );
+			if ( $this->groupExists( $name ) ) {
+				throw new UGManager_GroupExists( $name );
 			} else {
 				// Attempt to get details for the inheritance group
 				if ( !empty( $inherits ) ) {
@@ -379,30 +308,20 @@
 						$inheritDetails = $this->getGroup( $inherits );
 						$inherits = 'group_'.$inheritDetails['name'];
 					} catch ( UGManager_GroupNoExist $e ) {
-						throw new UGManager_InvalidInheritance( 'unable to add group, group/role to inherit ('.$inherits.') does not exist' );
+						throw new UGManager_InvalidInheritance( $inherits );
 					}
 				}
 				try {
-					$roleId = $this->_acl->addRole( 'group_'.$name, $inherits );
-				} catch ( ACL_InvalidName $e ) {
-					throw new UGManager_InvalidName( $e->getMessage() );
+					$roleId = $this->_acl->addRole( 'group_'.strtolower($name), $inherits );
 				} catch ( Acl_ParentNoExist $e ) {
-					throw new UGManager_InvalidInheritance( 'unable to add group, group/role to inherit ('.$inherits.') does not exist' );
+					throw new UGManager_InvalidInheritance( $inherits );
 				}
-				/**
-				 * Add the new group in with the correct details
-				 */
-				$pdoSt = $this->_sql->prepare( 'INSERT INTO {SQL_PREFIX}groups ( name, role_id ) VALUES ( :name, :role_id )' );
-				$result = $pdoSt->execute( array(
-										':name'		=> $name,
-										':role_id'	=> $roleId,
-										));
-				if ( $result ) {
-					$this->_cache->delete( 'ugmanager_groups' );
-					return $this->_sql->lastInsertId();
-				} else {
-					return false;
-				}
+				// Add in the new group
+				$pdoSt = $this->_sql->prepare( 'INSERT INTO {SQL_PREFIX}groups (name, role_id) VALUES (?, ?)' );
+				$pdoSt->execute( array($name, $roleId) );
+				$pdoSt->closeCursor();
+				$this->_cache->delete( 'ugmanager_groups' );
+				return $this->_sql->lastInsertId();
 			}
 		}
 
@@ -415,17 +334,10 @@
 		 * @return bool
 		 */
 		public function editGroup( $gid, $name, $inherits=null ) {
-			try {
-				$groupDetails = $this->getGroup( $gid );
-				$gid = $groupDetails['id'];
-			} catch ( UGManager_GroupNoExist $e ) {
-				// Change message
-				throw new UGManager_GroupNoExist( 'unable to edit group "'.$gid.'" as it does not exist' );
-			}
-			if ( !trim( $name ) ) {
-				throw new UGManager_InvalidName( 'provided group name is empty' );
-			} else if ( $name != $groupDetails['name'] && $this->groupExists( $name ) ) {
-				throw new UGManager_GroupExists( 'group "'.$name.'" already exists' );
+			$group = $this->getGroup( $gid );
+			$gid = $group['id'];
+			if ( $name != $group['name'] && $this->groupExists( $name ) ) {
+				throw new UGManager_GroupExists( 'unable to rename group, new name already exists' );
 			} else {
 				// Attempt to get details for the inheritance group
 				if ( !empty( $inherits ) ) {
@@ -433,87 +345,59 @@
 						$inheritDetails = $this->getGroup( $inherits );
 						$inherits = 'group_'.$inheritDetails['name'];
 					} catch ( UGManager_GroupNoExist $e ) {
-						throw new UGManager_InvalidInheritance( 'unable to edit group, group/role to inherit ('.$inherits.') does not exist' );
+						throw new UGManager_InvalidInheritance( $inherits );
 					}
 				}
 				try {
-					$roleId = $this->_acl->editRole( 'group_'.$groupDetails['name'], $inherits );
-				} catch ( ACL_InvalidName $e ) {
-					throw new UGManager_InvalidName( $e->getMessage() );
+					$roleId = $this->_acl->editRole( 'group_'.$group['name'], $inherits );
 				} catch ( Acl_ParentNoExist $e ) {
-					throw new UGManager_InvalidInheritance( 'unable to edit group, group/role to inherit ('.$inherits.') does not exist' );
+					throw new UGManager_InvalidInheritance( $inherits );
 				}
 				// Update group details
-				$pdoSt = $this->_sql->prepare( 'UPDATE {SQL_PREFIX}groups SET name = :name WHERE id = :gid' );
-				$result = $pdoSt->execute( array(
-												':name'			=> $name,
-												':gid'			=> $gid,
-												));
-				if ( $result ) {
-					unset( $this->groups[ $gid ], $this->groups[ $groupDetails['name'] ] );
-					$this->_cache->delete( 'ugmanager_groups' );
-					$pdoSt = null;
-					$pdoSt = $this->_sql->prepare( 'UPDATE {SQL_PREFIX}acl_roles SET name = :role_name WHERE id = :role_id' );
-					if ( $pdoSt->execute( array(':role_name' => 'group_'.strtolower($name), ':role_id' => $groupDetails['role_id']) ) ) {
-						$this->_cache->delete( 'acl_roles' );
-						return true;
-					} else {
-						return false;
-					}
-				} else {
-					return false;
-				}
+				$pdoSt = $this->_sql->prepare( 'UPDATE {SQL_PREFIX}groups SET name = ? WHERE id = ?' );
+				$pdoSt->execute( array($name, $gid) );
+				// Update the ACL Role name as well, to keep it the same as the group
+				$pdoSt->closeCursor();
+				$pdoSt = $this->_sql->prepare( 'UPDATE {SQL_PREFIX}acl_roles SET name = ? WHERE id = ?' );
+				$pdoSt->execute( array('group_'.strtolower($name), $group['role_id']) );
+				// Cleanup and remove cache
+				$this->_cache->delete( array('acl_roles', 'ugmanager_groups') );
+				unset( $this->groups[ $gid ] );
+				return true;
 			}
 		}
 
 		/**
-		 * Deletes a group and all associated ACL Rules with it, as long
-		 * with all of the users under it.
+		 * Deletes a group and all associated ACL rules/roles with it. All users
+		 * within the group will also be deleted.
 		 *
-		 * Any groups that used to inherit permissions from it, will no
-		 * longer inherit permissions from anything.
+		 * Any groups that used to inherit permissions from it, will inherit from
+		 * nothing.
 		 *
 		 * @param int $gid
 		 * @return bool
 		 */
 		public function deleteGroup( $gid ) {
-			try {
-				$groupDetails = $this->getGroup( $gid );
-				$gid = (int) $groupDetails['id'];
-				if ( $gid == self::_ROOT_GID || $gid == self::_GUEST_GID ) {
-					throw new UGManager_InvalidGroup( 'you can not delete the root or guest group!' );
-				}
-			} catch ( UGManager_GroupNoExist $e ) {
-				throw new UGManager_GroupNoExist( 'unable to delete group "'.$gid.'" as it does not exist' );
+			$group = $this->getGroup( $gid );
+			$gid = abs( $group['id'] );
+			if ( $gid == self::_ROOT_GID || $gid == self::_GUEST_GID ) {
+				throw new Ugmanager_InvalidGroup( 'you can not delete the root or guest group' );
 			}
-			$pdoSt = $this->_sql->prepare( 'DELETE FROM {SQL_PREFIX}groups WHERE id = :gid' );
-			if ( $pdoSt->execute( array( ':gid' => $gid ) ) ) {
-				$pdoSt = null;
-				// Remove all users
-				$pdoSt = $this->_sql->prepare( 'DELETE FROM {SQL_PREFIX}users WHERE `group` = :gid' );
-				$pdoSt->execute( array( ':gid' => $gid ) );
-				// Remove ACL role
-				$pdoSt = null;
-				$pdoSt = $this->_sql->prepare( 'DELETE FROM {SQL_PREFIX}acl_roles WHERE id = :role_id' );
-				$pdoSt->execute( array( ':role_id' => (int) $groupDetails['role_id'] ) );
-				// Remove all ACL rules associated with it
-				$pdoSt = null;
-				$pdoSt = $this->_sql->prepare( 'DELETE FROM {SQL_PREFIX}acl_rules WHERE role_id = :role_id' );
-				$pdoSt->execute( array( ':role_id' => (int) $groupDetails['role_id'] ) );
-				$this->_cache->delete( 'acl_rules' );
+			if ( $this->_sql->exec('DELETE FROM {SQL_PREFIX}groups WHERE id = '.$gid) ) {
+				$this->_sql->exec( 'DELETE FROM {SQL_PREFIX}users WHERE `group` = '.$gid );
+				// Remove all ACL roles and rules associated with it
+				$this->_sql->exec( 'DELETE FROM {SQL_PREFIX}acl_roles WHERE id = '.(int) $group['role_id'] );
+				$this->_sql->exec( 'DELETE FROM {SQL_PREFIX}acl_rules WHERE role_id = '.(int) $group['role_id'] );
 				// Update existing groups that used to inherit this group
-				$pdoSt = null;
-				$pdoSt = $this->_sql->prepare( 'UPDATE {SQL_PREFIX}acl_roles SET parent_id = 0 WHERE parent_id = :role_id' );
-				$pdoSt->execute( array( ':role_id' => (int) $groupDetails['role_id'] ) );
-				$this->_cache->delete( 'acl_roles' );
-				unset( $this->groups[ $gid ], $this->groups[ $groupDetails['name'] ] );
+				$this->_sql->exec( 'UPDATE {SQL_PREFIX}acl_roles SET parent_id = 0 WHERE parent_id = '.(int) $group['role_id'] );
+				// Cleanup and remove cache
 				foreach( $this->users as $key=>$val ) {
 					if ( $val['group'] == $gid ) {
 						unset( $this->users[ $key ] );
 					}
 				}
-				$this->_cache->delete( 'ugmanager_users' );
-				$this->_cache->delete( 'ugmanager_groups' );
+				unset( $this->groups[ $gid ], $this->userCount['*'], $this->userCount[ $gid ] );
+				$this->_cache->delete( array('ugmanager_users', 'ugmanager_groups', 'acl_roles') );
 				return true;
 			} else {
 				return false;
@@ -527,61 +411,48 @@
 		 * @return bool
 		 */
 		public function purgeGroup( $gid ) {
-			try {
-				$groupDetails = $this->getGroup( $gid );
-				$gid = (int) $groupDetails['id'];
-				if ( $gid == self::_ROOT_GID || $gid == self::_GUEST_GID ) {
-					throw new UGManager_InvalidGroup( 'you can not purge the root or guest group!' );
-				}
-			} catch ( UGManager_GroupNoExist $e ) {
-				throw new UGManager_GroupNoExist( 'unable to purge group "'.$gid.'" as it does not exist' );
+			$group = $this->getGroup( $gid );
+			$gid = abs( $group['id'] );
+			if ( $gid == self::_ROOT_GID || $gid == self::_GUEST_GID ) {
+				throw new Ugmanager_InvalidGroup( 'you can not purge the root or guest group!' );
 			}
-			$pdoSt = $this->_sql->prepare( 'DELETE FROM {SQL_PREFIX}users WHERE `group` = :gid' );
-			if ( $pdoSt->execute( array(':gid' => $gid) ) ) {
-				unset( $this->groups[ $gid ], $this->groups[ $groupDetails['name'] ] );
-				foreach( $this->users as $key=>$val ) {
-					if ( $val['group'] == $gid ) {
-						unset( $this->users[ $key ] );
-					}
+			$this->_sql->exec( 'DELETE FROM {SQL_PREFIX}users WHERE `group` = '.$gid );
+			// Remove cache and cleanup
+			foreach( $this->users as $key=>$val ) {
+				if ( $val['group'] == $gid ) {
+					unset( $this->users[ $key ] );
 				}
-				$this->_cache->delete( 'ugmanager_users' );
-				$this->_cache->delete( 'ugmanager_groups' );
-				return true;
-			} else {
-				return false;
 			}
+			unset( $this->groups[ $gid ], $this->userCount['*'], $this->userCount[ $gid ] );
+			$this->_cache->delete( array('ugmanager_users', 'ugmanager_groups') );
+			return true;
 		}
 
 		/**
-		 * Updates details about a user. A user can not
-		 * be moved into the 'root' (GID 1) group, as only
-		 * one user is allowed in that group.
+		 * Updates details about a user. A user can not be moved into the root group
+		 * and the guest use can not be edited.
 		 *
-		 * @param int $id
+		 * @param int $uid
 		 * @param array $details
 		 * @return bool
 		 */
-		public function editUser( $id, array $details ) {
-			try {
-				$userDetails = $this->getUser( $id );
-				if ( $userDetails['id'] == UGManager::_GUEST_ID ) {
-					throw new UGManager_InvalidUser( 'you can not edit the guest user' );
-				} else if ( isset($details['username']) && strtolower($details['username']) != strtolower($userDetails['username'])
-							&& $this->userExists( $details['username'], false )
-				) {
-					throw new UGManager_UserExists( 'you can not rename the user to a user that already exists' );
-				}
-			} catch ( UGManager_UserNoExist $e ) {
-				throw new UGManager_UserNoExist( 'unable to edit user "'.$id.'" as it does not exist' );
+		public function editUser( $uid, array $details ) {
+			$user = $this->getUser( $uid );
+			if ( $user['id'] == Ugmanager::_GUEST_ID ) {
+				throw new Ugmanager_InvalidUser( 'you can not edit the guest user' );
+			} else if ( isset($user['username']) && strtolower($details['username']) != strtolower($user['username'])
+						&& $this->userExists( $details['username'], false )
+			) {
+				throw new Ugmanager_UserExists( 'you can not rename the user to a user that already exists' );
 			}
 			if ( isset( $details['group'] ) ) {
-				$userDetails['group'] = (int) $userDetails['group'];
-				if ( $userDetails['group'] != self::_ROOT_GID && $details['group'] == self::_ROOT_GID ) {
-					throw new UGManager_InvalidGroup( 'user "'.$id.'" can not be moved into the root group, only one user is allowed to be root!' );
-				} else if ( $userDetails['group'] == self::_ROOT_GID && $details['group'] != self::_ROOT_GID ) {
-					throw new UGManager_InvalidGroup( 'root user can not have its group changed' );
-				} else if ( !$this->groupExists( $userDetails['group'] ) ) {
-					throw new UGManager_GroupNoExist( 'unable to edit user "'.$id.'" the specified group "'.$userDetails['group'].'" does not exist' );
+				if ( $user['group'] != self::_ROOT_GID && $details['group'] == self::_ROOT_GID ) {
+					throw new Ugmanager_InvalidGroup( 'user can not be moved into the root group' );
+				} else if ( $user['group'] == self::_ROOT_GID ) {
+					// Root user must always be in the root group, so override any changes
+					$details['group'] = self::_ROOT_GID;
+				} else if ( !$this->groupExists( $details['group'] ) ) {
+					throw new Ugmanager_GroupNoExist( $details['group'] );
 				}
 			}
 			if ( empty( $details['password'] ) ) {
@@ -589,10 +460,10 @@
 			} else {
 				$details['password'] = zula_hash( $details['password'] );
 			}
-			if ( $this->_sql->update( 'users', $details, array('id' => $userDetails['id']) ) ) {
-				unset( $this->users[ $userDetails['id'] ], $this->users[ $userDetails['username'] ] );
+			if ( $this->_sql->update( 'users', $details, array('id' => $user['id']) ) ) {
+				unset( $this->users[ $user['id'] ] );
 				$this->_cache->delete( 'ugmanager_users' );
-				Hooks::notifyAll( 'ugmanager_user_edit', $userDetails['id'] );
+				Hooks::notifyAll( 'ugmanager_user_edit', $user['id'] );
 				return true;
 			} else {
 				return false;
@@ -603,7 +474,7 @@
 		 * Adds a new user to a specified group
 		 *
 		 * @param array $details
-		 * @return int|bool	UID
+		 * @return int|bool
 		 */
 		public function addUser( $details ) {
 			if ( !isset( $details['group'] ) || !$this->groupExists( $details['group'] ) ) {
@@ -618,8 +489,9 @@
 			}
 			$details['joined'] = date('Y-m-d H:i:s');
 			if ( $this->_sql->insert( 'users', $details ) ) {
-				$this->userCount = array();
+				unset( $this->userCount['*'], $this->userCount[ $details['group'] ] );
 				$this->_cache->delete( 'ugmanager_users' );
+				// Add the ID so hooks can use it.
 				$details['user_id'] = $this->_sql->lastInsertId();
 				Hooks::notifyAll( 'ugmanager_user_add', $details );
 				return $details['user_id'];
@@ -635,23 +507,17 @@
 		 * @return bool
 		 */
 		public function deleteUser( $uid ) {
-			try {
-				$user = $this->getUser( $uid );
-				if ( $user['id'] == self::_ROOT_ID || $user['id'] == UGManager::_GUEST_ID ) {
-					throw new UGManager_InvalidUser( 'unable to delete the root or guest user' );
-				}
-				$pdoSt = $this->_sql->prepare( 'DELETE FROM {SQL_PREFIX}users WHERE id = ?' );
-				$pdoSt->execute( array($user['id']) );
-				if ( $pdoSt->rowCount() == 1 ) {
-					$this->userCount = array();
-					$this->_cache->delete( 'ugmanager_users' );
-					Hooks::notifyAll( 'ugmanager_user_delete', $user );
-					return true;
-				} else {
-					return false;
-				}
-			} catch ( UGManager_UserNoExist $e ) {
-				throw new UGManager_UserNoExist( $uid );
+			$user = $this->getUser( $uid );
+			if ( $user['id'] == self::_ROOT_ID || $user['id'] == self::_GUEST_ID ) {
+				throw new Ugmanager_InvalidUser( 'root or guest user can not be deleted' );
+			}
+			if ( $this->_sql->exec('DELETE FROM {SQL_PREFIX}users WHERE id = '.$user['id']) ) {
+				unset( $this->userCount['*'], $this->userCount[ $user['group'] ] );
+				$this->_cache->delete( 'ugmanager_users' );
+				Hooks::notifyAll( 'ugmanager_user_delete', $user );
+				return true;
+			} else {
+				return false;
 			}
 		}
 

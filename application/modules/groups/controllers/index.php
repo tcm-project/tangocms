@@ -169,7 +169,7 @@
 							$this->_event->error( sprintf( t('The inheritance group "%s" does not exist'), $fd['inherits'] ) );
 						}
 					}
-					return $form->getOutput();					
+					return $form->getOutput();
 				}
 			} catch ( Router_ArgNoExist $e ) {
 				$this->_event->error( t('No group selected') );

@@ -92,7 +92,11 @@ jQuery(document).ready(
 				} else {
 					$("tbOverlay").hide();
 				}
-				// Use all elements that were matched in the selector
+				// Only use the clicked element if it has the class "tbNoSlideshow"
+				if ( $(elem).hasClass("tbNoSlideshow") ) {
+					slideshowLength = 1;
+					matchedGroup = [elem];
+				}
 				for( var i = 0; i < slideshowLength; i++ ) {
 					itemArray[i] = {
 									elem: matchedGroup[i],
