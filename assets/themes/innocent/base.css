@@ -191,6 +191,7 @@ input[type="submit"], input[type="button"], a.general-button {
 	font-size: 1em;
 	margin: 5px 0;
 	padding: 3px;
+	width: auto;
 }
 
 a.general-button {
@@ -309,8 +310,12 @@ tr.subheading {
 }
 
 /** Table specific element overrides */
-td.confcol input[type="text"], td.confcol input[type="password"] {
+td.confcol input {
 	width: 244px;
+}
+
+td.confcol input[type="checkbox"], td.confcol input[type="radio"] {
+	width: auto;
 }
 
 td.confcol textarea {

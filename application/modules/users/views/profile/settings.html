@@ -68,14 +68,11 @@
 					</dl>
 				</td>
 				<td class="confcol">
-					<dd>
-						<input type="radio" id="hide_yes" name="users[hide_email]" value="1" <?php echo $users['hide_email'] ? 'checked="checked"' : ''; ?>>
-						<label class="horizontal" for="hide_yes">{L_[Yes]}</label>
-					</dd>
-					<dd>
-						<input type="radio" id="hide_no" name="users[hide_email]" value="0" <?php echo $users['hide_email'] ? '' : 'checked="checked"'; ?>>
-						<label class="horizontal" for="hide_no">{L_[No]}</label>
-					</dd>
+					<input type="radio" id="hide_yes" name="users[hide_email]" value="1" <?php echo $users['hide_email'] ? 'checked="checked"' : ''; ?>>
+					<label class="horizontal" for="hide_yes">{L_[Yes]}</label>
+					<br>
+					<input type="radio" id="hide_no" name="users[hide_email]" value="0" <?php echo $users['hide_email'] ? '' : 'checked="checked"'; ?>>
+					<label class="horizontal" for="hide_no">{L_[No]}</label>
 				</td>
 			</tr>
 		</tbody>

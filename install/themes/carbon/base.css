@@ -304,8 +304,12 @@ tr.subheading td {
 }
 
 /** Table specific element overrides */
-td.confcol input[type="text"], td.confcol input[type="password"] {
+td.confcol input {
 	width: 244px;
+}
+
+td.confcol input[type="checkbox"], td.confcol input[type="radio"] {
+	width: auto;
 }
 
 td.confcol textarea {
