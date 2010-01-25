@@ -281,11 +281,7 @@ ERR;
 	 * @param int $amount
 	 * @return array
 	 */
-	function zula_array_multi_pop( $array, $amount=1 ) {
-		if ( !is_array( $array ) || empty( $array ) ) {
-			trigger_error( 'zula_array_multi_pop() was unable to pop elements off an array. Value given is not an array or is empty', E_USER_NOTICE );
-			return array();
-		}
+	function zula_array_multi_pop( array $array, $amount=1 ) {
 		for( $i=0; $i < $amount; $i++ ) {
 			if ( !is_array( $array ) ) {
 				return $array;
@@ -327,7 +323,7 @@ ERR;
 	 * @param string $suffixGlue
 	 * @return string|bool
 	 */
-	function zula_implode_adv( $array, $prefixGlue, $suffixGlue=NULL ) {
+	function zula_implode_adv( array $array, $prefixGlue, $suffixGlue=NULL ) {
 		if ( empty( $suffixGlue ) ) {
 			return implode( $prefixGlue, $array );
 		} else if ( is_array( $array ) ) {
@@ -335,9 +331,6 @@ ERR;
 				$array[ $key ] = $prefixGlue.$val.$suffixGlue;
 			}
 			return implode( '', $array );
-		} else {
-			trigger_error( 'zula_implode_adv() is unable to implode array. Value given is not an array', E_USER_NOTICE );
-			return false;
 		}
 	}
 
@@ -348,11 +341,7 @@ ERR;
 	 * @return string
 	 */
 	function zula_bool2str( $bool ) {
-		if ( !is_bool( $bool ) ) {
-			trigger_error( 'zula_bool2str() unable to convert bool to string. Value given is not a bool', E_USER_NOTICE );
-			return false;
-		}
-		return $bool ? 'true' : 'false';
+		return (bool) $bool ? 'true' : 'false';
 	}
 
 	/**
@@ -416,7 +405,7 @@ ERR;
 	 */
 	function zula_get_file_mime( $file ) {
 		if ( !is_file( $file ) || !is_readable( $file ) ) {
-			trigger_error( 'File mime type could not be got. File "'.$file.'" does not exist or is not readable', E_USER_WARNING );
+			trigger_error( 'zula_get_file_mime() file "'.$file.'" does not exist or is not readable', E_USER_WARNING );
 			return false;
 		}
 		$libLog = Registry::get( 'log' );
@@ -428,7 +417,7 @@ ERR;
 				$finfo = finfo_open( FILEINFO_MIME );
 			}
 			if ( $finfo === false ) {
-				$libLog->message( 'zula_get_file_mime() Unable to create FileInfo resource for file "'.$file.'"', Log::L_WARNING );
+				$libLog->message( 'zula_get_file_mime() unable to create FileInfo resource for file "'.$file.'"', Log::L_WARNING );
 			} else {
 			 	$mime = finfo_file( $finfo, $file, FILEINFO_MIME );
 			 	finfo_close( $finfo );
@@ -443,12 +432,12 @@ ERR;
 		if ( preg_match( '#^([A-Z0-9+.\-]+/[A-Z0-9+.\-]+);?#i', $mime, $matches ) ) {
 			return $matches[1];
 		} else if ( function_exists( 'mime_content_type' ) ) {
-			$libLog->message( 'zula_get_file_mime() reverting to "mime_content_type", advised to install "FileInfo" extension', Log::L_INFO );
+			$libLog->message( 'zula_get_file_mime() reverting to "mime_content_type", please install "FileInfo" extension', Log::L_INFO );
 			if ( ($mime = mime_content_type($file)) !== false ) {
 				return $mime;
 			}
 		}
-		$libLog->message( 'zula_get_file_mime() no method to get mime type, advised to install "FileInfo" extension', Log::L_WARNING );
+		$libLog->message( 'zula_get_file_mime() no method to get mime type, please install "FileInfo" extension', Log::L_WARNING );
 		return false;
 	}
 
@@ -513,11 +502,7 @@ ERR;
 	 * @param array $array
 	 * @return string|bool
 	 */
-	 function zula_array_js_string( $array ) {
-	 	if ( !is_array( $array ) ) {
-	 		trigger_error( 'Unable to convert array to JS string. Value given is not an array', E_USER_NOTICE );
-	 		return false;
-	 	}
+	 function zula_array_js_string( array $array ) {
 	 	$tmp = array();
 	 	foreach( $array as $key=>$val ) {
 	 		$tmp[] = $key.'='.$val;
@@ -749,19 +734,14 @@ ERR;
 	 * @param int $case
 	 * @return bool
 	 */
-	function zula_array_key_case( &$arr, $case=CASE_LOWER ) {
-		if ( is_array( $arr ) ) {
-			$arr = array_change_key_case( $arr, $case );
-			foreach( $arr as &$val ) {
-				if ( is_array( $val ) ) {
-					zula_array_key_case( $val, $case );
-				}
+	function zula_array_key_case( array &$arr, $case=CASE_LOWER ) {
+		$arr = array_change_key_case( $arr, $case );
+		foreach( $arr as &$val ) {
+			if ( is_array( $val ) ) {
+				zula_array_key_case( $val, $case );
 			}
-			return true;
-		} else {
-			trigger_error( 'zula_array_key_case() value provided is not an array', E_USER_WARNING );
-			return false;
 		}
+		return true;
 	}
 
 	/**

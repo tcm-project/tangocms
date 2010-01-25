@@ -69,24 +69,25 @@
 		 * @return string
 		 */
 		protected function buildItems( array $items ) {
-			$curUrl = $this->_router->getRawRequestPath();
+			$requestPath = $this->_router->getRequestPath();
+			$rawRequestPath = $this->_router->getRawRequestPath();
 			$list = '<ul class="menu-category">'."\n\t";
 			foreach( $items as $item ) {
 				$item['url'] = ltrim( $item['url'], '/' );
 				$class = 'menu-'.$item['id'];
-				if ( (strtoupper($item['url']) == '[FRONT_PAGE]' || !trim($item['url'], '/') ) && !$curUrl || $item['url'] == $curUrl ) {
+				if ( $item['url'] == $rawRequestPath || $item['url'] == $requestPath ) {
 					$class .= ' menu-current';
 				}
 				// Create the correct URL for the menu item to use
 				if ( $item['url'] == 'admin' ) {
 					$item['url'] = $this->_router->makeUrl( '', '', '', 'admin' );
-				} else if ( strtoupper( $item['url'] ) == '[FRONT_PAGE]' || !trim( $item['url'] ) ) {
+				} else if ( $item['url'] == false ) {
 					$item['url'] = $this->_router->makeUrl( '', '', '', 'main' );
 				} else if ( strpos( $item['url'], 'www.' ) === 0 ) {
 					$item['url'] = 'http://'.$item['url'];
 				} else if ( !zula_url_has_scheme( $item['url'] ) ) {
 					if ( $item['url'][0] == '#' ) {
-						$item['url'] = $this->_router->makeUrl( $this->_router->getRawRequestPath() ).$item['url'];
+						$item['url'] = $this->_router->makeUrl( $rawRequestPath ).$item['url'];
 					} else {
 						$item['url'] = $this->_router->makeUrl( $item['url'] );
 					}

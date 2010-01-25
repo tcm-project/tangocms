@@ -239,8 +239,14 @@
 				$pdoSt = $this->_sql->prepare( 'DELETE FROM {SQL_PREFIX}sessions WHERE uid = :uid' );
 				$sessionsClosed = 0;
 				foreach( (array) $uid as $user ) {
-					$pdoSt->bindValue( ':uid', $user, PDO::PARAM_INT );
-					$sessionsClosed += $pdoSt->rowCount();
+					if ( $user == $this->getUserId() ) {
+						// Destroy this users session more thoroughly
+						$this->destroy();
+						++$sessionsClosed;
+					} else {
+						$pdoSt->bindValue( ':uid', $user, PDO::PARAM_INT );
+						$sessionsClosed += $pdoSt->rowCount();
+					}
 				}
 				$pdoSt->closeCursor();
 				return $sessionsClosed;
