@@ -64,7 +64,7 @@
 									'CSRF'			=> $this->_input->createToken( true ),
 									));
 			// Autocomplete/suggest feature
-			$this->_theme->addJsFile( 'jQuery/plugins/autocomplete.js' );
+			$this->_theme->addJsFile( 'jquery.autocomplete' );
 			$this->_theme->addCssFile( 'jquery.autocomplete.css' );
 			$this->addAsset( 'js/autocomplete.js' );
 			return $view->getOutput();
