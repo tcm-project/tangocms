@@ -6,7 +6,7 @@
  * @patches submit all patches to patches@tangocms.org
  *
  * @author Robert Clipsham
- * @copyright Copyright (C) 2009, Robert Clipsham
+ * @copyright Copyright (C) 2009, 2010 Robert Clipsham
  * @license http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html GNU/LGPL 2.1
  * @package Zula_Antispam
  */
