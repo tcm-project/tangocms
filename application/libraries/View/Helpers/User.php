@@ -28,7 +28,7 @@
 				if ( trim( $url ) ) {
 					$format = '<a href="%1$s" title="%1$s" rel="nofollow">%3$s</a>';
 					$url = zula_htmlspecialchars( zula_url_add_scheme($url) );
-				} else if ( $user['id'] == UGManager::_GUEST_ID ) {
+				} else if ( $user['id'] == Ugmanager::_GUEST_ID ) {
 					$format = '%3$s';
 					$url = '';
 				} else {
@@ -40,7 +40,7 @@
 								t('View Users Profile', Locale::_DTD),
 								zula_htmlspecialchars( (trim($name) ? $name : $user['username']) )
 							   );
-			} catch ( UGManager_UserNoExist $e ) {
+			} catch ( Ugmanager_UserNoExist $e ) {
 				return t('Unknown User', Locale::_DTD);
 			}
 		}
@@ -55,7 +55,7 @@
 			try {
 				$user = $this->_ugmanager->getUser( $userId );
 				return zula_htmlspecialchars( $user['username'] );
-			} catch ( UGManager_UserNoExist $e ) {
+			} catch ( Ugmanager_UserNoExist $e ) {
 				return t('Unknown User', Locale::_DTD);
 			}
 		}

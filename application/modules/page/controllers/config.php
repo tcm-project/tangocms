@@ -277,7 +277,7 @@
 			$form->addElement( 'page/id', $id, 'ID', new Validator_Int, ($op == 'edit') );
 			$form->addElement( 'page/title', $title, t('Title'), new Validator_Length(2, 255) );
 			$form->addElement( 'page/parent', $parent, t('Parent'), new Validator_InArray($validParents), !empty($parent) );
-			$form->addElement( 'page/body', $body, t('Body'), new Validator_Length(1, 65535) );
+			$form->addElement( 'page/body', $body, t('Body'), new Validator_Length(1, 50000) );
 			$form->assign( array(
 								'OP'		=> $op,
 								'PARENTS'	=> isset($possibleParents) ? $possibleParents : null,

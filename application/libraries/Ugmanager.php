@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Zula Framework UGManager
+ * Zula Framework Ugmanager
  *
  * @patches submit all patches to patches@tangocms.org
  *
@@ -9,7 +9,7 @@
  * @author Robert Clipsham
  * @copyright Copyright (C) 2007, 2008, 2009, 2010 Alex Cartwright
  * @license http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html GNU/LGPL 2.1
- * @package Zula_UGManager
+ * @package Zula_ugmanager
  */
 
 	class Ugmanager extends Zula_LibraryBase {
@@ -110,7 +110,7 @@
 			try {
 				$this->getUser( $user, $byId );
 				return true;
-			} catch ( UGManager_UserNoExist $e ) {
+			} catch ( Ugmanager_UserNoExist $e ) {
 				return false;
 			}
 		}
@@ -125,7 +125,7 @@
 			try {
 				$this->getGroup( $group );
 				return true;
-			} catch ( UGManager_GroupNoExist $e ) {
+			} catch ( Ugmanager_GroupNoExist $e ) {
 				return false;
 			}
 		}
@@ -150,7 +150,7 @@
 					$this->users[ $userDetails['id'] ] = $userDetails;
 					$user = $userDetails['id'];
 				} else {
-					throw new UGManager_UserNoExist( $user );
+					throw new Ugmanager_UserNoExist( $user );
 				}
 			}
 			return $this->users[ $user ];
@@ -300,21 +300,21 @@
 		 */
 		public function addGroup( $name, $inherits=null ) {
 			if ( $this->groupExists( $name ) ) {
-				throw new UGManager_GroupExists( $name );
+				throw new Ugmanager_GroupExists( $name );
 			} else {
 				// Attempt to get details for the inheritance group
 				if ( !empty( $inherits ) ) {
 					try {
 						$inheritDetails = $this->getGroup( $inherits );
 						$inherits = 'group_'.$inheritDetails['name'];
-					} catch ( UGManager_GroupNoExist $e ) {
-						throw new UGManager_InvalidInheritance( $inherits );
+					} catch ( Ugmanager_GroupNoExist $e ) {
+						throw new Ugmanager_InvalidInheritance( $inherits );
 					}
 				}
 				try {
 					$roleId = $this->_acl->addRole( 'group_'.strtolower($name), $inherits );
 				} catch ( Acl_ParentNoExist $e ) {
-					throw new UGManager_InvalidInheritance( $inherits );
+					throw new Ugmanager_InvalidInheritance( $inherits );
 				}
 				// Add in the new group
 				$pdoSt = $this->_sql->prepare( 'INSERT INTO {SQL_PREFIX}groups (name, role_id) VALUES (?, ?)' );
@@ -337,21 +337,21 @@
 			$group = $this->getGroup( $gid );
 			$gid = $group['id'];
 			if ( $name != $group['name'] && $this->groupExists( $name ) ) {
-				throw new UGManager_GroupExists( 'unable to rename group, new name already exists' );
+				throw new Ugmanager_GroupExists( 'unable to rename group, new name already exists' );
 			} else {
 				// Attempt to get details for the inheritance group
 				if ( !empty( $inherits ) ) {
 					try {
 						$inheritDetails = $this->getGroup( $inherits );
 						$inherits = 'group_'.$inheritDetails['name'];
-					} catch ( UGManager_GroupNoExist $e ) {
-						throw new UGManager_InvalidInheritance( $inherits );
+					} catch ( Ugmanager_GroupNoExist $e ) {
+						throw new Ugmanager_InvalidInheritance( $inherits );
 					}
 				}
 				try {
 					$roleId = $this->_acl->editRole( 'group_'.$group['name'], $inherits );
 				} catch ( Acl_ParentNoExist $e ) {
-					throw new UGManager_InvalidInheritance( $inherits );
+					throw new Ugmanager_InvalidInheritance( $inherits );
 				}
 				// Update group details
 				$pdoSt = $this->_sql->prepare( 'UPDATE {SQL_PREFIX}groups SET name = ? WHERE id = ?' );
@@ -478,11 +478,11 @@
 		 */
 		public function addUser( $details ) {
 			if ( !isset( $details['group'] ) || !$this->groupExists( $details['group'] ) ) {
-				throw new UGManager_GroupNoExist( 'could not add user to group as it does not exist' );
+				throw new Ugmanager_GroupNoExist( 'could not add user to group as it does not exist' );
 			} else if ( $details['group'] == self::_ROOT_GID || $details['group'] == self::_GUEST_GID ) {
-				throw new UGManager_InvalidGroup( 'users can not be added to the root or guest group' );
+				throw new Ugmanager_InvalidGroup( 'users can not be added to the root or guest group' );
 			} else if ( $this->userExists( $details['username'], false ) ) {
-				throw new UGManager_UserExists( 'could not add user as user already exists' );
+				throw new Ugmanager_UserExists( 'could not add user as user already exists' );
 			}
 			if ( isset( $details['password'] ) ) {
 				$details['password'] = zula_hash( $details['password'] );
@@ -531,9 +531,9 @@
 		public function awaitingValidation( $group=false ) {
 			try {
 				$users = $this->getAllUsers( $group );
-			} catch ( UGManager_GroupNoExist $e ) {
+			} catch ( Ugmanager_GroupNoExist $e ) {
 				// Change the message a bit =)
-				throw new UGManager_GroupNoExist( 'could not get users awaiting validation for group "'.$group.'" as the group does not exist' );
+				throw new Ugmanager_GroupNoExist( 'could not get users awaiting validation for group "'.$group.'" as the group does not exist' );
 			}
 			$validations = array();
 			foreach( $users as $user ) {
@@ -556,7 +556,7 @@
 			$pdoSt->execute( array( $code ) );
 			$result = $pdoSt->fetchAll( PDO::FETCH_ASSOC );
 			if ( empty( $result ) ) {
-				throw new UGManager_InvalidActivationCode( 'no user with the activation code "'.$code.'" could be found' );
+				throw new Ugmanager_InvalidActivationCode( 'no user with the activation code "'.$code.'" could be found' );
 			} else {
 				// Gather the UserID and update (or remove) the Activate code
 				$result = $result[0];
@@ -570,7 +570,7 @@
 					$this->_cache->delete( 'ugmanager_users' );
 					return $userId;
 				} else {
-					throw new UGManager_InvalidActivationCode( 'no user with the activation code "'.$code.'" could be found' );
+					throw new Ugmanager_InvalidActivationCode( 'no user with the activation code "'.$code.'" could be found' );
 				}
 			}
 		}
@@ -589,7 +589,7 @@
 			$pdoSt->execute( array( $code ) );
 			$results = $pdoSt->fetchAll( PDO::FETCH_ASSOC );
 			if ( empty( $results ) ) {
-				throw new UGManager_InvalidResetCode( 'no user with reset code "'.$code.'" could be found' );
+				throw new Ugmanager_InvalidResetCode( 'no user with reset code "'.$code.'" could be found' );
 			} else {
 				$userId = $results[0]['id'];
 				// Update users reset-code and password
@@ -603,7 +603,7 @@
 					$this->_cache->delete( 'ugmanager_users' );
 					return $userId;
 				} else {
-					throw new UGManager_InvalidResetCode( 'no user with reset code "'.$code.'" could be found' );
+					throw new Ugmanager_InvalidResetCode( 'no user with reset code "'.$code.'" could be found' );
 				}
 			}
 		}

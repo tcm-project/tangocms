@@ -450,7 +450,7 @@
 			if (
 				$allowRoot &&
 				($roleDetails['name'] == 'group_root'
-				 || isset( $groupDetails ) && $groupDetails['id'] == UGManager::_ROOT_GID
+				 || isset( $groupDetails ) && $groupDetails['id'] == Ugmanager::_ROOT_GID
 				)
 			) {
 				// Root user/group has ultimate access to anything and everything
@@ -525,7 +525,7 @@
 			 * Get the role tree for the guest group/role, so that better defaults can be
 			 * set for the checkboxes, each role it inherits will be checked.
 			 */
-			$guestGroup = $this->_ugmanager->getGroup( UGManager::_GUEST_GID );
+			$guestGroup = $this->_ugmanager->getGroup( Ugmanager::_GUEST_GID );
 			$roleHint = array();
 			foreach( $this->getRoleTree( $guestGroup['role_id'], true ) as $tmpRole ) {
 				$roleHint[] = $tmpRole['id'];

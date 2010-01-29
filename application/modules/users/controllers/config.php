@@ -115,9 +115,9 @@
 					$uid = $this->_ugmanager->addUser( $details );
 					$this->_event->success( sprintf( t('Added user "%1$s"'), $details['username'] ) );
 					return zula_redirect( $this->_router->makeUrl( 'users', 'config' ) );
-				} catch ( UGManager_GroupNoExist $e ) {
+				} catch ( Ugmanager_GroupNoExist $e ) {
 					$this->_event->error( t('Selected group does not exist') );
-				} catch ( UGManager_UserExists $e ) {
+				} catch ( Ugmanager_UserExists $e ) {
 					$this->_event->error( t('Username already exists') );
 				}
 			}
@@ -139,7 +139,7 @@
 			// Get the UID and details to edit
 			try {
 				$user = $this->_ugmanager->getUser( $this->_router->getArgument('id') );
-				if ( $user['id'] == UGManager::_GUEST_ID ) {
+				if ( $user['id'] == Ugmanager::_GUEST_ID ) {
 					$this->_event->error( t('You can not edit the guest user!') );
 				} else {
 					$this->setTitle( sprintf( t('Edit User "%1$s"'), $user['username'] ), false );
@@ -152,9 +152,9 @@
 							$this->_ugmanager->editUser( $user['id'], $details );
 							$this->_event->success( sprintf( t('Edited user "%s"'), $details['username'] ) );
 							return zula_redirect( $this->_router->makeUrl( 'users', 'config' ) );
-						} catch ( UGmanager_GroupNoExist $e ) {
+						} catch ( Ugmanager_GroupNoExist $e ) {
 							$this->_event->error( t('Selected group does not exist') );
-						} catch ( UGmanager_UserExists $e ) {
+						} catch ( Ugmanager_UserExists $e ) {
 							$this->_event->error( t('Username already exists') );
 						}
 					}
@@ -162,7 +162,7 @@
 				}
 			} catch ( Router_ArgNoExist $e ) {
 				$this->_event->error( t('No user selected') );
-			} catch ( UGmanager_UserNoExist $e ) {
+			} catch ( Ugmanager_UserNoExist $e ) {
 				$this->_event->error( t('User does not exist') );
 			}
 			return zula_redirect( $this->_router->makeUrl( 'users', 'config' ) );
@@ -253,9 +253,9 @@
 						try {
 							$this->_ugmanager->deleteUser( $uid );
 							++$delCount;
-						} catch ( UGManager_InvalidUser $e ) {
+						} catch ( Ugmanager_InvalidUser $e ) {
 							$this->_event->error( t('You can not delete the root or guest user')  );
-						} catch ( UGManager_UserNoExist $e ) {
+						} catch ( Ugmanager_UserNoExist $e ) {
 						}
 					}
 					if ( $delCount > 0 ) {

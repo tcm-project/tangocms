@@ -12,7 +12,7 @@
 			<?php $i = 0; foreach( $groups as $group ) { ?>
 				<tr class="<?php echo zula_odd_even( $i ); ?>">
 					<td class="checkcol">
-						<?php $disabled = $group['id'] == UGManager::_ROOT_GID || $group['id'] == UGManager::_GUEST_GID ? 'disabled="disabled"' : ''; ?>
+						<?php $disabled = $group['id'] == Ugmanager::_ROOT_GID || $group['id'] == Ugmanager::_GUEST_GID ? 'disabled="disabled"' : ''; ?>
 						<input type="checkbox" name="group_ids[]" value="<?php echo $group['id']; ?>" <?php echo $disabled; ?>>
 					</td>
 					<td>
@@ -25,7 +25,7 @@
 					</td>
 					<td><?php echo number_format($group['user_count']); ?></td>
 					<td class="managecol">
-						<?php if ( $group['id'] != UGManager::_ROOT_GID ) { ?>
+						<?php if ( $group['id'] != Ugmanager::_ROOT_GID ) { ?>
 							<a href="<?php echo $this->_router->makeUrl( 'groups', 'index', 'edit', null, array('id' => $group['id']) ); ?>">{L_[Edit]}</a>
 						<?php } ?>
 					</td>

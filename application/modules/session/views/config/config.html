@@ -116,7 +116,7 @@
 					<select name="session[register_group]">
 						<?php
 							foreach( $this->_ugmanager->getAllGroups() as $group ) {
-								if ( $group['id'] != UGManager::_ROOT_GID && $group['id'] != UGManager::_GUEST_GID ) {
+								if ( $group['id'] != Ugmanager::_ROOT_GID && $group['id'] != Ugmanager::_GUEST_GID ) {
 									printf( '<option value="%d" %s>%s</option>',
 											$group['id'],
 											($group['id'] == $register_group ? 'selected="selected"' : ''),

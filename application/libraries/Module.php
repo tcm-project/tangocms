@@ -405,7 +405,7 @@
 									 ON DUPLICATE KEY UPDATE name=name' )
 						   ->closeCursor();
 				// Add all of the new ACL resources and run the install.sql file
-				$guestGroup = $this->_ugmanager->getGroup( UGManager::_GUEST_GID );
+				$guestGroup = $this->_ugmanager->getGroup( Ugmanager::_GUEST_GID );
 				foreach( $details['aclResources'] as $resource=>$roleHint ) {
 					$roles = array('group_root');
 					if ( $roleHint !== null ) {

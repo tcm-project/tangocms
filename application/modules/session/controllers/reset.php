@@ -53,7 +53,7 @@
 					$email->send( $message );
 					$this->_event->success( t("An email has been sent to the user's email address") );
 					return zula_redirect( $this->_router->makeUrl( 'session', 'reset', 'code' ) );
-				} catch ( UGManager_UserNoExist $e ) {
+				} catch ( Ugmanager_UserNoExist $e ) {
 					$this->_event->error( t('User does not exist') );
 				} catch ( Email_Exception $e ) {
 					$this->_event->error( t('An error occurred while sending the email. Please try again later') );
@@ -82,7 +82,7 @@
 					$userId = $this->_ugmanager->resetPassword( $fd['code'], $fd['password'] );
 					$this->_event->success( t('Your password has been successfully changed') );
 					return zula_redirect( $this->_router->makeUrl( 'session' ) );
-				} catch ( UGManager_InvalidResetCode $e ) {
+				} catch ( Ugmanager_InvalidResetCode $e ) {
 					$this->_event->error( t('Invalid password reset code') );
 				}
 			}

@@ -53,7 +53,7 @@
 				return zula_redirect( $url );
 			}
 			if (
-				($comment['user_id'] == UGManager::_GUEST_ID  || $comment['user_id'] != $this->_session->getUserId())
+				($comment['user_id'] == Ugmanager::_GUEST_ID  || $comment['user_id'] != $this->_session->getUserId())
 				&& !$this->_acl->check( 'comments_manage' )
 			) {
 				throw new Module_NoPermission;

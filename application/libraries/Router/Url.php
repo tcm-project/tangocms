@@ -30,7 +30,7 @@
 		 * URL query string arguments to use
 		 * @var array
 		 */
-		protected $queryStringArgs = array( 'url' => null );
+		protected $queryStringArgs = array();
 
 		/**
 		 * URL fragment
@@ -40,13 +40,19 @@
 								
 		/**
 		 * Constructor
-		 * Can load a given request path and parses it into the parts
+		 * Can load a given request path and parses it into the
+		 * parts. Query arguments and a fragment can be provided.
 		 *
 		 * @param string $requestPath
 		 * @return object
 		 */
 		public function __construct( $requestPath=null ) {
 			if ( $requestPath = trim($requestPath, '/') ) {
+				// Get any query arguments or fragments from the URL
+				$this->fragment = parse_url( $requestPath, PHP_URL_FRAGMENT );
+				$this->queryStringArgs = parse_str( parse_url($requestPath, PHP_URL_QUERY),
+													$this->queryStringArgs
+												  );
 				/**
 				 * Begin the actual parsing of the URL to find out what data is given
 				 */

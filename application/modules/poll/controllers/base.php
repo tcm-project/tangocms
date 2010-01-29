@@ -24,7 +24,7 @@
 				foreach( $oid as $vote ) {
 					if (
 						zula_ip2long( $_SERVER['REMOTE_ADDR'] ) == $vote['ip'] ||
-						($vote['uid'] != UGManager::_GUEST_ID && $vote['uid'] == $this->_session->getUserId())
+						($vote['uid'] != Ugmanager::_GUEST_ID && $vote['uid'] == $this->_session->getUserId())
 					) {
 						return (int) $vote['option_id'];
 					}

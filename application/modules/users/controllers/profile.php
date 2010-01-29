@@ -27,8 +27,8 @@
 			try {
 				$user = $this->_ugmanager->getUser( ($uid == 'index' ? $this->_session->getUserId() : $uid) );
 				$uid = $user['id'];
-				if ( $uid == UGManager::_GUEST_ID ) {
-					throw new UGManager_UserNoExist;
+				if ( $uid == Ugmanager::_GUEST_ID ) {
+					throw new Ugmanager_UserNoExist;
 				}
 				$this->setTitle( sprintf( t('View Profile "%s"'), $user['username'] ) );
 				if ( $uid == $this->_session->getUserId() ) {
@@ -43,7 +43,7 @@
 				$view = $this->loadView( 'profile/profile.html' );
 				$view->assign( $user );
 				return $view->getOutput();
-			} catch ( UGManager_UserNoExist $e ) {
+			} catch ( Ugmanager_UserNoExist $e ) {
 				throw new Module_ControllerNoExist;
 			}
 		}

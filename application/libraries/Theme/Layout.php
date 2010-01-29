@@ -496,7 +496,7 @@
 								);
 			$this->xmlMap->documentElement->appendChild( $cntrlrElement );
 			// Add in ACL resource with default permissions of guest inheritence tree
-			$groupDetails = $this->_ugmanager->getGroup( UGManager::_GUEST_GID );
+			$groupDetails = $this->_ugmanager->getGroup( Ugmanager::_GUEST_GID );
 			$roles = array('group_root');
 			foreach( $this->_acl->getRoleTree( $groupDetails['role_id'], true ) as $tmpRole ) {
 				$roles[] = $tmpRole['name'];

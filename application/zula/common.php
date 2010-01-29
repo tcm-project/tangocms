@@ -143,6 +143,7 @@
 ERR;
 		if ( !headers_sent() ) {
 			header( 'HTTP/1.1 503 Service Unavailable', true, 503 );
+			header( 'Content-Type: text/html; charset=utf-8' );
 		}
 		printf( $format, $title, $body );
 		die;
@@ -672,6 +673,10 @@ ERR;
 	function zula_byte_value( $val ) {
 		$val = strtolower( trim( $val ) );
 		switch ( substr( $val, -1 ) ) {
+			case 'p':
+				$val *= 1024;
+			case 't':
+				$val *= 1024;
 			case 'g':
 				$val *= 1024;
 			case 'm':
@@ -720,11 +725,7 @@ ERR;
 	 * @return bool
 	 */
 	function zula_make_dir( $dir ) {
-		if ( file_exists( $dir ) ) {
-			return true;
-		} else {
-			return @mkdir( $dir, 0755, true );
-		}
+		return file_exists($dir) ? true : @mkdir($dir, 0755, true);
 	}
 
 	/**

@@ -60,9 +60,9 @@
 							try {
 								$this->_ugmanager->$method( $gid );
 								++$count;
-							} catch ( UGManager_InvalidGroup $e ) {
+							} catch ( Ugmanager_InvalidGroup $e ) {
 								$this->_event->error( t('You can not purge/delete the "root" or "guest" group') );
-							} catch ( UGManager_GroupNoExist $e ) {
+							} catch ( Ugmanager_GroupNoExist $e ) {
 							}
 						}
 						if ( $count > 0 ) {
@@ -89,7 +89,7 @@
 						foreach( $children as $child ) {
 							try {
 								$details = $this->_ugmanager->getGroup( $child['id'], true );
-							} catch ( UGManager_GroupNoExist $e ) {
+							} catch ( Ugmanager_GroupNoExist $e ) {
 								continue;
 							}
 							$details['level'] = $child['level'];
@@ -126,9 +126,9 @@
 					$this->_ugmanager->addGroup( $fd['name'], $fd['inherits'] );
 					$this->_event->success( sprintf( t('Added group "%s"'), $fd['name'] ) );
 					return zula_redirect( $this->_router->makeUrl( 'groups' ) );
-				} catch ( UGManager_GroupExists $e ) {
+				} catch ( Ugmanager_GroupExists $e ) {
 					$this->_event->error( sprintf( t('The group "%s" already exists'), $fd['name'] ) );
-				} catch ( UGmanager_InvalidInheritance $e ) {
+				} catch ( Ugmanager_InvalidInheritance $e ) {
 					$this->_event->error( sprintf( t('The inheritance group "%s" does not exist'), $fd['inherits'] ) );
 				}
 			}
@@ -163,9 +163,9 @@
 							$this->_ugmanager->editGroup( $group['id'], $fd['name'], $fd['inherits'] );
 							$this->_event->success( sprintf( t('Edited group "%s"'), $fd['name'] ) );
 							return zula_redirect( $this->_router->makeUrl( 'groups' ) );
-						} catch ( UGManager_GroupExists $e ) {
+						} catch ( Ugmanager_GroupExists $e ) {
 							$this->_event->error( t('A group with the same name already exists') );
-						} catch ( UGmanager_InvalidInheritance $e ) {
+						} catch ( Ugmanager_InvalidInheritance $e ) {
 							$this->_event->error( sprintf( t('The inheritance group "%s" does not exist'), $fd['inherits'] ) );
 						}
 					}
@@ -173,7 +173,7 @@
 				}
 			} catch ( Router_ArgNoExist $e ) {
 				$this->_event->error( t('No group selected') );
-			} catch ( UGManager_GroupNoExist $e ) {
+			} catch ( Ugmanager_GroupNoExist $e ) {
 				$this->_event->error( t('Group does not exist') );
 			} catch ( ACL_RoleNoExist $e ) {
 				$this->_event->error( sprintf( t('ACL Resource role "%s" does not exist'), $group['role_id'] ) );
@@ -194,7 +194,7 @@
 			$this->_locale->textDomain( $this->textDomain() );
 			if ( is_null( $id ) ) {
 				$op = 'add';
-				$inherits = UGManager::_GUEST_GID;
+				$inherits = Ugmanager::_GUEST_GID;
 				$groups = $this->_ugmanager->getAllGroups();
 			} else {
 				$op = 'edit';

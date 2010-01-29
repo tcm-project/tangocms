@@ -24,7 +24,7 @@
 						<option value="0">{L_[No Inheritance]}</option>
 						<?php
 							foreach( $groups as $tmpGroup ) {
-								if ( $tmpGroup['id'] != UGManager::_ROOT_GID ) {
+								if ( $tmpGroup['id'] != Ugmanager::_ROOT_GID ) {
 									printf( '<option value="%1$d" %2$s>%3$s</option>',
 											 $tmpGroup['id'],
 											 ($tmpGroup['id'] == $group['inherits'] ? 'selected="selected"' : ''),
