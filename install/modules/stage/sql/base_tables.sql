@@ -75,6 +75,7 @@ DROP TABLE IF EXISTS {SQL_PREFIX}groups;
 CREATE TABLE {SQL_PREFIX}groups (
   id smallint(4) NOT NULL AUTO_INCREMENT,
   `name` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
+  `status` enum('active','locked') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'active',
   role_id smallint(4) NOT NULL,
   UNIQUE KEY id (id),
   UNIQUE KEY `name` (`name`)

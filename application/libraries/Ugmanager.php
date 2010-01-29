@@ -170,14 +170,12 @@
 				} else {
 					$col = ctype_digit( (string) $group ) ? 'id' : 'name';
 				}
-				$pdoSt = $this->_sql->prepare(
-												'SELECT groups.*, COUNT(users.id) AS user_count
-												 FROM
-												 	{SQL_PREFIX}groups AS groups
+				$pdoSt = $this->_sql->prepare( 'SELECT groups.*, COUNT(users.id) AS user_count
+												FROM
+													{SQL_PREFIX}groups AS groups
 												 	LEFT JOIN {SQL_PREFIX}users AS users ON users.group = groups.id
-												 WHERE groups.'.$col.' = ?
-												 GROUP BY groups.id'
-											   );
+												WHERE groups.'.$col.' = ?
+												GROUP BY groups.id' );
 				$pdoSt->execute( array($group) );
 				$groupDetails = $pdoSt->fetch( PDO::FETCH_ASSOC );
 				if ( empty( $groupDetails ) ) {
@@ -296,9 +294,10 @@
 		 *
 		 * @param string $name
 		 * @param int $inherits
+		 * @param string $status
 		 * @return int|bool
 		 */
-		public function addGroup( $name, $inherits=null ) {
+		public function addGroup( $name, $inherits=null, $status='active' ) {
 			if ( $this->groupExists( $name ) ) {
 				throw new Ugmanager_GroupExists( $name );
 			} else {
@@ -316,9 +315,12 @@
 				} catch ( Acl_ParentNoExist $e ) {
 					throw new Ugmanager_InvalidInheritance( $inherits );
 				}
+				if ( !in_array($status, array('active', 'locked')) ) {
+					$status = 'active';
+				}
 				// Add in the new group
-				$pdoSt = $this->_sql->prepare( 'INSERT INTO {SQL_PREFIX}groups (name, role_id) VALUES (?, ?)' );
-				$pdoSt->execute( array($name, $roleId) );
+				$pdoSt = $this->_sql->prepare( 'INSERT INTO {SQL_PREFIX}groups (name, role_id, status) VALUES (?, ?, ?)' );
+				$pdoSt->execute( array($name, $roleId, $status) );
 				$pdoSt->closeCursor();
 				$this->_cache->delete( 'ugmanager_groups' );
 				return $this->_sql->lastInsertId();
@@ -330,32 +332,41 @@
 		 *
 		 * @param int $gid
 		 * @param string $name
-		 * @param int $inherits
+		 * @param int $inherits		GID of the group to inherit from
+		 * @param string $status
 		 * @return bool
 		 */
-		public function editGroup( $gid, $name, $inherits=null ) {
+		public function editGroup( $gid, $name, $inherits=null, $status=null ) {
 			$group = $this->getGroup( $gid );
 			$gid = $group['id'];
 			if ( $name != $group['name'] && $this->groupExists( $name ) ) {
 				throw new Ugmanager_GroupExists( 'unable to rename group, new name already exists' );
 			} else {
 				// Attempt to get details for the inheritance group
-				if ( !empty( $inherits ) ) {
+				if ( $inherits !== null ) {
+					if ( $inherits ) {
+						try {
+							$inheritDetails = $this->getGroup( $inherits );
+							$inherits = 'group_'.$inheritDetails['name'];
+						} catch ( Ugmanager_GroupNoExist $e ) {
+							throw new Ugmanager_InvalidInheritance( $inherits );
+						}
+					}
 					try {
-						$inheritDetails = $this->getGroup( $inherits );
-						$inherits = 'group_'.$inheritDetails['name'];
-					} catch ( Ugmanager_GroupNoExist $e ) {
+						$roleId = $this->_acl->editRole( 'group_'.$group['name'], $inherits );
+					} catch ( Acl_ParentNoExist $e ) {
 						throw new Ugmanager_InvalidInheritance( $inherits );
 					}
 				}
-				try {
-					$roleId = $this->_acl->editRole( 'group_'.$group['name'], $inherits );
-				} catch ( Acl_ParentNoExist $e ) {
-					throw new Ugmanager_InvalidInheritance( $inherits );
+				if ( $status == null ) {
+					$status = $group['status'];
+				} else if ( !in_array($status, array('active', 'locked')) ) {
+					$status = 'active';
 				}
 				// Update group details
-				$pdoSt = $this->_sql->prepare( 'UPDATE {SQL_PREFIX}groups SET name = ? WHERE id = ?' );
-				$pdoSt->execute( array($name, $gid) );
+				$pdoSt = $this->_sql->prepare( 'UPDATE {SQL_PREFIX}groups
+												SET name = ?, status = ? WHERE id = ?' );
+				$pdoSt->execute( array($name, $status, $gid) );
 				// Update the ACL Role name as well, to keep it the same as the group
 				$pdoSt->closeCursor();
 				$pdoSt = $this->_sql->prepare( 'UPDATE {SQL_PREFIX}acl_roles SET name = ? WHERE id = ?' );

@@ -29,6 +29,7 @@
 								'2.3.0'			=> '2.3.1',
 
 								# Dev Releases
+								'2.4.53'		=> '2.5.0-alpha1',
 								'2.4.52'		=> '2.5.0-alpha1',
 								'2.4.51'		=> '2.5.0-alpha1',
 								'2.4.50'		=> '2.5.0-alpha1',
@@ -341,7 +342,9 @@
 					$this->sqlFile( '2.5.0-alpha1/2.4.52.sql' );
 				case '2.4.52':
 					$this->sqlFile( '2.5.0-alpha1/2.4.53.sql' );
-					return '2.4.53';
+				case '2.4.53':
+					$this->sqlFile( '2.5.0-alpha1/2.4.54.sql' );
+					return '2.4.54';
 				default:
 					return '2.4.50';
 			}

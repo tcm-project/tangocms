@@ -169,7 +169,7 @@
 			}
 			$user = $this->_ugmanager->getUser( $uid );
 			$group = $this->_ugmanager->getGroup( $user['group'] );
-			if ( $user['id'] != Ugmanager::_ROOT_ID && $user['status'] == 'locked' ) {
+			if ( $group['id'] != Ugmanager::_ROOT_GID && ($group['status'] == 'locked' || $user['status'] == 'locked') ) {
 				return false;
 			} else {
 				// Now store the user/group details since we know no exception was thrown.
