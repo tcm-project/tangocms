@@ -245,6 +245,7 @@
 						++$sessionsClosed;
 					} else {
 						$pdoSt->bindValue( ':uid', $user, PDO::PARAM_INT );
+						$pdoSt->execute();
 						$sessionsClosed += $pdoSt->rowCount();
 					}
 				}
