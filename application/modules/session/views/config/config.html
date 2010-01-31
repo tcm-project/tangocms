@@ -80,6 +80,34 @@
 					<input type="text" id="session-destination_url" name="session[login_destination_url]" value="{LOGIN_DESTINATION_URL}">
 				</td>
 			</tr>
+			<tr class="even">
+				<td>
+					<dl>
+						<dt>{L_[Password expiration]}</dt>
+						<dd>{L_[When a password expires, the user must change their current password to continue.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<select name="session[expire_pw]">
+						<?php
+							$opts = array(
+										t('Never')		=> 0,
+										t('Weekly')		=> 604800,
+										t('Biweekly')	=> 1209600,
+										t('Monthly')	=> 2419200,
+										t('Yearly')		=> 29030400,
+										);
+							foreach( $opts as $key=>$val ) {
+								printf( '<option value="%1$s" %2$s>%3$s</option>',
+										$val,
+										($val == $expire_pw ? 'selected="selected"' : ''),
+										$key
+									   );
+							}
+						?>
+					</select>
+				</td>
+			</tr>
 		</tbody>
 	</table>
 

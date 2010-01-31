@@ -102,7 +102,7 @@
 				$view = $this->loadView( 'index/login.html' );
 				$view->assign( array(
 									'FORM_URL' 		=> $formUrl,
-									'FORGOT_URL' 	=> $this->_router->makeUrl( 'session', 'reset' ),
+									'FORGOT_URL' 	=> $this->_router->makeUrl( 'session', 'pwd', 'reset' ),
 									'REGISTER_URL'	=> $registerUrl,
 									'LOGIN_BY'		=> $this->loginMethod,
 									));
@@ -138,6 +138,12 @@
 							$this->_event->error( t('Sorry, this user account is currently locked') );
 						} else {
 							$loggedIn = true;
+							// Check if the users password has expired
+							$lastPwChange = $this->_date->utcStrtotime( $this->_session->getUser('last_pw_change') );
+							$expireIn = $this->_config->get('session/expire_pw');
+							if ( $expireIn > 0 && ($lastPwChange + $expireIn) <= time() ) {
+								$_SESSION['mod']['session']['changePw'] = true;
+							}
 						}
 					} catch ( Session_UserNotActivated $e ) {
 						$this->_event->error( t('This user account has not yet been activated') );

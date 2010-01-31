@@ -21,13 +21,13 @@
 				_TRIM_MAIN		= 2,
 				_TRIM_ADMIN		= 3,
 				_TRIM_ALL		= 4;
-			
+
 		/**
 		 * Type of router that is to be used
 		 * @var string
 		 */
-		protected $type = 'standard';		
-		
+		protected $type = 'standard';
+
 		/**
 		 * Default scheme (HTTP/HTTPS) for the server
 		 * @var string
@@ -39,19 +39,19 @@
 		 * @var array
 		 */
 		protected $siteTypes = array('main', 'admin');
-		
+
 		/**
 		 * Holds the current request path that is being used
 		 * @var string
 		 */
 		protected $requestPath = '';
-		
+
 		/**
 		 * Holds the Router_Url object of the request path value
 		 * @var object
 		 */
 		protected $requestUrl = null;
-		
+
 		/**
 		 * Constructor
 		 * Gathers the current raw request path, and the protocol
@@ -64,7 +64,7 @@
 				$this->type = 'standard';
 			} else {
 				$this->type = $this->_config->get( 'url_router/type' );
-			}			
+			}
 			// Get the raw request path and the scheme of the server
 			if ( $this->_input->has( 'get', 'url' ) ) {
 				$this->requestPath = $this->_input->get( 'url' );
@@ -248,7 +248,7 @@
 		 */
 		public function makeFullUrl( $module, $controller=null, $action=null, $siteType=null, $arguments=array(), $useHttps=null ) {
 			return $this->makeUrl( $module, $controller, $action, $siteType, $arguments )->makeFull( '&amp;', null, $useHttps );
-		}		
+		}
 
 		/**
 		 * Checks if a site type exists

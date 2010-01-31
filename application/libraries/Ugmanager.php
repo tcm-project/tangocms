@@ -451,7 +451,7 @@
 			$user = $this->getUser( $uid );
 			if ( $user['id'] == Ugmanager::_GUEST_ID ) {
 				throw new Ugmanager_InvalidUser( 'you can not edit the guest user' );
-			} else if ( isset($user['username']) && strtolower($details['username']) != strtolower($user['username'])
+			} else if ( isset($details['username']) && strtolower($details['username']) != strtolower($user['username'])
 						&& $this->userExists( $details['username'], false )
 			) {
 				throw new Ugmanager_UserExists( 'you can not rename the user to a user that already exists' );
@@ -467,9 +467,10 @@
 				}
 			}
 			if ( empty( $details['password'] ) ) {
-				unset( $details['password'] );
+				unset( $details['password'], $details['last_pw_change'] );
 			} else {
 				$details['password'] = zula_hash( $details['password'] );
+				$details['last_pw_change'] = date('Y-m-d H:i:s');
 			}
 			if ( $this->_sql->update( 'users', $details, array('id' => $user['id']) ) ) {
 				unset( $this->users[ $user['id'] ] );

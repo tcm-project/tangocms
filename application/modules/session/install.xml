@@ -21,6 +21,7 @@
 			<conf key="session/login_destination">previous</conf>
 			<conf key="session/login_destination_url"></conf>
 			<conf key="session/register_terms"></conf>
+			<conf key="session/expire_pw">0</conf>
 		</sql>
 	</config>
 </install>

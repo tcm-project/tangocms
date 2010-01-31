@@ -27,9 +27,9 @@
 			// Check request path hash
 			try {
 				$hashPath = $this->_input->post( 'comments/hash' );
-				if ( isset( $_SESSION['comments'][ $hashPath ] ) ) {
-					$requestPath = $_SESSION['comments'][ $hashPath ]['path'];
-					$siteType = $_SESSION['comments'][ $hashPath ]['siteType'];
+				if ( isset( $_SESSION['mod']['comments'][ $hashPath ] ) ) {
+					$requestPath = $_SESSION['mod']['comments'][ $hashPath ]['path'];
+					$siteType = $_SESSION['mod']['comments'][ $hashPath ]['siteType'];
 				} else {
 					throw new Exception;
 				}

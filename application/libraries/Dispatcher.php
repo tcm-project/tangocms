@@ -41,7 +41,7 @@
 		 * @var bool
 		 */
 		protected $displayErrors = true;
-		
+
 		/**
 		 * Toggles whether to use a full page for error messages
 		 * @var bool
@@ -226,11 +226,12 @@
 									'config'	=> $frontController['config'],
 									);
 			}
-			$preDispatch = Hooks::notifyAll( 'cntrlr_pre_dispatch', $routerData );
-			if ( is_string( $preDispatch ) ) {
-				return $preDispatch;
-			} else if ( is_array( $preDispatch ) ) {
-				$routerData = array_merge( $routerData, $preDispatch );
+			while ( $preDispatch = Hooks::notify('cntrlr_pre_dispatch', $routerData) ) {
+				if ( is_string($preDispatch) ) {
+					return $preDispatch;
+				} else if ( is_array($preDispatch) ) {
+					$routerData = $preDispatch;
+				}
 			}
 			// Attempt to load the controller, changing it to the NPC controller if needed
 			$loaded = false;

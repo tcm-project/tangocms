@@ -131,6 +131,7 @@ CREATE TABLE {SQL_PREFIX}users (
   activate_code char(48) COLLATE utf8_unicode_ci NOT NULL,
   reset_code char(48) COLLATE utf8_unicode_ci NOT NULL,
   last_login int(11) NOT NULL DEFAULT '0',
+  last_pw_change TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   UNIQUE KEY id (id),
   UNIQUE KEY username (username),
   INDEX `password` (`password`)
