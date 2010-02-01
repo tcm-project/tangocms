@@ -375,8 +375,10 @@
 					if ( $type != 'merging' ) {
 						$jsPath = $this->_zula->getDir( 'js', true ).'/'.$jsFile;
 					}
-					$this->loadedJsFiles[ $type ][] = $jsPath;
-					++$numberAdded;
+					if ( !in_array($jsPath, $this->loadedJsFiles[ $type ]) ) {
+						$this->loadedJsFiles[ $type ][] = $jsPath;
+						++$numberAdded;
+					}
 				} else {
 					if ( $module != null ) {
 						// Generate a special 'virtual asset' path to the file
@@ -384,7 +386,7 @@
 					} else {
 						$jsPath = $this->_zula->getDir( 'js', true ).'/'.$jsFile;
 					}
-					if ( $this->addHead( 'js', array('src' => $jsPath) ) ) {
+					if ( !in_array($jsPath, $this->loadedJsFiles) && $this->addHead('js', array('src' => $jsPath)) ) {
 						$this->loadedJsFiles[] = $jsPath;
 						++$numberAdded;
 					}
@@ -568,7 +570,7 @@
 					if ( empty( $this->loadedJsFiles[ $type ] ) ) {
 						continue; # No JS files of this type.
 					} else if ( $type == 'system' || $type == 'standalone' ) {
-						foreach( array_unique( $this->loadedJsFiles[$type] ) as $file ) {
+						foreach( $this->loadedJsFiles[$type] as $file ) {
 							$this->addHead( 'js', array('src' => $file) );
 						}
 					} else {

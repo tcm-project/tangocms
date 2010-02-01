@@ -167,7 +167,7 @@
 		 * @return mixed
 		 */
 		static public function notify() {
-			static $count, $lastEvent;
+			static $count, $lastEvent, $lastCb;
 			if ( func_num_args() ) {
 				$funcArgs = func_get_args();
 				$event = strtolower( array_shift( $funcArgs ) );
@@ -183,9 +183,12 @@
 					if ( empty( $hook ) ) {
 						$count = 0;
 						return null;
+					} else if ( $count > 500 && $hook[0]['callback'] == $lastCb ) {
+						trigger_error( 'Hooks::notify() infinite loop detected for hook "'.$event.'"', E_USER_ERROR );
 					} else {
 						++$count;
-						return call_user_func_array( $hook[0]['callback'], $funcArgs );
+						$lastCb = $hook[0]['callback']; # Keep track of last callback
+						return call_user_func_array( $lastCb, $funcArgs );
 					}
 				}
 			} else {

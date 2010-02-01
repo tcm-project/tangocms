@@ -350,7 +350,7 @@
 					$this->_config_sql->add( 'session/expire_pw', '0' );
 					return '2.4.55';
 				default:
-					return '2.4.50';
+					return '2.4.60';
 			}
 		}
 
