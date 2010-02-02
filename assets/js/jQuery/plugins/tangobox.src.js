@@ -85,7 +85,6 @@ jQuery(document).ready(
 					if ( jQuery.support.opacity ) {
 						overlayCss.opacity = settings.overlayOpacity;
 					} else {
-						// Fixes Bug #222
 						overlayCss.filter = "alpha(opacity="+(settings.overlayOpacity*100)+")";
 					}
 					$("#tbOverlay").css(overlayCss).fadeIn(200);

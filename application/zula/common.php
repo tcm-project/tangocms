@@ -327,12 +327,11 @@ ERR;
 	function zula_implode_adv( array $array, $prefixGlue, $suffixGlue=NULL ) {
 		if ( empty( $suffixGlue ) ) {
 			return implode( $prefixGlue, $array );
-		} else if ( is_array( $array ) ) {
-			foreach( $array as $key=>$val ) {
-				$array[ $key ] = $prefixGlue.$val.$suffixGlue;
-			}
-			return implode( '', $array );
 		}
+		foreach( $array as $key=>$val ) {
+			$array[ $key ] = $prefixGlue.$val.$suffixGlue;
+		}
+		return implode( '', $array );
 	}
 
 	/**

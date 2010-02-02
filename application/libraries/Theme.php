@@ -375,7 +375,7 @@
 					if ( $type != 'merging' ) {
 						$jsPath = $this->_zula->getDir( 'js', true ).'/'.$jsFile;
 					}
-					if ( !in_array($jsPath, $this->loadedJsFiles[ $type ]) ) {
+					if ( !isset($this->loadedJsFiles[$type]) || !in_array($jsPath, $this->loadedJsFiles[ $type ]) ) {
 						$this->loadedJsFiles[ $type ][] = $jsPath;
 						++$numberAdded;
 					}

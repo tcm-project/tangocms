@@ -30,14 +30,14 @@
 		 * URL query string arguments to use
 		 * @var array
 		 */
-		protected $queryStringArgs = array();
+		protected $queryStringArgs = array('url' => '');
 
 		/**
 		 * URL fragment
 		 * @var string
 		 */
 		protected $fragment = null;
-								
+
 		/**
 		 * Constructor
 		 * Can load a given request path and parses it into the
@@ -50,9 +50,10 @@
 			if ( $requestPath = trim($requestPath, '/') ) {
 				// Get any query arguments or fragments from the URL
 				$this->fragment = parse_url( $requestPath, PHP_URL_FRAGMENT );
-				$this->queryStringArgs = parse_str( parse_url($requestPath, PHP_URL_QUERY),
-													$this->queryStringArgs
-												  );
+				if ( $queryParsed = parse_url($requestPath, PHP_URL_QUERY) ) {
+					$this->queryStringArgs = parse_str( $queryParsed );
+					$this->queryStringArgs['url'] = '';
+				}
 				/**
 				 * Begin the actual parsing of the URL to find out what data is given
 				 */
@@ -85,7 +86,7 @@
 				}
 			}
 		}
-		
+
 		/**
 		 * Allows quick acccess to the parsed request path details
 		 *
@@ -104,7 +105,7 @@
 		public function __toString() {
 			return $this->make();
 		}
-		
+
 		/**
 		 * Gets all of the parsed details as an array. This will only be useful when
 		 * the constructor was given a URL to parse.
@@ -266,7 +267,7 @@
 			}
 			if ( $type == 'standard' ) {
 				// Add in the 'url' query string needed
-				if ( $requestPath ) { 
+				if ( $requestPath ) {
 					$this->queryStringArgs['url'] = $requestPath;
 				} else {
 					unset( $this->queryStringArgs['url'] );

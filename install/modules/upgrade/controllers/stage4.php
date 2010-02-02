@@ -29,6 +29,8 @@
 								'2.3.0'			=> '2.3.1',
 
 								# Dev Releases
+								'2.4.55'		=> '2.5.0-rc1',
+
 								'2.4.54'		=> '2.5.0-alpha1',
 								'2.4.53'		=> '2.5.0-alpha1',
 								'2.4.52'		=> '2.5.0-alpha1',
@@ -351,6 +353,19 @@
 					return '2.4.55';
 				default:
 					return '2.4.60';
+			}
+		}
+
+		/**
+		 * Upgrades to 2.5.0-rc1 (2.4.90)
+		 *
+		 * @return bool|string
+		 */
+		protected function upgradeTo_250_rc1() {
+			switch( $this->version ) {
+				case '2.4.55':
+				default:
+					return '2.4.90';
 			}
 		}
 

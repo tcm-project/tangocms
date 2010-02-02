@@ -9,7 +9,7 @@
  * @author Robert Clipsham
  * @copyright Copyright (C) 2007, 2008, 2009, 2010 Alex Cartwright
  * @license http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html GNU/LGPL 2.1
- * @package Zula_ugmanager
+ * @package Zula_Ugmanager
  */
 
 	class Ugmanager extends Zula_LibraryBase {
@@ -339,7 +339,7 @@
 		public function editGroup( $gid, $name, $inherits=null, $status=null ) {
 			$group = $this->getGroup( $gid );
 			$gid = $group['id'];
-			if ( $name != $group['name'] && $this->groupExists( $name ) ) {
+			if ( strtolower($name) != strtolower($group['name']) && $this->groupExists( $name ) ) {
 				throw new Ugmanager_GroupExists( 'unable to rename group, new name already exists' );
 			} else {
 				// Attempt to get details for the inheritance group
