@@ -54,7 +54,7 @@ while [[ $1 == -* ]]; do
 			echo "Options:"
 			echo -e "\t-j\tCompress source JavaScript files using Google Closure Compiler (requires Java)"
 			echo -e "\t-p\tCreates .tar.gz, .tar.bz2 and .zip archives. This implies '-j' always. Zula" \
-					"\n\t\tapplication mode argument optional, either 'development' or 'production which'" \
+					"\n\t\tapplication mode argument optional, either 'development' or 'production' which" \
 					"\n\t\tdefaults to 'production'."
 			echo -e "\t-x\tCheck all thrown PHP exceptions are defined, and list those not used."
 			echo -e "\t-v\tBe more verbose with output, providing more detail."
@@ -155,7 +155,8 @@ if [ $TASK_PACKAGE == "true" ]; then
 	##
 	verbose || echo -ne ":: Creating package archives "
 	curPwd=$PWD
-	tmpDir=`mktemp -d`"/tangocms"
+	projectVersion=`grep "version =" ./config/default/config.ini.php | sed -e 's/[^0-9.]//g'`
+	tmpDir=`mktemp -d`"/tangocms-${projectVersion}"
 	if [ -d ".git" ]; then
 		git checkout-index -a -f --prefix="${tmpDir}/"
 	else
@@ -164,7 +165,7 @@ if [ $TASK_PACKAGE == "true" ]; then
 
 	## Move some files around and do certain edits depending on application mode
 	rm -rf "${tmpDir}/config/default" "${tmpDir}/tmp/*" "${tmpDir}/application/logs/*.log" \
-		   "${tmpDir}/assets/uploads/*" "${tmpDir}/.gitignore"
+		   "${tmpDir}/assets/uploads/*" "${tmpDir}/.gitignore" "${tmpDir}/*~"
 	touch "${tmDir}/tmp/index.html" "${tmpDir}/assets/uploads/index.html"
 	mv "${tmpDir}/config/default.dist" "${tmpDir}/config/default"
 
@@ -181,9 +182,9 @@ if [ $TASK_PACKAGE == "true" ]; then
 	sed -i -e "s/\(php_display_errors\|zula_detailed_error\|zula_show_errors\) = \([0-1]\{1\}\)/\1 = ${confDebugFlag}/" \
 		"${tmpDir}/config/default/config.ini.php"
 
-	tar -czf TangoCMS.tar.gz -C "${tmpDir}/../" tangocms && verbose || echo -ne "."
-	tar -cjf TangoCMS.tar.bz2 -C "${tmpDir}/../" tangocms && verbose || echo -ne "."
-	(cd "${tmpDir}/../" && zip -qr9 $curPwd/TangoCMS.zip tangocms && verbose || echo -ne ".")
+	tar -czf TangoCMS_${projectVersion}.tar.gz -C "${tmpDir}/../" "tangocms-${projectVersion}" && verbose || echo -ne "."
+	tar -cjf TangoCMS_${projectVersion}.tar.bz2 -C "${tmpDir}/../" "tangocms-${projectVersion}" && verbose || echo -ne "."
+	(cd "${tmpDir}/../" && zip -qr9 $curPwd/TangoCMS_${projectVersion}.zip "tangocms-${projectVersion}" && verbose || echo -ne ".")
 
 	rm -rf $tmpDir
 	verbose || echo " done!"

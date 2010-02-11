@@ -91,6 +91,9 @@
 			if ( substr( $serverName, -8 ) == '.install' ) {
 				$serverName = substr( $serverName, 0, -8 );
 			}
+			if ( strpos( $serverName, 'www.' ) === 0 ) {
+				$serverName = substr( $serverName, 4 );
+			}
 			if ( is_dir( $zula->getDir( 'config' ).'/'.$serverName ) ) {
 				$confDir = $zula->getDir( 'config' ).'/'.$serverName;
 			}
