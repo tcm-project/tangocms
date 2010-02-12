@@ -26,13 +26,13 @@
 			if ( _AJAX_REQUEST === false ) {
 				throw new Module_AjaxOnly;
 			}
-			$jsFile = 'tinymce-'.zula_hash( implode('|', $this->_router->getAllArguments()), null, 'md5' ).'.js';
+			$jsFile = 'tinymce-'.zula_hash( implode('|', $this->_input->getAll('get')), null, 'md5' ).'.js';
 			// Build path and check if the cached version exists
 			$jsFilePath = $this->_zula->getDir( 'tmp' ).'/js/'.$jsFile;
 			if ( !file_exists( $jsFilePath ) ) {
 				$tinyMcePath = $this->_zula->getDir( 'js' ).'/tinymce';
-				$tinyMceLang = $this->_router->getArgument( 'language' );
-				$theme = $this->_router->getArgument( 'themes' );
+				$tinyMceLang = $this->_input->get( 'languages' );
+				$theme = $this->_input->get( 'themes' );
 				// Array of all files that need to be merged together
 				$neededFiles = array(
 									# Lang files
@@ -43,7 +43,7 @@
 									'/themes/'.$theme.'/langs/'.$tinyMceLang.'.js',
 									);
 				// Plugins
-				foreach( explode( ',', $this->_router->getArgument( 'plugins' ) ) as $plugin ) {
+				foreach( explode( ',', $this->_input->get( 'plugins' ) ) as $plugin ) {
 					$neededFiles[] = '/plugins/'.$plugin.'/editor_plugin.js';
 					$neededFiles[] = '/plugins/'.$plugin.'/langs/'.$tinyMceLang.'.js';
 				}
@@ -54,7 +54,7 @@
 						$content .= file_get_contents( $path );
 					}
 				}
-				if ( $this->_router->getArgument( 'core' ) == true ) {
+				if ( $this->_input->get( 'core' ) == true ) {
 					$content = file_get_contents( $tinyMcePath.'/tiny_mce.js' ).' tinyMCE_GZ.start(); '.$content.' tinyMCE_GZ.end();';
 				}
 				// Store the file so it can be used later on

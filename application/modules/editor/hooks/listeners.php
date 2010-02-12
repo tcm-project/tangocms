@@ -44,24 +44,31 @@
 					}
 				}
 				$tinyMcePlugins = implode( ',', $tinyMcePlugins );
-				// Content to add in some JavaScript tags.
-				$jsContent = 'var tcmEditor = {defaultFormat: "'.Editor::defaultFormat().'", tinymcePlugins: "'.$tinyMcePlugins.'"}; ';
-				$usedEditors = Editor::usedEditors();
-				if ( (empty( $usedEditors ) && Editor::defaultFormat() == 'html') || in_array( 'html', $usedEditors ) ) {
-					/**
-					 * Load TinyMCE, though right at the start as TinyMCE is a bitch
-					 * about where it needs to be loaded, called, and even file name.
-					 *
-					 * This is why we bypass the Theme::addJsFile() method.
-					 */
-					$path = $this->_zula->getDir( 'js', true ).'/tinymce/tiny_mce_gzip.js';
-					$this->_theme->addHead( 'js', array('src' => $path) );
-					$jsContent .= 'tinyMCE_GZ.init( {plugins: tcmEditor.tinymcePlugins, themes: "advanced", languages: "en"} );';
-				}
-				$this->_theme->addHead( 'js', array(), $jsContent );
+				/**
+				 * Load TinyMCE, though right at the start as TinyMCE is a bitch
+				 * about where it needs to be loaded, called, and even file name.
+				 *
+				 * This is why we bypass the Theme::addJsFile() method.
+				 */
+				$this->_theme->addHead( 'js', array('src' => $this->_zula->getDir( 'js', true ).'/tinymce/jquery.tinymce.js') );
+				$this->_theme->addHead( 'js', array(),
+										'var tcmEditor = {defaultFormat: "'.Editor::defaultFormat().'", tinymcePlugins: "'.$tinyMcePlugins.'"};'
+									  );
 				$this->_theme->addJsFile( 'js/init.js', true, 'editor' );
 			}
 			return true;
+		}
+
+		/**
+		 * Hook: router_pre_parse
+		 *
+		 * @return string
+		 */
+		public function hookRouterPreParse( $url ) {
+			if ( preg_match( '#tinymce/tiny_mce_gzip.php$#i', $url ) ) {
+				$url = 'editor/compressor';
+			}
+			return $url;
 		}
 
 		/**

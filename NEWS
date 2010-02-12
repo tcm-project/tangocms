@@ -20,6 +20,7 @@ A complete ChangeLog can be found at http://tangocms.org/changelog
 
 -- Bug Fixes
 
+	* Bug #205: Manually adding editor shebang with TinyMCE does not change editor type
 	* Bug #210: Contact form converts input options to lowercase
 	* Bug #214: Media upload not work under Windows
 	* Bug #217: Don't install Media module if PHP 'gd' extension is not available
