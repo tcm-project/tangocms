@@ -70,7 +70,7 @@
 					}
 					// Prepend the shebang back into the textarea on submit
 					$(this).parents("form").submit(
-						function(e) {
+						function() {
 							var editorType = editorShebangs.shift();
 							if ( typeof tinyMCE !== "undefined" ) {
 								$(tmpTextarea).tinymce().remove();
