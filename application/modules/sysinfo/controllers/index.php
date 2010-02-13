@@ -26,8 +26,10 @@
 										t('System Information')			=> $this->_router->makeUrl( 'sysinfo' ),
 										t('Writable Files/Directories')	=> $this->_router->makeUrl( 'sysinfo', 'index', 'writable' ),
 										t('Update Checker')				=> $this->_router->makeUrl( 'sysinfo', 'index', 'update' ),
-										t('PHP Info')					=> $this->_router->makeUrl( 'sysinfo', 'index', 'phpinfo' ),
-										));
+									 ));
+			if ( function_exists( 'phpinfo' ) ) {
+				$this->setPageLinks( array(t('PHP Info') => $this->_router->makeUrl('sysinfo', 'index', 'phpinfo')) );
+			}
 		}
 
 		/**
@@ -141,8 +143,12 @@
 		 * @return bool
 		 */
 		public function phpinfoSection() {
-			phpinfo();
-			return false;
+			if ( function_exists( 'phpinfo' ) ) {
+				phpinfo();
+				return false;
+			} else {
+				throw new Module_ControllerNoExist;
+			}
 		}
 
 	}

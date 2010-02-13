@@ -155,6 +155,7 @@ input {
 	padding: 1px 2px;
 	width: 190px;
 }
+
 input.error {
 	border-color: #cd310d !important;
 	color: #cd310d;
@@ -185,6 +186,7 @@ input[type="submit"], input[type="button"], a.general-button {
 	font-weight: bold;
 	margin: 5px 0;
 	padding: 3px;
+	width: auto;
 }
 
 a.general-button, a.general-button:hover {

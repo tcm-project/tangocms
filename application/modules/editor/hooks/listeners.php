@@ -50,10 +50,10 @@
 				 *
 				 * This is why we bypass the Theme::addJsFile() method.
 				 */
-				$this->_theme->addHead( 'js', array('src' => $this->_zula->getDir( 'js', true ).'/tinymce/jquery.tinymce.js') );
 				$this->_theme->addHead( 'js', array(),
 										'var tcmEditor = {defaultFormat: "'.Editor::defaultFormat().'", tinymcePlugins: "'.$tinyMcePlugins.'"};'
 									  );
+				$this->_theme->addJsFile( 'tinymce/jquery.tinymce.js' );
 				$this->_theme->addJsFile( 'js/init.js', true, 'editor' );
 			}
 			return true;
