@@ -29,6 +29,8 @@
 								'2.3.0'			=> '2.3.1',
 
 								# Dev Releases
+								'2.4.90'		=> '2.5.0',
+
 								'2.4.55'		=> '2.5.0-rc1',
 
 								'2.4.54'		=> '2.5.0-alpha1',
@@ -123,25 +125,22 @@
 					} else {
 						$this->version = $upgradeTo;
 					}
+					$this->_config_ini->update( 'config/version', $this->version );
 				}
 			}
 			$_SESSION['project_version'] = $this->version;
+			// Remove all unused ACL rules and rewrite the config.ini.php file
+			$this->_acl->cleanRules();
+			try {
+				$this->_config_ini->writeIni();
+			} catch ( Config_ini_FileNotWriteable $e ) {
+				$this->_event->error( sprintf( t('Configuration file "%s" is not writable'), $this->_config_ini->getFile() ) );
+			}
 			// Check if upgrade was (fully) successful
 			if ( $success === false ) {
 				$view = $this->loadView( 'stage4/fail.html' );
 				return $view->getOutput();
 			} else {
-				/**
-				 * Upgrade was a success, remove all unused ACL rules
-				 * and re-write the config ini file
-				 */
-				$this->_acl->cleanRules();
-				$this->_config_ini->update( 'config/version', $this->version );
-				try {
-					$this->_config_ini->writeIni();
-				} catch ( Config_ini_FileNotWriteable $e ) {
-					$this->_event->error( sprintf( t('Upgrader could not write a new configuration file "%s" as it is not writable'), $this->_config_ini->getFile() ) );
-				}
 				$this->_event->success( sprintf( t('Successfully upgraded from "%1$s" to "%2$s"'), _PROJECT_VERSION, $this->version ) );
 				$_SESSION['upgrade_stage']++;
 				return zula_redirect( $this->_router->makeUrl( 'upgrade', 'stage5' ) );

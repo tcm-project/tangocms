@@ -83,7 +83,7 @@ label.horizontal {
 blockquote {
 	background-color: #f9f9f9;
 	border-left: 2px solid #ccc;
-	margin-left: 10px;
+	margin: 0 0 1em 1em;
 	padding: 3px 6px;
 }
 

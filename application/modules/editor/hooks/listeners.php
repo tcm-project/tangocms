@@ -44,12 +44,6 @@
 					}
 				}
 				$tinyMcePlugins = implode( ',', $tinyMcePlugins );
-				/**
-				 * Load TinyMCE, though right at the start as TinyMCE is a bitch
-				 * about where it needs to be loaded, called, and even file name.
-				 *
-				 * This is why we bypass the Theme::addJsFile() method.
-				 */
 				$this->_theme->addHead( 'js', array(),
 										'var tcmEditor = {defaultFormat: "'.Editor::defaultFormat().'", tinymcePlugins: "'.$tinyMcePlugins.'"};'
 									  );
