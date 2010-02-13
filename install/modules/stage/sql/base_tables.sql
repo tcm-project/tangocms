@@ -138,5 +138,5 @@ CREATE TABLE {SQL_PREFIX}users (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 INSERT INTO {SQL_PREFIX}users (username, `password`, email, `group`, joined) VALUES
-('guest', 'guest', '', 3, NOW() ),
-('rootUser', 'rootPass', 'rootEmail', 1, NOW() );
+('guest', 'guest', '', 3, UTC_TIMESTAMP() ),
+('rootUser', 'rootPass', 'rootEmail', 1, UTC_TIMESTAMP() );

@@ -428,7 +428,7 @@
 							'author'			=> $this->_session->getUserId(),
 							);
 			$pdoSt = $this->_sql->prepare( 'INSERT INTO {SQL_PREFIX}mod_articles (cat_id, title, clean_title, `date`, published, author)
-											VALUES(?, ?, ?, NOW(), ?, ?)' );
+											VALUES(?, ?, ?, UTC_TIMESTAMP(), ?, ?)' );
 			$result = $pdoSt->execute( array(
 											$details['cat_id'], $details['title'], $details['clean_title'],
 											$details['published'], $details['author']

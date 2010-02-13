@@ -43,7 +43,7 @@
 					$pdoSt = $this->_sql->prepare( 'UPDATE {SQL_PREFIX}users SET
 													username = :username,
 													password = :password,
-													joined = NOW(),
+													joined = UTC_TIMESTAMP(),
 													email = :email WHERE id = 2' );
 					$pdoSt->execute( array(
 											':username'	=> $fd['username'],
