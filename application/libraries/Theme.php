@@ -290,6 +290,10 @@
 					$str = '<script '.$attrStr.'>'.$content.'</script>';
 					break;
 
+				case 'style':
+					$str = '<style type="text/css" '.$attrStr.'>'.$content.'</style>';
+					break;
+
 				case 'meta':
 				case 'link':
 					$str = sprintf( '<%1$s %2$s>', $type, $attrStr );
