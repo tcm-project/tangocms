@@ -10,7 +10,7 @@ CREATE TABLE {SQL_PREFIX}mod_poll (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=2 ;
 
 INSERT INTO {SQL_PREFIX}mod_poll (id, title, duration, status, start_date) VALUES
-(1, 'Which music service/radio do you use?', 0, 'active', NOW());
+(1, 'Which music service/radio do you use?', 0, 'active', UTC_TIMESTAMP());
 
 DROP TABLE IF EXISTS {SQL_PREFIX}mod_poll_options;
 CREATE TABLE {SQL_PREFIX}mod_poll_options (

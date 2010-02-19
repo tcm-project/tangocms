@@ -202,7 +202,7 @@
 		 */
 		public function addPoll( $title, $duration, array $options, $status='active' ) {
 			$pdoSt = $this->_sql->prepare( 'INSERT INTO {SQL_PREFIX}mod_poll(title, duration, status, start_date)
-											VALUES (?, ?, ?, NOW())' );
+											VALUES (?, ?, ?, UTC_TIMESTAMP())' );
 			$pdoSt->execute( array($title, $duration, $status) );
 			$this->_cache->delete( 'polls' );
 			$pid = $this->_sql->lastInsertId();

@@ -163,7 +163,7 @@
 		public function add( $requestPath, $body, $name='', $website='' ) {
 			$status = $this->_config->get('comments/moderate') ? 'moderation' : 'accepted';
 			$pdoSt = $this->_sql->prepare( 'INSERT INTO {SQL_PREFIX}mod_comments
-											(user_id, status, url, date, body, name, website) VALUES (?, ?, ?, NOW(), ?, ?, ?)' );
+											(user_id, status, url, date, body, name, website) VALUES (?, ?, ?, UTC_TIMESTAMP(), ?, ?, ?)' );
 			$execData = array($this->_session->getUserId(), $status, $requestPath, $body, $name, $website);
 			if ( !$pdoSt->execute( $execData ) ) {
 				throw new Comments_Exception( 'failed to add new comment, execute failed' );

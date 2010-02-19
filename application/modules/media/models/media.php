@@ -330,7 +330,7 @@
 			// Insert the new media item
 			$pdoSt = $this->_sql->prepare( 'INSERT INTO {SQL_PREFIX}mod_media_items
 											(cat_id, type, date, name, clean_name, description, filename, thumbnail, external_service, external_id)
-											VALUES(?, ?, NOW(), ?, ?, ?, ?, ?, ?, ?)' );
+											VALUES(?, ?, UTC_TIMESTAMP(), ?, ?, ?, ?, ?, ?, ?)' );
 			$pdoSt->execute( array($category['id'], $type, $name, $cleanName, $desc, $filename, $thumbnail, $externalService, $externalId) );
 			return array(
 						'id'			=> $this->_sql->lastInsertId(),
