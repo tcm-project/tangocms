@@ -61,7 +61,9 @@
 			$results = $query->fetch( PDO::FETCH_ASSOC );
 			$query->closeCursor();
 			if ( $results )  {
-				if ( $this->_date->utcStrtotime( $results['blocked'].' +10 minutes' ) <= time() ) {
+				$blockedUntil = $this->_date->getDateTime( $results['blocked'] )
+											->modify( '+10 minutes' );
+				if ( $blockedUntil < new DateTime ) {
 					// Remove the entry as it has now expired
 					$this->_sql->exec( 'DELETE FROM {SQL_PREFIX}mod_session WHERE ip = '.$remoteAddr );
 					$results['attempts'] = 0;

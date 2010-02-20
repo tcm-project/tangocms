@@ -46,7 +46,9 @@
 			} else if ( $poll['duration'] == 0 ) {
 				return false;
 			} else {
-				if ( time() >= $this->_date->utcStrtotime($poll['start_date'].' +'.$poll['duration'].' weeks') ) {
+				$closesOn = $this->_date->getDateTime( $poll['start_date'] )
+										->modify( '+'.$poll['duration'].' weeks' );
+				if ( $closesOn < new DateTime ) {
 					$this->_model()->closePoll( $poll['id'] );
 					$poll['status'] = 'closed';
 					return true;

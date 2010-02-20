@@ -470,7 +470,8 @@
 				unset( $details['password'], $details['last_pw_change'] );
 			} else {
 				$details['password'] = zula_hash( $details['password'] );
-				$details['last_pw_change'] = date('Y-m-d H:i:s');
+				$date = new DateTime( 'now', new DateTimeZone('UTC') );
+				$details['last_pw_change'] = $date->format('Y-m-d H:i:s');
 			}
 			if ( $this->_sql->update( 'users', $details, array('id' => $user['id']) ) ) {
 				unset( $this->users[ $user['id'] ] );
@@ -499,7 +500,10 @@
 			if ( isset( $details['password'] ) ) {
 				$details['password'] = zula_hash( $details['password'] );
 			}
-			$details['joined'] = date('Y-m-d H:i:s');
+			// Add in the joined and last password change date
+			$date = new DateTime( 'now', new DateTimeZone('UTC') );
+			$details['joined'] = $date->format( 'Y-m-d H:i:s' );
+			$details['last_pw_change'] = $date->format( 'Y-m-d H:i:s' );
 			if ( $this->_sql->insert( 'users', $details ) ) {
 				unset( $this->userCount['*'], $this->userCount[ $details['group'] ] );
 				$this->_cache->delete( 'ugmanager_users' );
