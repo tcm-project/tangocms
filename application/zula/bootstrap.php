@@ -63,7 +63,7 @@
 					break;
 
 				case 'timezone':
-					$date->changeTimezone( $val );
+					$date->setTimezone( $val );
 					break;
 
 				default:

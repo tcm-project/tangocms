@@ -21,7 +21,8 @@
 		 */
 		protected $routes = array(
 								# Stable Releases
-								'2.5.0'			=> '2.6.0-alpha1',
+								'2.5.1'			=> '2.6.0-alpha1',
+								'2.5.0'			=> '2.5.1',
 
 								'2.4.0'			=> '2.5.0-alpha1',
 
@@ -371,6 +372,20 @@
 		}
 
 		/**
+		 * Upgrades to 2.5.1
+		 *
+		 * @return bool|string
+		 */
+		protected function upgradeTo_251() {
+			switch( $this->version ) {
+				case '2.5.0':
+					$this->sqlFile( '2.5.1/2.5.1.sql' );
+				default:
+					return '2.5.1';
+			}
+		}
+
+		/**
 		 * Upgrades to 2.6.0-alpha1 (2.5.60)
 		 *
 		 * @return bool|string
@@ -378,9 +393,10 @@
 		protected function upgradeTo_260_alpha1() {
 			switch( $this->version ) {
 				case '2.5.0':
+				case '2.5.1':
 					return '2.5.50';
 				default:
-					return '2.5.60'
+					return '2.5.60';
 			}
 		}
 

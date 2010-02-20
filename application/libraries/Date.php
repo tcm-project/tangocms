@@ -33,6 +33,18 @@
 		protected $relativeCutoff = 1209600;
 
 		/**
+		 * UTC timezone object, used as a base
+		 * @var object
+		 */
+		protected $utcTimezone = null;
+
+		/**
+		 * The DateTimeZone object for the correct local time
+		 * @var object
+		 */
+		protected $timezone = null;
+
+		/**
 		 * Constructor
 		 * Updates some of the date configuration values
 		 *
@@ -42,7 +54,8 @@
 			if ( $this->_config->has( 'date/timezone' ) ) {
 				$tz = $this->_config->get( 'date/timezone' );
 			}
-			$this->changeTimezone( empty($tz) ? @date_default_timezone_get() : $tz );
+			$this->utcTimezone = new DateTimeZone( 'UTC' );
+			$this->setTimezone( empty($tz) ? @date_default_timezone_get() : $tz );
 		}
 
 		/**
@@ -52,21 +65,29 @@
 		 * @param string $timezone
 		 * @return bool
 		 */
-		public function changeTimezone( $timezone=null ) {
-			if ( !trim( $timezone ) ) {
+		public function setTimezone( $timezone=null ) {
+			if ( $timezone instanceof DateTimeZone ) {
+				$timezone = $timezone->getName();
+			} else if ( !trim( $timezone ) ) {
 				$timezone = date_default_timezone_get();
 			}
-			return @date_default_timezone_set( $timezone );
+			if ( @date_default_timezone_set( $timezone ) ) {
+				$this->timezone = new DateTimeZone( $timezone );
+				return true;
+			} else {
+				return false;
+			}
 		}
 
 		/**
 		 * Sets the default format to use.
 		 *
 		 * @param string $format
-		 * @return bool
+		 * @return object
 		 */
 		public function setFormat( $format='D j M, H:i' ) {
 			$this->format = (string) $format;
+			return $this;
 		}
 
 		/**
@@ -74,11 +95,11 @@
 		 * no argument sent.
 		 *
 		 * @param bool $relative
-		 * @return bool
+		 * @return object
 		 */
 		public function useRelative( $relative=true ) {
 			$this->useRelative = (bool) $relative;
-			return true;
+			return $this;
 		}
 
 		/**
@@ -86,26 +107,30 @@
 		 * back it should continue to use relative date for)
 		 *
 		 * @param int $cutoff
-		 * @return bool
+		 * @return object
 		 */
 		public function setRelativeCutoff( $cutoff ) {
 			$this->relativeCutoff = abs( $cutoff );
+			return $this;
 		}
 
 		/**
-		 * Ensures that when we convert a string date, to make PHP think we
-		 * are giving it a GMT/UTC time, instead of the current TZ. This fixes
-		 * a few issues with changing timezones (and helps with Bug #208)
+		 * Takes any format strtotime() handles, or a unix timestamp and returns
+		 * a DateTime object in the correct timezone.
 		 *
-		 * @param string $format
-		 * @return bool|int
+		 * @param string|int $stamp
+		 * @return DateTime
 		 */
-		public function utcStrtotime( $format ) {
-			$oldTz = date_default_timezone_get();
-			date_default_timezone_set( 'UTC' );
-			$stamp = strtotime( $format );
-			date_default_timezone_set( $oldTz );
-			return $stamp;
+		public function getDateTime( $stamp ) {
+			if ( $stamp instanceof DateTime ) {
+				return $stamp;
+			}
+			if ( ctype_digit( $stamp ) ) {
+				$stamp = '@'.$stamp; # Stops DateTime::__construct() throwing an exception
+			}
+			$date = new DateTime( $stamp, $this->utcTimezone );
+			$date->setTimezone( $this->timezone );
+			return $date;
 		}
 
 		/**
@@ -119,19 +144,11 @@
 		 * @return string
 		 */
 		public function format( $stamp=null, $format=null, $overrideRelative=false ) {
-			if ( !trim( $stamp ) ) {
-				$stamp = time();
-			} else if ( !ctype_digit( (string) $stamp ) ) {
-				// Make sure we convert the string and get PHP to think it represents UTC, not the current TZ.
-				$stamp = $this->utcStrtotime( $stamp );
-			}
 			if ( $this->useRelative && !$overrideRelative ) {
 				return $this->relativeDate( $stamp, $format );
 			} else {
-				if ( !trim( $format ) ) {
-					$format = $this->format;
-				}
-				return date( $format, $stamp );
+				$date = $this->getDateTime( $stamp );
+				return $date->format( ($format ? $format : $this->format) );
 			}
 		}
 
@@ -150,29 +167,30 @@
 		}
 
 		/**
-		 * Calculates how many of the following are between
-		 * 2 unix timestamps.
+		 * Calculates the differences between 2 dates, which can be instances
+		 * of DateTime.
 		 *
-		 *	Seconds, Minutes, Hours, Days, Weeks
-		 *
-		 * @param int $stamp1
-		 * @param int $stamp2	Defaults to the current unix-timestamp
+		 * @param mixed $stamp1
+		 * @param mixed $stamp2		Defaults to now
 		 * @return array
 		 */
 		public function difference( $stamp1, $stamp2=null ) {
-			$stamp1 = (int) $stamp1;
-			$stamp2 = trim($stamp2) ? (int) $stamp2 : time();
-			$timeDiff = abs( $stamp2 - $stamp1 );
-			$differences = array();
-			// Calculate the differences for all of the parts
-			$differences['years']	= (int) floor( $timeDiff / (60*60*24*365) );
-			$differences['weeks'] 	= (int) floor( $timeDiff / (60*60*24*7) );
-			$differences['days'] 	= (int) floor( $timeDiff / (60*60*24) );
-			$differences['hours'] 	= (int) floor( ($timeDiff - ($differences['days']*60*60*24) ) / (60*60) );
-			$differences['minutes']	= (int) floor( ($timeDiff - ($differences['days']*60*60*24) - ($differences['hours']*60*60) ) / 60 );
-			$differences['seconds']	= $timeDiff % 60;
-			$differences['unix_seconds'] = $timeDiff;
-			return $differences;
+			$stamp1 = $this->getDateTime( $stamp1 );
+			$stamp2 = $this->getDateTime( $stamp2 );
+			if ( method_exists( $stamp1, 'diff' ) ) {
+				// Use the newer 5.3 DateTime::diff() function
+				$diff = (array) $stamp1->diff( $stamp2 );
+			} else {
+				$timeDiff = abs( $stamp2->format('U') - $stamp1->format('U') );
+				$diff = array();
+				$diff['y'] = (int) floor( $timeDiff / (60*60*24*365) );
+				$diff['m'] = (int) floor( $timeDiff / (60*60*24*7) );
+				$diff['d'] = (int) floor( $timeDiff / (60*60*24) );
+				$diff['h'] = (int) floor( ($timeDiff - ($diff['d']*60*60*24) ) / (60*60) );
+				$diff['i'] = (int) floor( ($timeDiff - ($diff['d']*60*60*24) - ($diff['h']*60*60) ) / 60 );
+				$diff['s'] = $timeDiff;
+			}
+			return $diff;
 		}
 
 		/**
@@ -182,45 +200,46 @@
 		 * If time is outside of the cutoff, then it will return the format it was meant
 		 * to be in before it came to this method.
 		 *
-		 * @param int $stamp
+		 * @param mixed $date
 		 * @param string $format
 		 * @return strng
 		 */
-		public function relativeDate( $stamp, $format='' ) {
-			$differences = $this->difference( $stamp );
-			if ( $differences['unix_seconds'] > $this->relativeCutoff ) {
-				return $this->format( $stamp, $format, true );
+		public function relativeDate( $date, $format=null ) {
+			$date = $this->getDateTime( $date );
+			$diff = $this->difference( $date );
+			if ( $diff['s'] > $this->relativeCutoff ) {
+				return $this->format( $date, $format, true );
 			}
 			// Configure the formats used for relative date
-			$formats = array(
-							'past'	=> array(
-											'weeks'		=> array( 'singular' => t('1 Week Ago', Locale::_DTD), 	'plural' => t('%d Weeks Ago', Locale::_DTD) ),
-											'days'		=> array( 'singular' => t('1 Day Ago', Locale::_DTD),		'plural' => t('%d Days Ago', Locale::_DTD) ),
-											'hours'		=> array( 'singular' => t('1 Hour Ago', Locale::_DTD), 	'plural' => t('%d Hours Ago', Locale::_DTD) ),
-											'minutes'	=> array( 'singular' => t('1 Minute Ago', Locale::_DTD), 	'plural' => t('%d Minutes Ago', Locale::_DTD) ),
-											'seconds'	=> array( 'singular' => t('1 Second Ago', Locale::_DTD), 	'plural' => t('%d Seconds Ago', Locale::_DTD) ),
-											),
-							'future' => array(
-											'weeks'		=> array( 'singular' => t('Within 1 Week', Locale::_DTD), 	'plural' => t('Within %d Weeks', Locale::_DTD) ),
-											'days'		=> array( 'singular' => t('Within 1 Day', Locale::_DTD), 	'plural' => t('Within %d Days', Locale::_DTD) ),
-											'hours'		=> array( 'singular' => t('Within 1 Hour', Locale::_DTD), 	'plural' => t('Within %d Hours', Locale::_DTD) ),
-											'minutes'	=> array( 'singular' => t('Within 1 Minute', Locale::_DTD), 	'plural' => t('Within %d Minutes', Locale::_DTD) ),
-											'seconds'	=> array( 'singular' => t('Within 1 Second', Locale::_DTD), 	'plural' => t('Within %d Seconds', Locale::_DTD) ),
-											),
-							);
-			$format = $formats[ ($stamp > time()) ? 'future' : 'past' ];
-			foreach( $differences as $key=>$val ) {
-				// Get the correct precision needed
+			if ( $date > new DateTime ) {
+				$format = array(
+								'w'	=> array( 'singular' => t('within 1 week', Locale::_DTD), 'plural' => t('within %d weeks', Locale::_DTD) ),
+								'd'	=> array( 'singular' => t('within 1 day', Locale::_DTD), 'plural' => t('within %d days', Locale::_DTD) ),
+								'h'	=> array( 'singular' => t('within 1 hour', Locale::_DTD), 'plural' => t('within %d hours', Locale::_DTD) ),
+								'i'	=> array( 'singular' => t('within 1 minute', Locale::_DTD), 'plural' => t('within %d minutes', Locale::_DTD) ),
+								's'	=> array( 'singular' => t('within 1 second', Locale::_DTD), 'plural' => t('within %d seconds', Locale::_DTD) ),
+								);
+			} else {
+				$format = array(
+								'w'	=> array( 'singular' => t('1 week ago', Locale::_DTD), 'plural' => t('%d weeks ago', Locale::_DTD) ),
+								'd'	=> array( 'singular' => t('1 day ago', Locale::_DTD), 'plural' => t('%d days ago', Locale::_DTD) ),
+								'h'	=> array( 'singular' => t('1 hour ago', Locale::_DTD), 'plural' => t('%d hours ago', Locale::_DTD) ),
+								'i'	=> array( 'singular' => t('1 minute ago', Locale::_DTD), 'plural' => t('%d minutes ago', Locale::_DTD) ),
+								's'	=> array( 'singular' => t('1 second ago', Locale::_DTD), 'plural' => t('%d seconds ago', Locale::_DTD) ),
+								);
+			}
+			// Get the largest precision that has a value
+			foreach( $diff as $key=>$val ) {
 				if ( $val != 0 ) {
-					$diffPrecision = $key;
+					$precision = $key;
 					$value = $val;
 					break;
 				}
 			}
-			if ( isset( $diffPrecision, $value ) && $value > 0 ) {
-				return sprintf( $format[ $diffPrecision ][ ($value>1) ? 'plural' : 'singular' ], $value );
+			if ( isset( $precision, $value ) && $value > 0 ) {
+				return sprintf( $format[ $precision ][ ($value>1 ? 'plural' : 'singular') ], $value );
 			} else {
-				return t('Now', Locale::_DTD);
+				return t('now', Locale::_DTD);
 			}
 		}
 

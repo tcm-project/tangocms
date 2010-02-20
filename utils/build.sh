@@ -172,7 +172,7 @@ if [ $TASK_PACKAGE == "true" ]; then
 	## Edit and remove some files depending on required application mode
 	if [ "$OPT_PACKAGE_MODE" == "production" ]; then
 		find "${tmpDir}" -name "*.src.js" -delete
-		rm -rf "${tmpDir}/assets/js/ckeditor/_source"
+		rm -rf "${tmpDir}/assets/js/ckeditor/_source" "${tmpDir}/utils"
 		confDebugFlag=0
 	else
 		OPT_PACKAGE_MODE=development
