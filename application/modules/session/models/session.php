@@ -34,8 +34,8 @@
 			 */
 			$remoteAddr = zula_ip2long( $_SERVER['REMOTE_ADDR'] );
 			if ( empty( $user ) ) {
-				$pdoSt = $this->_sql->prepare( 'INSERT INTO {SQL_PREFIX}mod_session ( ip, attempts ) VALUES ( ?, 1 )
-												ON DUPLICATE KEY UPDATE attempts = attempts+1' );
+				$pdoSt = $this->_sql->prepare( 'INSERT INTO {SQL_PREFIX}mod_session (ip, attempts, blocked) VALUES (?, 1, UTC_TIMESTAMP())
+												ON DUPLICATE KEY UPDATE attempts = attempts+1, blocked = UTC_TIMESTAMP()' );
 				$pdoSt->execute( array($remoteAddr) );
 				throw new Session_InvalidCredentials;
 			} else {
