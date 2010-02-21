@@ -4,6 +4,15 @@ TangoCMS NEWS (Basic ChangeLog for Users)
 
 A complete ChangeLog can be found at http://tangocms.org/changelog
 
+2.5.1 (2010-xx-xx)
+========================
+
+-- Bug Fixes
+
+	* Bug #208: Timezone is not always correctly set, and incorrect dates shown
+	* Bug #233: Session password expire, can still view various URLs
+
+
 2.5.0 (2010-02-17)
 ========================
 
