@@ -139,9 +139,10 @@
 						} else {
 							$loggedIn = true;
 							// Check if the users password has expired
+							$expiresAfter = $this->_config->get( 'session/expire_pw' );
 							$expiresOn = $this->_date->getDateTime( $this->_session->getUser('last_pw_change') )
-													 ->modify( '+ '.$this->_config->get('session/expire_pw').' seconds' );
-							if ( $expiresOn < new DateTime ) {
+													 ->modify( '+ '.$expiresAfter.' seconds' );
+							if ( $expiresAfter > 0 && $expiresOn < new DateTime ) {
 								$_SESSION['mod']['session']['changePw'] = true;
 							}
 						}
