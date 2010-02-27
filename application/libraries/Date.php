@@ -125,7 +125,7 @@
 			if ( $stamp instanceof DateTime ) {
 				return $stamp;
 			}
-			if ( ctype_digit( $stamp ) ) {
+			if ( ctype_digit( (string) $stamp ) ) {
 				$stamp = '@'.$stamp; # Stops DateTime::__construct() throwing an exception
 			}
 			$date = new DateTime( $stamp, $this->utcTimezone );
@@ -147,8 +147,8 @@
 			if ( $this->useRelative && !$overrideRelative ) {
 				return $this->relativeDate( $stamp, $format );
 			} else {
-				$date = $this->getDateTime( $stamp );
-				return $date->format( ($format ? $format : $this->format) );
+				return $this->getDateTime( $stamp )
+							->format( ($format ? $format : $this->format) );
 			}
 		}
 

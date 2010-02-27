@@ -31,8 +31,8 @@
 		 */
 		public function hookCntrlrPreDispatch( $rData ) {
 			if (
-				!empty( $_SESSION['mod']['session']['changePw'] ) &&  $rData['module'] != 'session' ||
-				($rData['module'] == 'session' && $rData['controller'] != 'index' && $rData['section'] != 'logout')
+				!empty( $_SESSION['mod']['session']['changePw'] ) && ($rData['module'] != 'session' ||
+				($rData['module'] == 'session' && $rData['controller'] != 'index' && $rData['section'] != 'logout'))
 			) {
 				$rData = array(
 							'module'		=> 'session',
