@@ -13,6 +13,7 @@
 OPT_PATH_CLOSURE=/usr/share/java/closure-compiler/closure-compiler.jar
 OPT_VERBOSE=false
 OPT_PACKAGE_MODE=production
+OPT_IS_MSWAG=false
 
 TASK_JS_COMPRESS=false
 TASK_PACKAGE=false
@@ -27,18 +28,24 @@ while [[ $1 == -* ]]; do
 	case "$1" in
 		-j)
 			TASK_JS_COMPRESS=true
-			if (($# > 1)); then
+			if [ $# -gt 1 -a "${2:0:1}" != "-" ]; then
 				OPT_PATH_CLOSURE="$2"
 				shift 2;
 			else
 				shift
 			fi
 			;;
+		-m)
+			OPT_IS_MSWAG=true
+			shift
+			;;
 		-p)
 			TASK_PACKAGE=true
-			if (($# > 1)); then
+			if [ $# -gt 1 -a "${2:0:1}" != "-" ]; then
 				OPT_PACKAGE_MODE="$2"
 				shift 2;
+			else
+				shift
 			fi
 			;;
 		-v)
@@ -50,11 +57,12 @@ while [[ $1 == -* ]]; do
 			shift
 			;;
 		-h)
-			echo -e "TangoCMS Project building tools.\nUsage: build.sh [-j [jar-path]] [-p [mode]] [-x] [-v] [-h]"
+			echo -e "TangoCMS Project building tools.\nUsage: build.sh [-j [jar-path]] [-p [mode] [-m]] [-xvh]"
 			echo "Options:"
 			echo -e "\t-j\tCompress source JavaScript files using Google Closure Compiler (requires Java)"
+			echo -e "\t-m\tCreates Microsoft Web App Gallery package (used only with '-p')."
 			echo -e "\t-p\tCreates .tar.gz, .tar.bz2 and .zip archives. This implies '-j' always. Zula" \
-					"\n\t\tapplication mode argument optional, either 'development' or 'production' which" \
+					"\n\t\tapplication mode argument optional, 'development' or 'production' which" \
 					"\n\t\tdefaults to 'production'."
 			echo -e "\t-x\tCheck all thrown PHP exceptions are defined, and list those not used."
 			echo -e "\t-v\tBe more verbose with output, providing more detail."
@@ -182,9 +190,20 @@ if [ $TASK_PACKAGE == "true" ]; then
 	sed -i -e "s/\(php_display_errors\|zula_detailed_error\|zula_show_errors\) = \([0-1]\{1\}\)/\1 = ${confDebugFlag}/" \
 		"${tmpDir}/config/default/config.ini.php"
 
-	tar -czf TangoCMS_${projectVersion}.tar.gz -C "${tmpDir}/../" "tangocms-${projectVersion}" && verbose || echo -ne "."
-	tar -cjf TangoCMS_${projectVersion}.tar.bz2 -C "${tmpDir}/../" "tangocms-${projectVersion}" && verbose || echo -ne "."
-	(cd "${tmpDir}/../" && zip -qr9 $curPwd/TangoCMS_${projectVersion}.zip "tangocms-${projectVersion}" && verbose || echo -ne ".")
+	if [ "$OPT_IS_MSWAG" == "true" ]; then
+		mkdir "${tmpDir}/tangocms"
+		mv ${tmpDir}/* ${tmpDir}/tangocms 2> /dev/null
+		mv ${tmpDir}/tangocms/ms-webapp/* ${tmpDir}
+		mv "${tmpDir}/tangocms/install/modules/stage/sql/base_tables.sql" "${tmpDir}/tangocms.sql"
+		rm -rf "${tmpDir}/tangocms/install" "${tmpDir}/tangocms/ms-webapp"
+
+		(cd ${tmpDir} && zip -qr9 $curPwd/TangoCMS_${projectVersion}-wag.zip . && verbose || echo -ne ".")
+	else
+		rm -rf "${tmpDir}/ms-webapp"
+		tar -czf TangoCMS_${projectVersion}.tar.gz -C "${tmpDir}/../" "tangocms-${projectVersion}" && verbose || echo -ne "."
+		tar -cjf TangoCMS_${projectVersion}.tar.bz2 -C "${tmpDir}/../" "tangocms-${projectVersion}" && verbose || echo -ne "."
+		(cd "${tmpDir}/../" && zip -qr9 $curPwd/TangoCMS_${projectVersion}.zip "tangocms-${projectVersion}" && verbose || echo -ne ".")
+	fi
 
 	rm -rf $tmpDir
 	verbose || echo " done!"
