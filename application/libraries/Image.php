@@ -33,9 +33,11 @@
 			if ( !isset( $imageInfo['channels'] ) ) {
 				$imageInfo['channels'] = 1;
 			}
-			$memoryNeeded = round( ($imageInfo[0] * $imageInfo[1] * $imageInfo['bits'] * $imageInfo['channels'] / 8 + pow( 2, 16 ) ) * 1.65 );
-			if ( (memory_get_usage() + $memoryNeeded) > ini_get('memory_limit') * pow( 1024, 2 ) ) {
-				throw new Image_LoadFailed( 'image would cusome more memory than current limit' );
+			if ( isset( $imageInfo['bits'] ) ) {
+				$memoryNeeded = round( ($imageInfo[0] * $imageInfo[1] * $imageInfo['bits'] * $imageInfo['channels'] / 8 + pow( 2, 16 ) ) * 1.65 );
+				if ( (memory_get_usage() + $memoryNeeded) > ini_get('memory_limit') * pow( 1024, 2 ) ) {
+					throw new Image_LoadFailed( 'image would cusome more memory than current limit' );
+				}
 			}
 			/**
 			 * Create correct resource from the mime file and store other
@@ -45,19 +47,18 @@
 			switch( $mime ) {
 				case 'image/jpeg':
 				case 'image/jpg':
-					$this->resource = imagecreatefromjpeg( $file );
+					$this->resource = @imagecreatefromjpeg( $file );
 					break;
 
 				case 'image/png':
-					$this->resource = imagecreatefrompng( $file );
+					$this->resource = @imagecreatefrompng( $file );
 					break;
 
 				case 'image/gif':
-					$this->resource = imagecreatefromgif( $file );
-					break;
-
-				default:
-					throw new Image_LoadFailed( 'image is of an invalid type "'.$mime.'", unable to load' );
+					$this->resource = @imagecreatefromgif( $file );
+			}
+			if ( !is_resource( $this->resource ) ) {
+				throw new Image_LoadFailed( 'image is not a valid file or has invalid mime type "'.$mime.'"' );
 			}
 			$this->details = array_merge( pathinfo($file),
 										  array(
