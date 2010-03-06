@@ -375,21 +375,20 @@
 						$jsPath = $jsFileDir.'/'.$jsFile;
 					}
 				}
-				if ( $this->aggregateJs ) {
-					if ( $type != 'merging' ) {
+				if ( $type != 'merging' ) {
+					// Generate correct path for those files which wont get merged.
+					if ( $module == null ) {
 						$jsPath = $this->_zula->getDir( 'js', true ).'/'.$jsFile;
+					} else {
+						$jsPath = $this->_router->makeUrl( 'assets/v/'.$module.'/'.$jsFile );
 					}
+				}
+				if ( $this->aggregateJs ) {
 					if ( !isset($this->loadedJsFiles[$type]) || !in_array($jsPath, $this->loadedJsFiles[ $type ]) ) {
 						$this->loadedJsFiles[ $type ][] = $jsPath;
 						++$numberAdded;
 					}
 				} else {
-					if ( $module != null ) {
-						// Generate a special 'virtual asset' path to the file
-						$jsPath = $this->_router->makeUrl( 'assets/v/'.$module.'/'.$jsFile );
-					} else {
-						$jsPath = $this->_zula->getDir( 'js', true ).'/'.$jsFile;
-					}
 					if ( !in_array($jsPath, $this->loadedJsFiles) && $this->addHead('js', array('src' => $jsPath)) ) {
 						$this->loadedJsFiles[] = $jsPath;
 						++$numberAdded;

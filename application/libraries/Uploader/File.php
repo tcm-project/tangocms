@@ -258,9 +258,7 @@
 		 * @return bool
 		 */
 		protected function checkExtension( $name ) {
-			$disallowedExtensions = array('php', 'php4', 'php5', 'pl', 'rb', 'asp', 'aspx', 'html', 'htm', 'xhtml', 'exe', 'cgi');
-			$extension = strtolower( pathinfo( $name, PATHINFO_EXTENSION ) );
-			return !in_array( $extension, $disallowedExtensions );
+			return !(bool) preg_match('#(?:php[0-9]?|pl|rb|aspx?|x?html?|exe|cgi)$#i', pathinfo($name, PATHINFO_EXTENSION));
 		}
 
 	}

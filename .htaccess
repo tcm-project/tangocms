@@ -12,12 +12,12 @@
 <IfModule mod_rewrite.c>
 	RewriteEngine on
 
-	# The following RewriteBase will need changing if TangoCMS
+	# The following RewriteBase needs changing if Zula Framework
 	# is running within a subdirectory (can also be the cause of
 	# 500/Internal Server Errors).
 	#
-	# EG, TangoCMS running in subdir of /tcm, use the following:
-	# RewriteBase /tcm
+	# e.g. running in a subdir of /zula-framework use the following:
+	# RewriteBase /zula-framework
 	#
 	#RewriteBase /
 
