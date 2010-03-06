@@ -177,25 +177,21 @@
 		public function difference( $stamp1, $stamp2=null ) {
 			$stamp1 = $this->getDateTime( $stamp1 );
 			$stamp2 = $this->getDateTime( $stamp2 );
-			if ( method_exists( $stamp1, 'diff' ) ) {
-				// Use the newer 5.3 DateTime::diff() function
-				$diff = (array) $stamp1->diff( $stamp2 );
-			} else {
-				$timeDiff = abs( $stamp2->format('U') - $stamp1->format('U') );
-				$diff = array();
-				$diff['y'] = (int) floor( $timeDiff / (60*60*24*365) );
-				$diff['m'] = (int) floor( $timeDiff / (60*60*24*7) );
-				$diff['d'] = (int) floor( $timeDiff / (60*60*24) );
-				$diff['h'] = (int) floor( ($timeDiff - ($diff['d']*60*60*24) ) / (60*60) );
-				$diff['i'] = (int) floor( ($timeDiff - ($diff['d']*60*60*24) - ($diff['h']*60*60) ) / 60 );
-				$diff['s'] = $timeDiff;
-			}
+			$timeDiff = abs( $stamp2->format('U') - $stamp1->format('U') );
+			$diff = array();
+			$diff['y'] = (int) floor( $timeDiff / (60*60*24*365) );
+			$diff['m'] = (int) floor( $timeDiff / (60*60*24*12) );
+			$diff['w'] = (int) floor( $timeDiff / (60*60*24*7) );
+			$diff['d'] = (int) floor( $timeDiff / (60*60*24) );
+			$diff['h'] = (int) floor( ($timeDiff - ($diff['d']*60*60*24) ) / (60*60) );
+			$diff['i'] = (int) floor( ($timeDiff - ($diff['d']*60*60*24) - ($diff['h']*60*60) ) / 60 );
+			$diff['s'] = $timeDiff;
 			return $diff;
 		}
 
 		/**
 		 * Takes a UNIX timestamp and will create a relative date compared to
-		 * the current timestamp, EG: 34 Seconds Ago, 1 Week Ago, Within 4 Days
+		 * the current timestamp, e.g. 34 seconds ago, 1 week ago, within 4 days
 		 *
 		 * If time is outside of the cutoff, then it will return the format it was meant
 		 * to be in before it came to this method.
@@ -213,6 +209,8 @@
 			// Configure the formats used for relative date
 			if ( $date > new DateTime ) {
 				$format = array(
+								'y'	=> array( 'singular' => t('within 1 year', Locale::_DTD), 'plural' => t('within %d years', Locale::_DTD) ),
+								'm'	=> array( 'singular' => t('within 1 month', Locale::_DTD), 'plural' => t('within %d months', Locale::_DTD) ),
 								'w'	=> array( 'singular' => t('within 1 week', Locale::_DTD), 'plural' => t('within %d weeks', Locale::_DTD) ),
 								'd'	=> array( 'singular' => t('within 1 day', Locale::_DTD), 'plural' => t('within %d days', Locale::_DTD) ),
 								'h'	=> array( 'singular' => t('within 1 hour', Locale::_DTD), 'plural' => t('within %d hours', Locale::_DTD) ),
@@ -221,6 +219,8 @@
 								);
 			} else {
 				$format = array(
+								'y'	=> array( 'singular' => t('1 year ago', Locale::_DTD), 'plural' => t('%d years ago', Locale::_DTD) ),
+								'm'	=> array( 'singular' => t('1 month ago', Locale::_DTD), 'plural' => t('%d months ago', Locale::_DTD) ),
 								'w'	=> array( 'singular' => t('1 week ago', Locale::_DTD), 'plural' => t('%d weeks ago', Locale::_DTD) ),
 								'd'	=> array( 'singular' => t('1 day ago', Locale::_DTD), 'plural' => t('%d days ago', Locale::_DTD) ),
 								'h'	=> array( 'singular' => t('1 hour ago', Locale::_DTD), 'plural' => t('%d hours ago', Locale::_DTD) ),

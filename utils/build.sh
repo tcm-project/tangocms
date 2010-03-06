@@ -1,12 +1,13 @@
 #!/bin/bash
 #---
-# TangoCMS Project building tools
+# Zula Framework building tools
 #
 # @author Alex Cartwright
 # @author Evangelos Foutras
 # @author Robert Clipsham
 # @copyright Copyright (c) 2010, Alex Cartwright
 # @license http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GNU/GPL 2
+# @package Zula_Utils
 #---
 
 ## All options and tasks with their default values
@@ -20,7 +21,7 @@ TASK_PACKAGE=false
 TASK_CHECK_EXCEPTIONS=false
 
 if [ ! -f "index.php" ]; then
-	echo "TangoCMS Project building tools must be run in the TangoCMS root directory."
+	echo "Zula Framework project building tools must be run in the root directory (where index.php is)."
 	exit 1
 fi
 
@@ -57,7 +58,7 @@ while [[ $1 == -* ]]; do
 			shift
 			;;
 		-h)
-			echo -e "TangoCMS Project building tools.\nUsage: build.sh [-j [jar-path]] [-p [mode] [-m]] [-xvh]"
+			echo -e "Zula Framework building tools.\nUsage: build.sh [-j [jar-path]] [-p [mode] [-m]] [-xvh]"
 			echo "Options:"
 			echo -e "\t-j\tCompress source JavaScript files using Google Closure Compiler (requires Java)"
 			echo -e "\t-m\tCreates Microsoft Web App Gallery package (used only with '-p')."
@@ -162,11 +163,17 @@ if [ $TASK_PACKAGE == "true" ]; then
 	## Create the tar.gz, tar.bz2 and .zip archive of this project
 	##
 	verbose || echo -ne ":: Creating package archives "
+
+	projectId=`grep -oP "(?<=_PROJECT_ID', ')([^']*)" index.php`
+	projectVersion=`grep -oP "(?<=version\s=\s).*$" config/default.dist/config.ini.php`
+
+	tmpDir=`mktemp -d`"/${projectId}-${projectVersion}"
 	curPwd=$PWD
-	projectVersion=`grep "version =" ./config/default/config.ini.php | sed -e 's/[^0-9.]//g'`
-	tmpDir=`mktemp -d`"/tangocms-${projectVersion}"
+
 	if [ -d ".git" ]; then
 		git checkout-index -a -f --prefix="${tmpDir}/"
+	elif [ -d ".svn" ]; then
+		svn export . "${tmpDir}/"
 	else
 		cp -ar . $tmpDir
 	fi
@@ -174,7 +181,7 @@ if [ $TASK_PACKAGE == "true" ]; then
 	## Move some files around and do certain edits depending on application mode
 	rm -rf "${tmpDir}/config/default" "${tmpDir}/tmp/*" "${tmpDir}/application/logs/*.log" \
 		   "${tmpDir}/assets/uploads/*" "${tmpDir}/.gitignore" "${tmpDir}/*~"
-	touch "${tmDir}/tmp/index.html" "${tmpDir}/assets/uploads/index.html"
+	touch "${tmDir}/tmp/index.html" "${tmpDir}/assets/uploads/index.html" 2> /dev/null
 	mv "${tmpDir}/config/default.dist" "${tmpDir}/config/default"
 
 	## Edit and remove some files depending on required application mode
@@ -190,19 +197,19 @@ if [ $TASK_PACKAGE == "true" ]; then
 	sed -i -e "s/\(php_display_errors\|zula_detailed_error\|zula_show_errors\) = \([0-1]\{1\}\)/\1 = ${confDebugFlag}/" \
 		"${tmpDir}/config/default/config.ini.php"
 
-	if [ "$OPT_IS_MSWAG" == "true" ]; then
-		mkdir "${tmpDir}/tangocms"
-		mv ${tmpDir}/* ${tmpDir}/tangocms 2> /dev/null
-		mv ${tmpDir}/tangocms/ms-webapp/* ${tmpDir}
-		mv "${tmpDir}/tangocms/install/modules/stage/sql/base_tables.sql" "${tmpDir}/tangocms.sql"
-		rm -rf "${tmpDir}/tangocms/install" "${tmpDir}/tangocms/ms-webapp"
+	if [ "$OPT_IS_MSWAG" == "true" -a -d "${tmpDir}/ms-webapp" ]; then
+		mkdir "${tmpDir}/${projectId}"
+		mv ${tmpDir}/* ${tmpDir}/${projectId} 2> /dev/null
+		mv ${tmpDir}/${projectId}/ms-webapp/* ${tmpDir}
+		mv "${tmpDir}/${projectId}/install/modules/stage/sql/base_tables.sql" "${tmpDir}/${projectId}.sql"
+		rm -rf "${tmpDir}/${projectId}/install" "${tmpDir}/${projectId}/ms-webapp"
 
-		(cd ${tmpDir} && zip -qr9 $curPwd/TangoCMS_${projectVersion}-wag.zip . && verbose || echo -ne ".")
+		(cd ${tmpDir} && zip -qr9 $curPwd/${projectId}-${projectVersion}-wag.zip . && verbose || echo -ne ".")
 	else
 		rm -rf "${tmpDir}/ms-webapp"
-		tar -czf TangoCMS_${projectVersion}.tar.gz -C "${tmpDir}/../" "tangocms-${projectVersion}" && verbose || echo -ne "."
-		tar -cjf TangoCMS_${projectVersion}.tar.bz2 -C "${tmpDir}/../" "tangocms-${projectVersion}" && verbose || echo -ne "."
-		(cd "${tmpDir}/../" && zip -qr9 $curPwd/TangoCMS_${projectVersion}.zip "tangocms-${projectVersion}" && verbose || echo -ne ".")
+		tar -czf ${projectId}-${projectVersion}.tar.gz -C "${tmpDir}/../" "${projectId}-${projectVersion}" && verbose || echo -ne "."
+		tar -cjf ${projectId}-${projectVersion}.tar.bz2 -C "${tmpDir}/../" "${projectId}-${projectVersion}" && verbose || echo -ne "."
+		(cd "${tmpDir}/../" && zip -qr9 $curPwd/${projectId}-${projectVersion}.zip "${projectId}-${projectVersion}" && verbose || echo -ne ".")
 	fi
 
 	rm -rf $tmpDir
