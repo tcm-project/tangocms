@@ -71,7 +71,7 @@
 				return call_user_func_array( array($this->message, $name), $args );
 			}
 		}
-		
+
 		/**
 		 * Adds the signature (value from mail/signature) to the message body
 		 *
@@ -88,7 +88,7 @@
 			if ( $mime == 'text/html' ) {
 				$signature = zula_nls2p( $signature );
 			}
-			return $body."\n\n".$signature;
+			return $body."\n".$signature;
 		}
 
 		/**
@@ -133,7 +133,7 @@
 			}
 			$this->message->setBody( $body, $contentType );
 		}
-		
+
 		/**
 		 * Adds a new part to the message, and can add in signature
 		 *
@@ -147,7 +147,7 @@
 				$body = $this->appendSignature( $body, $contentType );
 			}
 			$this->message->addPart( $body, $contentType );
-		}		
+		}
 
 	}
 

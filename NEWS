@@ -4,13 +4,22 @@ TangoCMS NEWS (Basic ChangeLog for Users)
 
 A complete ChangeLog can be found at http://tangocms.org/changelog
 
-2.5.1 (2010-xx-xx)
+2.5.1 (2010-03-16)
 ========================
+
+-- Security Fixes
+
+	* Security #237: File Upload Filter Bypass in TangoCMS <=2.5.0
+
+-- Feature Improvements/Modifications
+
+	* Feature #234: Upgrade to TinyMCE 3.3 final
 
 -- Bug Fixes
 
 	* Bug #208: Timezone is not always correctly set, and incorrect dates shown
 	* Bug #233: Session password expire, can still view various URLs
+	* Bug #240: Email signature prepends 2 new lines
 
 
 2.5.0 (2010-02-17)
