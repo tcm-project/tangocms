@@ -18,13 +18,13 @@
 		 * @var string
 		 */
 		protected $requestPath = null;
-		
+
 		/**
 		 * Toggles if the URL argument should be appended to the other queries
 		 * @var bool
 		 */
 		protected $appendQuery = true;
-		
+
 		/**
 		 * URL argument to use when generating the links
 		 * @var strng
@@ -77,7 +77,7 @@
 			$this->perPage = abs( $perPage );
 			$this->urlArgument = trim($urlArgument) ? $urlArgument : 'page';
 		}
-		
+
 		/**
 		 * Sets the request path pagination should use when building links.
 		 * By default, it will use the current raw request path with URL arguments
@@ -89,7 +89,7 @@
 			$this->requestPath = $path;
 			return $this;
 		}
-		
+
 		/**
 		 * Sets if the URL argument value should be appended to other URL
 		 * arguments, or to construct a new URL with 1 URL argument

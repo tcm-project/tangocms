@@ -97,7 +97,9 @@
 				while( ($tmpUrl = Hooks::notify( 'router_pre_parse', trim($this->requestPath, '/'))) !== null ) {
 					$this->requestPath = $tmpUrl;
 				}
-				$this->requestUrl = new Router_url( $this->requestPath );
+				$queryArgs = $this->_input->getAll( 'get' );
+				unset( $queryArgs['url'] );
+				$this->requestUrl = new Router_Url( $this->requestPath.'?'.http_build_query($queryArgs) );
 			}
 			return $this->requestUrl;
 		}

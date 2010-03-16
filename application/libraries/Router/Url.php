@@ -30,7 +30,7 @@
 		 * URL query string arguments to use
 		 * @var array
 		 */
-		protected $queryStringArgs = array('url' => '');
+		protected $queryStringArgs = array();
 
 		/**
 		 * URL fragment
@@ -51,13 +51,12 @@
 				// Get any query arguments or fragments from the URL
 				$this->fragment = parse_url( $requestPath, PHP_URL_FRAGMENT );
 				if ( $queryParsed = parse_url($requestPath, PHP_URL_QUERY) ) {
-					$this->queryStringArgs = parse_str( $queryParsed );
-					$this->queryStringArgs['url'] = '';
+					parse_str( $queryParsed, $this->queryStringArgs );
 				}
 				/**
 				 * Begin the actual parsing of the URL to find out what data is given
 				 */
-				$splitPath = explode( '/', $requestPath );
+				$splitPath = explode( '/', parse_url($requestPath, PHP_URL_PATH) );
 				// Check for a provided site type
 				if ( in_array( $splitPath[0], $this->_router->getSiteTypes() ) ) {
 					$this->parsed['siteType'] = $splitPath[0];
@@ -197,10 +196,15 @@
 		 * Sets the URL arguments to use
 		 *
 		 * @param array $arguments
+		 * @param bool $overwrite
 		 * @return object
 		 */
-		public function arguments( array $arguments ) {
-			$this->parsed['arguments'] = array_merge( $this->parsed['arguments'], $arguments );
+		public function arguments( array $arguments, $overwrite=false ) {
+			if ( $overwrite ) {
+				$this->parsed['arguments'] = $arguments;
+			} else {
+				$this->parsed['arguments'] = array_merge( $this->parsed['arguments'], $arguments );
+			}
 			return $this;
 		}
 
@@ -208,10 +212,15 @@
 		 * Sets URL query string arguments to use
 		 *
 		 * @param array $queryArgs
+		 * @param bool $overwrite
 		 * @return object
 		 */
-		public function queryArgs( array $queryArgs ) {
-			$this->queryStringArgs = array_merge( $this->queryStringArgs, $queryArgs );
+		public function queryArgs( array $queryArgs, $overwrite=false ) {
+			if ( $overwrite ) {
+				$this->queryStringArgs = $queryArgs;
+			} else {
+				$this->queryStringArgs = array_merge( $this->queryStringArgs, $queryArgs );
+			}
 			return $this;
 		}
 
@@ -265,19 +274,19 @@
 			if ( !$type ) {
 				$type = $this->_router->getType();
 			}
+			unset( $this->queryStringArgs['url'] );
 			if ( $type == 'standard' ) {
-				// Add in the 'url' query string needed
+				// Add in the 'url' query string needed, force it to be first index
 				if ( $requestPath ) {
-					$this->queryStringArgs['url'] = $requestPath;
-				} else {
-					unset( $this->queryStringArgs['url'] );
+					$this->queryStringArgs = array_merge( array('url' => $requestPath),
+														  $this->queryStringArgs
+														 );
 				}
 				if ( $this->_input->has( 'get', 'ns' ) ) {
 					$this->queryStringArgs['ns'] = '';
 				}
 				$url = _BASE_DIR.'index.php';
 			} else {
-				unset( $this->queryStringArgs['url'] );
 				$url = _BASE_DIR.$requestPath;
 			}
 			if ( !empty( $this->queryStringArgs ) ) {
