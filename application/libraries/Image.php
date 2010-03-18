@@ -8,7 +8,7 @@
  * @patches submit all patches to patches@tangocms.org
  *
  * @author Alex Cartwright
- * @copyright Copyright (C) 2009 Alex Cartwright
+ * @copyright Copyright (C) 2009, 2010 Alex Cartwright
  * @license http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html GNU/LGPL 2.1
  * @package Zula_Image
  */
@@ -36,7 +36,7 @@
 			if ( isset( $imageInfo['bits'] ) ) {
 				$memoryNeeded = round( ($imageInfo[0] * $imageInfo[1] * $imageInfo['bits'] * $imageInfo['channels'] / 8 + pow( 2, 16 ) ) * 1.65 );
 				if ( (memory_get_usage() + $memoryNeeded) > ini_get('memory_limit') * pow( 1024, 2 ) ) {
-					throw new Image_LoadFailed( 'image would cusome more memory than current limit' );
+					throw new Image_LoadFailed( 'image would consume more memory than current limit' );
 				}
 			}
 			/**
@@ -76,16 +76,33 @@
 		}
 
 		/**
-		 * Saves the current image back to a file. If no destination is
-		 * provided it will use the original path.
+		 * Takes the provided destination and checks that it does not exist first
+		 * if so, remove it - and check that directory is writable
 		 *
 		 * @param string $destination
-		 * @param bool $destroy	Destroy the image resource as well?
-		 * @return bool
+		 * @return string
 		 */
-		public function save( $destination=null, $destroy=true ) {
+		protected function prepareDestination( $destination ) {
 			if ( $destination == false ) {
-				$destination = $this->path;
+				$destination = $this->dirname.'/'.$this->filename;
+				switch( $this->mime ) {
+					case 'image/jpeg':
+					case 'image/jpg':
+						$destination .= '.jpg';
+						break;
+
+					case '':
+					case 'image/png':
+						$destination .= '.png';
+						break;
+
+					case 'image/gif':
+						$destination .= '.gif';
+						break;
+
+					default:
+						$destination .= '.'.$this->extension;
+				}
 			}
 			$directory = dirname( $destination );
 			if ( file_exists( $destination ) ) {
@@ -95,6 +112,19 @@
 			} else if ( !zula_is_writable( $directory ) ) {
 				throw new Image_SaveFailed( $directory.' directory is not writable or does not exist' );
 			}
+			return $destination;
+		}
+
+		/**
+		 * Saves the current image back to a file. If no destination is
+		 * provided it will use the original path.
+		 *
+		 * @param string $destination
+		 * @param bool $destroy	Destroy the image resource as well?
+		 * @return string
+		 */
+		public function save( $destination=null, $destroy=true ) {
+			$destination = $this->prepareDestination( $destination );
 			// Use correct method to save image
 			switch( $this->mime ) {
 				case 'image/jpeg':
@@ -121,7 +151,7 @@
 			if ( $destroy ) {
 				imagedestroy( $this->resource );
 			}
-			return true;
+			return $destination;
 		}
 
 	}

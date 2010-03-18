@@ -28,21 +28,16 @@
 		protected $files = array();
 
 		/**
-		 * How many files there are for the upload name
-		 * @var int
-		 */
-		protected $fileCount = 0;
-
-		/**
 		 * Main configuration array that will be used for
 		 * all of the uploaded files.
 		 * @var array
 		 */
 		protected $config = array(
-								'allowed_mime'	=> array(),
-								'upload_dir'	=> '',
-								'max_file_size'	=> 0,
-								'sub_dir'		=> true,
+								'allowedMime'	=> array(),
+								'uploadDir'		=> '',
+								'maxFileSize'	=> 0,
+								'subDir'		=> true,
+								'subDirName'	=> null,
 								'overwrite'		=> false,
 								);
 
@@ -65,9 +60,9 @@
 				throw new Uploader_NotEnabled( 'file uploads are currently disabled with the PHP configuration' );
 			} else if ( isset( $_FILES[ $uploadName ] ) ) {
 				$this->uploadName = $uploadName;
-				$this->fileCount = count( $_FILES[ $uploadName ]['tmp_name'] );
-				if ( $this->fileCount > 1 ) {
-					for( $i = 0; $i < $this->fileCount; $i++ ) {
+				if ( is_array( $_FILES[ $uploadName ]['tmp_name'] ) ) {
+					$fileCount = count( $_FILES[ $uploadName ]['tmp_name'] );
+					for( $i = 0; $i < $fileCount; $i++ ) {
 						$this->files[] = array(
 											'name'		=> str_replace( "\0", '', $_FILES[ $uploadName ]['name'][ $i ] ),
 											'tmp_name'	=> $_FILES[ $uploadName ]['tmp_name'][ $i ],
@@ -91,6 +86,16 @@
 		}
 
 		/**
+		 * Get details about the uploader configuration
+		 *
+		 * @param string $name
+		 * @return mixed
+		 */
+		public function __get( $name ) {
+			return isset($this->config[ $name ]) ? $this->config[ $name ] : parent::__get( $name );
+		}
+
+		/**
 		 * Sets the directory to where files will be uploaded
 		 * to. If left blank, then it will revert to the
 		 * default sets within Zula.
@@ -101,11 +106,8 @@
 		public function uploadDir( $dir=null ) {
 			if ( !trim( $dir ) ) {
 				$dir = $this->_zula->getDir( 'uploads' );
-			} else if ( preg_match( '#[^A-Z0-9_\-{}./]#i', $dir ) ) {
-				trigger_error( 'Uploader::uploadDir() invalid directory name', E_USER_WARNING );
-				return false;
 			}
-			$this->config['upload_dir'] = rtrim( $dir, '/\ ' );
+			$this->config['uploadDir'] = rtrim( $dir, '/\ ' );
 			return $this;
 		}
 
@@ -118,7 +120,7 @@
 		 * @return bool|object
 		 */
 		public function maxFileSize( $fileSize ) {
-			$this->config['max_file_size'] = zula_byte_value( $fileSize );
+			$this->config['maxFileSize'] = zula_byte_value( $fileSize );
 			return $this;
 		}
 
@@ -129,7 +131,7 @@
 		 * @return object
 		 */
 		public function allowedMime( $mime=null ) {
-			$this->config['allowed_mime'] = array_map( 'strtolower', (array) $mime );
+			$this->config['allowedMime'] = array_map( 'strtolower', (array) $mime );
 			return $this;
 		}
 
@@ -140,8 +142,8 @@
 		 * @return object
 		 */
 		public function allowImages() {
-			$this->config['allowed_mime'] = array_merge(
-														$this->config['allowed_mime'],
+			$this->config['allowedMime'] = array_merge(
+														$this->config['allowedMime'],
 														array('image/gif', 'image/jpeg', 'image/png')
 													   );
 			return $this;
@@ -154,7 +156,20 @@
 		 * @return object
 		 */
 		public function subDirectories( $subdir=true ) {
-			$this->config['sub_dir'] = (bool) $subdir;
+			$this->config['subDir'] = (bool) $subdir;
+			return $this;
+		}
+
+		/**
+		 * Sets the name of the sub directory to use, if not provided
+		 * then a random one will be generated for you and used for all
+		 * multiple file uploads.
+		 *
+		 * @param string $name
+		 * @return object
+		 */
+		public function subDirectoryName( $name ) {
+			$this->config['subDirName'] = (string) $name;
 			return $this;
 		}
 
@@ -182,8 +197,7 @@
 				$key = $this->filePosition;
 			}
 			if ( isset( $this->files[ $key ] ) ) {
-				// Construct a new object to hold all the details
-				return new Uploader_File( $this->files[ $key ], $this->config );
+				return new Uploader_File( $this->files[ $key ], $this );
 			} else {
 				return false;
 			}
