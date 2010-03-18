@@ -169,17 +169,20 @@
 		 */
 		protected function makeUrl( $page=1 ) {
 			$page = abs( $page );
-			$path = $this->requestPath ? $this->requestPath : $this->_router->getRawRequestPath();
-			$url = new Router_Url( $path );
-			// Use all existing query string arguments, and add new page argument if needed
-			$queryArgs = $this->appendQuery ? $this->_input->getAll( 'get' ) : array();
-			unset( $queryArgs['url'] );
-			if ( $page > 1 ) {
-				$queryArgs[ $this->urlArgument ] = $page;
+			if ( $this->requestPath ) {
+				$url = new Router_Url( $this->requestPath );
 			} else {
-				unset( $queryArgs[ $this->urlArgument ] );
+				// Use the current parsed URL as a base
+				$url = clone $this->_router->getParsedPath();
+				if ( $this->appendQuery == false ) {
+					$url->removeQueryArgs();
+				}
 			}
-			$url->queryArgs( $queryArgs );
+			if ( $page > 1 ) {
+				$url->queryArgs( array($this->urlArgument => $page) );
+			} else {
+				$url->removeQueryArgs( $this->urlArgument );
+			}
 			return $url->make();
 		}
 

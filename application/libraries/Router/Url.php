@@ -149,6 +149,73 @@
 		}
 
 		/**
+		 * Checks if a query argument exists
+		 *
+		 * @param string $name
+		 * @return bool
+		 */
+		public function hasQueryArg( $name ) {
+			return isset( $this->queryStringArgs[ $name ] );
+		}
+
+		/**
+		 * Gets a single query argument
+		 *
+		 * @param string $name
+		 * @return string
+		 */
+		public function getQueryArg( $name ) {
+			if ( isset( $this->queryStringArgs[ $name ] ) ) {
+				return $this->queryStringArgs[ $name ];
+			} else {
+				throw new Router_ArgNoExist( $name );
+			}
+		}
+
+		/**
+		 * Gets all of the query arguments
+		 *
+		 * @return array
+		 */
+		public function getAllQueryArgs() {
+			return (array) $this->queryStringArgs;
+		}
+
+		/**
+		 * Removes 1 or all request path arguments
+		 *
+		 * @param string $arg,...
+		 * @return bool
+		 */
+		public function removeArguments( $arg=null ) {
+			if ( func_num_args() > 0 ) {
+				foreach( func_get_args() as $arg ) {
+					unset( $this->parsed['arguments'][ $arg ] );
+				}
+			} else {
+				$this->parsed['arguments'] = array();
+			}
+			return true;
+		}
+
+		/**
+		 * Removes 1 or all url query arguments
+		 *
+		 * @param string $arg,...
+		 * @return bool
+		 */
+		public function removeQueryArgs( $arg=null ) {
+			if ( func_num_args() > 0 ) {
+				foreach( func_get_args() as $arg ) {
+					unset( $this->queryStringArgs[ $arg ] );
+				}
+			} else {
+				$this->queryStringArgs = array();
+			}
+			return true;
+		}
+
+		/**
 		 * Sets Site Type
 		 *
 		 * @param string $siteType
