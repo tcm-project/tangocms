@@ -151,7 +151,7 @@ h1 a[href], h1 a[href]:hover {
 /**
  * Various Input styles
  */
-input {
+input:not([type="file"]) {
 	background-color: #fff;
 	border: 1px solid #bbb;
 	color: #000;
