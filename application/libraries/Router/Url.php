@@ -185,7 +185,7 @@
 		 * Removes 1 or all request path arguments
 		 *
 		 * @param string $arg,...
-		 * @return bool
+		 * @return object
 		 */
 		public function removeArguments( $arg=null ) {
 			if ( func_num_args() > 0 ) {
@@ -195,14 +195,14 @@
 			} else {
 				$this->parsed['arguments'] = array();
 			}
-			return true;
+			return $this;
 		}
 
 		/**
 		 * Removes 1 or all url query arguments
 		 *
 		 * @param string $arg,...
-		 * @return bool
+		 * @return object
 		 */
 		public function removeQueryArgs( $arg=null ) {
 			if ( func_num_args() > 0 ) {
@@ -212,7 +212,7 @@
 			} else {
 				$this->queryStringArgs = array();
 			}
-			return true;
+			return $this;
 		}
 
 		/**

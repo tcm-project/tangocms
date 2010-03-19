@@ -224,7 +224,7 @@
 			if ( $siteType == null ) {
 				$siteType = $this->getSiteType();
 			}
-			if ( strpos( $module, '/' ) === false ) {
+			if ( preg_match( '@(?:/|#|\?)@', $module ) == false ) {
 				$url = new Router_Url;
 				$url->siteType( $siteType )
 					->module( $module )
@@ -249,7 +249,8 @@
 		 * @return string
 		 */
 		public function makeFullUrl( $module, $controller=null, $action=null, $siteType=null, $arguments=array(), $useHttps=null ) {
-			return $this->makeUrl( $module, $controller, $action, $siteType, $arguments )->makeFull( '&amp;', null, $useHttps );
+			return $this->makeUrl( $module, $controller, $action, $siteType, $arguments )
+						->makeFull( '&amp;', null, $useHttps );
 		}
 
 		/**
