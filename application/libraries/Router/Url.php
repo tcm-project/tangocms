@@ -68,9 +68,9 @@
 						// Parse the URL Arguments provided
 						$arguments = array_slice( $splitPath, 3 );
 						$argLen = $splitCount - 4;
-						for( $i = 0; $i <= $argLen; $i = $i+2 ) {
+						for( $i = 0; $i <= $argLen; $i += 2 ) {
 							$key = urldecode( $arguments[ $i ] );
-							if ( !empty($arguments[ $i+1 ]) ) {
+							if ( !empty($key) && !empty($arguments[ $i+1 ]) ) {
 								$this->parsed['arguments'][ $key ] = urldecode( $arguments[ $i+1 ] );
 							}
 						}

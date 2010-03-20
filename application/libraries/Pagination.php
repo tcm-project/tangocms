@@ -173,7 +173,7 @@
 				$url = new Router_Url( $this->requestPath );
 			} else {
 				// Use the current parsed URL as a base
-				$url = clone $this->_router->getParsedPath();
+				$url = clone $this->_router->getParsedUrl();
 				if ( $this->appendQuery == false ) {
 					$url->removeQueryArgs();
 				}

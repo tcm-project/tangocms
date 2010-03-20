@@ -1,7 +1,7 @@
 <?php
 	// Build the jump box
 	if ( count( $article_parts ) > 1 ) {
-		$url = clone $this->_router->getParsedPath();
+		$url = clone $this->_router->getParsedUrl();
 		$options = '';
 		foreach( $article_parts as $key=>$part ) {
 			if ( $key == 0 ) {

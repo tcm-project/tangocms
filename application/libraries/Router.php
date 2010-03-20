@@ -86,11 +86,12 @@
 		}
 
 		/**
-		 * returns the Router_Url instance of the parsed current request path
+		 * Returns a Router_Url instance of the current parsed URL
+		 * which includes the request path and query arguments.
 		 *
-		 * @return array
+		 * @return object
 		 */
-		public function getParsedPath() {
+		public function getParsedUrl() {
 			if ( !($this->requestUrl instanceof Router_Url) ) {
 				// Parse the current raw request path and store it. Call the router_pre_parse hook first, though
 				$this->requestPath = $this->getRawRequestPath();
@@ -101,6 +102,7 @@
 				unset( $queryArgs['url'] );
 				$this->requestUrl = new Router_Url( $this->requestPath.'?'.http_build_query($queryArgs) );
 			}
+
 			return $this->requestUrl;
 		}
 
@@ -111,7 +113,7 @@
 		 * @return bool
 		 */
 		public function hasArgument( $name ) {
-			return $this->getParsedPath()->hasArgument( $name );
+			return $this->getParsedUrl()->hasArgument( $name );
 		}
 
 		/**
@@ -121,7 +123,7 @@
 		 * @return string|bool
 		 */
 		public function getArgument( $name ) {
-			return $this->getParsedPath()->getArgument( $name );
+			return $this->getParsedUrl()->getArgument( $name );
 		}
 
 		/**
@@ -130,13 +132,13 @@
 		 * @return array|bool
 		 */
 		public function getAllArguments() {
-			return $this->getParsedPath()->getAllArguments();
+			return $this->getParsedUrl()->getAllArguments();
 		}
 
 		/**
 		 * Returns the current request path
 		 *
-		 * @param int|bool $trim	Trim the site type off, if it is the default
+		 * @param int|bool $trim	Trim the site type off
 		 * @return string
 		 */
 		public function getRequestPath( $trim=Router::_TRIM_DEFAULT ) {
@@ -184,30 +186,13 @@
 		}
 
 		/**
-		 * Returns the current full URL
-		 *
-		 * @return strng
-		 */
-		public function getCurrentUrl() {
-			$rp = $this->getRequestPath();
-			if ( $this->getType() == 'standard' ) {
-				$rp = 'index.php?url='.$rp;
-			}
-			return $this->getBaseUrl().$rp;
-		}
-
-		/**
-		 * Returns the current real full URL, ie the one that
-		 * is in the address bar, not after it has been proccessed
+		 * Returns the current URL, i.e. the one that is in the address bar, not
+		 * after it has been processed.
 		 *
 		 * @return string
 		 */
-		public function getRawCurrentUrl() {
-			$rp = $this->getRawRequestPath();
-			if ( $this->getType() == 'standard' ) {
-				$rp = 'index.php?url='.$rp;
-			}
-			return $this->getBaseUrl().$rp;
+		public function getCurrentUrl() {
+			return $this->getParsedUrl()->makeFull();
 		}
 
 		/**
@@ -294,7 +279,7 @@
 		 * @return string
 		 */
 		public function getSiteType() {
-			return $this->getParsedPath()->siteType;
+			return $this->getParsedUrl()->siteType;
 		}
 
 		/**

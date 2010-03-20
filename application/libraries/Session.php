@@ -90,7 +90,7 @@
 			if ( Registry::has( 'router' ) ) {
 				$this->_zula->resetCwd();
 				if ( $this->storePrevious === true && $this->_dispatcher->getStatusCode() != 404 ) {
-					$_SESSION['previous_url'] = $this->_router->getRawCurrentUrl();
+					$_SESSION['previous_url'] = $this->_router->getCurrentUrl();
 				}
 				$_SESSION['last_activity'] = time();
 			}

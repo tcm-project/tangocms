@@ -202,7 +202,7 @@
 		 * @return string
 		 */
 		public function dispatch( $ajax=false ) {
-			$routerData = $this->_router->getParsedPath()->asArray();
+			$routerData = $this->_router->getParsedUrl()->asArray();
 			$routerData['config'] = array();
 			unset( $routerData['arguments'], $routerData['siteType'] );
 			if ( !trim( $routerData['module'] ) ) {
