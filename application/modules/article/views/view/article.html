@@ -1,24 +1,18 @@
 <?php
 	// Build the jump box
 	if ( count( $article_parts ) > 1 ) {
-		$url = new Router_Url( $this->_router->getRawRequestPath() );
-		// Add in all needed query args we need
-		$queryArgs = $this->_input->getAll( 'get' );
-		$queryArgs['part'] = ''; # New value will be taken from them select option
-		unset( $queryArgs['url'] );
-		$url->queryArgs( $queryArgs );
-		$url = $url->make();
-		// Build all options
+		$url = clone $this->_router->getParsedPath();
 		$options = '';
 		foreach( $article_parts as $key=>$part ) {
-			if ( !trim( $part['title'] ) ) {
-				$part['title'] = sprintf( t('Part %d'), $key+1 );
+			if ( $key == 0 ) {
+				$url->removeQueryArgs( 'part' );
+			} else {
+				$url->queryArgs( array('part' => $key+1) );
 			}
-			$options .= sprintf(
-								'<option value="%1$s" %2$s>%3$s</option>',
-								$url.($key+1),
-								($part['id'] == $requested_part['id'] ? 'selected="selected"' : ''),
-								$part['title']
+			$options .= sprintf( '<option value="%1$s" %2$s>%3$s</option>',
+								 $url,
+								 ($part['id'] == $requested_part['id'] ? 'selected="selected"' : ''),
+								 (trim($part['title']) ? $part['title'] : sprintf( t('Part %d'), $key+1 ))
 							   );
 		}
 		$jumpBox = '<p>'.t('View part:').' <select id="article-jumpbox">'.$options.'</select></p>';

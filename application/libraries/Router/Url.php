@@ -70,8 +70,9 @@
 						$argLen = $splitCount - 4;
 						for( $i = 0; $i <= $argLen; $i = $i+2 ) {
 							$key = urldecode( $arguments[ $i ] );
-							$val = isset($arguments[ $i+1 ]) ? urldecode( $arguments[ $i+1 ] ) : null;
-							$this->parsed['arguments'][ $key ] = $val;
+							if ( !empty($arguments[ $i+1 ]) ) {
+								$this->parsed['arguments'][ $key ] = urldecode( $arguments[ $i+1 ] );
+							}
 						}
 
 					case $splitCount == 3:
@@ -267,6 +268,7 @@
 		 * @return object
 		 */
 		public function arguments( array $arguments, $overwrite=false ) {
+			$arguments = array_filter( $arguments );
 			if ( $overwrite ) {
 				$this->parsed['arguments'] = $arguments;
 			} else {

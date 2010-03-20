@@ -32,7 +32,7 @@
 		 * Default scheme (HTTP/HTTPS) for the server
 		 * @var string
 		 */
-		protected $scheme = 'http';
+		protected $defaultScheme = 'http';
 
 		/**
 		 * Site types to check against when attempting to find the current site type
