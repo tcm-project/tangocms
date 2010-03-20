@@ -39,7 +39,7 @@
 							$mime = 'text/plain';
 						}
 				}
-				return (bool) zula_readfile( $assetPath, $mime );				
+				return (bool) zula_readfile( $assetPath, $mime );
 			}
 		}
 	}

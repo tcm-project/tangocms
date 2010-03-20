@@ -306,7 +306,7 @@
 				if ( $extension == 'js' ) {
 					$this->_theme->addJsFile( $asset, true, $this->getDetail('name') );
 				} else if ( $extension == 'css' ) {
-					$url = $this->_router->makeUrl( 'assets/v/'.$this->getDetail('name').'/'.$asset );
+					$url = $this->_router->makeUrl( 'assets/v/'.$this->getDetail('name') ).'/'.$asset;
 					if ( $this->_theme->addHead( 'css', array('href' => $url) ) ) {
 						++$assetsAdded;
 					}

@@ -380,7 +380,7 @@
 					if ( $module == null ) {
 						$jsPath = $this->_zula->getDir( 'js', true ).'/'.$jsFile;
 					} else {
-						$jsPath = $this->_router->makeUrl( 'assets/v/'.$module.'/'.$jsFile );
+						$jsPath = $this->_router->makeUrl( 'assets/v/'.$module ).'/'.$jsFile;
 					}
 				}
 				if ( $this->aggregateJs ) {

@@ -7,7 +7,7 @@
 							<a href="%1$s" class="shareable-%3$s" title="%2$s"
 							style="background-image: url('.$this->getIcon( 'shareable/sites' ).');">%2$s</a>
 					</li>';
-			$url = $this->_router->getCurrentUrl();
+			$url = urlencode( $this->_router->getCurrentUrl() );
 			$title = urlencode( $title );
 			foreach( $sites as $site ) {
 				$submitUrl = str_replace( array('{TITLE}', '{URL}'), array($title, $url), $site['url'] );

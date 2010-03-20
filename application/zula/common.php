@@ -826,7 +826,7 @@ ERR;
 			$useType = 'theme';
 		}
 		if ( $useType == 'module' ) {
-			return Registry::get( 'router' )->makeUrl( 'assets/v/'.$module.'/icons/'.$icon );
+			return Registry::get( 'router' )->makeUrl( 'assets/v/'.$module ).'/icons/'.$icon;
 		} else {
 			return $zula->getDir( 'themes', $forHtml ).'/'._THEME_NAME.'/icons/'.$icon;
 		}
