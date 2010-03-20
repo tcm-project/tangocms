@@ -54,18 +54,6 @@
 		}
 
 		/**
-		 * Hook: router_pre_parse
-		 *
-		 * @return string
-		 */
-		public function hookRouterPreParse( $url ) {
-			if ( preg_match( '#tinymce/tiny_mce_gzip.php$#i', $url ) ) {
-				$url = 'editor/compressor';
-			}
-			return $url;
-		}
-
-		/**
 		 * Listener for 'view_output' to check if the editor
 		 * needs to be loaded. If 'editor_body' is found then
 		 * it will be loaded

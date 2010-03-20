@@ -151,7 +151,7 @@ h1 a[href], h1 a[href]:hover {
 /**
  * Various Input styles
  */
-input:not([type="file"]) {
+input {
 	background-color: #fff;
 	border: 1px solid #bbb;
 	color: #000;
@@ -199,9 +199,9 @@ a.general-button {
 	padding: 3px 6px 4px;
 }
 
-input[type="radio"], input[type="checkbox"] {
+input[type="radio"], input[type="checkbox"], input[type="file"] {
 	background: transparent;
-	border: none;
+	border-width: 0;
 	font-size: auto;
 	margin: auto 3px 3px auto;
 	width: auto;

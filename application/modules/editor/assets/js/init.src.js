@@ -33,7 +33,8 @@
 					if ( editorShebangs[i] == "html" ) {
 						// Add in class so that TinyMCE knows where to load
 						$(this).tinymce({
-										script_url: zula_dir_js+"/tinymce/tiny_mce_gzip.php",
+										script_url: zula_dir_base+"index.php?url=editor/compressor/gzip",
+										assets_base: zula_dir_js+"/tinymce/",
 										width: "100%",
 
 										document_base_url: zula_dir_base,
