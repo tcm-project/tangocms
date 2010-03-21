@@ -133,12 +133,13 @@
 					}
 					if ( isset( $thumbnailPath ) ) {
 						$thumbImage = new Image( $thumbnailPath );
+						$thumbImage->mime = 'image/png';
 						$thumbImage->thumbnail(
 												$this->_config->get('media/thumb_size_x'),
 												$this->_config->get('media/thumb_size_y')
 											  );
-						$thumbnailName = 'thumb_'.$file->basename;
-						$thumbImage->save( $file->dirname.'/thumb_'.$file->basename );
+						$thumbnailName = 'thumb_'.$file->filename.'.png';
+						$thumbImage->save( $file->dirname.'/'.$thumbnailName );
 					}
 					// Remove the original uploaded file, if it exists
 					if ( isset( $thumbnail->path ) ) {

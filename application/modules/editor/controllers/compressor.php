@@ -22,7 +22,7 @@
 		 *
 		 * @return string
 		 */
-		public function indexSection() {
+		public function gzipSection() {
 			if ( _AJAX_REQUEST === false ) {
 				throw new Module_AjaxOnly;
 			}

@@ -143,9 +143,10 @@
 		 *
 		 * @param int $width
 		 * @param int $height
+		 * @param string $bgColor	A background color to use, if any. Hex
 		 * @return object
 		 */
-		public function thumbnail( $width=80, $height=80 ) {
+		public function thumbnail( $width=80, $height=80, $bgColor=null ) {
 			if ( $this->height > $this->width ) {
 				$newHeight = $height;
 				$newWidth = ($height/$this->height) * $this->width;
@@ -163,7 +164,9 @@
 			if ( $thumbnailImage === false ) {
 				throw new Image_Exception( 'failed to create true color' );
 			}
-			imagefill( $thumbnailImage, 0, 0, $this->hexColorAllocate('#000', $thumbnailImage) );
+			if ( $bgColor != null ) {
+				imagefill( $thumbnailImage, 0, 0, $this->hexColorAllocate($bgColor, $thumbnailImage) );
+			}
 			$thumbnailImage = $this->handleTransparency( $thumbnailImage, 0, 0, $width-1, $height-1 );
 			// Attempt to copy the the original image into the new thumbnail image
 			$resampled = imagecopyresampled( $thumbnailImage, $this->resource, $paddingWidth, $paddingHeight+1, 0, 0,

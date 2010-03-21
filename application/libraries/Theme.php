@@ -561,9 +561,10 @@
 				$this->addHead( 'js',
 								array(),
 								'var zula_dir_base = "'._BASE_DIR.'";
-								 var zula_dir_icon = "'.$this->_zula->getDir( 'themes', true ).'/'.$this->getDetail('name').'/icons";
 								 var zula_dir_assets = "'.$this->_zula->getDir( 'assets', true ).'";
-								 var zula_dir_js = "'.$this->_zula->getDir( 'js', true ).'"',
+								 var zula_dir_js = "'.$this->_zula->getDir( 'js', true ).'";
+								 var zula_dir_cur_theme = "'.$this->_zula->getDir( 'themes', true ).'/'.$this->getDetail('name').'";
+								 var zula_dir_icon = zula_dir_cur_theme+"/icons";',
 								true
 							   );
 			}

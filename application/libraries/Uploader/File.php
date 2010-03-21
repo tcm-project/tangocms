@@ -8,7 +8,7 @@
  * @patches submit all patches to patches@tangocms.org
  *
  * @author Alex Cartwright
- * @copyright Copyright (C) 2008, Alex Cartwright
+ * @copyright Copyright (C) 2008, 2009, 2010 Alex Cartwright
  * @license http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html GNU/LGPL 2.1
  * @package Zula_Uploader
  */
@@ -23,9 +23,10 @@
 		protected $fileDetails = array();
 
 		/**
-		 * Uploader configuration
+		 * Uploader object, to get details from
+		 * @var object
 		 */
-		protected $uploadConfig = array();
+		protected $uploader = null;
 
 		/**
 		 * Stores common errors that are used
@@ -45,12 +46,12 @@
 		 * Takes the file details and main Uploader config
 		 *
 		 * @param array $fileDetails
-		 * @param array $uploadConfig
+		 * @param object $uploader
 		 * @return object
 		 */
-		public function __construct( array $fileDetails, array $uploadConfig ) {
+		public function __construct( array $fileDetails, Uploader $uploader ) {
 			$this->fileDetails = $fileDetails;
-			$this->uploadConfig = $uploadConfig;
+			$this->uploader = $uploader;
 		}
 
 		/**
@@ -90,10 +91,10 @@
 		 * something unexpected happened that was not handled
 		 * by throwing an exception.
 		 *
-		 * @param string $fileName
+		 * @param string $filename
 		 * @return bool
 		 */
-		public function upload( $fileName=null ) {
+		public function upload( $filename=null ) {
 			switch( $this->error ) {
 				case UPLOAD_ERR_INI_SIZE:
 					throw new Uploader_MaxFileSize( zula_byte_value( ini_get('upload_max_filesize') ) );
@@ -131,7 +132,7 @@
 			 * they all pass, if not - stop the upload
 			 */
 			if ( $this->checkFileSize( $this->size ) === false ) {
-				throw new Uploader_MaxFileSize( $this->uploadConfig['max_file_size'] );
+				throw new Uploader_MaxFileSize( $this->uploader->maxFileSize );
 			} else if ( $this->checkMime( $this->mime ) === false ) {
 				throw new Uploader_InvalidMime( sprintf( $this->errorMsg['mime'], $this->name, $this->mime ) );
 			} else if ( $this->checkExtension( $this->name ) === false ) {
@@ -139,7 +140,7 @@
 			}
 			// All is ok, upload/move the file.
 			if ( is_uploaded_file( $this->tmpName ) ) {
-				$path = $this->createPath( $fileName );
+				$path = $this->createPath( $filename );
 				if ( $path ) {
 					$oldUmask = umask( 022 );
 					if ( move_uploaded_file( $this->tmpName, $path ) ) {
@@ -160,28 +161,23 @@
 		}
 
 		/**
-		 * Parses the current upload directory to replace the
-		 * following tokens:
+		 * Creates the path to the file which the uploaded file will be moved
+		 * to. If the directory does not exist, then it will be created.
 		 *
+		 * The following tokens are replaced within the dir name:
 		 * --- {CATEGORY}	Category of the file, eg; image
 		 *
-		 * The directory will also be created if it does not
-		 * exist yet.
-		 *
-		 * @param string $fileName
+		 * @param string $filename
 		 * @return string|bool
 		 */
-		protected function createPath( $fileName=null ) {
-			$replacements = array('{CATEGORY}' => $this->category);
-			$dir = str_replace( array_keys($replacements),
-								array_values($replacements),
-								$this->uploadConfig['upload_dir']
-							  );
+		protected function createPath( $filename=null ) {
+			$dir = str_replace( '{CATEGORY}', $this->category, $this->uploader->uploadDir );
 			$fileExtension = pathinfo( $this->name, PATHINFO_EXTENSION );
-			if ( $fileName === null ) {
+			if ( $filename === null ) {
 				/**
-				 * Generate a random path/file key that will be used for the
-				 * file name, and a directory name if using sub-directories.
+				 * Generate a random key that will be used for the filename, and
+				 * a directory name if using sub-directories. This random key will
+				 * be used for all sub-directories created in this.
 				 */
 				$chars = '1234567890ABCDEFGHIJKLMNOPQRSUTVWXYZabcdefghijklmnopqrstuvwxyz';
 				$charsLen = strlen( $chars );
@@ -190,21 +186,23 @@
 					for( $i=0; $i <= 9; $i++ ) {
 						$uid .= substr( $chars, rand(0, $charsLen), 1 );
 					}
-					$path = $dir.'/'.$uid;
-					if ( $this->uploadConfig['sub_dir'] === false ) {
-						$path .= '.'.$fileExtension;
+					$newFilename = $uid.'.'.$fileExtension;
+					if ( $this->uploader->subDir === true ) {
+						if ( !$this->uploader->subDirName ) {
+							$this->uploader->subDirectoryName( $uid );
+						}
+						$path = $dir.'/'.$this->uploader->subDirName.'/'.$newFilename;
+					} else {
+						$path = $dir.'/'.$newFilename;
 					}
 				} while ( file_exists( $path ) || is_dir( $path ) );
-				if ( $this->uploadConfig['sub_dir'] === true ) {
-					$path .= '/'.$uid.'.'.$fileExtension;
-				}
 			} else {
 				$i = null;
 				do {
 					// See if we need to make a unique name for this file
-					$path = $dir.'/'.$fileName.$i.'.'.$fileExtension;
+					$path = $dir.'/'.$filename.$i.'.'.$fileExtension;
 					++$i;
-				} while ( $this->uploadConfig['overwrite'] === false && file_exists( $path ) );
+				} while ( $this->uploader->overwrite === false && file_exists( $path ) );
 			}
 			// Attempt to create the needed directory
 			if ( zula_make_dir( dirname($path) ) ) {
@@ -225,7 +223,7 @@
 		 * @return bool
 		 */
 		protected function checkFileSize( $size ) {
-			return $this->uploadConfig['max_file_size'] == 0 || abs($size) <= $this->uploadConfig['max_file_size'];
+			return $this->uploader->maxFileSize == 0 || abs($size) <= $this->uploader->maxFileSize;
 		}
 
 		/**
@@ -238,10 +236,10 @@
 		 */
 		protected function checkMime( $mime ) {
 			$mime = trim( $mime );
-			if ( empty( $mime ) || empty( $this->uploadConfig['allowed_mime'] ) ) {
+			if ( empty( $mime ) || empty( $this->uploader->allowedMime ) ) {
 				return true;
 			} else {
-				foreach( array_unique($this->uploadConfig['allowed_mime']) as $allowed ) {
+				foreach( array_unique($this->uploader->allowedMime) as $allowed ) {
 					if ( $allowed == $mime ) {
 						return true;
 					}
