@@ -196,9 +196,11 @@ a.general-button, a.general-button:hover {
 	padding: 2px 9px;
 }
 
-input[type="radio"], input[type="checkbox"], input[type="file"] {
-	background: transparent;
-	border-width: 0;
+input[type="radio"], input[type="checkbox"],
+input[type="radio"]:hover, input[type="checkbox"]:hover
+input[type="radio"]:focus, input[type="checkbox"]:focus {
+	background: #fff;
+	border-width: 0 !important;
 	font-size: auto;
 	margin: auto 3px 3px auto;
 	width: auto;
