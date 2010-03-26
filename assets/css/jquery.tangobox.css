@@ -75,6 +75,7 @@
 
 #tbNav > a:hover {
 	border: 0;
+	cursor: pointer;
 	text-decoration: none;
 }
 
@@ -129,10 +130,10 @@
 	border: 0;
 	cursor: pointer;
 	display: block;
+	float: right;
 	height: 22px;
-	position: absolute;
-	left: 86%;
-	top: 94%;
+	margin-top: 6px;
+	margin-right: 2px;
 	text-decoration: none;
 	width: 66px;
 }

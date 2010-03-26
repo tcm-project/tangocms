@@ -63,7 +63,10 @@ jQuery(document).ready(
 				// Allow you to close Tangobox before it has started
 				$(document).bind("keyup",
 							function(e) {
-								if ( e.keyCode === 27 ) tbClose();
+								if ( e.keyCode === 27 ) {
+									busy = true;
+									tbClose();
+								}
 							});
 				if ( !$("#tbOverlay").length ) {
 					var html = '<div id="tbOverlay"></div> \
@@ -249,7 +252,7 @@ jQuery(document).ready(
 			tbMeta.find(":not(#tbClose)").remove();
 			if ( settings.displayMeta ) {
 				tbOuterCssTop = (tbOuterCssTop - tbMeta.outerHeight()/2)+"px";
-				tbMeta.prepend('<p id="tbMetaTitle">'+cTitle+'</p>');
+				tbMeta.append('<p id="tbMetaTitle">'+cTitle+'</p>');
 				if ( itemArray.length > 1 ) {
 					tbMeta.find("#tbMetaTitle").after('<p id="tbMetaInfo">Viewing '+(itemIndex+1)+' of '+itemArray.length+'</p>');
 					if ( settings.slideshowDelay ) {
@@ -359,7 +362,7 @@ jQuery(document).ready(
 				$("#tbNav").hide();
 			}
 			// Different ways of closing the modal box
-			$("#tbContent.typeImage, #tbClose").bind("click", tbClose );
+			$("#tbOuter.typeImage #tbContent, #tbClose").bind("click", tbClose);
 			if ( $.isFunction( settings.callbackOnShow ) ) {
 				settings.callbackOnShow( itemArray[ itemIndex ] );
 			}
