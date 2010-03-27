@@ -31,7 +31,7 @@ jQuery(document).ready(
 									frameHeight:			340,
 									overlayShow:			true,
 									overlayOpacity:			0.7,
-									overlayColor:			"#747474",
+									overlayColor:			"#585858",
 									slideshowAutostart:		false,
 									slideshowDelay:			5200, // Delay of 0 disables slideshow
 									displayMeta:			true, // Display title and controls for images?
@@ -75,10 +75,10 @@ jQuery(document).ready(
 										<div id="tbInner"> \
 											<div id="tbContent"></div> \
 											<div id="tbNav"> \
-												<a id="tbNavPrev"></a> \
-												<a id="tbNavNext"></a> \
+												<a id="tbNavPrev">Prev</a> \
+												<a id="tbNavNext">Next</a> \
 											</div> \
-											<div id="tbMeta"><a id="tbClose"></a></div> \
+											<div id="tbMeta"><a id="tbClose">Close</a></div> \
 										</div> \
 									</div> \
 								</div>';
