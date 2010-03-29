@@ -252,7 +252,7 @@
 				$val = stripslashes( $val );
 				if ( !isset( $tmpVal ) && isset( $this->inputs[ $type ][ $val ] ) ) {
 					$tmpVal = $this->inputs[ $type ][ $val ];
-				} else if ( isset( $tmpVal[ $val ] ) ) {
+				} else if ( isset( $tmpVal ) && is_array( $tmpVal ) && isset( $tmpVal[ $val ] ) ) {
 					$tmpVal = $tmpVal[ $val ];
 				} else {
 					throw new Input_KeyNoExist( 'input key "'.stripslashes( implode('/', $key) ).'" for data type "'.$type.'" does not exist' );
