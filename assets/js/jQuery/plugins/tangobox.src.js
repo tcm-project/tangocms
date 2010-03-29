@@ -97,7 +97,7 @@ jQuery(document).ready(
 					}
 					$("#tbOverlay").css(overlayCss).fadeIn(200);
 				} else {
-					$("tbOverlay").hide();
+					$("#tbOverlay").hide();
 				}
 				// Only use the clicked element if it has the class "tbNoSlideshow"
 				if ( $(elem).hasClass("tbNoSlideshow") ) {
@@ -189,8 +189,8 @@ jQuery(document).ready(
 				}
 				var imgPreload = new Image;
 				imgPreload.onload = function() {
-											var imgX = imgPreload.width, imgY = imgPreload.height;
-											var vpX = $(window).width() - 120, vpY = $(window).height() - 120; // Viewport Height/Width
+											var imgX = imgPreload.width, imgY = imgPreload.height,
+												vpX = $(window).width() - 120, vpY = $(window).height() - 120; // Viewport Height/Width
 											if ( settings.displayMeta ) {
 												// We will be displaying the meta title bar, so shrink image even more.
 												vpY -= tbMeta.outerHeight();
@@ -236,8 +236,8 @@ jQuery(document).ready(
 			cWidth = parseInt( cWidth );
 			cHeight = parseInt( cHeight );
 			// Get viewports height/width to center the content
-			var vpY = $(window).height(), vpScrollY = $(window).scrollTop();
-			var tbPadding = tbOuter.css("paddingTop").replace(/[^\d\.]/g, "") * 2;
+			var vpY = $(window).height(), vpScrollY = $(window).scrollTop(),
+				tbPadding = tbOuter.css("paddingTop").replace(/[^\d\.]/g, "") * 2;
 			var cTop = (cHeight + tbPadding) / 2;
 			var tbOuterCssTop = (vpY/2 - cTop)+vpScrollY;
 			if ( tbOuter.is(":visible") && cWidth == tbOuter.width() && cHeight == tbOuter.height() ) {
