@@ -125,7 +125,7 @@
 			if ( $stamp instanceof DateTime ) {
 				return $stamp;
 			}
-			if ( ctype_digit( (string) $stamp ) ) {
+			if ( ctype_digit( ltrim($stamp, '-') ) ) {
 				$stamp = '@'.$stamp; # Stops DateTime::__construct() throwing an exception
 			}
 			$date = new DateTime( $stamp, $this->utcTimezone );
