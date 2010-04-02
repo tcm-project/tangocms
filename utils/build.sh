@@ -20,11 +20,6 @@ TASK_JS_COMPRESS=false
 TASK_PACKAGE=false
 TASK_CHECK_EXCEPTIONS=false
 
-if [ ! -f "index.php" ]; then
-	echo "Zula Framework project building tools must be run in the root directory (where index.php is)."
-	exit 1
-fi
-
 while [[ $1 == -* ]]; do
 	case "$1" in
 		-j)
@@ -163,11 +158,16 @@ if [ $TASK_PACKAGE == "true" ]; then
 	## Create the tar.gz, tar.bz2 and .zip archive of this project
 	##
 	verbose || echo -ne ":: Creating package archives "
+	if [ ! -f "index.php" ]; then
+		echo -e "\n---- unable to find 'index.php', unable to create project packages"
+		exit 1
+	fi
 
 	projectId=`grep -oP "(?<=_PROJECT_ID', ')([^']*)" index.php`
 	projectVersion=`grep -oP "(?<=version\s=\s).*$" config/default.dist/config.ini.php`
+	packageName="${projectId}-${projectVersion}"
 
-	tmpDir=`mktemp -d`"/${projectId}-${projectVersion}"
+	tmpDir=`mktemp -d`"/${packageName}"
 	curPwd=$PWD
 
 	if [ -d ".git" ]; then
@@ -204,12 +204,12 @@ if [ $TASK_PACKAGE == "true" ]; then
 		mv "${tmpDir}/${projectId}/install/modules/stage/sql/base_tables.sql" "${tmpDir}/${projectId}.sql"
 		rm -rf "${tmpDir}/${projectId}/install" "${tmpDir}/${projectId}/ms-webapp"
 
-		(cd ${tmpDir} && zip -qr9 $curPwd/${projectId}-${projectVersion}-wag.zip . && verbose || echo -ne ".")
+		(cd ${tmpDir} && zip -qr9 $curPwd/${packageName}-wag.zip . && verbose || echo -ne ".")
 	else
 		rm -rf "${tmpDir}/ms-webapp"
-		tar -czf ${projectId}-${projectVersion}.tar.gz -C "${tmpDir}/../" "${projectId}-${projectVersion}" && verbose || echo -ne "."
-		tar -cjf ${projectId}-${projectVersion}.tar.bz2 -C "${tmpDir}/../" "${projectId}-${projectVersion}" && verbose || echo -ne "."
-		(cd "${tmpDir}/../" && zip -qr9 $curPwd/${projectId}-${projectVersion}.zip "${projectId}-${projectVersion}" && verbose || echo -ne ".")
+		tar -czf ${packageName}.tar.gz -C "${tmpDir}/../" "${packageName}" && verbose || echo -ne "."
+		tar -cjf ${packageName}.tar.bz2 -C "${tmpDir}/../" "${packageName}" && verbose || echo -ne "."
+		(cd "${tmpDir}/../" && zip -qr9 $curPwd/${packageName}.zip "${packageName}" && verbose || echo -ne ".")
 	fi
 
 	rm -rf $tmpDir
