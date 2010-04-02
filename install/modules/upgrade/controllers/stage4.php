@@ -21,6 +21,7 @@
 		 */
 		protected $routes = array(
 								# Stable Releases
+								'2.5.1'			=> '2.5.2',
 								'2.5.0'			=> '2.5.1',
 
 								'2.4.0'			=> '2.5.0-alpha1',
