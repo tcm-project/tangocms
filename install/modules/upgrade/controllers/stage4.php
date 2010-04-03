@@ -395,6 +395,7 @@
 			switch( $this->version ) {
 				case '2.5.0':
 				case '2.5.1':
+				case '2.5.2':
 					return '2.5.50';
 				default:
 					return '2.5.60';
