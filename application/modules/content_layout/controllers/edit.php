@@ -152,17 +152,18 @@
 
 		/**
 		 * Gets the display mode configuration details from the hooks
-		 * of the correct module. This is AJAX only.
+		 * of the correct module.
 		 *
-		 * @return string
+		 * @return string|bool
 		 */
 		public function modeConfigSection() {
-			if ( !_AJAX_REQUEST ) {
-				throw new Module_AjaxOnly;
+			try {
+				$hook = $this->_router->getArgument( 'module' ).'_display_mode_config';
+				$data = Hooks::notifyAll( $hook, $this->_router->getArgument('mode') );
+				return $data ? implode( "\n", $data ) : false;
+			} catch ( Router_ArgNoExist $e ) {
+				return false;
 			}
-			$hook = $this->_router->getArgument( 'module' ).'_display_mode_config';
-			$data = Hooks::notifyAll( $hook, $this->_router->getArgument('mode') );
-			return $data ? implode( "\n", $data ) : false;
 		}
 
 	}

@@ -128,29 +128,31 @@
 		 * @return false
 		 */
 		public function autocompleteSection() {
-			if ( !_AJAX_REQUEST ) {
-				throw new Module_AjaxOnly;
-			}
-			header( 'Content-Type: text/javascript; charset=utf-8' );
-			$searchTitle = '%'.str_replace( '%', '\%', $this->_input->get('query') ).'%';
-			$query = 'SELECT id, cat_id, title FROM {SQL_PREFIX}mod_articles WHERE title LIKE ?';
-			if ( $this->_router->hasArgument('catId') ) {
-				$query .= ' AND cat_id = '.(int) $this->_router->getArgument('catId');
-			}
-			$pdoSt = $this->_sql->prepare( $query );
-			$pdoSt->execute( array($searchTitle) );
-			// Setup the object to return
-			$jsonObj = new StdClass;
-			$jsonObj->query = $this->_input->get( 'query' );
-			foreach( $pdoSt->fetchAll( PDO::FETCH_ASSOC ) as $row ) {
-				$resource = 'article-cat-'.$row['cat_id'];
-				if ( $this->_acl->resourceExists( $resource ) && $this->_acl->check( $resource ) ) {
-					$jsonObj->suggestions[] = $row['title'];
-					$jsonObj->data[] = $this->_router->makeFullUrl( 'article', 'config', 'edit', 'admin', array('id' => $row['id']) );
+			try {
+				$query = $this->_input->get( 'query' );
+				$searchTitle = '%'.str_replace( '%', '\%', $query ).'%';
+				$query = 'SELECT id, cat_id, title FROM {SQL_PREFIX}mod_articles WHERE title LIKE ?';
+				if ( $this->_router->hasArgument('catId') ) {
+					$query .= ' AND cat_id = '.(int) $this->_router->getArgument('catId');
 				}
+				$pdoSt = $this->_sql->prepare( $query );
+				$pdoSt->execute( array($searchTitle) );
+				// Setup the object to return
+				$jsonObj = new StdClass;
+				$jsonObj->query = $query;
+				foreach( $pdoSt->fetchAll( PDO::FETCH_ASSOC ) as $row ) {
+					$resource = 'article-cat-'.$row['cat_id'];
+					if ( $this->_acl->resourceExists( $resource ) && $this->_acl->check( $resource ) ) {
+						$jsonObj->suggestions[] = $row['title'];
+						$jsonObj->data[] = $this->_router->makeFullUrl( 'article', 'config', 'edit', 'admin', array('id' => $row['id']) );
+					}
+				}
+				header( 'Content-Type: text/javascript; charset=utf-8' );
+				echo json_encode( $jsonObj );
+				return false;
+			} catch ( Input_KeyNoExist $e ) {
+				trigger_error( $e->getMessage(), E_USER_ERROR );
 			}
-			echo json_encode( $jsonObj );
-			return false;
 		}
 
 		/**
@@ -182,9 +184,9 @@
 							++$count;
 						}
 					}
-					if ( $count ) { 
+					if ( $count ) {
 						$this->_event->success( t('Deleted selected categories') );
-					}					
+					}
 				} catch ( Input_KeyNoExist $e ) {
 					$this->_event->error( t('No categories selected') );
 				}
@@ -419,7 +421,7 @@
 		 *
 		 * @return string
 		 */
-		public function addPartSection() {			
+		public function addPartSection() {
 			$this->setTitle( t('Add Article Part') );
 			$this->_locale->textDomain( $this->textDomain() );
 			$this->setOutputType( self::_OT_CONFIG );
@@ -452,7 +454,7 @@
 			}
 			return zula_redirect( $this->_router->makeUrl( 'article', 'config' ) );
 		}
-		
+
 		/**
 		 * Edit an article part, only if the article exists and user has
 		 * permission to the parent category
@@ -495,7 +497,7 @@
 			}
 			return zula_redirect( $this->_router->makeUrl( 'article', 'config' ) );
 		}
-		
+
 		/**
 		 * Builds the form that allos users to add or edit an article part.
 		 *

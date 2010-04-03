@@ -76,22 +76,24 @@
 		 * @return false
 		 */
 		public function autocompleteSection() {
-			if ( !_AJAX_REQUEST ) {
-				throw new Module_AjaxOnly;
+			try {
+				$query = $this->_input->get( 'query' );
+				$searchTitle = '%'.str_replace( '%', '\%', $query ).'%';
+				$pdoSt = $this->_sql->prepare( 'SELECT id, alias FROM {SQL_PREFIX}mod_aliases WHERE alias LIKE ?' );
+				$pdoSt->execute( array($searchTitle) );
+				// Setup the object to return
+				$jsonObj = new StdClass;
+				$jsonObj->query = $query;
+				foreach( $pdoSt->fetchAll( PDO::FETCH_ASSOC ) as $row ) {
+					$jsonObj->suggestions[] = $row['alias'];
+					$jsonObj->data[] = $this->_router->makeFullUrl( 'aliases', 'index', 'edit', 'admin', array('id' => $row['id']) );
+				}
+				header( 'Content-Type: text/javascript; charset=utf-8' );
+				echo json_encode( $jsonObj );
+				return false;
+			} catch ( Input_KeyNoExist $e ) {
+				trigger_error( $e->getMessage(), E_USER_ERROR );
 			}
-			header( 'Content-Type: text/javascript; charset=utf-8' );
-			$searchTitle = '%'.str_replace( '%', '\%', $this->_input->get('query') ).'%';
-			$pdoSt = $this->_sql->prepare( 'SELECT id, alias FROM {SQL_PREFIX}mod_aliases WHERE alias LIKE ?' );
-			$pdoSt->execute( array($searchTitle) );
-			// Setup the object to return
-			$jsonObj = new StdClass;
-			$jsonObj->query = $this->_input->get( 'query' );
-			foreach( $pdoSt->fetchAll( PDO::FETCH_ASSOC ) as $row ) {
-				$jsonObj->suggestions[] = $row['alias'];
-				$jsonObj->data[] = $this->_router->makeFullUrl( 'aliases', 'index', 'edit', 'admin', array('id' => $row['id']) );
-			}
-			echo json_encode( $jsonObj );
-			return false;
 		}
 
 		/**
@@ -149,7 +151,7 @@
 						return zula_redirect( $this->_router->makeUrl( 'aliases' ) );
 					}
 				}
-				return $form->getOutput();				
+				return $form->getOutput();
 			} catch ( Router_ArgNoExist $e ) {
 				$this->_event->error( t('No alias selected') );
 			} catch ( Alias_NoExist $e ) {
@@ -200,7 +202,7 @@
 				try {
 					$aliasId = $this->_input->post( 'alias_ids' );
 					$this->_model()->delete( $aliasId );
-					$this->_event->success( t('Deleted selected aliases') );					
+					$this->_event->success( t('Deleted selected aliases') );
 				} catch ( Input_KeyNoExist $e ) {
 					$this->_event->error( t('No URL aliases selected') );
 				}
