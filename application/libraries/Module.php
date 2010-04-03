@@ -172,7 +172,7 @@
 			} else if ( $type == self::_INSTALLABLE ) {
 				$typeKey = 'installable';
 			}
-			if ( self::$sqlModules === null && Registry::has( 'sql' ) && _APP_MODE != 'installation' ) {
+			if ( self::$sqlModules === null && Registry::has( 'sql' ) && Registry::get('zula')->getState() != 'installation' ) {
 				$query = 'SELECT * FROM {SQL_PREFIX}modules ORDER BY `order`, name';
 				foreach( Registry::get('sql')->query( $query, PDO::FETCH_ASSOC ) as $row ) {
 					self::$sqlModules[ $row['name'] ] = $row;

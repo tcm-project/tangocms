@@ -74,7 +74,7 @@
 
 	$session = $zula->loadLib( 'session' );
 	$dispatcher = Registry::get( 'dispatcher' );
-	if ( _APP_MODE == 'installation' ) {
+	if ( $zula->getState() == 'installation' ) {
 		/**
 		 * Load some installation specific files as there may be things that need
 		 * changing/adding upon installation/upgrading of Zula/TCM versions
@@ -108,9 +108,9 @@
 	/**
 	 * Main loading of the correct theme and requested controller
 	 */
-	Hooks::notifyAll( 'bootstrap_pre_request', _AJAX_REQUEST );
-	if ( _AJAX_REQUEST === false && $config->has( 'theme/use_global' ) && $config->get( 'theme/use_global' ) ) {
-		if ( _APP_MODE == 'installation' ) {
+	Hooks::notifyAll( 'bootstrap_pre_request' );
+	if ( $zula->getMode() == 'normal' && $config->has( 'theme/use_global' ) && $config->get( 'theme/use_global' ) ) {
+		if ( $zula->getState() == 'installation' ) {
 			$themeName = 'carbon';
 		} else {
 			$themeName = Theme::getSiteTypeTheme();
@@ -154,11 +154,10 @@
 			$output = $dispatcher->dispatch();
 		}
 	} else {
-		Registry::get( 'log' )->message( 'loading cntrlr without global theme, possibly due to AJAX request', Log::L_DEBUG );
-		$output = $dispatcher->dispatch( _AJAX_REQUEST );
+		$output = $dispatcher->dispatch();
 	}
 
-	Hooks::notifyAll( 'bootstrap_loaded', _AJAX_REQUEST, (isset($output) && $output instanceof Theme) );
+	Hooks::notifyAll( 'bootstrap_loaded', (isset($output) && $output instanceof Theme) );
 	if ( isset( $output ) ) {
 		if ( $output instanceof Theme ) {
 			echo $output->output();

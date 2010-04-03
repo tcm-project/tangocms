@@ -84,7 +84,7 @@
 		 * @return object
 		 */
 		public function __construct( $layoutName=null, $themeName=null ) {
-			if ( $layoutName == null && _APP_MODE == 'installation' ) {
+			if ( $layoutName == null && $this->_zula->getState() == 'installation' ) {
 				$layoutName = 'zula-install-layout.xml';
 			} else if ( Registry::has( 'sql' ) ) {
 				if ( $layoutName == null ) {
@@ -221,7 +221,7 @@
 		public function getName() {
 			return $this->layoutName;
 		}
-		
+
 		/**
 		 * Sets the name of the layout
 		 *

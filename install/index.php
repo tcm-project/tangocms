@@ -13,17 +13,9 @@
  * @package Zula_Installer
  */
 
-	/**
-	 * Set some constants such as path to application folder
-	 * as well as the appliaction mode to run in
-	 */
-	define( '_PATH_APPLICATION', '../application' );
-	define( '_APP_MODE', 'installation' );
-
 	define( '_PROJECT_LATEST_VERSION', '2.5.50' );
-	define( '_PROJECT_LATEST_VERSION', '2.5.2' );
 
-	// Include the main index.php file
-	require_once '../index.php';
+	$state = 'installation';
+	require '../index.php';
 
 ?>

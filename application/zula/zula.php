@@ -23,13 +23,38 @@
 		/**
 		 * Current version of Zula being used
 		 */
-		const _VERSION = '0.7.71';
+		const _VERSION = '0.7.80';
 
 		/**
 		 * Holds the singleton instance of this class
 		 * @var object
 		 */
 		static private $_instance = null;
+
+		/**
+		 * The default libraries the the framework will load upon startup
+		 * @var array
+		 */
+		private $defaultLibs = array('date', 'log', 'locale', 'cache', 'dispatcher', 'error', 'input');
+
+		/**
+		 * Current state that Zula is running in, mostly either 'production',
+		 * 'development' or 'installation';
+		 * @var string
+		 */
+		private $state = 'production';
+
+		/**
+		 * Current mode the request to Zula is, either 'normal', 'ajax' or 'cli'
+		 * @var string
+		 */
+		private $mode = 'normal';
+
+		/**
+		 * Path to the main configuration file that got loaded
+		 * @var string
+		 */
+		private $configPath = null;
 
 		/**
 		 * Holds the current working directory
@@ -44,78 +69,67 @@
 		 * @var array
 		 */
 		private $directories = array(
-									'3rd_party'	=> '/libraries/3rd_party',
+									'3rd_party'	=> 'libraries/3rd_party',
 									'assets'	=> './assets',
 									'config'	=> './config',
-									'fonts' 	=> '/fonts',
+									'fonts' 	=> 'fonts',
 									'install'	=> './install',
 									'js'		=> './assets/js',
-									'libs'		=> '/libraries',
-									'locale'	=> '/locale',
-									'logs'		=> '/logs',
-									'modules'	=> '/modules',
+									'libs'		=> 'libraries',
+									'locale'	=> 'locale',
+									'logs'		=> 'logs',
+									'modules'	=> 'modules',
 									'themes'	=> './assets/themes',
 									'tmp'		=> './tmp',
 									'uploads'	=> './assets/uploads',
-									'views'		=> '/views',
-									'zula'		=> '/zula',
+									'views'		=> 'views',
+									'zula'		=> 'zula',
 									);
-
-		/**
-		 * Array with html paths for directories
-		 * @var array
-		 */
-		private $htmlDirs = array();
-
-		/**
-		 * The default libraries the the framework will load upon startup
-		 * @var array
-		 */
-		private $defaultLibs = array('date', 'log', 'locale', 'cache', 'dispatcher', 'error', 'input');
-
-		/**
-		 * Path to the main configuration file that Zula will use
-		 * @var string
-		 */
-		private $configFile = '';
 
 		/**
 		 * Updates the current directories we have with the correct path and
 		 * also does some other needed startup things such as setting the autoloader
 		 * storing CWD, getting temp dir etc etc
 		 *
+		 *
+		 * @param string $rootDir
+		 * @param string $state
 		 * @return object
 		 */
-		private function __construct() {
+		private function __construct( $rootDir, $state='production' ) {
 			$this->cwd = getcwd();
-			/**
-			 * Set some defaults such as the autoloader
-			 */
+			$this->state = (string) $state;
+			if ( zula_http_header_get('X-Requested-With') == 'XMLHttpRequest' ) {
+				$this->mode = 'ajax';
+			} else {
+				$this->mode = (PHP_SAPI == 'cli') ? 'cli' : 'normal';
+			}
 			set_exception_handler( array($this, 'exceptionHandler') );
+			spl_autoload_register( array(__CLASS__, 'autoloadClass') );
+			/**
+			 * Get the base directory (path from the URL) and update directories
+			 * with the root directory prefix.
+			 */
 			// Configure the base directory
 			$base = trim( dirname($_SERVER['SCRIPT_NAME']), './\ ' );
 			define( '_BASE_DIR', empty($base) ? '/' : '/'.$base.'/' );
-			// Update each directory by prefixing with the _PATH_APPLICATION constant
 			foreach( $this->directories as $name=>$path ) {
 				if ( substr( $path, 0, 2 ) !== './' ) {
-					$path = _PATH_APPLICATION.$path;
+					$path = $rootDir.'/application/'.$path;
 				}
 				$this->updateDir( $name, $path );
 			}
-			spl_autoload_register( array(__CLASS__, 'autoloadClass') );
-			// Set default path for configuration file
-			$this->configFile = $this->getDir( 'config' ).'/default/config.ini.php';
-			define( '_AJAX_REQUEST', zula_http_header_get('X-Requested-With') == 'XMLHttpRequest' );
 		}
 
 		/**
 		 * Get the instance of the Zula class
 		 *
+		 * @param string $rootDir
 		 * @return object
 		 */
-		static public function getInstance() {
+		static public function getInstance( $rootDir ) {
 			if ( !is_object( self::$_instance ) ) {
-				self::$_instance = new self;
+				self::$_instance = new self( $rootDir );
 			}
 			return self::$_instance;
 		}
@@ -210,6 +224,33 @@
 		}
 
 		/**
+		 * Gets the state that Zula is currently running in
+		 *
+		 * @return string
+		 */
+		public function getState() {
+			return $this->state;
+		}
+
+		/**
+		 * Gets the mode the Zula request is
+		 *
+		 * @return string
+		 */
+		public function getMode() {
+			return $this->mode;
+		}
+
+		/**
+		 * Gets the path to the main configuration file
+		 *
+		 * @return string
+		 */
+		public function getConfigPath() {
+			return $this->configPath;
+		}
+
+		/**
 		 * Loads the default most commonly used libraries for the framework
 		 *
 		 * @return object
@@ -250,7 +291,7 @@
 		 * If the library is already loaded then it wont be loaded again
 		 *
 		 * @param string $library
-		 * @praam string $regName	Custom name to be used when storing in the registry
+		 * @param string $regName	Custom name to be used when storing in the registry
 		 * @return object
 		 */
 		public function loadLib( $library, $regName=null ) {
@@ -272,40 +313,31 @@
 		}
 
 		/**
-		 * Gets the path to the main configuration file
-		 *
-		 * @return string
-		 */
-		public function getConfigPath() {
-			return $this->configFile;
-		}
-
-		/**
 		 * Loads the main configuration file and adds it to the library
 		 *
-		 * @param string $configFile
+		 * @param string $configPath
 		 * @return object
 		 */
-		public function loadMainConfig( $configFile=null ) {
+		public function loadMainConfig( $configPath=null ) {
 			if ( Registry::has( 'config' ) && Registry::has( 'config_ini' ) ) {
 				return Registry::get( 'config' );
-			} else if ( empty( $configFile ) || !is_readable( $configFile ) ) {
-				$configFile = $this->getConfigPath();
+			} else if ( empty( $configPath ) || !is_readable( $configPath ) ) {
+				$this->configPath = $this->getDir( 'config' ).'/config.ini.php';
+			} else {
+				$this->configPath = $configPath;
 			}
-			// Set the config file for what we are using
-			$this->configFile = $configFile;
 			try {
 				$configIni = new Config_ini;
-				$configIni->load( $configFile );
+				$configIni->load( $this->configPath );
 				Registry::register( 'config_ini', $configIni );
 				// Merge the ini configuration in to the main config library
 				$config = new Config;
 				$config->load( $configIni );
 				Registry::register( 'config', $config );
+				return $config;
 			} catch ( Config_Ini_FileNoExist $e ) {
-				throw new Zula_Exception( 'Zula configuration file "'.$configFile.'" does not exist or is not readable', 8);
+				throw new Zula_Exception( 'Zula configuration file "'.$this->configPath.'" does not exist or is not readable', 8);
 			}
-			return $config;
 		}
 
 		/**
@@ -358,13 +390,14 @@
 		 * @return string
 		 */
 		public function getDir( $name, $forHtml=false ) {
+			static $htmlPaths = array();
 			if ( isset( $this->directories[ $name ] ) ) {
 				if ( $forHtml === true ) {
-					if ( !isset( $this->htmlDirs[ $name ] ) ) {
+					if ( !isset( $htmlPaths[ $name ] ) ) {
 						$trim = (substr( $this->directories[ $name ], 0, 2 ) == '..') ? '/\ ' : './\ ';
-						$this->htmlDirs[ $name ] = _BASE_DIR . trim( $this->directories[ $name ], $trim );
+						$htmlPaths[ $name ] = _BASE_DIR . trim( $this->directories[ $name ], $trim );
 					}
-					return $this->htmlDirs[ $name ];
+					return $htmlPaths[ $name ];
 				}
 				return rtrim( $this->directories[ $name ], '/' );
 			}

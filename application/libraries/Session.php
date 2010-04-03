@@ -56,7 +56,7 @@
 			} catch ( Exception $e ) {
 				$this->timeout = time(); # Set to a timeout that will never happen.
 			}
-			$this->storePrevious = _AJAX_REQUEST === false;
+			$this->storePrevious = ($this->_zula->getMode() != 'ajax');
 			$this->start();
 			// Get which user (key + for) is being used
 			if ( !isset( $_SESSION['auth'] ) ) {

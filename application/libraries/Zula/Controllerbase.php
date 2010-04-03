@@ -98,7 +98,7 @@
 					$this->_config->add( $key, $val );
 				}
 			}
-			if ( _APP_MODE == 'installation' ) {
+			if ( $this->_zula->getState() == 'installation' ) {
 				$domain = 'zula-installer';
 				$path = $this->_zula->getDir( 'locale' );
 			} else {

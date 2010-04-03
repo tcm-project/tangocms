@@ -18,6 +18,5 @@
 	class Module_UnableToLoad extends Zula_Exception {}
  	class Module_ControllerNoExist extends Module_UnableToLoad {}
  	class Module_NoPermission extends Module_UnableToLoad {}
-	class Module_AjaxOnly extends Module_UnableToLoad {}
 
 ?>

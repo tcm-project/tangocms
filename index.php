@@ -15,12 +15,6 @@
 	$sTime = microtime( true );
 
 	/**
-	 * Set some constants such as path to application folder as well as
-	 * the appliaction mode to run in
-	 *
-	 * The following constants *MAY* already be defined, for example
-	 * in the ./install/index.php file (So it does make sense to check :P)
-	 *
 	 * _PROJECT_ID should be a string containing A-Z, a-z, _ or - and is used
 	 * as a identifier to the project that is using Zula, for example the
 	 * TextDomain of controllers/modules will be prefixed with this value
@@ -29,32 +23,27 @@
 	define( '_PROJECT_ID', 'tangocms' );
 	define( '_PROJECT_NAME', 'TangoCMS' );
 
-	if ( !defined( '_PATH_APPLICATION' ) ) {
-		define( '_PATH_APPLICATION', dirname(__FILE__).'/application' );
-	}
-	if ( !defined( '_APP_MODE' ) ) {
-		define( '_APP_MODE', 'development' );
-	}
-
 	/**
 	 * Include common functions, 'starup' checks such as PHP version check
 	 * and also some Unicode checks.
 	 */
-	require _PATH_APPLICATION.'/zula/common.php';
-	include _PATH_APPLICATION.'/zula/checks.php';
+	require 'application/zula/common.php';
+	include 'application/zula/checks.php';
 
 	// Load and get an instance of the base Zula framework class
-	require _PATH_APPLICATION.'/zula/zula.php';
-	$zula = Zula::getInstance();
+	require 'application/zula/zula.php';
+	$zula = Zula::getInstance( dirname(__FILE__), (isset($state) ? $state : 'development') );
+	Registry::register( 'zula', $zula );
+
+	// _AJAX_REQUEST is DEPRECATED please use Zula::getMode() instead
+	define( '_AJAX_REQUEST', $zula->getMode() == 'ajax' );
 
 	/**
 	 * Default directories in Zula should be fine, though you can configure
 	 * them from here if you want, via $zula->setDir(); EG:
 	 * $zula->setDir( 'lib', '/libaries' );
 	 */
-	$zula->setDir( 'config', dirname(__FILE__).'/config' );
-
-	if ( _APP_MODE == 'installation' ) {
+	if ( $zula->getState() == 'installation' ) {
 		define( '_REAL_MODULE_DIR', $zula->getDir( 'modules' ) );
 		// Reconfigure some directories so they work correctly when installing
 		$zula->setDir( 'modules', './modules' );
@@ -66,8 +55,6 @@
 		$zula->setDir( 'uploads', '../assets/uploads' );
 		$zula->setDir( 'config', '../config' );
 	}
-
-	Registry::register( 'zula', $zula );
 
 	if ( UNICODE_MBSTRING === false ) {
 		// Load needed unicode libraries
@@ -81,7 +68,7 @@
 	 * default directory.
 	 */
 	$confDir = $zula->getDir( 'config' ).'/default';
-	if ( PHP_SAPI != 'cli' ) {
+	if ( $zula->getMode() != 'cli' ) {
 		$serverName = $_SERVER['SERVER_NAME'];
 		if ( strlen( _BASE_DIR ) != 1 ) {
 			$serverName .= _BASE_DIR;
@@ -112,7 +99,7 @@
 	Module::setDirectory( $zula->getDir( 'modules' ) );
 
 	// Bootstrap
-	require _PATH_APPLICATION.'/zula/bootstrap.php';
+	require 'application/zula/bootstrap.php';
 
 	/**
 	 * No method chaining, or class constant here, as PHP4 syntax

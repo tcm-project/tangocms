@@ -198,10 +198,9 @@
 		 * full page errors and if we have a NPC (No Permission Controller) then it will
 		 * change which controller
 		 *
-		 * @param bool $ajax	Is the request an AJAX request?
 		 * @return string
 		 */
-		public function dispatch( $ajax=false ) {
+		public function dispatch() {
 			$routerData = $this->_router->getParsedUrl()->asArray();
 			$routerData['config'] = array();
 			unset( $routerData['arguments'], $routerData['siteType'] );
@@ -212,7 +211,7 @@
 				 * URL data (as there is none). This means we are at the frontpage
 				 */
 				$this->fpDispatch = true;
-				if ( _APP_MODE == 'installation' ) {
+				if ( $this->_zula->getState() == 'installation' ) {
 					$frontLayout = new Theme_layout( $this->_zula->getDir( 'install' ).'/zula-install-layout.xml' );
 				} else {
 					$frontLayout = new Theme_layout( $this->_router->getSiteType().'-default' );
@@ -244,10 +243,8 @@
 						$this->reqCntrl = $loadedCntrlr['cntrlr'];
 						$loaded = true;
 					 } catch ( Module_NoPermission $e ) {
-						if ( $ajax ) {
-							$this->_log->message( 'Dispatcher::dispatch() users does not have permission to module in AJAX request', Log::L_WARNING );
-							return $this->error( $routerData, self::_403 );
-						} else {
+						$zulaMode = $this->_zula->getMode();
+						if ( $zulaMode == 'normal' ) {
 							if ( $routerData != $this->npcData && !$this->_session->isLoggedIn() && !$this->fullPageErrors ) {
 								// Attempt to load the NPC controlelr that is set.
 								$this->httpStatus = 403;
@@ -255,39 +252,21 @@
 							} else {
 								return $this->error( $routerData, self::_403 );
 							}
+						} else if ( $zulaMode == 'ajax' ) {
+							$this->_log->message( 'Dispatcher::dispatch() users does not have permission to module in AJAX request', Log::L_WARNING );
+							return $this->error( $routerData, self::_403 );
+						} else {
+
 						}
 					} catch ( Module_ControllerNoExist $e ) {
 						$this->_log->message( $e->getMessage(), Log::L_WARNING );
 						return $this->error( $routerData, self::_404 );
-					} catch ( Module_AjaxOnly $e ) {
-						return $this->ajaxOnly( $routerData );
 					}
 				} catch ( Module_NoExist $e ) {
 					return $this->error( $routerData, self::_404 );
 				}
 			} while( $loaded == false );
-			// Return output from the requested controller
-			if ( is_bool( $loadedCntrlr['output'] ) || trim( $loadedCntrlr['output'] ) ) {
-				return $loadedCntrlr['output'];
-			} else {
-				return $ajax ? '' : '<p>'.t('Controller loaded but appears to display no content', Locale::_DTD).'</p>';
-			}
-		}
-
-		/**
-		 * Displays a message telling the user this contoller is AJAX Only
-		 *
-		 * @param array $routerData
-		 * @return string
-		 */
-		public function ajaxOnly( $routerData ) {
-			$routerData = array(
-							'module'	=> $routerData['module'],
-							'cntrlr'	=> trim($routerData['controller']) ? $routerData['controller'] : 'index',
-							'section'	=> trim($routerData['section']) ? $routerData['section'] : 'index',
-							);
-			$this->_log->message( sprintf( 'controller "%s" must only be accessed by an AJAX request', implode('::', $routerData) ), Log::L_WARNING );
-			return '<p>'.sprintf(t('Sorry, the requested controller "%s" can only be accessed by an AJAX request', Locale::_DTD), implode( '::', $routerData ) ).'</p>';
+			return $loadedCntrlr['output'];
 		}
 
 		/**

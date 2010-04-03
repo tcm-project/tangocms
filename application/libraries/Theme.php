@@ -367,7 +367,7 @@
 				// Get the right path for the JS file and store it correctly
 				$jsFileDir = $module == null ? $this->_zula->getDir( 'js' ) : Module::getDirectory().'/'.$module.'/assets';
 				$jsPath = $jsFileDir.'/'.$jsFile;
-				if ( _APP_MODE == 'development' ) {
+				if ( $this->_zula->getState() == 'development' ) {
 					// Attempt to use source file (.src.js) instead.
 					if ( file_exists( preg_replace('#(?<!\.src)\.js$#', '.src.js', $jsPath) ) ) {
 						// Update module asset as well

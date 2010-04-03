@@ -30,7 +30,7 @@
 		 * Event types to be used
 		 * @var array
 		 */
-		protected $eventTypes = array( 'error', 'success', 'info' );
+		protected $eventTypes = array('error', 'success', 'info');
 
 		/**
 		 * Constructor function
@@ -53,7 +53,7 @@
 		 * @return bool
 		 */
 		protected function handle( $name, $msg ) {
-			if ( $msg && !_AJAX_REQUEST ) {
+			if ( $msg && $this->_zula->getMode() == 'normal' ) {
 				$this->_log->message( '('.$name.') '.$msg, Log::L_EVENT );
 				$_SESSION['event_feedback'][ $name ][] = zula_htmlspecialchars( $msg );
 				return true;

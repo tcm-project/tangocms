@@ -179,10 +179,8 @@ ERR;
 	 * @return bool
 	 */
 	function zula_redirect( $url, $httpStatus=303 ) {
-		if ( _AJAX_REQUEST ) {
-			Registry::get( 'log' )->message( 'Controller tried to redirect while in an AJAX Request', Log::L_WARNING );
-			return false;
-		} else {
+		$zulaMode = Registry::get( 'zula' )->getMode();
+		if ( $zulaMode == 'normal' ) {
 			if ( $url instanceof Router_Url ) {
 				$url = $url->makeFull('&');
 			}
@@ -191,7 +189,12 @@ ERR;
 				Registry::get( 'dispatcher' )->standalone();
 			}
 			return true;
+		} else if ( $zulaMode == 'ajax' ) {
+			Registry::get( 'log' )->message( 'unable to redirect whilst in an AJAX request', Log::L_WARNING );
+		} else if ( $zulaMode == 'cli' ) {
+			Registry::get( 'event' )->error( 'unable to redirect in CLI mode' );
 		}
+		return false;
 	}
 
 	/**
