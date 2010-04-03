@@ -31,7 +31,7 @@ jQuery(document).ready(
 									frameHeight:			340,
 									overlayShow:			true,
 									overlayOpacity:			0.7,
-									overlayColor:			"#444",
+									overlayColor:			"#585858",
 									slideshowAutostart:		false,
 									slideshowDelay:			5200, // Delay of 0 disables slideshow
 									displayMeta:			true, // Display title and controls for images?
@@ -43,7 +43,7 @@ jQuery(document).ready(
 							  );
 		var matchedGroup = this; // 'this' refers to the match items passed into the plugin, from the selector.
 		var elem, // Element the user 'clicked' on.
-			slideshowLength = matchedGroup.length, displayMetaBar,
+			slideshowLength = matchedGroup.length,
 			itemArray = [],	itemIndex = 0,
 			busy = false, slideshowId,
 			imageRegExp = /\.(jpe?g|gif|png)($|\?)?$/i,
@@ -60,6 +60,14 @@ jQuery(document).ready(
 				if ( $.isFunction( settings.callbackOnStart ) ) {
 					settings.callbackOnStart();
 				}
+				// Allow you to close Tangobox before it has started
+				$(document).bind("keyup",
+							function(e) {
+								if ( e.keyCode === 27 ) {
+									busy = true;
+									tbClose();
+								}
+							});
 				if ( !$("#tbOverlay").length ) {
 					var html = '<div id="tbOverlay"></div> \
 								<div id="tbWrap"> \
@@ -67,10 +75,10 @@ jQuery(document).ready(
 										<div id="tbInner"> \
 											<div id="tbContent"></div> \
 											<div id="tbNav"> \
-												<a href="" id="tbNavPrev"></a> \
-												<a href="" id="tbNavNext"></a> \
+												<a id="tbNavPrev">Prev</a> \
+												<a id="tbNavNext">Next</a> \
 											</div> \
-											<div id="tbMeta"></div> \
+											<div id="tbMeta"><a id="tbClose">Close</a></div> \
 										</div> \
 									</div> \
 								</div>';
@@ -89,7 +97,7 @@ jQuery(document).ready(
 					}
 					$("#tbOverlay").css(overlayCss).fadeIn(200);
 				} else {
-					$("tbOverlay").hide();
+					$("#tbOverlay").hide();
 				}
 				// Only use the clicked element if it has the class "tbNoSlideshow"
 				if ( $(elem).hasClass("tbNoSlideshow") ) {
@@ -107,10 +115,6 @@ jQuery(document).ready(
 					if ( itemArray[i].href == $(elem).attr("href") ) {
 						itemIndex = i;
 					}
-				}
-				if ( settings.displayMeta ) {
-					// Display if we have more than 1, or a title is to be shown
-					displayMetaBar = itemArray.length > 1 || (itemArray[0].alt || itemArray[0].title);
 				}
 				tbChangeContent();
 				if ( settings.slideshowAutostart ) {
@@ -185,9 +189,9 @@ jQuery(document).ready(
 				}
 				var imgPreload = new Image;
 				imgPreload.onload = function() {
-											var imgX = imgPreload.width, imgY = imgPreload.height;
-											var vpX = $(window).width() - 120, vpY = $(window).height() - 120; // Viewport Height/Width
-											if ( displayMetaBar ) {
+											var imgX = imgPreload.width, imgY = imgPreload.height,
+												vpX = $(window).width() - 120, vpY = $(window).height() - 120; // Viewport Height/Width
+											if ( settings.displayMeta ) {
 												// We will be displaying the meta title bar, so shrink image even more.
 												vpY -= tbMeta.outerHeight();
 											}
@@ -232,8 +236,8 @@ jQuery(document).ready(
 			cWidth = parseInt( cWidth );
 			cHeight = parseInt( cHeight );
 			// Get viewports height/width to center the content
-			var vpY = $(window).height(), vpScrollY = $(window).scrollTop();
-			var tbPadding = tbOuter.css("paddingTop").replace(/[^\d\.]/g, "") * 2;
+			var vpY = $(window).height(), vpScrollY = $(window).scrollTop(),
+				tbPadding = tbOuter.css("paddingTop").replace(/[^\d\.]/g, "") * 2;
 			var cTop = (cHeight + tbPadding) / 2;
 			var tbOuterCssTop = (vpY/2 - cTop)+vpScrollY;
 			if ( tbOuter.is(":visible") && cWidth == tbOuter.width() && cHeight == tbOuter.height() ) {
@@ -245,11 +249,12 @@ jQuery(document).ready(
 								  };
 			}
 			// If displaying meta bar, bring tbOuter up by the height of the meta bar.
-			if ( displayMetaBar ) {
+			tbMeta.find(":not(#tbClose)").remove();
+			if ( settings.displayMeta ) {
 				tbOuterCssTop = (tbOuterCssTop - tbMeta.outerHeight()/2)+"px";
-				tbMeta.html('<p id="tbMetaTitle">'+cTitle+'</p>');
+				tbMeta.append('<p id="tbMetaTitle">'+cTitle+'</p>');
 				if ( itemArray.length > 1 ) {
-					tbMeta.append('<p id="tbMetaInfo">Viewing '+(itemIndex+1)+' of '+itemArray.length+'</p>');
+					tbMeta.find("#tbMetaTitle").after('<p id="tbMetaInfo">Viewing '+(itemIndex+1)+' of '+itemArray.length+'</p>');
 					if ( settings.slideshowDelay ) {
 						tbMeta.find("p:last").append( $('<span><a href="" id="tbMetaSlideshow">'+(slideshowId ? "Stop" : "Start")+' slideshow</a></span>') );
 						tbMeta.find("p:last a").click(function() {
@@ -294,12 +299,13 @@ jQuery(document).ready(
 		 */
 		function tbAnimateLoading() {
 			tbContent.fadeIn("normal", function() {
-											if ( displayMetaBar ) {
+											tbOuter.removeClass("inProgress");
+											if ( settings.displayMeta ) {
 												// Slide in the meta bar
 												tbOuter.animate( {height: tbOuter.height()+tbMeta.outerHeight()+"px"},
 																 settings.zoomSpeedIn,
 																 function() {
-																	tbMeta.show();
+																	$("#tbClose, #tbMeta").show();
 																	tbFinish();
 																 }
 															   );
@@ -356,9 +362,7 @@ jQuery(document).ready(
 				$("#tbNav").hide();
 			}
 			// Different ways of closing the modal box
-			$(document).bind("keyup", tbClose);
-			tbContent.bind("click", tbClose);
-			$("#tbOuter").removeClass("inProgress");
+			$("#tbOuter.typeImage #tbContent, #tbClose").bind("click", tbClose);
 			if ( $.isFunction( settings.callbackOnShow ) ) {
 				settings.callbackOnShow( itemArray[ itemIndex ] );
 			}
@@ -368,21 +372,19 @@ jQuery(document).ready(
 		/**
 		 * Handles closing of the Tangobox
 		 *
-		 * @param object e
 		 * @return void
 		 */
-		function tbClose( e ) {
-			if ( e.keyCode === 27 || e.button === 0 ) {
-				tbStopSlideshow();
-				$(document).unbind();
-				tbContent.unbind().empty().stop();
-				tbOuter.stop().css( {height: "250px", width: "250px", top: "0"} ).hide().removeAttr("class");
-				$("#tbOverlay").fadeOut( settings.zoomSpeedOut );
-				if ( $.isFunction( settings.callbackOnClose ) ) {
-					settings.callbackOnClose( itemArray[ itemIndex ] );
-				}
-				busy = false;
+		function tbClose() {
+			tbStopSlideshow();
+			$(document).unbind();
+			tbContent.unbind().empty().stop();
+			tbOuter.stop().css( {height: "250px", width: "250px", top: "0"} ).hide().removeAttr("class");
+			$("#tbOverlay").fadeOut( settings.zoomSpeedOut );
+			if ( $.isFunction( settings.callbackOnClose ) ) {
+				settings.callbackOnClose( itemArray[ itemIndex ] );
 			}
+			busy = false;
+			return false;
 		};
 
 		return this.unbind("click").bind("click", _initialize);

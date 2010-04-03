@@ -53,7 +53,7 @@
 					$email = new Email;
 					$email->send( $message );
 					$this->_event->success( t("An email has been sent to the user's email address") );
-					return zula_redirect( $this->_router->makeUrl( 'session', 'reset', 'code' ) );
+					return zula_redirect( $this->_router->makeUrl( 'session', 'pwd', 'code' ) );
 				} catch ( Ugmanager_UserNoExist $e ) {
 					$this->_event->error( t('The provided username does not exist') );
 				} catch ( Email_Exception $e ) {

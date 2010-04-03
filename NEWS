@@ -4,6 +4,23 @@ TangoCMS NEWS (Basic ChangeLog for Users)
 
 A complete ChangeLog can be found at http://tangocms.org/changelog
 
+2.5.2 (2010-04-03)
+========================
+
+-- Feature Improvements/Modifications
+
+	* Feature #253: Display a close button (Tangobox)
+
+-- Bug Fixes
+
+	* Bug #252: AJAX/Inline data closes on button click (Tangobox)
+	* Bug #249: zula_human_readable() is given an object in Media_controller_add
+	* Bug #250: file inputs look ugly in MSIE, and border on hover in chrome
+	* Bug #255: Media, no error message about invalid mime type
+	* Bug #256: Password reset redirects to non existent page
+	* Bug #259: SQL query error upon registering new users
+
+
 2.5.1 (2010-03-21)
 ========================
 

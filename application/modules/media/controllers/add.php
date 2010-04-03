@@ -159,7 +159,11 @@
 			} catch ( Uploader_NotEnabled $e ) {
 				$msg = t('Sorry, it appears file uploads are disabled within your PHP configuration');
 			} catch ( Uploader_MaxFileSize $e ) {
-				$msg = sprintf( t('Selected file exceeds the maximum allowed file size of %s'), zula_human_readable($e) );
+				$msg = sprintf( t('Selected file exceeds the maximum allowed file size of %s'),
+								zula_human_readable($e->getMessage())
+							   );
+			} catch ( Uploader_InvalidMime $e ) {
+				$msg = t('Sorry, the uploaded file is of the wrong file type');
 			} catch ( Uploader_Exception $e ) {
 				$logMsg = $e->getMessage();
 				$msg = t('Oops, an error occurred while uploading your files');
