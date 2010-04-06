@@ -19,7 +19,7 @@ CREATE TABLE {SQL_PREFIX}mod_media_items (
   `type` enum('image','video','audio','external') COLLATE utf8_unicode_ci NOT NULL,
   `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   clean_name varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  description text COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  description text COLLATE utf8_unicode_ci NOT NULL,
   filename varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   thumbnail varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   external_service varchar(32) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
