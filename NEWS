@@ -4,6 +4,14 @@ TangoCMS NEWS (Basic ChangeLog for Users)
 
 A complete ChangeLog can be found at http://tangocms.org/changelog
 
+2.5.3 (2010-04-06)
+========================
+
+-- Bug Fixes
+
+	* Bug #260: SQL query error in Media module
+
+
 2.5.2 (2010-04-03)
 ========================
 
