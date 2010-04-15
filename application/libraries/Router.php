@@ -102,7 +102,6 @@
 				unset( $queryArgs['url'] );
 				$this->requestUrl = new Router_Url( $this->requestPath.'?'.http_build_query($queryArgs) );
 			}
-
 			return $this->requestUrl;
 		}
 

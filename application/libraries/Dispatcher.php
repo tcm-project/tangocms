@@ -8,7 +8,7 @@
  * @patches submit all patches to patches@tangocms.org
  *
  * @author Alex Cartwright
- * @copyright Copyright (C) 2007, 2008, 2009 Alex Cartwright
+ * @copyright Copyright (C) 2007, 2008, 2009, 2010 Alex Cartwright
  * @license http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html GNU/LGPL 2.1
  * @package Zula_Dispatcher
  */
@@ -16,139 +16,66 @@
 	class Dispatcher extends Zula_LibraryBase {
 
 		/**
-		 * Constants used for the request error codes
-		 */
-		const
-				_403	= 403,
-				_404	= 404;
-
-		/**
-		 * NPC (No Permission Controller) details to use instead of the
-		 * requested details. These are used when the user does not have
-		 * permission to the original request.
-		 *
-		 * @var array
-		 */
-		protected $npcData = array(
-									'module'		=> 'session',
-									'controller'	=> 'index',
-									'section'		=> 'index',
-									'config'		=> array('displayTitle' => true),
-									);
-		/**
 		 * Toggles if the dispatcher should display any of its own error
-		 * messages (the 404 and 403 ones)
+		 * messages (the 404 and 403 ones) if cntrlr fails to load
 		 * @var bool
 		 */
-		protected $displayErrors = true;
+		protected $displayErrors = true;#
 
 		/**
-		 * Toggles whether to use a full page for error messages
+		 * When set to bool true, the correct HTTP status code will be set
 		 * @var bool
 		 */
-		protected $fullPageErrors = false;
+		protected $setStatusHeader = false;
+
+		/**
+		 * Holds the dispatch status code
+		 * @var int
+		 */
+		protected $statusCode = 200;
 
 		/**
 		 * Hold the requested controller object
 		 * @var object
 		 */
-		protected $reqCntrl = null;
+		protected $requestedCntrlr = null;
 
 		/**
 		 * Details used for the dispatch (module/controller/section etc)
+		 * taken from the Router_Url instance
 		 * @var array
 		 */
 		protected $dispatchData = null;
 
 		/**
-		 * Holds if the request was a frontpage dispatch
-		 * @var bool
-		 */
-		protected $fpDispatch = false;
-
-		/**
-		 * When set to bool true, this means the requested controller
-		 * wants to be displayed by its self, no other content.
-		 * @var bool
-		 */
-		protected $standalone = false;
-
-		/**
-		 * HTTP status code for the dispatchaer (200/401/404)
-		 * @var int
-		 */
-		protected $httpStatus = 200;
-
-		/**
 		 * Constructor
-		 *
-		 * Sets some defaults such as the NPC (No Permission Controller/Module) and if
-		 * to use full page errors
 		 *
 		 * @return object
 		 */
 		public function __construct() {
-			try {
-				$this->npcData['module'] = $this->_config->get( 'controller/npc' );
-				if ( !trim( $this->npc ) ) {
-					throw new Exception;
-				}
-			} catch ( Exception $e ) {
-				$this->npcData['module'] = 'session';
-			}
-			$this->fpErrors = (bool) $this->_config->get( 'controller/full_page_errors' );
 		}
-
-		/**
-		 * Sets whether the requested controller wants to be loaded
-		 * as a standalone module
-		 *
-		 * @param bool $standalone
-		 * @return object
-		 */
-		public function standalone( $standalone=true ) {
-			$this->standalone = (bool) $standalone;
-			return $this;
-		}
-
 
 		/**
 		 * Toggles if the dispatcher should display its own 404/403 error
-		 * messages, or just set the headers
+		 * messages if the requested cntrlr fails
 		 *
 		 * @param bool $errors
 		 * @return object
 		 */
-		public function displayErrors( $errors=true ) {
+		public function setDisplayErrors( $errors=true ) {
 			$this->displayErrors = (bool) $errors;
 			return $this;
 		}
 
 		/**
-		 * Returns the standalone value
+		 * Toggles if HTTP status code should be set
 		 *
-		 * @return bool
+		 * @param bool $setHeaders
+		 * @return object
 		 */
-		public function isStandalone() {
-			return (bool) $this->standalone;
-		}
-
-		/**
-		 * Returns if the requested dispatch was at the frontpage
-		 *
-		 * @return bool
-		 */
-		public function atFrontpage() {
-			return (bool) $this->fpDispatch;
-		}
-
-		/**
-		 * Checks if the dispatch has been made
-		 *
-		 * @return bool
-		 */
-		public function isDispatched() {
-			return is_object( $this->reqCntrl );
+		public function setStatusHeader( $setHeaders=true ) {
+			$this->setStatusHeader = (bool) $setHeaders;
+			return $this;
 		}
 
 		/**
@@ -157,169 +84,95 @@
 		 * @return int
 		 */
 		public function getStatusCode() {
-			return (int) $this->httpStatus;
+			return (int) $this->statusCode;
 		}
 
 		/**
-		 * Returns the objeect that is of the requested controller
+		 * Returns bool true if the dispatch has been made
+		 *
+		 * @return bool
+		 */
+		public function isDispatched() {
+			return $this->requestedCntrlr instanceof Zula_ControllerBase;
+		}
+
+		/**
+		 * Returns the Zula_ControllerBase instance of the requested cntrlr
 		 *
 		 * @return object|bool
 		 */
-		public function getReqCntrl() {
-			if ( $this->isDispatched() ) {
-				return $this->reqCntrl;
-			} else {
-				trigger_error( 'Dispatcher::getReqCntrl() requested controller does not exist, dispatch not yet made', E_USER_WARNING );
-				return false;
-			}
+		public function getReqCntrlr() {
+			return $this->isDispatched() ? $this->requestedCntrlr : false;
 		}
 
 		/**
-		 * Returns the details used for the dispatch, such as which
-		 * controller was loaded, and which section.
+		 * Returns an array of details used for the dispached, for which
+		 * module, cntrlr, section etc was used.
 		 *
 		 * @return array|bool
 		 */
 		public function getDispatchData() {
-			if ( is_null( $this->dispatchData ) ) {
-				trigger_error( 'Dispatcher::getDispatchData() dispatch has not yet been made, unable to get dispatch data', E_USER_WARNING );
-				return false;
-			} else {
-				return $this->dispatchData;
-			}
+			return $this->isDispatched() ? $this->dispatchData : false;
 		}
 
 		/**
-		 * Takes router data from the loaded router and attempt to create a new module/controller
-		 * based upon that. If certain data is missing then it will revert to the defaults for the
-		 * site type, or if those are missing then the general defaults.
+		 * Takes data from a Router_Url instance and attempts to load the correct cntrlr
+		 * based upon that.
 		 *
-		 * If the user does not have permission to the ACL rule, and if we are not displaying
-		 * full page errors and if we have a NPC (No Permission Controller) then it will
-		 * change which controller
-		 *
-		 * @return string
+		 * @param Router_Url $request
+		 * @param array $config
+		 * @return string|bool
 		 */
-		public function dispatch() {
-			$routerData = $this->_router->getParsedUrl()->asArray();
-			$routerData['config'] = array();
-			unset( $routerData['arguments'], $routerData['siteType'] );
-			if ( !trim( $routerData['module'] ) ) {
-				$this->_log->message( 'Dispatcher::dispatch() not enough router data, reverting to default map.', Log::L_DEBUG );
-				/**
-				 * Load the data from the correct layout map instead of using the provided
-				 * URL data (as there is none). This means we are at the frontpage
-				 */
-				$this->fpDispatch = true;
-				if ( $this->_zula->getState() == 'installation' ) {
-					$frontLayout = new Theme_layout( $this->_zula->getDir( 'install' ).'/zula-install-layout.xml' );
-				} else {
-					$frontLayout = new Theme_layout( $this->_router->getSiteType().'-default' );
-				}
-				$frontController = $frontLayout->getControllers( 'SC' );
-				$frontController = array_shift( $frontController );
-				$routerData = array(
-									'module'	=> $frontController['mod'],
-									'controller'=> $frontController['con'],
-									'section'	=> $frontController['sec'],
-									'config'	=> $frontController['config'],
-									);
-			}
-			while ( $preDispatch = Hooks::notify('cntrlr_pre_dispatch', $routerData) ) {
+		public function dispatch( Router_Url $request, array $config=array() ) {
+			$this->dispatchData = $request->asArray();
+			$this->dispatchData['config'] = $config;
+			unset( $config );
+			while ( $preDispatch = Hooks::notify('cntrlr_pre_dispatch', $this->dispatchData) ) {
 				if ( is_string($preDispatch) ) {
 					return $preDispatch;
 				} else if ( is_array($preDispatch) ) {
-					$routerData = $preDispatch;
+					$this->dispatchData = $preDispatch;
 				}
 			}
-			// Attempt to load the controller, changing it to the NPC controller if needed
-			$loaded = false;
-			do {
-				try {
-					$this->dispatchData = $routerData;
-					$module = new Module( $routerData['module'] );
-					try {
-						$loadedCntrlr = $module->loadController( $routerData['controller'], $routerData['section'], $routerData['config'], 'SC' );
-						$this->reqCntrl = $loadedCntrlr['cntrlr'];
-						$loaded = true;
-					 } catch ( Module_NoPermission $e ) {
-						$zulaMode = $this->_zula->getMode();
-						if ( $zulaMode == 'normal' ) {
-							if ( $routerData != $this->npcData && !$this->_session->isLoggedIn() && !$this->fullPageErrors ) {
-								// Attempt to load the NPC controlelr that is set.
-								$this->httpStatus = 403;
-								$routerData = $this->npcData;
-							} else {
-								return $this->error( $routerData, self::_403 );
-							}
-						} else if ( $zulaMode == 'ajax' ) {
-							$this->_log->message( 'Dispatcher::dispatch() users does not have permission to module in AJAX request', Log::L_WARNING );
-							return $this->error( $routerData, self::_403 );
-						} else {
-
-						}
-					} catch ( Module_ControllerNoExist $e ) {
-						$this->_log->message( $e->getMessage(), Log::L_WARNING );
-						return $this->error( $routerData, self::_404 );
-					}
-				} catch ( Module_NoExist $e ) {
-					return $this->error( $routerData, self::_404 );
-				}
-			} while( $loaded == false );
-			return $loadedCntrlr['output'];
-		}
-
-		/**
-		 * Displays either a simple error message or a full page error for
-		 * the provided error code given. Used when user does not have
-		 * permission to the requested controller, or it does not exist etc
-		 *
-		 * @param array $routerData
-		 * @param int $errCode
-		 * @return string
-		 */
-		protected function error( $routerData, $errCode=self::_404 ) {
-			$routerData = array(
-							'module'	=> $routerData['module'],
-							'cntrlr'	=> trim($routerData['controller']) ? $routerData['controller'] : 'index',
-							'section'	=> trim($routerData['section']) ? $routerData['section'] : 'index',
-							);
-			// Do the correct action with the error code provided
-			switch( $errCode ) {
-				case self::_403:
-					$viewFile = $this->fullPageErrors ? 'errors/403_full_page.html' : 'errors/403.html';
-					$header = 'HTTP/1.1 403 Forbidden';
-					break;
-
-				case self::_404:
-				default:
-					$viewFile = $this->fullPageErrors ? 'errors/404_full_page.html' : 'errors/404.html';
-					$errCode = self::_404;
-					$header = 'HTTP/1.1 404 Not Found';
+			try {
+				$module = new Module( $this->dispatchData['module'] );
+				$loadedCntrlr = $module->loadController( $this->dispatchData['controller'],
+														 $this->dispatchData['section'],
+														 $this->dispatchData['config'],
+														 'SC' );
+				$this->requestedCntrlr = $loadedCntrlr['cntrlr'];
+				return $loadedCntrlr['output'];
+			} catch ( Module_NoPermission $e ) {
+				$this->statusCode = 403;
+			} catch ( Module_ControllerNoExist $e ) {
+				$this->statusCode = 404;
+			} catch ( Module_NoExist $e ) {
+				$this->statusCode = 404;
 			}
-			$this->httpStatus = $errCode;
-			if ( !headers_sent() ) {
-				header( $header, true, $errCode );
+			if ( $this->setStatusHeader ) {
+				switch( $this->statusCode ) {
+					case 200:
+						header( 'HTTP/1.1 200 OK' );
+						break;
+					case 403:
+						header( 'HTTP/1.1 403 Forbidden' );
+						break;
+					case 404:
+						header( 'HTTP/1.1 404 Not Found' );
+				}
 			}
 			if ( $this->displayErrors ) {
-				// Continue to display the custom error pages
-				if ( $this->isDispatched() ) {
-					$this->reqCntrl->setTitle( t('Oops!', Locale::_DTD) );
-				}
-				$view = new View( $viewFile );
-				$view->assign( $routerData );
+				// Display own custom error message in place of the modules output
+				$view = new View( 'errors/'.$this->statusCode.'.html' );
+				$view->assign( $this->dispatchData );
 				$output = $view->getOutput();
-				# hook event: cntrlr_error_output
-				while( $tmpOutput = Hooks::notify( 'cntrlr_error_output', $errCode, $output ) ) {
+				# hook event: cntrrl_error_output
+				while( $tmpOutput = Hooks::notify( 'cntrlr_error_output', $this->statusCode, $output ) ) {
 					if ( is_string( $tmpOutput ) ) {
 						$output = $tmpOutput;
 					}
 				}
-				if ( $this->fullPageErrors === true ) {
-					die( $output );
-				} else {
-					return $output;
-				}
+				return $output;
 			} else {
 				return false;
 			}

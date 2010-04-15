@@ -35,7 +35,7 @@
 		 * The default libraries the the framework will load upon startup
 		 * @var array
 		 */
-		private $defaultLibs = array('date', 'log', 'locale', 'cache', 'dispatcher', 'error', 'input');
+		private $defaultLibs = array('date', 'log', 'locale', 'cache', 'error', 'input');
 
 		/**
 		 * Current state that Zula is running in, mostly either 'production',

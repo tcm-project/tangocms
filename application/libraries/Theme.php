@@ -633,7 +633,7 @@
 								'section'		=> $dispatchData['section'],
 								);
 				// Decide what title to display for the requested controller
-				if ( $this->_dispatcher->atFrontpage() ) {
+				if ( $this->_router->getParsedUrl()->module == null ) {
 					if ( $dispatchData['config']['displayTitle'] === 'custom' && !empty( $dispatchData['config']['customTitle'] ) ) {
 						$details['cntrlr_title'] = $dispatchData['config']['customTitle'];
 					} else if ( $dispatchData['config']['displayTitle'] ) {
@@ -646,11 +646,11 @@
 				}
 			}
 			// Unqiue page ID used normally on the 'body' element
-			$pageId = $this->_dispatcher->atFrontpage() ? 'frontpage' : $details['module'].'_'.$details['controller'].'_'.$details['section'];
+			#$pageId = $this->_dispatcher->atFrontpage() ? 'frontpage' : $details['module'].'_'.$details['controller'].'_'.$details['section'];
 			$this->assign( array(
 								'CONTROLLER_TITLE'	=> $details['cntrlr_title'],
 								'PAGE_TITLE'		=> $this->makePageTitle( $details['cntrlr_title'] ),
-								'PAGE_ID'			=> $pageId,
+								'PAGE_ID'			=> 'frontpage',
 								));
 			$this->assignHtml( array(
 									'EVENT_FEEDBACK'	=> $this->_event->output(),
