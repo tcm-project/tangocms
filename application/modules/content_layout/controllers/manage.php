@@ -52,7 +52,7 @@
 			$this->setTitle( sprintf( t('"%s" Content Layout'), $layoutName ) );
 			$this->setOutputType( self::_OT_CONFIG );
 			// Create the new content layout object
-			$layout = new Theme_layout( $layoutName );
+			$layout = new Layout( $layoutName );
 			// Build view form with validation for the regex (for layout)
 			$form = new View_form( 'manage/main.html', 'content_layout' );
 			$form->caseSensitive();
@@ -120,7 +120,7 @@
 		 */
 		protected function updateOrder() {
 			try {
-				$layout = new Theme_Layout( $this->_input->post('content_layout_name') );
+				$layout = new Layout( $this->_input->post('content_layout_name') );
 				// Update all of the controllers attributes
 				$updated = 0;
 				foreach( $this->_input->post( 'content_layout' ) as $cid=>$details ) {
@@ -130,7 +130,7 @@
 						$cntrlr['sector'] = $details['sector'];
 						$layout->editController( $cntrlr['id'], $cntrlr );
 						$updated++;
-					} catch ( Theme_Layout_ControllerNoExist $e ) {
+					} catch ( Layout_ControllerNoExist $e ) {
 					}
 				}
 				if ( $layout->save() ) {
@@ -154,7 +154,7 @@
 		 */
 		protected function detachCntrlr() {
 			try {
-				$layout = new Theme_Layout( $this->_input->post('content_layout_name') );
+				$layout = new Layout( $this->_input->post('content_layout_name') );
 				$resources = array();
 				$delCount = 0;
 				foreach( $this->_input->post( 'controller_ids' ) as $cntrlrId ) {
@@ -163,7 +163,7 @@
 						++$delCount;
 						// Store resource IDs to delete
 						$resources[] = 'layout_controller_'.$cntrlrId;
-					} catch ( Theme_Layout_ControllerNoExist $e ) {
+					} catch ( Layout_ControllerNoExist $e ) {
 						$this->_event->error( sprintf( t('Unable to detach module ID "%d" as it does not exist'), $cntrlrId ) );
 					}
 				}

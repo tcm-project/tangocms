@@ -65,7 +65,7 @@
 			$view = $this->loadView( 'index/main.html' );
 			$view->assign( array(
 								'SITE_TYPE'	=> $siteType,
-								'LAYOUTS'	=> Theme_Layout::getAll( $siteType ),
+								'LAYOUTS'	=> Layout::getAll( $siteType ),
 								));
 			$view->assignHtml( array( 'CSRF' => $this->_input->createToken( true ) ) );
 			return $view->getOutput();
@@ -84,7 +84,7 @@
 			$this->setOutputType( self::_OT_CONFIG );
 			try {
 				$cloner = $this->_router->getArgument( 'clone' );
-				$cloner = new Theme_Layout( $cloner );
+				$cloner = new Layout( $cloner );
 				if ( $cloner->exists() ) {
 					$cloneName = $cloner->getName();
 					$this->setTitle( sprintf( t('Clone Layout "%1$s"'), $cloneName ) );
@@ -108,10 +108,10 @@
 				$fd = $form->getValues( 'content_layout' );
 				// Check if we are cloning a layout
 				if ( $fd['clone'] ) {
-					$layout = new Theme_Layout( $fd['clone'] );
+					$layout = new Layout( $fd['clone'] );
 					$layout->setName( $fd['site_type'].'-'.$fd['name'] );
 				} else {
-					$layout = new Theme_Layout( $fd['site_type'].'-'.$fd['name'] );
+					$layout = new Layout( $fd['site_type'].'-'.$fd['name'] );
 				}
 				$layout->setRegex( $fd['regex'] );
 				$path = $this->_zula->getDir('config').'/layouts/'.$layout->getName().'.xml';
@@ -137,7 +137,7 @@
 				try {
 					$delCount = 0;
 					foreach( $this->_input->post( 'layout_names' ) as $layoutName ) {
-						$layout = new Theme_layout( $layoutName );
+						$layout = new Layout( $layoutName );
 						if ( $layout->delete() ) {
 							$delCount++;
 						} else {

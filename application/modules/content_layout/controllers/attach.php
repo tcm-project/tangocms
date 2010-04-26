@@ -47,7 +47,7 @@
 			 * Create the layout object and get all sectors from the theme of
 			 * the site type of this layout
 			 */
-			$layout = new Theme_layout( substr($name, 0, -7) );
+			$layout = new Layout( substr($name, 0, -7) );
 			$siteType = substr( $layout->getName(), 0, strpos($layout->getName(), '-') );
 			$theme = new Theme( $this->_config->get('theme/'.$siteType.'_default') );
 			// Build the form with validation

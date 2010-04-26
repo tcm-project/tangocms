@@ -67,7 +67,7 @@
 				}
 			}
 			// Create the correct layout and ensure cntrlr exists
-			$layout = new Theme_Layout( $layoutName );
+			$layout = new Layout( $layoutName );
 			try {
 				$cntrlr = $layout->getControllerDetails( $cntrlrId );
 				$module = new Module( $cntrlr['mod'] );
@@ -75,7 +75,7 @@
 				if ( !isset( $cntrlr['config']['clDescription'] ) ) {
 					$cntrlr['config']['clDescription'] = '';
 				}
-			} catch ( Theme_Layout_ControllerNoExist $e ) {
+			} catch ( Layout_ControllerNoExist $e ) {
 				$this->_event->error( sprintf( t('Unable to edit controller "%1$d" as it does not exist'), $cntrlrId ) );
 				return zula_redirect( $this->_router->makeUrl( 'content_layout', 'manage', $layoutName ) );
 			} catch ( Module_NoExist $e ) {
@@ -119,7 +119,7 @@
 					} else {
 						$this->_event->error( t('Unable to save layout, ensure file is writable') );
 					}
-				} catch ( Theme_Layout_ControllerNoExist $e ) {
+				} catch ( Layout_ControllerNoExist $e ) {
 					$this->_event->error( sprintf( t('Unable to edit attached module ID "%d" as it does not exist'), $cntrlr['id'] ) );
 				} catch ( Theme_SectorMapNotWriteable $e ) {
 					$this->_event->error( sprintf( t('Unable to edit module in sector map: $s'), $e->getMessage() ) );

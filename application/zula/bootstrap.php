@@ -114,9 +114,9 @@
 	if ( $requestedUrl->module == null ) {
 		// Load data fron the fpsc (Front Page Sector Content) layout
 		if ( $zula->getState() == 'installation' ) {
-			$fpsc = new Theme_Layout( $zula->getDir( 'install' ).'/layout-fpsc.xml' );
+			$fpsc = new Layout( $zula->getDir( 'install' ).'/layout-fpsc.xml' );
 		} else {
-			$fpsc = new Theme_Layout( 'fpsc-'.$requestedUrl->siteType );
+			$fpsc = new Layout( 'fpsc-'.$requestedUrl->siteType );
 		}
 		$controller = $fpsc->getControllers( 'SC' );
 		$controller = array_shift( $controller );
@@ -166,9 +166,9 @@
 				 * and then load the main dispatchers content
 				 */
 				if ( $zula->getState() == 'installation' ) {
-					$layout = new Theme_Layout( $zula->getDir( 'install' ).'/layout.xml' );
+					$layout = new Layout( $zula->getDir( 'install' ).'/layout.xml' );
 				} else {
-					$layout = new Theme_Layout( Theme_Layout::find($requestedUrl->siteType, $router->getRawRequestPath()) );
+					$layout = new Layout( Layout::find($requestedUrl->siteType, $router->getRawRequestPath()) );
 				}
 				$theme->loadDispatcher( $dispatchContent, $dispatcher );
 				$theme->loadLayout( $layout );

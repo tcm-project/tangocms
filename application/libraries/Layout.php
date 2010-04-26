@@ -12,7 +12,7 @@
  * @package Zula_Theme
  */
 
-	class Theme_layout extends Zula_LibraryBase {
+	class Layout extends Zula_LibraryBase {
 
 		/**
 		 * Name of layout currently in use
@@ -277,7 +277,7 @@
 			if ( $this->controllerExists( $id ) ) {
 				return $this->controllers[ $id ];
 			}
-			throw new Theme_Layout_ControllerNoExist( 'layout cntrlr "'.$id.'" does not exist' );
+			throw new Layout_ControllerNoExist( 'layout cntrlr "'.$id.'" does not exist' );
 		}
 
 		/**
@@ -347,7 +347,7 @@
 		 */
 		public function detachController( $id ) {
 			if ( !$this->controllerExists( $id ) ) {
-				throw new Theme_Layout_ControllerNoExist;
+				throw new Layout_ControllerNoExist;
 			}
 			$xPath = new DomXpath( $this->dom );
 			$cntrlr = $xPath->query( '/controllers/controller[@id='.$id.']' )->item(0);

@@ -333,7 +333,7 @@
 		 * @param object $layout
 		 * @return int
 		 */
-		public function loadLayout( Theme_Layout $layout ) {
+		public function loadLayout( Layout $layout ) {
 			$cntrlrCount = 0;
 			foreach( $layout->getControllers() as $cntrlr ) {
 				if ( $cntrlr['sector'] == 'SC' || !$this->sectorExists( $cntrlr['sector'] ) ) {

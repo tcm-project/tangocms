@@ -193,8 +193,8 @@
 				case '2.3.2':
 				case '2.3.3':
 				case '2.3.50':
-					foreach( Theme_Layout::getAll() as $layout ) {
-						$layoutObj = new Theme_Layout( $layout['name'] );
+					foreach( Layout::getAll() as $layout ) {
+						$layoutObj = new Layout( $layout['name'] );
 						foreach( $layoutObj->getControllers() as $cntrlr ) {
 							if ( empty( $cntrlr['config']['force_title'] ) ) {
 								if ( isset( $cntrlr['config']['display_title'] ) ) {
@@ -216,8 +216,8 @@
 					$this->sqlFile( '2.4.0-alpha1/2.3.52.sql' );
 				case '2.3.52':
 					$this->sqlFile( '2.4.0-alpha1/2.3.53.sql' );
-					foreach( Theme_Layout::getAll() as $layout ) {
-						$layoutObj = new Theme_Layout( $layout['name'] );
+					foreach( Layout::getAll() as $layout ) {
+						$layoutObj = new Layout( $layout['name'] );
 						foreach( $layoutObj->getControllers() as $cntrlr ) {
 							if ( $cntrlr['mod'] == 'poll' ) {
 								$cntrlr['con'] = 'view';
@@ -288,8 +288,8 @@
 			switch( $this->version ) {
 				case '2.3.70':
 					$this->sqlFile( '2.4.0-beta1/2.3.71.sql' );
-					foreach( Theme_Layout::getAll() as $layout ) {
-						$layoutObj = new Theme_Layout( $layout['name'] );
+					foreach( Layout::getAll() as $layout ) {
+						$layoutObj = new Layout( $layout['name'] );
 						foreach( $layoutObj->getControllers() as $cntrlr ) {
 							if ( $cntrlr['mod'] == 'media' && $cntrlr['con'] == 'cat' ) {
 								$cntrlr['con'] = 'index';
@@ -319,8 +319,8 @@
 		protected function upgradeTo_240_rc1() {
 			switch( $this->version ) {
 				case '2.3.80':
-					foreach( Theme_Layout::getAll() as $layout ) {
-						$layoutObj = new Theme_Layout( $layout['name'] );
+					foreach( Layout::getAll() as $layout ) {
+						$layoutObj = new Layout( $layout['name'] );
 						foreach( $layoutObj->getControllers() as $cntrlr ) {
 							if ( $cntrlr['mod'] == 'media' && $cntrlr['con'] == 'index' && $cntrlr['sec'] == 'latest' ) {
 								$cntrlr['sec'] = 'cat';
@@ -402,13 +402,13 @@
 				case '2.5.3':
 				case '2.5.50':
 					foreach( array('main', 'admin') as $siteType ) {
-						$layout = new Theme_Layout( $siteType.'-default' );
+						$layout = new Layout( $siteType.'-default' );
 						$sc = $layout->getControllers( 'SC' );
 						$sc = array_shift( $sc );
 						$layout->detachController( $sc['id'] );
 						$layout->save();
 						// Create the new FPSC (FrontPage Sector Content) layout
-						$layout = new Theme_Layout( 'fpsc-'.$siteType );
+						$layout = new Layout( 'fpsc-'.$siteType );
 						$layout->addController( 'SC', $sc, $sc['id'] );
 						$layout->save();
 					}

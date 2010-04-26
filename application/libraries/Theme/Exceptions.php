@@ -15,10 +15,6 @@
 	class Theme_DetailNoExist extends Zula_Exception {}
 	class Theme_SectorNoExist extends Zula_Exception {}
 
-	class Theme_UnableToDelete extends Zula_Exception {}
 	class Theme_CssNoExist extends Zula_Exception {}
-
-	class Theme_Layout_NoSectorMap extends Zula_Exception {}
-	class Theme_Layout_ControllerNoExist extends Zula_Exception {}
 
 ?>
