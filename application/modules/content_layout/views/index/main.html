@@ -1,7 +1,16 @@
-<?php
-	$url = $this->_router->makeUrl( 'content_layout' ).'/index';
-	include $this->getPath( '../sitetype_selector.html' );
-?>
+<form action="<?php echo $this->_router->makeUrl( 'content_layout' ); ?>" method="get">
+	<?php if ( $this->_router->getType() == 'standard' ) { ?>
+		<div><input type="hidden" name="url" value="<?php echo $this->_router->getRawRequestPath(); ?>"></div>
+	<?php } ?>
+	<p>
+		<label for="content_layout-site-select" class="horizontal">{L_[Manage layouts for site type:]}</label>
+		<select id="content_layout-site-select" name="type">
+			<option value="main" <?php echo $site_type == 'main' ? 'selected="selected"' : ''; ?>>{L_[Main]}</option>
+			<option value="admin" <?php echo $site_type == 'admin' ? 'selected="selected"' : ''; ?>>{L_[Admin]}</option>
+		</select>
+		<input type="submit" value="{L_[Update]}">
+	</p>
+</form>
 
 <form action="<?php echo $this->_router->makeUrl( 'content_layout', 'index', 'delete' ); ?>" method="post">
 	<table id="content_layout" class="contentdata">
@@ -19,9 +28,10 @@
 					<td class="checkcol">
 						<?php
 							$default = $layout['name'] == $site_type.'-default';
-							$format = '<input type="checkbox" name="layout_names[]" value="%1$s" %2$s>';
-							$disabled = $default ? 'disabled="disabled"' : '';
-							printf( $format, $layout['name'], $disabled );
+							printf( '<input type="checkbox" name="layout_names[]" value="%1$s" %2$s>',
+									$layout['name'],
+									($default ? 'disabled="disabled"' : '')
+								  );
 						?>
 					</td>
 					<td><?php

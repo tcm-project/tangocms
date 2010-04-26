@@ -52,22 +52,38 @@
 			$this->setTitle( sprintf( t('"%s" Content Layout'), $layoutName ) );
 			$this->setOutputType( self::_OT_CONFIG );
 			// Create the new content layout object
-			$siteType = substr( $layoutName, 0, strpos($layoutName, '-') );
-			$layout = new Theme_layout( $layoutName, Theme::getSiteTypeTheme( $siteType ) );
+			$layout = new Theme_layout( $layoutName );
 			// Build view form with validation for the regex (for layout)
 			$form = new View_form( 'manage/main.html', 'content_layout' );
+			$form->caseSensitive();
 			$form->action( $this->_router->makeUrl( 'content_layout', 'manage', $layoutName ) );
-			$form->addElement( 'content_layout/regex', $layout->getUrlRegex(), t('URL/Regex'), new Validator_Length(2, 255) );
+			$form->addElement( 'content_layout/regex', $layout->getRegex(), t('URL/Regex'), new Validator_Length(2, 255) );
 			if ( $form->hasInput() && $form->isValid() ) {
-				$layout->setUrlRegex( $form->getValues('content_layout/regex') );
+				$layout->setRegex( $form->getValues('content_layout/regex') );
 				if ( $layout->save() ) {
 					$this->_event->success( t('Updated content layout') );
 					return zula_redirect( $this->_router->makeUrl( 'content_layout', 'manage', $layoutName ) );
 				}
 				$this->_event->error( t('Unable to save content layout') );
 			}
+			/**
+			 * Gather all controllers in the layout for the theme of the site type
+			 * this layout is for.
+			 */
+			$siteType = substr( $layoutName, 0, strpos($layoutName, '-') );
+			$theme = new Theme( $this->_config->get('theme/'.$siteType.'_default') );
+			$themeSectors = array();
+			foreach( $theme->getSectors() as $sector ) {
+				$themeSectors[ $sector['id'] ] = array(
+										'sector'	=> $sector,
+										'cntrlrs'	=> $layout->getControllers( $sector['id'] ),
+										);
+			}
 			// Assign additional data
-			$form->assign( array('LAYOUT' => $layout) );
+			$form->assign( array(
+								'layoutName'	=> $layout->getName(),
+								'themeSectors'	=> $themeSectors,
+								));
 			return $form->getOutput();
 		}
 
@@ -104,9 +120,7 @@
 		 */
 		protected function updateOrder() {
 			try {
-				$layoutName = $this->_input->post('content_layout_name');
-				$siteType = substr( $layoutName, 0, strpos($layoutName, '-') );
-				$layout = new Theme_Layout( $layoutName, Theme::getSiteTypeTheme( $siteType ) );
+				$layout = new Theme_Layout( $this->_input->post('content_layout_name') );
 				// Update all of the controllers attributes
 				$updated = 0;
 				foreach( $this->_input->post( 'content_layout' ) as $cid=>$details ) {
@@ -140,9 +154,7 @@
 		 */
 		protected function detachCntrlr() {
 			try {
-				$layoutName = $this->_input->post('content_layout_name');
-				$siteType = substr( $layoutName, 0, strpos( $layoutName, '-' ) );
-				$layout = new Theme_Layout( $layoutName, Theme::getSiteTypeTheme( $siteType ) );
+				$layout = new Theme_Layout( $this->_input->post('content_layout_name') );
 				$resources = array();
 				$delCount = 0;
 				foreach( $this->_input->post( 'controller_ids' ) as $cntrlrId ) {

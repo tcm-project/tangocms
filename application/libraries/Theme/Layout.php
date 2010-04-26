@@ -153,6 +153,15 @@
 		}
 
 		/**
+		 * Returns true if the layout file exists
+		 *
+		 * @return bool
+		 */
+		public function exists() {
+			return file_exists( $this->path );
+		}
+
+		/**
 		 * Sets the URL regex to be used for this layout
 		 *
 		 * @param string $regex
@@ -289,7 +298,8 @@
 							'con'		=> isset($details['con']) ? $details['con'] : 'index',
 							'sec'		=> isset($details['sec']) ? $details['sec'] : 'index',
 							'config'	=> array_merge( array('displayTitle' => true, 'customTitle' => ''),
-														$details['config'] ),
+														(isset($details['config']) ? $details['config'] : array())
+													),
 							);
 			// Create the new element with attributes
 			$cntrlrElement = $this->dom->createElement( 'controller' );

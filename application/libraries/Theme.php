@@ -41,6 +41,12 @@
 		protected $details = array();
 
 		/**
+		 * Details of sectors for the theme
+		 * @var array
+		 */
+		protected $sectors = null;
+
+		/**
 		 * All JS files that have been loaded via Theme::loadJsFile()
 		 * @var array
 		 */
@@ -100,7 +106,7 @@
 		 */
 		static public function exists( $themeName ) {
 			$themeDir = Registry::get( 'zula' )->getDir( 'themes' ).'/'.$themeName;
-			foreach( array($themeDir.'/main_template.html', $themeDir.'/details.xml') as $path ) {
+			foreach( array($themeDir.'/main_template.html', $themeDir.'/details.xml', $themeDir.'/sectors.xml') as $path ) {
 				if ( !file_exists( $path ) || !is_readable( $path ) ) {
 					return false;
 				}
@@ -199,12 +205,182 @@
 		}
 
 		/**
+		 * Gets details for every sector in the sector.xml file
+		 *
+		 * @return array
+		 */
+		public function getSectors() {
+			if ( !is_array( $this->sectors ) ) {
+				$cacheKey = 'theme_sectors_'.$this->getDetail('name');
+				if ( ($this->sectors = $this->_cache->get($cacheKey)) == false ) {
+					// Parse the XML file
+					$dom = new DomDocument( '1.0', 'UTF-8' );
+					$dom->load( $this->getDetail('path').'/sectors.xml' );
+					foreach( $dom->getElementsByTagName( 'sector' ) as $node ) {
+						$id = strtoupper( $node->getAttribute('id') );
+						$this->sectors[ $id ] = array(
+													'id' 			=> $id,
+													'description'	=> $node->getElementsByTagName( 'description' )
+																			->item(0)
+																			->nodeValue,
+													);
+					}
+					$this->_cache->add( $cacheKey, $this->sectors );
+				}
+			}
+			return $this->sectors;
+		}
+
+		/**
+		 * Returns true if the provided sector exists
+		 *
+		 * @param string $id
+		 * @return bool
+		 */
+		public function sectorExists( $id ) {
+			return array_key_exists( strtoupper($id), $this->getSectors() );
+		}
+
+		/**
+		 * Gets detail of the provided sector, if it exists
+		 *
+		 * @param int $id
+		 * @return array
+		 */
+		public function getSectorDetails( $id ) {
+			if ( $this->sectorExists( $id ) ) {
+				return $this->sectors[ strtoupper($id) ];
+			}
+			throw new Theme_SectorNoExist( 'sector "'.$id.'" does not exist' );
+		}
+
+		/**
 		 * Deletes a theme by removing it's directory
 		 *
 		 * @return bool
 		 */
 		public function delete() {
 			return zula_full_rmdir( $this->getDetail('path') );
+		}
+
+		/**
+		 * Assigns data to a sector. Note that the sector is not checked to exist
+		 * before it assigns.
+		 *
+		 * @param string $sector
+		 * @param string $data
+		 * @return bool
+		 */
+		public function loadIntoSector( $sector, $data ) {
+			if ( preg_match( '#^S(?:C|[0-9]+)$#i', $sector ) ) {
+				return $this->assignHtml( array($sector => $data), false );
+			}
+			return false;
+		}
+
+		/**
+		 * Loads the main dispatchers content which will be assigned to the special
+		 * sector 'SC'. Details from the dispatcher object will be used to form the
+		 * page title and gather things such as page links.
+		 *
+		 * @param string $content
+		 * @param object $dispatcher
+		 * @return bool
+		 */
+		public function loadDispatcher( $content, Dispatcher $dispatcher ) {
+			$pageLinks = $pageId = null;
+			$cntrlrTitle = t('Oops!', Locale::_DTD);
+			if ( $dispatcher->isDispatched() ) {
+				$reqCntrlr = $dispatcher->getReqCntrlr();
+				$dispatchData = $dispatcher->getDispatchData();
+				// Decide on what title to display
+				$cntrlrTitle = $reqCntrlr->getDetail( 'title' );
+				if ( isset( $dispatchData['config']['displayTitle'], $dispatchData['customTitle'] ) ) {
+					if ( $dispatchData['config']['displayTitle'] === 'custom' && !empty( $dispatchData['config']['customTitle'] ) ) {
+						$cntrlrTitle = $dispatchData['config']['customTitle'];
+					} else if ( !$dispatchData['config']['displayTitle'] ) {
+						$cntrlrTitle = null;
+					}
+				}
+				// Make the page links from the cntrlr
+				foreach( $reqCntrlr->getPageLinks() as $title=>$url ) {
+					$pageLinks .= sprintf( '<li><a href="%1$s" title="%2$s">%2$s</a></li>',
+											(trim($url) ? zula_htmlspecialchars($url) : '#'),
+											zula_htmlspecialchars( $title ) );
+				}
+				$pageLinks = $pageLinks ? '<ul id="pagelinks">'.$pageLinks.'</ul>' : null;
+			}
+			$pageTitle = str_replace( array('[PAGE]', '[SITE_TITLE]'),
+									  array($cntrlrTitle, $this->_config->get('config/title')),
+									  $this->_config->get('config/title_format')
+									);
+			// Assign all needed data to the view
+			$this->assign( array(
+								'CONTROLLER_TITLE'	=> $cntrlrTitle,
+								'PAGE_TITLE'		=> $pageTitle,
+								'PAGE_ID'			=> $pageId,
+								));
+			$this->assignHtml( array(
+								'EVENT_FEEDBACK'	=> $this->_event->output(),
+								'PAGE_LINKS'		=> $pageLinks,
+								));
+			return $this->loadIntoSector( 'SC', $content );
+		}
+
+		/**
+		 * Loads all needed controllers from the layout into the correct sectors.
+		 *
+		 * @param object $layout
+		 * @return int
+		 */
+		public function loadLayout( Theme_Layout $layout ) {
+			$cntrlrCount = 0;
+			foreach( $layout->getControllers() as $cntrlr ) {
+				if ( $cntrlr['sector'] == 'SC' || !$this->sectorExists( $cntrlr['sector'] ) ) {
+					continue;
+				}
+				$resource = 'layout_controller_'.$cntrlr['id'];
+				if ( _ACL_ENABLED && ($this->_acl->resourceExists( $resource ) && !$this->_acl->check( $resource, null, false )) ) {
+					continue;
+				}
+				$cntrlrOutput = false;
+				try {
+					$module = new Module( $cntrlr['mod'] );
+					$ident = $cntrlr['mod'].'::'.$cntrlr['con'].'::'.$cntrlr['sec'];
+					$tmpCntrlr = $module->loadController( $cntrlr['con'], $cntrlr['sec'], $cntrlr['config'], $cntrlr['sector'] );
+					if ( $tmpCntrlr['output'] !== false ) {
+						/**
+						 * Wrap the cntrlr in the module_wrap.html file
+						 */
+						if ( $cntrlr['config']['displayTitle'] === 'custom' && !empty( $cntrlr['config']['customTitle'] ) ) {
+							$title = $cntrlr['config']['customTitle'];
+						} else {
+							$title = isset($tmpCntrlr['title']) ? $tmpCntrlr['title'] : t('Oops!', Locale::_DTD);
+						}
+						$wrap = new View( $this->getDetail('path').'/module_wrap.html' );
+						$wrap->assign( array(
+											'ID'			=> $cntrlr['id'],
+											'TITLE'			=> $title,
+											'DISPLAY_TITLE'	=> !empty( $cntrlr['config']['displayTitle'] ),
+											'WRAP_CLASS'	=> $cntrlr['config']['htmlWrapClass'],
+											));
+						$wrap->assignHtml( array('CONTENT' => $tmpCntrlr['output'])  );
+						$this->loadIntoSector( $cntrlr['sector'], $wrap->getOutput() );
+						++$cntrlrCount;
+					}
+				} catch ( Module_NoExist $e ) {
+					$this->_log->message( 'sector module "'.(isset($ident) ? $ident : $cntrlr['mod']).'" does not exist',
+											Log::L_WARNING );
+				} catch ( Module_ControllerNoExist $e ) {
+					$this->_log->message( $e->getMessage(), Log::L_WARNING );
+				} catch ( Module_UnableToLoad $e ) {
+					// Could also be a Module_NoPermission
+				}
+				if ( !$this->isAssigned( $cntrlr['sector'] ) ) {
+					$this->loadIntoSector( $cntrlr['sector'], '' );
+				}
+			}
+			return $cntrlrCount;
 		}
 
 		/**
@@ -399,126 +575,6 @@
 				}
 				return $this->addJsFile( $library );
 			}
-		}
-
-		/**
-		 * Assigns data to a sector. Note that the sector is not checked to exist
-		 * before it assigns.
-		 *
-		 * @param string $sector
-		 * @param string $data
-		 * @return bool
-		 */
-		public function loadIntoSector( $sector, $data ) {
-			if ( preg_match( '#^S(?:C|[0-9]+)$#i', $sector ) ) {
-				return $this->assignHtml( array($sector => $data), false );
-			}
-			return false;
-		}
-
-		/**
-		 * Loads the main dispatchers content which will be assigned to the special
-		 * sector 'SC'. Details from the dispatcher object will be used to form the
-		 * page title and gather things such as page links.
-		 *
-		 * @param string $content
-		 * @param object $dispatcher
-		 * @return bool
-		 */
-		public function loadDispatcher( $content, Dispatcher $dispatcher ) {
-			$pageLinks = $pageId = null;
-			$cntrlrTitle = t('Oops!', Locale::_DTD);
-			if ( $dispatcher->isDispatched() ) {
-				$reqCntrlr = $dispatcher->getReqCntrlr();
-				$dispatchData = $dispatcher->getDispatchData();
-				// Decide on what title to display
-				$cntrlrTitle = $reqCntrlr->getDetail( 'title' );
-				if ( isset( $dispatchData['config']['displayTitle'], $dispatchData['customTitle'] ) ) {
-					if ( $dispatchData['config']['displayTitle'] === 'custom' && !empty( $dispatchData['config']['customTitle'] ) ) {
-						$cntrlrTitle = $dispatchData['config']['customTitle'];
-					} else if ( !$dispatchData['config']['displayTitle'] ) {
-						$cntrlrTitle = null;
-					}
-				}
-				// Make the page links from the cntrlr
-				foreach( $reqCntrlr->getPageLinks() as $title=>$url ) {
-					$pageLinks .= sprintf( '<li><a href="%1$s" title="%2$s">%2$s</a></li>',
-											(trim($url) ? zula_htmlspecialchars($url) : '#'),
-											zula_htmlspecialchars( $title ) );
-				}
-				$pageLinks = $pageLinks ? '<ul id="pagelinks">'.$pageLinks.'</ul>' : null;
-			}
-			$pageTitle = str_replace( array('[PAGE]', '[SITE_TITLE]'),
-									  array($cntrlrTitle, $this->_config->get('config/title')),
-									  $this->_config->get('config/title_format')
-									);
-			// Assign all needed data to the view
-			$this->assign( array(
-								'CONTROLLER_TITLE'	=> $cntrlrTitle,
-								'PAGE_TITLE'		=> $pageTitle,
-								'PAGE_ID'			=> $pageId,
-								));
-			$this->assignHtml( array(
-								'EVENT_FEEDBACK'	=> $this->_event->output(),
-								'PAGE_LINKS'		=> $pageLinks,
-								));
-			return $this->loadIntoSector( 'SC', $content );
-		}
-
-		/**
-		 * Loads all needed controllers from the layout into the correct sectors.
-		 *
-		 * @param object $layout
-		 * @return int
-		 */
-		public function loadLayout( Theme_Layout $layout ) {
-			$cntrlrCount = 0;
-			foreach( $layout->getControllers() as $cntrlr ) {
-				if ( $cntrlr['sector'] == 'SC' ) {
-					continue;
-				}
-				$resource = 'layout_controller_'.$cntrlr['id'];
-				if ( _ACL_ENABLED && ($this->_acl->resourceExists( $resource ) && !$this->_acl->check( $resource, null, false )) ) {
-					continue;
-				}
-				$cntrlrOutput = false;
-				try {
-					$module = new Module( $cntrlr['mod'] );
-					$ident = $cntrlr['mod'].'::'.$cntrlr['con'].'::'.$cntrlr['sec'];
-					$tmpCntrlr = $module->loadController( $cntrlr['con'], $cntrlr['sec'], $cntrlr['config'], $cntrlr['sector'] );
-					if ( $tmpCntrlr['output'] !== false ) {
-						/**
-						 * Wrap the cntrlr in the module_wrap.html file
-						 */
-						if ( $cntrlr['config']['displayTitle'] === 'custom' && !empty( $cntrlr['config']['customTitle'] ) ) {
-							$title = $cntrlr['config']['customTitle'];
-						} else {
-							$title = isset($tmpCntrlr['title']) ? $tmpCntrlr['title'] : t('Oops!', Locale::_DTD);
-						}
-						$wrap = new View( $this->getDetail('path').'/module_wrap.html' );
-						$wrap->assign( array(
-											'ID'			=> $cntrlr['id'],
-											'TITLE'			=> $title,
-											'DISPLAY_TITLE'	=> !empty( $cntrlr['config']['displayTitle'] ),
-											'WRAP_CLASS'	=> $cntrlr['config']['htmlWrapClass'],
-											));
-						$wrap->assignHtml( array('CONTENT' => $tmpCntrlr['output'])  );
-						$this->loadIntoSector( $cntrlr['sector'], $wrap->getOutput() );
-						++$cntrlrCount;
-					}
-				} catch ( Module_NoExist $e ) {
-					$this->_log->message( 'sector module "'.(isset($ident) ? $ident : $cntrlr['mod']).'" does not exist',
-											Log::L_WARNING );
-				} catch ( Module_ControllerNoExist $e ) {
-					$this->_log->message( $e->getMessage(), Log::L_WARNING );
-				} catch ( Module_UnableToLoad $e ) {
-					// Could also be a Module_NoPermission
-				}
-				if ( !$this->isAssigned( $cntrlr['sector'] ) ) {
-					$this->loadIntoSector( $cntrlr['sector'], '' );
-				}
-			}
-			return $cntrlrCount;
 		}
 
 		/**

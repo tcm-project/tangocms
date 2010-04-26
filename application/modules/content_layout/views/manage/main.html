@@ -1,4 +1,4 @@
-<?php if ( !$layout->isDefault() ) { ?>
+<?php if ( $content_layout['regex'] ) { ?>
 	<form action="{ACTION}" method="post">
 		<table>
 			<tbody>
@@ -9,7 +9,7 @@
 							<dd>{L_[URL that the layout will be applied to (regex supported).]}</dd>
 						</dl>
 					<td class="confcol">
-						<input type="text" name="content_layout[regex]"  value="{CONTENT_LAYOUT.REGEX}">
+						<input type="text" name="content_layout[regex]"  value="{content_layout.regex}">
 					</td>
 				</tr>
 			</tbody>
@@ -39,18 +39,19 @@
 		<tbody>
 			<?php
 				$s_count = 0;
-				foreach( $layout->asArray() as $sector ) {
-					if ( $sector['id'] == 'SC' ) {
-						$sector['description'] = t('Frontpage Content');
-					}
+				foreach( $themeSectors as $val ) {
 			?>
 				<tr class="subheading nodrag <?php echo $s_count == 0 ? 'nodrop' : ''; ?>">
 					<td colspan="5">
-						<?php echo $sector['id'].'::'.$sector['description']; ?>
-						<input class="sector" type="hidden" value="<?php echo $sector['id']; ?>">
+						<?php echo $val['sector']['id'], '::', $val['sector']['description']; ?>
+						<input class="sector" type="hidden" value="<?php echo $val['sector']['id']; ?>">
 					</td>
 				</tr>
-				<?php $i = 0; foreach( $sector['controllers'] as $cntrlr ) { ?>
+				<?php
+					$cntrlrCount = count( $val['cntrlrs'] );
+					$i = 0;
+					foreach( $val['cntrlrs'] as $cntrlr ) {
+				?>
 					<tr class="<?php echo zula_odd_even( $i ); ?>">
 						<td class="checkcol">
 							<input type="checkbox" name="controller_ids[]" value="<?php echo $cntrlr['id']; ?>">
@@ -59,40 +60,40 @@
 						<td class="order">
 							<select name="content_layout[<?php echo $cntrlr['id']; ?>][order]">
 								<?php
-									$count = count( $sector['controllers'] );
+									$count = count( $val['cntrlrs'] );
 									for( $a=1; $a <= $count; $a++ ) {
 										printf( '<option value="%1$d" %2$s>%1$d</option>',
 												$a,
 												($cntrlr['order'] == $a ? 'selected="selected"' : '')
-											   );
+											);
 									}
 								?>
 							</select>
 							<select name="content_layout[<?php echo $cntrlr['id']; ?>][sector]">
 								<?php
-									foreach ( $layout->getSectors() as $tmpSector ) {
+									foreach ( array_keys($themeSectors) as $sector ) {
 										printf( '<option value="%1$s" %2$s>%3$s</option>',
-												$tmpSector['id'],
-												($tmpSector['id'] == $cntrlr['sector'] ? 'selected="selected"' : ''),
-												$tmpSector['description']
-											   );
+												$sector['id'],
+												($sector['id'] == $cntrlr['sector'] ? 'selected="selected"' : ''),
+												$sector['description']
+											);
 									}
 								?>
 							</select>
 						</td>
 						<td><?php echo empty($cntrlr['config']['clDescription']) ? '' : $cntrlr['config']['clDescription']; ?></td>
 						<td class="managecol">
-							<a href="<?php echo $this->_router->makeUrl( 'content_layout', 'edit', $layout->getName(), null, array('id' => $cntrlr['id']) ); ?>" title="{L_[Configure Module Details]}">{L_[Configure]}</a>
+							<a href="<?php echo $this->_router->makeUrl( 'content_layout', 'edit', $layoutName, null, array('id' => $cntrlr['id']) ); ?>" title="{L_[Configure Module Details]}">{L_[Configure]}</a>
 						</td>
 					</tr>
-					<?php $i++; } ?>
+				<?php $i++; } ?>
 			<?php $s_count++; } ?>
 		</tbody>
 	</table>
 
 	<div class="actions">
-		<input type="hidden" name="content_layout_name" value="<?php echo $layout->getName(); ?>">
-		<a href="<?php echo $this->_router->makeUrl( 'content_layout', 'attach', $layout->getName() ); ?>" class="general-button">{L_[Attach New Module]}</a>
+		<input type="hidden" name="content_layout_name" value="{layoutName}">
+		<a href="<?php echo $this->_router->makeUrl( 'content_layout', 'attach', $layoutName ); ?>" class="general-button">{L_[Attach New Module]}</a>
 		<input type="submit" name="content_layout_detach" value="{L_[Detach Selected]}">
 		<input type="submit" name="content_layout_order" value="{L_[Update Order & Placement]}">
 	</div>

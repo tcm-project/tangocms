@@ -67,8 +67,7 @@
 				}
 			}
 			// Create the correct layout and ensure cntrlr exists
-			$siteType = substr( $layoutName, 0, strpos($layoutName, '-') );
-			$layout = new Theme_Layout( $layoutName, Theme::getSiteTypeTheme( $siteType ) );
+			$layout = new Theme_Layout( $layoutName );
 			try {
 				$cntrlr = $layout->getControllerDetails( $cntrlrId );
 				$module = new Module( $cntrlr['mod'] );

@@ -76,8 +76,6 @@
 				foreach( $this->_input->post( 'theme' ) as $siteType=>$theme ) {
 					if ( Theme::exists( $theme ) ) {
 						$this->_config_sql->update( 'theme/'.$siteType.'_default', $theme );
-					} else {
-						$this->_log->message( 'site type "'.$siteType.'" does not exist, unable to update', Log::L_WARNING );
 					}
 				}
 				$this->_event->success( t('Updated themes') );
@@ -94,35 +92,45 @@
 		 */
 		public function deleteSection() {
 			$this->setOutputType( self::_OT_CONFIG );
+			$this->_locale->textDomain( $this->textDomain() );
 			if ( !$this->_acl->check( 'theme_delete' ) ) {
 				throw new Module_NoPermission;
 			} else if ( $this->_input->checkToken() ) {
-				$this->_locale->textDomain( $this->textDomain() );
 				$this->setTitle( t('Delete Theme') );
-				$delCount = 0;
-				try {
+				if ( !$this->_input->has( 'post', 'themes' ) ) {
+					$this->_event->error( t('No themes selected') );
+				} else {
+					// Attempt to delete all selected themes
+					$allThemes = Theme::getAll();
+					$themeCount = count( $allThemes );
+					$delCount = 0;
 					foreach( $this->_input->post( 'themes' ) as $theme ) {
 						try {
-							$themeObj = new Theme( $theme );
-							$themeObj->delete();
-							++$delCount;
-						} catch ( Theme_UnableToDelete $e ) {
-							if ( $e->getCode() === 1 ) {
-								$msg = t('You cannot delete the last remaining theme');
-							} else if ( $e->getCode() === 2 ) {
-								$msg = t('Theme directory could not be deleted, please check permissions');
-							} else {
-								$msg = $e->getMesssage();
+							if ( $themeCount === 1 ) {
+								$this->_event->error( t('You cannot delete the last remaining theme') );
+								break;
 							}
-							$this->_event->error( $msg );
+							$themeObj = new Theme( $theme );
+							if ( $themeObj->delete() ) {
+								++$delCount;
+								--$themeCount;
+								unset( $allThemes[ array_search($theme, $allThemes) ] );
+								// Find a replacement theme for the site types
+								$replacement = reset( $allThemes );
+								foreach( array('main', 'admin') as $siteType ) {
+									if ( $this->_config->get( 'theme/'.$siteType.'_default' ) == $theme ) {
+										$this->_config_sql->update( 'theme/'.$siteType.'_default', $replacement );
+									}
+								}
+							} else {
+								$this->_event->error( t('Theme directory could not be deleted, please check permissions') );
+							}
 						} catch ( Theme_NoExist $e ) {
 						}
 					}
 					if ( $delCount > 0 ) {
 						$this->_event->success( t('Deleted selected themes') );
 					}
-				} catch ( Input_KeyNoExist $e ) {
-					$this->_event->error( t('No themes selected') );
 				}
 			} else {
 				$this->_event->error( Input::csrfMsg() );

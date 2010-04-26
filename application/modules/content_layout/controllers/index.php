@@ -85,7 +85,7 @@
 			try {
 				$cloner = $this->_router->getArgument( 'clone' );
 				$cloner = new Theme_Layout( $cloner );
-				if ( ($cloneRegex = $cloner->getUrlRegex()) != false || $cloner->isDefault() ) {
+				if ( $cloner->exists() ) {
 					$cloneName = $cloner->getName();
 					$this->setTitle( sprintf( t('Clone Layout "%1$s"'), $cloneName ) );
 				} else {
@@ -94,7 +94,7 @@
 			} catch ( Exception $e ) {
 				$cloneName = null;
 				$cloneRegex = null;
-			}			
+			}
 			// Build and check form
 			$form = new View_Form( 'index/form_layout.html', 'content_layout' );
 			$form->action( $this->_router->makeUrl( 'content_layout', 'index', 'add' ) );
@@ -113,7 +113,7 @@
 				} else {
 					$layout = new Theme_Layout( $fd['site_type'].'-'.$fd['name'] );
 				}
-				$layout->setUrlRegex( $fd['regex'] );
+				$layout->setRegex( $fd['regex'] );
 				$path = $this->_zula->getDir('config').'/layouts/'.$layout->getName().'.xml';
 				if ( $layout->save( $path ) ) {
 					$this->_event->success( t('Added new content layout') );
