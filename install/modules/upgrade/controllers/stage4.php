@@ -34,6 +34,8 @@
 								'2.3.0'			=> '2.3.1',
 
 								# Dev Releases
+								'2.5.50'		=> '2.5.51',
+
 								'2.4.90'		=> '2.5.0',
 
 								'2.4.55'		=> '2.5.0-rc1',
@@ -397,7 +399,20 @@
 				case '2.5.0':
 				case '2.5.1':
 				case '2.5.2':
-					return '2.5.50';
+				case '2.5.3':
+				case '2.5.50':
+					foreach( array('main', 'admin') as $siteType ) {
+						$layout = new Theme_Layout( $siteType.'-default' );
+						$sc = $layout->getControllers( 'SC' );
+						$sc = array_shift( $sc );
+						$layout->detachController( $sc['id'] );
+						$layout->save();
+						// Create the new FPSC (FrontPage Sector Content) layout
+						$layout = new Theme_Layout( 'fpsc-'.$siteType );
+						$layout->addController( 'SC', $sc, $sc['id'] );
+						$layout->save();
+					}
+					return '2.5.51';
 				default:
 					return '2.5.60';
 			}

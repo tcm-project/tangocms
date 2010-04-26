@@ -125,11 +125,12 @@
 		 * Get the instance of the Zula class
 		 *
 		 * @param string $rootDir
+		 * @param string $state
 		 * @return object
 		 */
-		static public function getInstance( $rootDir ) {
+		static public function getInstance( $rootDir, $state='production' ) {
 			if ( !is_object( self::$_instance ) ) {
-				self::$_instance = new self( $rootDir );
+				self::$_instance = new self( $rootDir, $state );
 			}
 			return self::$_instance;
 		}
@@ -143,25 +144,20 @@
 		 * @param string $class
 		 */
 		static public function autoloadClass( $class ) {
-			static $dirs = array();
-			if ( empty( $dirs ) ) {
-				$dirs = array(
-							'modules'	=> realpath( self::$_instance->getDir( 'modules' ) ),
-							'libs'		=> realpath( self::$_instance->getDir( 'libs' ) ),
-							);
-			}
 			if ( stripos( $class, '_controller_' ) !== false ) {
+				$modDir = realpath( self::$_instance->getDir( 'modules' ) );
 				$classSplit = explode( '_', strtolower( $class ) );
 				$cntrlrIndex = array_search( 'controller', $classSplit );
 				// Store cntrlr file and exception file paths
-				$modDir = $dirs['modules'].'/'.implode( '_', array_slice($classSplit, 0, $cntrlrIndex) );
+				$modDir = $modDir.'/'.implode( '_', array_slice($classSplit, 0, $cntrlrIndex) );
 				$classFile = $modDir.'/controllers/'.implode( '_', array_slice($classSplit, $cntrlrIndex+1) ).'.php';
 				$exceptions = $modDir.'/Exceptions.php';
 			} else {
 				// Load internal Zula lib
+				$libDir = realpath( self::$_instance->getDir( 'libs' ) );
 				$classSplit = array_map( 'ucfirst', explode('_', strtolower($class)) );
-				$classFile = $dirs['libs'].'/'.implode( '/', $classSplit ).'.php';
-				$exceptions = $dirs['libs'].'/'.$classSplit[0].'/Exceptions.php';
+				$classFile = $libDir.'/'.implode( '/', $classSplit ).'.php';
+				$exceptions = $libDir.'/'.$classSplit[0].'/Exceptions.php';
 			}
 			if ( isset( $exceptions ) && is_readable( $exceptions ) ) {
 				include_once $exceptions;

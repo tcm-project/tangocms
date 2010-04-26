@@ -2,13 +2,12 @@
 
 /**
  * Zula Framework Theme Layout
- * --- Provides a way to read a layout map, and get all sectors available for a
- * theme. Ability exists to edit both of these XML files.
+ * --- Provides a way to read and write a Layout file for controllers
  *
  * @patches submit all patches to patches@tangocms.org
  *
  * @author Alex Cartwright
- * @copyright Copyright (C) 2007, 2008, 2009 Alex Cartwright
+ * @copyright Copyright (C) 2007, 2008, 2009, 2010 Alex Cartwright
  * @license http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html GNU/LGPL 2.1
  * @package Zula_Theme
  */
@@ -19,189 +18,149 @@
 		 * Name of layout currently in use
 		 * @var string
 		 */
-		protected $layoutName = null;
+		protected $name = null;
 
 		/**
-		 * URL Regex that this layout uses
+		 * Regex that this layout uses
 		 * @var string
 		 */
-		protected $urlRegex = null;
-
-		/**
-		 * States whether this layout is a site type default
-		 * @var bool
-		 */
-		protected $isDefault = false;
+		protected $regex = null;
 
 		/**
 		 * Path to layout XML file to be used
 		 * @var string
 		 */
-		protected $layoutFile = null;
+		protected $path = null;
 
 		/**
-		 * DomDocumet objects of the sector map and sector file
-		 * @var array
+		 * DomDocumet object of the layouts XML
+		 * @var object
 		 */
-		protected $domObjs = array();
+		protected $dom = null;
 
 		/**
-		 * All the controllers in the current layout file (only
-		 * populated once Theme::getControllers() is called)
+		 * Details of all controllers in this layout (only populated
+		 * once self::getControllers() is called)
 		 * @var array
 		 */
 		protected $controllers = array();
 
 		/**
-		 * Name of the current theme
-		 * @var string
-		 */
-		protected $themeName = null;
-
-		/**
-		 * Paths to the sectors.xml file of the theme
-		 * @var string
-		 */
-		protected $sectorsFile = null;
-
-		/**
-		 * All the sectors for the theme (only populated once
-		 * Theme::getSectors() is called
-		 * @var array
-		 */
-		protected $sectors = array();
-
-		/**
 		 * Constructor
-		 * Attempts to load the correct layout XML file, from the name provide.
 		 *
-		 * If a layout name is given and does not exist, it will attempt to create
-		 * it and the needed files. However if no layout name is given, it will try
-		 * to find what layout to use, based upon regex against the current URL
-		 *
-		 * @param string $layoutName
-		 * @param string $themeName
-		 * @return object
-		 */
-		public function __construct( $layoutName=null, $themeName=null ) {
-			if ( $layoutName == null && $this->_zula->getState() == 'installation' ) {
-				$layoutName = 'zula-install-layout.xml';
-			} else if ( Registry::has( 'sql' ) ) {
-				if ( $layoutName == null ) {
-					// Find out what the correct layout should be
-					$siteType = $this->_router->getSiteType();
-					$pdoSt = $this->_sql->prepare( 'SELECT name, regex FROM {SQL_PREFIX}layouts WHERE
-													name LIKE ? AND ? REGEXP regex LIMIT 1' );
-					$data = array( $siteType.'%', trim($this->_router->getRawRequestPath(), '/') );
-					$pdoSt->execute( $data );
-					if ( $row = $pdoSt->fetchAll( PDO::FETCH_ASSOC ) ) {
-						$layoutName = $row[0]['name'];
-						$this->urlRegex = $row[0]['regex'];
-					} else {
-						$layoutName = $siteType.'-default';
-					}
-				} else {
-					// 'layouts' table implemented in 2.2.51, gets the regex for the provided layout.
-					$pdoSt = $this->_sql->prepare( 'SELECT regex FROM {SQL_PREFIX}layouts WHERE name = ?' );
-					$pdoSt->execute( array($layoutName) );
-					if ( $regex = $pdoSt->fetchColumn() ) {
-						$this->urlRegex = $regex;
-					}
-				}
-			}
-			if ( pathinfo( $layoutName, PATHINFO_EXTENSION ) ) {
-				$this->layoutFile = $layoutName;
-				$this->layoutName = pathinfo( $layoutName, PATHINFO_FILENAME );
-			} else {
-				$this->layoutFile = $this->_zula->getDir( 'config' ).'/layouts/'.$layoutName.'.xml';
-				$this->layoutName = $layoutName;
-			}
-			foreach( $this->_router->getSiteTypes() as $siteType ) {
-				if ( $siteType.'-default' == $layoutName ) {
-					$this->isDefault = true;
-					break;
-				}
-			}
-			// Set the sectors file from the theme if available
-			if ( $themeName != null ) {
-				$this->sectorsFile = $this->_zula->getDir( 'themes' ).'/'.$themeName.'/sectors.xml';
-				$this->themeName = $themeName;
-				if ( !is_file( $this->sectorsFile ) ) {
-					throw new Theme_Layout_NoSectorMap( $this->sectorsName.'" does not exist or is not readable' );
-				}
-			}
-		}
-
-		/**
-		 * Allows access to the DomDocument objects, this is used to help
-		 * implement caching nicely, since the DomDocuments may not need
-		 * to be used at all, so less processing.
+		 * Attempts to load the correct layout xml file
 		 *
 		 * @param string $name
 		 * @return object
 		 */
-		public function __get( $name ) {
-			if ( $name == 'xmlMap' || $name == 'xmlSectors' ) {
-				if ( !isset( $this->domObjs[ $name ] ) ) {
-					$this->domObjs[ $name ] = new DomDocument( '1.0', 'UTF-8' );
-					$this->domObjs[ $name ]->preserveWhiteSpace = false;
-					$this->domObjs[ $name ]->formatOutput = true;
-					// Check if to load a file, or create a new document
-					$file = $name == 'xmlMap' ? $this->layoutFile : $this->sectorsFile;
-					if ( is_file( $file ) ) {
-						$this->domObjs[ $name ]->load( $file );
-					} else {
-						$element = $this->domObjs[ $name ]->createElement( ($name == 'xmlMap' ? 'controllers' : 'sectors') );
-						$this->domObjs[ $name ]->appendChild( $element );
-					}
-				}
-				return $this->domObjs[ $name ];
+		public function __construct( $name=null ) {
+			if ( pathinfo( $name, PATHINFO_EXTENSION ) ) {
+				$this->path = $name;
+				$this->name = pathinfo( $name, PATHINFO_FILENAME );
 			} else {
-				return parent::__get( $name );
+				$this->path = $this->_zula->getDir( 'config' ).'/layouts/'.$name.'.xml';
+				$this->name = $name;
+			}
+			// Find the regex for this layout
+			$pdoSt = $this->_sql->prepare( 'SELECT regex FROM {SQL_PREFIX}layouts WHERE name = ?' );
+			$pdoSt->execute( array($name) );
+			if ( $regex = $pdoSt->fetchColumn() ) {
+				$this->regex = $regex;
+			}
+			$pdoSt->closeCursor();
+			// Load the DomDocument (or create if needed)
+			$this->dom = new DomDocument( '1.0', 'UTF-8' );
+			$this->dom->preserveWhiteSpace = false;
+			$this->dom->formatOutput = true;
+			if ( is_file( $this->path ) ) {
+				$this->dom->load( $this->path );
+			} else {
+				$this->dom->appendChild( $this->dom->createElement('controllers') );
 			}
 		}
 
 		/**
-		 * Get all available layouts (can limit by site type, to)
+		 * Takes a site type and a request path, then attempts to find a layout
+		 * name for which the regex matches against the request path. If it can't
+		 * find a match, then 'sitetype-default' will be returned.
 		 *
 		 * @param string $siteType
-		 * @return array|bool
+		 * @param string $requestPath
+		 * @return string
+		 */
+		static public function find( $siteType, $requestPath ) {
+			$pdoSt = Registry::get('sql')->prepare( 'SELECT name FROM {SQL_PREFIX}layouts WHERE
+													name LIKE ? AND ? REGEXP regex LIMIT 1' );
+			$pdoSt->execute( array($siteType.'-%', $requestPath) );
+			if ( ($layout = $pdoSt->fetchColumn()) == false ) {
+				$layout = $siteType.'-default';
+			}
+			$pdoSt->closeCursor();
+			return $layout;
+		}
+
+		/**
+		 * Get all available layouts. Can limit by a site type if needed
+		 *
+		 * @param string $siteType
+		 * @return array
 		 */
 		static public function getAll( $siteType=null ) {
-			$query = 'SELECT * FROM {SQL_PREFIX}layouts';
-			if ( $siteType == null ) {
-				$defaultLayouts = array();
-				foreach( Registry::get( 'router' )->getSiteTypes() as $tmpSiteType ) {
-					$defaultLayouts[] = array('name' => $tmpSiteType.'-default', 'regex' => '');
+			$layoutDir = Registry::get( 'zula' )->getDir( 'config' ).'/layouts';
+			$glob = $siteType ? $siteType.'-*.xml' : '*.xml';
+			foreach( glob($layoutDir.'/'.$glob) as $file ) {
+				$name = pathinfo( $file, PATHINFO_FILENAME );
+				if ( preg_match( '#^(?:admin|main)-default$#i', $name ) ) {
+					$layouts[] = array('name' => $name, 'regex' => '');
+				} else {
+					if ( !isset( $pdoSt ) ) {
+						$pdoSt = Registry::get('sql')->prepare( 'SELECT name, regex FROM {SQL_PREFIX}layouts WHERE name = ?' );
+					}
+					$pdoSt->execute( array($name) );
+					if ( $row = $pdoSt->fetch(PDO::FETCH_ASSOC) ) {
+						$layouts[] = $row;
+					}
 				}
-			} else {
-				if ( !Registry::get( 'router' )->siteTypeExists( $siteType ) ) {
-					return false;
-				}
-				$query .= ' WHERE name LIKE "'.$siteType.'-%"';
-				$defaultLayouts = array( array('name' => $siteType.'-default', 'regex' => '') );
 			}
-			// Gather all results from SQL, and ensure the correct file exists
-			$pdoQuery = Registry::get( 'sql' )->query( $query.' ORDER BY name' );
-			$layoutsDir = Registry::get( 'zula' )->getDir( 'config' ).'/layouts';
-			$layouts = array();
-			foreach( array_merge( $defaultLayouts, $pdoQuery->fetchAll( PDO::FETCH_ASSOC ) ) as $layout ) {
-				if ( file_exists( $layoutsDir.'/'.$layout['name'].'.xml' ) ) {
-					$layouts[] = $layout;
-				}
+			if ( isset($pdoSt) ) {
+				$pdoSt->closeCursor();
 			}
 			return $layouts;
 		}
 
 		/**
-		 * Sets the URL regex to be used for this layout (updates database table
+		 * Sorts the controllers array by the order attribute
+		 *
+		 * @param array $a
+		 * @param array $b
+		 * @return int
+		 */
+		protected function orderControllers( array $a, array $b ) {
+			return strcmp( $a['order'], $b['order'] );
+		}
+
+		/**
+		 * Creates a unique ID to be used for controllers
+		 *
+		 * @return string
+		 */
+		protected function makeCntrlrUid() {
+			$cntrlrs = $this->getControllers();
+			do {
+				$id = substr( uniqid( rand() ), 0, 3 );
+			} while( array_key_exists( $id, $cntrlrs ) );
+			return $id;
+		}
+
+		/**
+		 * Sets the URL regex to be used for this layout
 		 *
 		 * @param string $regex
-		 * @return bool
+		 * @return object
 		 */
-		public function setUrlRegex( $regex ) {
-			$this->urlRegex = $regex;
-			return true;
+		public function setRegex( $regex ) {
+			$this->regex = $regex;
+			return $this;
 		}
 
 		/**
@@ -209,17 +168,8 @@
 		 *
 		 * @return string
 		 */
-		public function getUrlRegex() {
-			return (string) $this->urlRegex;
-		}
-
-		/**
-		 * Gets the name of the layout
-		 *
-		 * @return string
-		 */
-		public function getName() {
-			return $this->layoutName;
+		public function getRegex() {
+			return $this->regex;
 		}
 
 		/**
@@ -229,168 +179,56 @@
 		 * @return bool
 		 */
 		public function setName( $name ) {
-			$this->layoutName = $name;
-			$default = false;;
-			foreach( $this->_router->getSiteTypes() as $siteType ) {
-				if ( $siteType.'-default' == $this->layoutName ) {
-					$default = true;
-					break;
-				}
-			}
-			$this->isDefault = $default;
-			return true;
+			$this->name = $name;
+			return $this;
 		}
 
 		/**
-		 * Returns true if this layout is a site type default
+		 * Gets the name of the layout
 		 *
-		 * @return bool
+		 * @return string
 		 */
-		public function isDefault() {
-			return $this->isDefault;
+		public function getName() {
+			return $this->name;
 		}
 
 		/**
-		 * Clears all cache associated with this Layout/theme
-		 *
-		 * @return bool
-		 */
-		protected function clearCache() {
-			$this->_cache->delete( array(
-										'theme_layout_'.$this->themeName.'_'.$this->layoutName,
-										'theme_sectors_'.$this->themeName.'_'.$this->layoutName,
-										'theme_controllers_'.$this->layoutName,
-										)
-								 );
-			$this->controllers = array();
-			$this->getControllers();
-			return true;
-		}
-
-		/**
-		 * Returns a multidimensional array describing the themes layout.
-		 * Each index will be that of a SectorID, containing an array of
-		 * all the controllers attached to it.
-		 *
-		 * @return array
-		 */
-		public function asArray() {
-			$cacheKey = 'theme_layout_'.$this->themeName.'_'.$this->layoutName;
-			if ( !$layout = $this->_cache->get( $cacheKey ) ) {
-				$layout = array();
-				foreach( $this->getSectors() as $sector ) {
-					$sector['controllers'] = $this->getControllers( $sector['id'] );
-					$layout[ $sector['id'] ] = $sector;
-				}
-				$this->_cache->add( $cacheKey, $layout );
-			}
-			return $layout;
-		}
-
-		/**
-		 * Gets every sector in the sector.xml file of the current theme.
-		 *
-		 * @return array
-		 */
-		public function getSectors() {
-			if ( $this->sectorsFile === null ) {
-				throw new Theme_Layout_NoSectorMap( 'unable to get sectors, no sector map loaded' );
-			} else if ( empty( $this->sectors ) ) {
-				// Attempt to get the sectors from cache
-				$cacheKey = 'theme_sectors_'.$this->themeName.'_'.$this->layoutName;
-				if ( !$this->sectors = $this->_cache->get( $cacheKey ) ) {
-					if ( $this->isDefault() || $this->layoutName == 'zula-install-layout' ) {
-						// Layout is a site type default, so add in the SC sector
-						$this->sectors = array(
-											'SC' => array(
-														'id' 			=> 'SC',
-														'description' 	=> t('Requested Module', Locale::_DTD),
-														),
-											);
-					} else {
-						$this->sectors = array();
-					}
-					foreach( $this->xmlSectors->getElementsByTagName( 'sector' ) as $node ) {
-						$id = strtoupper( $node->getAttribute( 'id' ) );
-						$this->sectors[ $id ] = array(
-													'description' 	=> $node->getElementsByTagName( 'description' )->item(0)->nodeValue,
-													'id'			=> $id,
-													);
-					}
-					$this->_cache->add( $cacheKey, $this->sectors );
-				}
-			}
-			return $this->sectors;
-		}
-
-		/**
-		 * Checks if a sector exists by ID
-		 *
-		 * @param string $id
-		 * @return bool
-		 */
-		public function sectorExists( $id ) {
-			return array_key_exists( strtoupper($id), $this->getSectors() );
-		}
-
-		/**
-		 * Gather information about a sector
-		 *
-		 * @param int $id
-		 * @return array
-		 */
-		public function getSectorDetails( $id ) {
-			if ( $this->sectorExists( $id ) ) {
-				return $this->sectors[ strtoupper($id) ];
-			}
-			throw new Theme_SectorNoExist( 'details could not be got for sector "'.$id.'" as it does not exist' );
-		}
-
-		/**
-		 * Gets all controllers currently in the layout file. If a
-		 * sector is specified, then only those attached to that sector
-		 * will be returned.
+		 * Gets all controllers in the layout file. If a sector is specified
+		 * then get only those attached to that sector.
 		 *
 		 * @param string $inSector
 		 * @return array
 		 */
 		public function getControllers( $inSector=null ) {
 			if ( empty( $this->controllers ) ) {
-				$cacheKey = 'theme_controllers_'.$this->layoutName;
-				if ( !$this->controllers = $this->_cache->get( $cacheKey ) ) {
+				$cacheKey = 'layout_cntrls_'.$this->name;
+				if ( ($this->controllers = $this->_cache->get($cacheKey)) == false ) {
 					$this->controllers = array();
-					foreach( $this->xmlMap->getElementsByTagName( 'controller' ) as $node ) {
-						$config = array();
-						foreach( $node->getElementsByTagName( 'config' )->item(0)->childNodes as $confChild ) {
-							// Gather all configuration values
-							if ( $confChild->nodeType == XML_ELEMENT_NODE ) {
-								$config[ $confChild->nodeName ] = $confChild->nodeValue;
-							}
-						}
-						if ( !isset( $config['displayTitle'] ) ) {
-							$config['displayTitle'] = true;
-						}
-						if ( !isset( $config['customTitle'] ) ) {
-							$config['customTitle'] = null;
-						}
-						if ( !isset( $config['htmlWrapClass'] ) ) {
-							$config['htmlWrapClass'] = null;
+					foreach( $this->dom->getElementsByTagName('controller') as $node ) {
+						// Gather all configuration values
+						$config = array('displayTitle' 	=> true,
+										'customTitle' 	=> null,
+										'htmlWrapClass'	=> null);
+						foreach( $node->getElementsByTagName('config')->item(0)->childNodes as $confNode ) {
+							$config[ $confNode->nodeName ] = $confNode->nodeValue;
 						}
 						// 2.3.51 changed attr 'for_sector' into 'sector', use older if exists
-						if ( ($sector = $node->getAttribute( 'for_sector' )) == false ) {
+						if ( ($sector = $node->getAttribute('for_sector')) == false ) {
 							$sector = $node->getAttribute( 'sector' );
 						}
+						// Store the controllers
 						$cid = $node->getAttribute( 'id' );
 						$this->controllers[ $cid ] = array(
-														'id'		=> $cid,
-														'order'		=> (int) $node->getAttribute( 'order' ),
-														'sector'	=> strtoupper( $sector ),
-														'mod' 		=> $node->getElementsByTagName( 'mod' )->item(0)->nodeValue,
-														'con'		=> $node->getElementsByTagName( 'con' )->item(0)->nodeValue,
-														'sec'		=> $node->getElementsByTagName( 'sec' )->item(0)->nodeValue,
-														'config'	=> $config,
-														);
+															'id'	=> $cid,
+															'order'	=> (int) $node->getAttribute( 'order' ),
+															'sector'=> strtoupper( $sector ),
+															'mod'	=> $node->getElementsByTagName( 'mod' )->item(0)->nodeValue,
+															'con'	=> $node->getElementsByTagName( 'con' )->item(0)->nodeValue,
+															'sec'	=> $node->getElementsByTagName( 'sec' )->item(0)->nodeValue,
+															'config'=> $config,
+															);
 					}
+					// Normalize, order and cache the controllers
 					zula_normalize( $this->controllers );
 					uasort( $this->controllers, array($this, 'orderControllers') );
 					$this->_cache->add( $cacheKey, $this->controllers );
@@ -401,24 +239,13 @@
 			} else {
 				$inSector = strtoupper( $inSector );
 				$controllers = array();
-				foreach( $this->controllers as $controller ) {
-					if ( $controller['sector'] == $inSector ) {
-						$controllers[ $controller['id'] ] = $controller;
+				foreach( $this->controllers as $cntrlr ) {
+					if ( $cntrlr['sector'] == $inSector ) {
+						$controllers[ $cntrlr['id'] ] = $cntrlr;
 					}
 				}
 				return $controllers;
 			}
-		}
-
-		/**
-		 * Sorts the sector controllers array by the order set
-		 *
-		 * @param array $a
-		 * @param array $b
-		 * @return int
-		 */
-		protected function orderControllers( $a, $b ) {
-			return strcmp( $a['order'], $b['order'] );
 		}
 
 		/**
@@ -441,25 +268,12 @@
 			if ( $this->controllerExists( $id ) ) {
 				return $this->controllers[ $id ];
 			}
-			throw new Theme_Layout_ControllerNoExist( 'unable to get details for controller "'.$id.'" as it does not exist' );
+			throw new Theme_Layout_ControllerNoExist( 'layout cntrlr "'.$id.'" does not exist' );
 		}
 
 		/**
-		 * Creates a unique ID to be used for controllers
-		 *
-		 * @return string
-		 */
-		public function makeCntrlrUid() {
-			$controllers = $this->getControllers();
-			do {
-				$id = substr( uniqid( rand() ), 0, 3 );
-			} while( array_key_exists( $id, $controllers ) );
-			return $id;
-		}
-
-		/**
-		 * Adds a new controller to the sector map XML file. Once added
-		 * it will return the unique ID of the controller.
+		 * Adds a new controller to the layout XML. The unique ID of the attached
+		 * cntrlr will be returned.
 		 *
 		 * @param string $sector
 		 * @param array $details
@@ -467,72 +281,56 @@
 		 * @return int
 		 */
 		public function addController( $sector, array $details, $id=null ) {
-			$defaults = array(
-							'mod'		=> 'index',
-							'con' 		=> 'index',
-							'sec' 		=> 'index',
-							'config'	=> array('displayTitle' => true, 'customTitle' => ''),
-							'order'		=> null,
+			$details = array(
+							'id'		=> $id ? $id : $this->makeCntrlrUid(),
+							'sector'	=> $sector,
+							'order'		=> isset($details['order']) ? $details['order'] : 0,
+							'mod'		=> isset($details['mod']) ? $details['mod'] : 'index',
+							'con'		=> isset($details['con']) ? $details['con'] : 'index',
+							'sec'		=> isset($details['sec']) ? $details['sec'] : 'index',
+							'config'	=> array_merge( array('displayTitle' => true, 'customTitle' => ''),
+														$details['config'] ),
 							);
-			$details = zula_merge_recursive( $defaults, $details );
-			$cntrlrElement = $this->xmlMap->createElement( 'controller' );
-			$attributes = array(
-								'id' 		=> $id == null ? $this->makeCntrlrUid() : $id,
-								'sector'	=> $sector,
-								'order'		=> ctype_digit( (string) $details['order']) ? $details['order'] : null,
-								);
-			// Attach all of the attributes
-			foreach( $attributes as $key=>$val ) {
-				$attrib = $this->xmlMap->createAttribute( $key );
-				$attrib->appendChild( $this->xmlMap->createTextNode( $val ) );
-				$cntrlrElement->appendChild( $attrib );
+			// Create the new element with attributes
+			$cntrlrElement = $this->dom->createElement( 'controller' );
+			foreach( array('id', 'sector', 'order') as $attr ) {
+				$attrElement = $this->dom->createAttribute( $attr );
+				$attrElement->appendChild( $this->dom->createTextNode( $details[ $attr ] ) );
+				$cntrlrElement->appendChild( $attrElement );
 			}
 			// Add all of the elements for this controller.
-			$this->attachElement( $cntrlrElement,
-								  array('mod'		=> $details['mod'],
-										'con'		=> $details['con'],
-										'sec'		=> $details['sec'],
-										'config'	=> $details['config'])
-								);
-			$this->xmlMap->documentElement->appendChild( $cntrlrElement );
-			// Add in ACL resource with default permissions of guest inheritence tree
-			$groupDetails = $this->_ugmanager->getGroup( Ugmanager::_GUEST_GID );
-			$roles = array('group_root');
-			foreach( $this->_acl->getRoleTree( $groupDetails['role_id'], true ) as $tmpRole ) {
-				$roles[] = $tmpRole['name'];
-			}
-			$this->_acl->allowOnly( 'layout_controller_'.$attributes['id'], $roles );
-			// Remove cache entries
-			$this->clearCache();
-			Hooks::notifyAll( 'layout_add_cntrlr', $attributes['id'], $details );
-			return $attributes['id'];
-		}
-
-		/**
-		 * Helper method for when adding a new controller. Takes an array
-		 * of text nodes that need to be created, and will recursively
-		 * create them, attaching them to the element.
-		 *
-		 * @param object $element
-		 * @param array $textNodes
-		 * @return bool
-		 */
-		protected function attachElement( DomElement &$element, array $textNodes ) {
-			foreach( $textNodes as $key=>$val ) {
-				$tmpElement = $this->xmlMap->createElement( $key );
+			foreach( array('mod', 'con', 'sec', 'config') as $key ) {
+				$val = $details[ $key ];
+				$element = $this->dom->createElement( $key );
 				if ( is_array( $val ) ) {
-					$this->attachElement( $tmpElement, $val );
+					// Configuration values, currently only 1 level
+					foreach( $val as $confKey=>$confVal ) {
+						$confElement = $this->dom->createElement( $confKey );
+						$method = zula_needs_cdata( $confVal ) ? 'createCDATASection' : 'createTextNode';
+						$confElement->appendChild( $this->dom->$method( (string) $confVal ) );
+						$element->appendChild( $confElement );
+					}
 				} else {
-					$method = zula_needs_cdata($val) ? 'createCDATASection' : 'createTextNode';
-					$tmpElement->appendChild( $this->xmlMap->$method( $val ) );
+					$method = zula_needs_cdata( $val ) ? 'createCDATASection' : 'createTextNode';
+					$element->appendChild( $this->dom->$method( $val ) );
 				}
-				$element->appendChild( $tmpElement );
+				$cntrlrElement->appendChild( $element );
 			}
-			return true;
+			$this->dom->documentElement->appendChild( $cntrlrElement );
+			/**
+			 * Add ACL resource with default permissions (if needed), cleanup and return
+			 */
+			$resource = 'layout_controller_'.$details['id'];
+			if ( !$this->_acl->resourceExists( $resource ) ) {
+				$this->_acl->allow( $resource, 'group_guest' );
+			}
+			$this->_cache->delete( 'layout_cntlrs_'.$this->name );
+			Hooks::notifyAll( 'layout_add_cntrlr', $details );
+			return $details['id'];
 		}
 
 		/**
-		 * Removes a controller from the sector map, by ID
+		 * Removes a cntrlr by its unique id
 		 *
 		 * @param int $id
 		 * @return bool
@@ -541,22 +339,21 @@
 			if ( !$this->controllerExists( $id ) ) {
 				throw new Theme_Layout_ControllerNoExist;
 			}
-			$controllerNodes = $this->xmlMap->getElementsByTagName( 'controller' );
-			for( $i = 0; $i < $controllerNodes->length; $i++ ) {
-				if ( $controllerNodes->item( $i )->getAttribute( 'id' ) == $id ) {
-					$this->xmlMap->documentElement->removeChild( $controllerNodes->item( $i ) );
-					// Remove cache entries
-					$this->clearCache();
-					Hooks::notifyAll( 'layout_detach_cntrlr', $id );
-					return true;
-				}
+			$xPath = new DomXpath( $this->dom );
+			$cntrlr = $xPath->query( '/controllers/controller[@id='.$id.']' )->item(0);
+			if ( $cntrlr === null ) {
+				return false;
+			} else {
+				$this->dom->documentElement->removeChild( $cntrlr );
+				$this->_cache->delete( 'layout_cntrlrs_'.$this->name );
+				Hooks::notifyAll( 'layout_detach_cntrlr', $id );
+				return true;
 			}
-			return false;
 		}
 
 		/**
-		 * Edit a controller that is already in the sector map. This is done easily
-		 * by first removing the controller, then adding a new one (with the same ID)
+		 * Edit details of an existing controller. The 'mod' value can never change
+		 * by this method.
 		 *
 		 * @param int $id
 		 * @param array $details
@@ -584,15 +381,20 @@
 		 * @return bool
 		 */
 		public function save( $path=null ) {
-			$path = trim($path) ? $path : $this->layoutFile;
+			$path = trim($path) ? $path : $this->path;
 			if (
 				(file_exists( $path ) && zula_is_writable( $path ) || !file_exists( $path ) && zula_is_writable( dirname($path) ))
-				&& $this->xmlMap->save( $path )
+				&& $this->dom->save( $path )
 			) {
-				if ( $this->isDefault() === false && Registry::has( 'sql' ) ) {
-					$pdoSt = $this->_sql->prepare( 'INSERT INTO {SQL_PREFIX}layouts (name, regex) VALUES (?, ?)
-													ON DUPLICATE KEY UPDATE regex = VALUES(regex)' );
-					$pdoSt->execute( array($this->layoutName, $this->getUrlRegex()) );
+				if ( Registry::has( 'sql' ) ) {
+					if ( ($regex = $this->getRegex()) ) {
+						$pdoSt = $this->_sql->prepare( 'INSERT INTO {SQL_PREFIX}layouts (name, regex) VALUES (?, ?)
+														ON DUPLICATE KEY UPDATE regex = VALUES(regex)' );
+						$pdoSt->execute( array($this->name, $this->getRegex()) );
+					} else {
+						$pdoSt = $this->_sql->prepare( 'DELETE FROM {SQL_PREFIX}layouts WHERE name = ?' );
+						$pdoSt->execute( array($this->name) );
+					}
 				}
 				return true;
 			} else {
@@ -606,9 +408,9 @@
 		 * @return bool
 		 */
 		public function delete() {
-			if ( zula_is_deletable( $this->layoutFile ) && unlink( $this->layoutFile ) ) {
+			if ( zula_is_deletable( $this->path ) && unlink( $this->path ) ) {
 				$pdoSt = $this->_sql->prepare( 'DELETE FROM {SQL_PREFIX}layouts WHERE name = ?' );
-				$pdoSt->execute( array($this->layoutName) );
+				$pdoSt->execute( array($this->name) );
 				return true;
 			} else {
 				return false;

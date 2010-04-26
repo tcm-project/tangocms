@@ -2,10 +2,9 @@
 
 /**
  * Zula Framework Theme
- * --- Takes all of the sectors for a theme, and poplates it with module/controller
- * output into the various sectors.
- *
- * Also static methods to get general information about themes.
+ * --- Provides access to themes details, and can load a Layout object to place
+ * different controllers output into sectors. Loading of the main dispatchers
+ * content is also placed into the 'SC' sector.
  *
  * @patches submit all patches to patches@tangocms.org
  *
@@ -24,34 +23,10 @@
 		const _JQUERY_VERSION = 1.4;
 
 		/**
-		 * Name of the current theme
-		 * @var string
-		 */
-		protected $themeName = null;
-
-		/**
-		 * Details from the themes .xml file
-		 * @var array
-		 */
-		protected $themeDetails = array();
-
-		/**
-		 * Theme/Content Layout object
-		 * @var object
-		 */
-		protected $layout = null;
-
-		/**
-		 * All JS files that have been loaded via Theme::loadJsFile()
-		 * @var array
-		 */
-		protected $loadedJsFiles = array();
-
-		/**
 		 * Toggles if JavaScript files should be aggregated
 		 * @var bool
 		 */
-		protected $aggregateJs = false;
+		protected $jsAggregation = false;
 
 		/**
 		 * Toggles if Google's CDN should be used
@@ -60,37 +35,65 @@
 		protected $googleCdn = false;
 
 		/**
+		 * Details from the themes .xml file
+		 * @var array
+		 */
+		protected $details = array();
+
+		/**
+		 * All JS files that have been loaded via Theme::loadJsFile()
+		 * @var array
+		 */
+		protected $loadedJsFiles = array();
+
+		/**
 		 * Stores all loaded JS files from Google's CDN
 		 * @var array
 		 */
 		protected $loadedGoogleLibs = array();
 
 		/**
-		 * Create instance of a theme and gather all details for it.
+		 * Check if the theme exists
 		 *
-		 * @param string $themeName
+		 * @param string $name
 		 * @return object
 		 */
-		public function __construct( $themeName ) {
-			if ( !self::exists( $themeName ) ) {
-				throw new Theme_NoExist( 'unable to construct theme "'.$themeName.'" as it does not exist' );
+		public function __construct( $name ) {
+			if ( !self::exists( $name ) ) {
+				throw new Theme_NoExist( 'unable to construct theme "'.$name.'" as it does not exist' );
 			}
-			Hooks::register( 'cache_purge', array($this, 'clearJsDir') );
-			// Populate details array and construct parent view
-			$this->themeName = $themeName;
-			$this->getAllDetails();
-			parent::__construct( $this->_zula->getDir( 'themes' ).'/'.$themeName.'/main_template.html' );
-			if ( $this->_config->has( 'cache/js_aggregate' ) ) {
-				$this->aggregateJs = (bool) $this->_config->get( 'cache/js_aggregate' );
+			$this->details = array('path' => $this->_zula->getDir('themes').'/'.$name);
+			// Load all details for the theme
+			$dom = new DomDocument;
+			$dom->load( $this->details['path'].'/details.xml' );
+			foreach( $dom->getElementsByTagName('theme')->item(0)->getElementsByTagName('*') as $item ) {
+				$this->details[ $item->nodeName ] = $item->nodeValue;
 			}
-			if ( $this->_config->has( 'cache/google_cdn' ) ) {
-				$this->googleCdn = (bool) $this->_config->get( 'cache/google_cdn' );
-			}
+			// Construct parent view and register cache_purge hook
+			parent::__construct( $this->details['path'].'/main_template.html' );
+			Hooks::register( 'cache_purge', array('Theme', 'clearJsTmp') );
 		}
 
 		/**
-		 * Checks if a themes main_template.html and details.xml
-		 * file exists. If so, then it exists.
+		 * Alias to Theme::output()
+		 *
+		 * @return string
+		 */
+		public function __toString() {
+			return $this->output();
+		}
+
+		/**
+		 * Hook callback for 'cache_purge' to remove all tmp JavaScript files
+		 *
+		 * @return int
+		 */
+		static public function clearJsTmp() {
+			return zula_empty_dir( Registry::get('zula')->getDir('tmp').'/js/', 'js' );
+		}
+
+		/**
+		 * Returns true if a themes main_template.html and details.xml exists
 		 *
 		 * @param string $themeName
 		 * @return bool
@@ -121,52 +124,34 @@
 		}
 
 		/**
-		 * Gets the theme that should be used for a specified site
-		 * type. If none is specified, it uses the current.
+		 * Sets of JavaScript aggregation should be enabled or disabled
 		 *
-		 * @param string $siteType
-		 * @return string
+		 * @param bool $enable
+		 * @return object
 		 */
-		static public function getSiteTypeTheme( $siteType=null ) {
-			if ( !trim( $siteType ) ) {
-				$siteType = Registry::get( 'router' )->getSiteType();
-			}
-			$config = Registry::get( 'config' );
-			try {
-				return $config->get( 'theme/'.$siteType.'_default' );
-			} catch ( Config_KeyNoExist $e ) {
-				return $config->get( 'theme/default' );
-			}
+		public function setJsAggregation( $enable=true ) {
+			$this->jsAggregation = (bool) $enable;
+			return $this;
 		}
 
 		/**
-		 * Hook callback for 'cache_purge' to remove all JS files
-		 * from the tmp directory
+		 * Sets if Googles CDN servers should be used for common files such as jQuery
 		 *
-		 * @return int
+		 * @param bool $useGoogle
+		 * @return object
 		 */
-		public function clearJsDir() {
-			return zula_empty_dir( $this->_zula->getDir( 'tmp' ).'/js/', 'js', $this->_cache->get( 'cache/ttl' ) );
+		public function setGoogleCdn( $useGoogle=true ) {
+			$this->googleCdn = (bool) $useGoogle;
+			return $this;
 		}
 
 		/**
-		 * Gets all of the details from the 'details.xml' file for
-		 * the current theme.
+		 * Gets all of the details from the 'details.xml' file for the current theme.
 		 *
 		 * @return array
 		 */
 		public function getAllDetails() {
-			if ( empty( $this->themeDetails ) ) {
-				$detailsDom = new DomDocument;
-				$detailsDom->load( $this->_zula->getDir( 'themes' ).'/'.$this->themeName.'/details.xml' );
-				$xpath = new DomXpath( $detailsDom );
-				foreach( $xpath->query( '/themes/theme/*' ) as $node ) {
-					if ( $node->nodeType == XML_ELEMENT_NODE && !$xpath->query( '*', $node )->length ) {
-						$this->themeDetails[ $node->nodeName ] = $node->nodeValue;
-					}
-				}
-			}
-			return $this->themeDetails;
+			return $this->details;
 		}
 
 		/**
@@ -176,53 +161,10 @@
 		 * @return mixed
 		 */
 		public function getDetail( $key ) {
-			if ( isset( $this->themeDetails[ $key ] ) ) {
-				return $this->themeDetails[ $key ];
+			if ( isset( $this->details[ $key ] ) ) {
+				return $this->details[ $key ];
 			}
 			throw new Theme_DetailNoExist( 'details "'.$key.'" does not exist' );
-		}
-
-		/**
-		 * Access the layout object for the theme
-		 *
-		 * @return object
-		 */
-		public function layout() {
-			if ( !($this->layout instanceof Theme_Layout) ) {
-				$this->layout = new Theme_Layout( null, $this->getDetail( 'name' ) );
-			}
-			return $this->layout;
-		}
-
-		/**
-		 * Deletes a theme by removing it's directory, then if any site-types
-		 * were using that theme, it will update the setting for a new theme
-		 *
-		 * It will *not* delete the last remaining theme
-		 *
-		 * @return bool
-		 */
-		public function delete() {
-			foreach( self::getAll() as $theme ) {
-				if ( $theme != $this->getDetail( 'name' ) ) {
-					$replacementTheme = $theme;
-					break;
-				}
-			}
-			if ( !isset( $replacementTheme ) ) {
-				throw new Theme_UnableToDelete( 'unable to delete last remaning theme', 1 );
-			}
-			// Attempt to remove the directory
-			$themeDir = $this->_zula->getDir( 'themes' ).'/'.$this->getDetail( 'name' );
-			if ( !zula_full_rmdir( $themeDir ) ) {
-				throw new Theme_UnableToDelete( 'Theme directory "'.$themeDir.'" could not be (fully) removed. Please check permissions', 2 );
-			}
-			foreach( $this->_router->getSiteTypes() as $siteType ) {
-				if ( self::getSiteTypeTheme( $siteType ) == $this->getDetail( 'name' ) ) {
-					$this->_config_sql->update( 'theme/'.$siteType.'_default', $replacementTheme );
-				}
-			}
-			return true;
 		}
 
 		/**
@@ -231,18 +173,16 @@
 		 * @return array
 		 */
 		public function getAllCss() {
-			$dir = $this->_zula->getDir( 'themes' ).'/'.$this->getDetail( 'name' );
 			$cssFiles = array();
-			foreach( glob( $dir.'/*.css' ) as $file ) {
+			foreach( glob( $this->getDetail('path').'/*.css' ) as $file ) {
 				$name = pathinfo( $file, PATHINFO_FILENAME );
 				$cssFiles[ $name ] = array(
-											'path' 	=> $dir.'/'.pathinfo( $file, PATHINFO_BASENAME ),
+											'path' 	=> $this->getDetail('path').'/'.pathinfo( $file, PATHINFO_BASENAME ),
 											'name'	=> $name,
 											);
 			}
 			return $cssFiles;
 		}
-
 
 		/**
 		 * Gets the path to a single CSS file by its name (no .css extension)
@@ -255,7 +195,16 @@
 			if ( isset( $cssFiles[ $cssName ] ) ) {
 				return $cssFiles[ $cssName ];
 			}
-			throw new Theme_CssNoExist( 'CSS "'.$cssName.'" does not exist for theme "'.$this->getDetail( 'name' ).'"' );
+			throw new Theme_CssNoExist( 'CSS "'.$cssName.'" does not exist for' );
+		}
+
+		/**
+		 * Deletes a theme by removing it's directory
+		 *
+		 * @return bool
+		 */
+		public function delete() {
+			return zula_full_rmdir( $this->getDetail('path') );
 		}
 
 		/**
@@ -362,7 +311,7 @@
 				if ( $jsFile == 'jQuery/jquery.js' || $jsFile == 'jQueryUI/jqueryui.js' || strpos( $jsFile, 'libs/' ) === 0 ) {
 					$type = 'system';
 				} else {
-					$type = $this->aggregateJs && $merge ? 'merging' : 'standalone';
+					$type = $this->jsAggregation && $merge ? 'merging' : 'standalone';
 				}
 				// Get the right path for the JS file and store it correctly
 				$jsFileDir = $module == null ? $this->_zula->getDir( 'js' ) : Module::getDirectory().'/'.$module.'/assets';
@@ -383,7 +332,7 @@
 						$jsPath = $this->_router->makeUrl( 'assets/v/'.$module ).'/'.$jsFile;
 					}
 				}
-				if ( $this->aggregateJs ) {
+				if ( $this->jsAggregation ) {
 					if ( !isset($this->loadedJsFiles[$type]) || !in_array($jsPath, $this->loadedJsFiles[ $type ]) ) {
 						$this->loadedJsFiles[ $type ][] = $jsPath;
 						++$numberAdded;
@@ -453,110 +402,134 @@
 		}
 
 		/**
-		 * Loads something, usually a controllers output in a sector
-		 * tag within the current theme.
+		 * Assigns data to a sector. Note that the sector is not checked to exist
+		 * before it assigns.
 		 *
 		 * @param string $sector
 		 * @param string $data
 		 * @return bool
 		 */
 		public function loadIntoSector( $sector, $data ) {
-			if ( strtoupper( $sector ) == 'SC' || $this->layout()->sectorExists( $sector ) ) {
+			if ( preg_match( '#^S(?:C|[0-9]+)$#i', $sector ) ) {
 				return $this->assignHtml( array($sector => $data), false );
 			}
-			throw new Theme_SectorNoExist( 'unable to load data into sector "'.$sector.'" as it does not exist' );
+			return false;
 		}
 
 		/**
-		 * Gets all sectors for the current theme, and loads all of the attached
-		 * modules/controllers into them. Each attached controller has its own
-		 * ACL resource which is checked first.
+		 * Loads the main dispatchers content which will be assigned to the special
+		 * sector 'SC'. Details from the dispatcher object will be used to form the
+		 * page title and gather things such as page links.
 		 *
+		 * @param string $content
+		 * @param object $dispatcher
 		 * @return bool
 		 */
-		public function loadSectorControllers() {
-			foreach( $this->layout()->asArray() as $sector ) {
-				if ( $sector['id'] == 'SC' ) {
-					continue; # SC content is not handled by this method
+		public function loadDispatcher( $content, Dispatcher $dispatcher ) {
+			$pageLinks = $pageId = null;
+			$cntrlrTitle = t('Oops!', Locale::_DTD);
+			if ( $dispatcher->isDispatched() ) {
+				$reqCntrlr = $dispatcher->getReqCntrlr();
+				$dispatchData = $dispatcher->getDispatchData();
+				// Decide on what title to display
+				$cntrlrTitle = $reqCntrlr->getDetail( 'title' );
+				if ( isset( $dispatchData['config']['displayTitle'], $dispatchData['customTitle'] ) ) {
+					if ( $dispatchData['config']['displayTitle'] === 'custom' && !empty( $dispatchData['config']['customTitle'] ) ) {
+						$cntrlrTitle = $dispatchData['config']['customTitle'];
+					} else if ( !$dispatchData['config']['displayTitle'] ) {
+						$cntrlrTitle = null;
+					}
 				}
-				/**
-				 * Attempt to load every needed module/controller, and check if user has permission
-				 * to the controller. If no ACL resource exists, it's assumed user has permission!
-				 */
-				foreach( $sector['controllers'] as $cntrlr ) {
-					$aclResource = 'layout_controller_'.$cntrlr['id'];
-					if ( _ACL_ENABLED && ($this->_acl->resourceExists( $aclResource ) && !$this->_acl->check( $aclResource, null, false )) ) {
-						continue;
-					}
-					$cntrlrOutput = false;
-					try {
-						$module = new Module( $cntrlr['mod'] );
-						try {
-							$ident = $cntrlr['mod'].'::'.$cntrlr['con'].'::'.$cntrlr['sec'];
-							$tmpCntrlr = $module->loadController( $cntrlr['con'], $cntrlr['sec'], $cntrlr['config'], $sector['id'] );
-							$cntrlrOutput = $tmpCntrlr['output'];
-							// Check cntrlr returned something usable
-							if ( $cntrlrOutput === false ) {
-								continue;
-							} else if ( !trim( $cntrlrOutput ) ) {
-								$cntrlrOutput = '<p>'.t('Controller loaded but appears to display no content', Locale::_DTD).'</p>';
-							}
-						} catch ( Module_ControllerNoExist $e ) {
-							$this->_log->message( $e->getMessage(), Log::L_WARNING );
-							$cntrlrOutput .= '<p>'.sprintf( t('requested controller "%s" does not exist', Locale::_DTD), $ident ).'</p>';
-						} catch ( Module_AjaxOnly $e ) {
-							$this->_log->message( 'controller "'.$ident.'" must be loaded in an AJAX request only', Log::L_WARNING );
-							continue;
-						} catch ( Module_UnableToLoad $e ) {
-							// Could also be a Module_NoPermission
-							continue;
-						}
-					} catch ( Module_NoExist $e ) {
-						$this->_log->message( 'sector module "'.(isset($ident) ? $ident : $cntrlr['mod']).'" does not exist', Log::L_WARNING );
-						continue;
-					}
-					// Wrap the controller in the module_wrap.html file, and load into sector.
-					if ( $cntrlr['config']['displayTitle'] === 'custom' && !empty( $cntrlr['config']['customTitle'] ) ) {
-						$title = $cntrlr['config']['customTitle'];
-					} else {
-						$title = isset($tmpCntrlr['title']) ? $tmpCntrlr['title'] : t('Oops!', Locale::_DTD);
-					}
-					if ( empty( $cntrlr['config']['htmlWrapClass'] ) ) {
-						$htmlWrapClass = null;
-					} else {
-						$htmlWrapClass = $cntrlr['config']['htmlWrapClass'];
-					}
-					// Build up the final wrap view.
-					$view = new View( $this->_zula->getDir( 'themes' ).'/'.$this->getDetail( 'name' ).'/module_wrap.html' );
-					$view->assign( array(
-										'ID'			=> $cntrlr['id'],
-										'TITLE'			=> $title,
-										'DISPLAY_TITLE'	=> !empty( $cntrlr['config']['displayTitle'] ),
-										'WRAP_CLASS'	=> $htmlWrapClass,
-										));
-					$view->assignHtml( array('CONTENT' => $cntrlrOutput) );
-					$this->loadIntoSector( $sector['id'], $view->getOutput() );
+				// Make the page links from the cntrlr
+				foreach( $reqCntrlr->getPageLinks() as $title=>$url ) {
+					$pageLinks .= sprintf( '<li><a href="%1$s" title="%2$s">%2$s</a></li>',
+											(trim($url) ? zula_htmlspecialchars($url) : '#'),
+											zula_htmlspecialchars( $title ) );
 				}
-				if ( !$this->isAssigned( $sector['id'] ) ) {
-					$this->loadIntoSector( $sector['id'], '' );
-				}
+				$pageLinks = $pageLinks ? '<ul id="pagelinks">'.$pageLinks.'</ul>' : null;
 			}
-			return true;
+			$pageTitle = str_replace( array('[PAGE]', '[SITE_TITLE]'),
+									  array($cntrlrTitle, $this->_config->get('config/title')),
+									  $this->_config->get('config/title_format')
+									);
+			// Assign all needed data to the view
+			$this->assign( array(
+								'CONTROLLER_TITLE'	=> $cntrlrTitle,
+								'PAGE_TITLE'		=> $pageTitle,
+								'PAGE_ID'			=> $pageId,
+								));
+			$this->assignHtml( array(
+								'EVENT_FEEDBACK'	=> $this->_event->output(),
+								'PAGE_LINKS'		=> $pageLinks,
+								));
+			return $this->loadIntoSector( 'SC', $content );
 		}
 
 		/**
-		 * Sets controller title, page links, errors etc and returns the
-		 * final output of the theme.
+		 * Loads all needed controllers from the layout into the correct sectors.
 		 *
-		 * If aggregation is on, all loaded JS files will be merged into
-		 * one to reduce HTTP requests. Files that are older than the main
-		 * cache TTL will be removed first.
+		 * @param object $layout
+		 * @return int
+		 */
+		public function loadLayout( Theme_Layout $layout ) {
+			$cntrlrCount = 0;
+			foreach( $layout->getControllers() as $cntrlr ) {
+				if ( $cntrlr['sector'] == 'SC' ) {
+					continue;
+				}
+				$resource = 'layout_controller_'.$cntrlr['id'];
+				if ( _ACL_ENABLED && ($this->_acl->resourceExists( $resource ) && !$this->_acl->check( $resource, null, false )) ) {
+					continue;
+				}
+				$cntrlrOutput = false;
+				try {
+					$module = new Module( $cntrlr['mod'] );
+					$ident = $cntrlr['mod'].'::'.$cntrlr['con'].'::'.$cntrlr['sec'];
+					$tmpCntrlr = $module->loadController( $cntrlr['con'], $cntrlr['sec'], $cntrlr['config'], $cntrlr['sector'] );
+					if ( $tmpCntrlr['output'] !== false ) {
+						/**
+						 * Wrap the cntrlr in the module_wrap.html file
+						 */
+						if ( $cntrlr['config']['displayTitle'] === 'custom' && !empty( $cntrlr['config']['customTitle'] ) ) {
+							$title = $cntrlr['config']['customTitle'];
+						} else {
+							$title = isset($tmpCntrlr['title']) ? $tmpCntrlr['title'] : t('Oops!', Locale::_DTD);
+						}
+						$wrap = new View( $this->getDetail('path').'/module_wrap.html' );
+						$wrap->assign( array(
+											'ID'			=> $cntrlr['id'],
+											'TITLE'			=> $title,
+											'DISPLAY_TITLE'	=> !empty( $cntrlr['config']['displayTitle'] ),
+											'WRAP_CLASS'	=> $cntrlr['config']['htmlWrapClass'],
+											));
+						$wrap->assignHtml( array('CONTENT' => $tmpCntrlr['output'])  );
+						$this->loadIntoSector( $cntrlr['sector'], $wrap->getOutput() );
+						++$cntrlrCount;
+					}
+				} catch ( Module_NoExist $e ) {
+					$this->_log->message( 'sector module "'.(isset($ident) ? $ident : $cntrlr['mod']).'" does not exist',
+											Log::L_WARNING );
+				} catch ( Module_ControllerNoExist $e ) {
+					$this->_log->message( $e->getMessage(), Log::L_WARNING );
+				} catch ( Module_UnableToLoad $e ) {
+					// Could also be a Module_NoPermission
+				}
+				if ( !$this->isAssigned( $cntrlr['sector'] ) ) {
+					$this->loadIntoSector( $cntrlr['sector'], '' );
+				}
+			}
+			return $cntrlrCount;
+		}
+
+		/**
+		 * Returns the themes view output as a string. If a layout object has been
+		 * loaded, then all required controllers for said layout will be loaded into
+		 * the correct sector.
 		 *
 		 * @return string
 		 */
 		public function output() {
 			if ( !empty( $this->loadedJsFiles ) ) {
-				zula_empty_dir( $this->_zula->getDir( 'tmp' ).'/js/', 'js', $this->_config->get( 'cache/ttl' ) );
 				// Setup some vars to be used (as JS can not get at the Zula Framework)
 				$this->addHead( 'js',
 								array(),
@@ -568,7 +541,7 @@
 								true
 							   );
 			}
-			if ( $this->aggregateJs ) {
+			if ( $this->jsAggregation ) {
 				// Add in all needed JavaScript files, those under 'merging' will be aggregated.
 				foreach( array('system', 'merging', 'standalone') as $type ) {
 					if ( empty( $this->loadedJsFiles[ $type ] ) ) {
@@ -582,26 +555,23 @@
 						 * Merge all 'merging' JS files into 1, help reduce HTTP requests
 						 */
 						$tmpJsFile = 'js/'.zula_hash( implode('', $this->loadedJsFiles[$type]), null, 'md5' ).'.js';
-						$jsFilePath = array(
-											'real'	=> $this->_zula->getDir( 'tmp' ).'/'.$tmpJsFile,
-											'html'	=> $this->_zula->getDir( 'tmp', true ).'/'.$tmpJsFile,
-											);
+						$tmpJsPath = $this->_zula->getDir( 'tmp' ).'/'.$tmpJsFile;
 						// Check if the aggregated file exists, if so - see if we need to expire it
 						$hasFile = false;
-						if ( is_dir( dirname($jsFilePath['real']) ) ) {
-							if ( file_exists( $jsFilePath['real'] ) ) {
+						if ( is_dir( dirname($tmpJsPath) ) ) {
+							if ( file_exists( $tmpJsPath ) ) {
 								$hasFile = true;
-								$lastModified = filemtime( $jsFilePath['real'] );
+								$lastModified = filemtime( $tmpJsPath );
 								foreach( $this->loadedJsFiles[ $type ] as $file ) {
 									if ( filemtime( $file ) > $lastModified ) {
-										unlink( $jsFilePath['real'] );
+										unlink( $tmpJsPath );
 										$hasFile = false;
 										break;
 									}
 								}
 							}
 						} else {
-							zula_make_dir( dirname($jsFilePath['real']) );
+							zula_make_dir( dirname($tmpJsPath) );
 						}
 						if ( $hasFile === false ) {
 							// Create the new aggregation file
@@ -609,100 +579,19 @@
 							foreach( $this->loadedJsFiles[ $type ] as $file ) {
 								$content .= file_get_contents( $file );
 							}
-							file_put_contents( $jsFilePath['real'], $content );
+							file_put_contents( $tmpJsPath, $content );
 						}
-						$this->addHead( 'js', array('src' => $jsFilePath['html']) );
+						$this->addHead( 'js', array('src' => $this->_zula->getDir('tmp', true).'/'.$tmpJsFile) );
 					}
 				}
 			}
-			$details = array(
-							'page_links'	=> '',
-							'cntrlr_title'	=> t('Oops!', Locale::_DTD),
-							'module'		=> 'unknown',
-							'controller'	=> 'unknown',
-							'section'		=> 'unknown',
-							);
-			// Gather data from the requested controller (if it exists)
-			if ( $this->_dispatcher->isDispatched() ) {
-				$reqCntrlr = $this->_dispatcher->getReqCntrl();
-				$dispatchData = $this->_dispatcher->getDispatchData();
-				$details = array(
-								'page_links'	=> $this->makePageLinks( $reqCntrlr->getPageLinks() ),
-								'module'		=> $dispatchData['module'],
-								'controller'	=> $dispatchData['controller'],
-								'section'		=> $dispatchData['section'],
-								);
-				// Decide what title to display for the requested controller
-				if ( $this->_router->getParsedUrl()->module == null ) {
-					if ( $dispatchData['config']['displayTitle'] === 'custom' && !empty( $dispatchData['config']['customTitle'] ) ) {
-						$details['cntrlr_title'] = $dispatchData['config']['customTitle'];
-					} else if ( $dispatchData['config']['displayTitle'] ) {
-						$details['cntrlr_title'] = $reqCntrlr->getDetail( 'title' );
-					} else {
-						$details['cntrlr_title'] = null;
-					}
-				} else {
-					$details['cntrlr_title'] = $reqCntrlr->getDetail( 'title' );
-				}
-			}
-			// Unqiue page ID used normally on the 'body' element
-			#$pageId = $this->_dispatcher->atFrontpage() ? 'frontpage' : $details['module'].'_'.$details['controller'].'_'.$details['section'];
-			$this->assign( array(
-								'CONTROLLER_TITLE'	=> $details['cntrlr_title'],
-								'PAGE_TITLE'		=> $this->makePageTitle( $details['cntrlr_title'] ),
-								'PAGE_ID'			=> 'frontpage',
-								));
-			$this->assignHtml( array(
-									'EVENT_FEEDBACK'	=> $this->_event->output(),
-									'PAGE_LINKS'		=> $details['page_links'],
-									));
 			if ( !$this->isAssigned( 'HEAD' ) ) {
 				$this->assign( array('HEAD' => '') );
 			}
 			return $this->getOutput();
 		}
 
-		/**
-		 * Creates the page title in the correct format
-		 *
-		 * @param string $page
-		 * @return string
-		 */
-		public function makePageTitle( $page ) {
-			try {
-				$format = $this->_config->get( 'config/title_format' );
-			} catch ( Config_KeyNoExist $e ) {
-				$format = '[PAGE] | [SITE_TITLE]';
-			}
-			// Create tokens what what to replace them with
-			$tokens = array(
-							'[PAGE]'		=> $page,
-							'[SITE_TITLE]' 	=> $this->_config->get( 'config/title' ),
-							);
-			return str_replace( array_keys($tokens), array_values($tokens), $format );
-		}
 
-		/**
-		 * Takes an array and creates a simple unsorted-lists that
-		 * are used as page links and formats them correctly
-		 *
-		 * @param array $links
-		 * @return string
-		 */
-		public function makePageLinks( array $links ) {
-			if ( empty( $links ) ) {
-				return '';
-			} else {
-				$linkItems = array();
-				foreach( $links as $title=>$url ) {
-					$url = !trim( $url ) ? '#' : zula_htmlspecialchars( $url );
-					$title = zula_htmlspecialchars( $title );
-					// Build link and list item
-					$linkItems[] = '<li><a href="'.$url.'" title="'.$title.'">'.$title.'</a></li>';
-				}
-				return '<ul id="pagelinks">'.implode( '', $linkItems ).'</ul>';
-			}
-		}
 
 	}
 

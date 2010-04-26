@@ -39,14 +39,4 @@
       <display_category>3</display_category>
     </config>
   </controller>
-  <controller id="168" sector="SC" order="0">
-    <mod>page</mod>
-    <con>index</con>
-    <sec>welcome!</sec>
-    <config>
-      <displayTitle>true</displayTitle>
-      <customTitle></customTitle>
-      <htmlWrapClass></htmlWrapClass>
-    </config>
-  </controller>
 </controllers>

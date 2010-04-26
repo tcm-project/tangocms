@@ -8,12 +8,4 @@
 			<displayTitle>true</displayTitle>
 		</config>
 	</controller>
-	<controller id="336" sector="S1" order="1">
-		<mod>progress</mod>
-		<con>index</con>
-		<sec>index</sec>
-		<config>
-			<displayTitle>true</displayTitle>
-		</config>
-	</controller>
 </controllers>

@@ -38,6 +38,8 @@
 					$this->$library = Registry::get( 'zula' )->loadLib( substr( $library, 1 ) );
 				}
 				return $this->$library;
+			} else {
+				return false;
 			}
 		}
 

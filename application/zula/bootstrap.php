@@ -22,10 +22,9 @@
 	}
 
 	/**
-	 * Check if SQL is enable, if so attempt to connect to the server provided
-	 * in the main configuration files. Extra configuration values will be loaded
-	 * as well from the correct table, and merged into the main configuration
-	 * object
+	 * Check if SQL is enabled, if so attempt to connect to the server provided in the main
+	 * configuration files. Extra configuration values will be loaded as well from the correct
+	 * table, and merged into the main configuration object
 	 */
 	if ( $config->get( 'sql/enable' ) ) {
 		if ( !extension_loaded( 'pdo' ) ) {
@@ -87,7 +86,7 @@
 			$uid = $session->identify(); # Identify as guest for fail safe
 		}
 	}
-	define( '_ACL_ENABLED', $config->get( 'acl/enable' ) );
+	define( '_ACL_ENABLED', (bool) $config->get( 'acl/enable' ) );
 	if ( Registry::has( 'sql' ) ) {
 		$acl = $zula->loadLib( 'acl' );
 	}
@@ -102,43 +101,40 @@
 	}
 
 	/**
-	 * Get data from the parsed URL to load; if there is not enough data then
-	 * simply use one of the frontpage layout maps for the correct site tpe
-	 */
-	$requestedUrl = $router->getParsedUrl();
-	if ( $requestedUrl->module == null ) {
-		// Load data fron the frontpage maps
-		if ( $zula->getMode() == 'installation' ) {
-			$frontLayout = new Theme_Layout( $zula->getDir( 'install' ).'/zula-install-layout.xml' );
-		} else {
-			$frontLayout = new Theme_Layout( $requestedUrl->siteType.'-default' );
-		}
-		$controller = $frontLayout->getControllers( 'SC' );
-		$controller = array_shift( $controller );
-		$requestedUrl->module( $controller['mod'] )
-					 ->controller( $controller['con'] )
-					 ->section( $controller['sec'] );
-		$dispatchConfig = $controller['config'];
-	} else {
-		$dispatchConfig = array();
-	}
-
-	/**
-	 * Configure the dispatcher and check if we need to load a theme, or just
-	 * display the pure output from the dispatch output
+	 * Configure the dispatcher, then get data from the parsed URL to load; if there is
+	 * not enough data simply use the frontpage sc layout for the current site type
 	 */
 	Hooks::notifyAll( 'bootstrap_pre_request' );
 	$dispatcher = new Dispatcher;
 	$dispatcher->setDisplayErrors( ($zula->getMode() == 'normal') ) # Display dispatchers own error msgs
 			   ->setStatusHeader();
+	Registry::register( 'dispatcher', $dispatcher ); # For compatibility, not sure if we should still have this
+
+	$requestedUrl = $router->getParsedUrl();
+	if ( $requestedUrl->module == null ) {
+		// Load data fron the fpsc (Front Page Sector Content) layout
+		if ( $zula->getState() == 'installation' ) {
+			$fpsc = new Theme_Layout( $zula->getDir( 'install' ).'/layout-fpsc.xml' );
+		} else {
+			$fpsc = new Theme_Layout( 'fpsc-'.$requestedUrl->siteType );
+		}
+		$controller = $fpsc->getControllers( 'SC' );
+		$controller = array_shift( $controller );
+		$requestedUrl->module( $controller['mod'] )
+					 ->controller( $controller['con'] )
+					 ->section( $controller['sec'] );
+		$dispatchConfig = (array) $controller['config'];
+	} else {
+		$dispatchConfig = array();
+	}
 
 	if ( $zula->getMode() == 'normal' && $config->get( 'theme/use_global' ) ) {
 		if ( $zula->getState() == 'installation' ) {
 			$themeName = 'carbon';
 		} else {
-			$themeName = Theme::getSiteTypeTheme();
+			$themeName = $config->get( 'theme/'.$router->getSiteType().'_default' );
 			if ( $config->get( 'theme/allow_user_override' ) ) {
-				$userTheme = Registry::get( 'session' )->getUser( 'theme' );
+				$userTheme = $session->getUser( 'theme' );
 				if ( $userTheme != 'default' && Theme::exists( $userTheme ) ) {
 					$themeName = $userTheme;
 				}
@@ -147,6 +143,11 @@
 		define( '_THEME_NAME', $themeName );
 		try {
 			$theme = new Theme( $themeName );
+			try {
+				$theme->setJsAggregation( $config->get('cache/js_aggregate') )
+					  ->setGoogleCdn( $config->get('cache/google_cdn') );
+			} catch ( Config_KeyNoExist $e ) {
+			}
 			Registry::register( 'theme', $theme );
 			$dispatchContent = $dispatcher->dispatch( $requestedUrl, $dispatchConfig );
 			if ( $dispatcher->getStatusCode() === 403 && $session->isLoggedIn() === false ) {
@@ -161,18 +162,23 @@
 					include $initFile;
 				}
 				/**
-				 * Load the main dispatchers content and object, then load all other
-				 * controllers into the correct sectors
+				 * Work out which layout to use with the theme, load all cntrlrs from that
+				 * and then load the main dispatchers content
 				 */
-				$theme->loadIntoSector( 'SC', $dispatchContent );
-				$theme->loadSectorControllers();
+				if ( $zula->getState() == 'installation' ) {
+					$layout = new Theme_Layout( $zula->getDir( 'install' ).'/layout.xml' );
+				} else {
+					$layout = new Theme_Layout( Theme_Layout::find($requestedUrl->siteType, $router->getRawRequestPath()) );
+				}
+				$theme->loadDispatcher( $dispatchContent, $dispatcher );
+				$theme->loadLayout( $layout );
 				$output = $theme;
 			} else {
 				$output = false;
 			}
 		} catch ( Theme_NoExist $e ) {
 			Registry::get( 'log' )->message( $e->getMessage(), Log::L_WARNING );
-			trigger_error( 'Required theme "'.$themeName.'" does not exist', E_USER_WARNING );
+			trigger_error( 'required theme "'.$themeName.'" does not exist', E_USER_WARNING );
 			$output = $dispatcher->dispatch( $requestedUrl, $dispatchConfig );
 		}
 	} else {
@@ -184,13 +190,6 @@
 
 	Hooks::notifyAll( 'bootstrap_loaded', (isset($output) && $output instanceof Theme),
 										  $dispatcher->getStatusCode(), $dispatcher->getDispatchData() );
-	if ( isset( $output ) ) {
-		if ( $output instanceof Theme ) {
-			echo $output->output();
-		} else if ( $output !== false ) {
-			echo $output;
-		}
-	}
-	return true;
+	return print $output;
 
 ?>
