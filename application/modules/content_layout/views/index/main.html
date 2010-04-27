@@ -12,7 +12,27 @@
 	</p>
 </form>
 
+<form action="<?php echo $this->_router->makeUrl( 'content_layout', 'manage', 'fpsc' ); ?>" method="post">
+	<h3>{L_[Homepage Content]}</h3>
+	<p>{L_[Select the module you wish to display on your homepage, then configure this further by selecting 'Update & Configure'.]}</p>
+
+	<select name="content_layout[module]">
+		<?php
+			foreach( $modules as $name=>$title ) {
+				printf( '<option value="%1$s" %2$s>%3$s</option>',
+						$name,
+						($name == $fpsc_module ? 'selected="selected"' : ''),
+						$title );
+			}
+		?>
+	</select>
+	<input type="hidden" name="content_layout[siteType]" value="{SITE_TYPE}">
+	<input type="submit" value="{L_[Update & Configure]}">
+</form>
+
 <form action="<?php echo $this->_router->makeUrl( 'content_layout', 'index', 'delete' ); ?>" method="post">
+	<h3>{L_[Layouts]}</h3>
+	<p>{L_[Control which modules should appear around your content, such as in the sidebar or menu area of the current theme.]}</p>
 	<table id="content_layout" class="contentdata">
 		<thead>
 			<tr>

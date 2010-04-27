@@ -295,7 +295,7 @@
 				$dispatchData = $dispatcher->getDispatchData();
 				// Decide on what title to display
 				$cntrlrTitle = $reqCntrlr->getDetail( 'title' );
-				if ( isset( $dispatchData['config']['displayTitle'], $dispatchData['customTitle'] ) ) {
+				if ( isset( $dispatchData['config']['displayTitle'], $dispatchData['config']['customTitle'] ) ) {
 					if ( $dispatchData['config']['displayTitle'] === 'custom' && !empty( $dispatchData['config']['customTitle'] ) ) {
 						$cntrlrTitle = $dispatchData['config']['customTitle'];
 					} else if ( !$dispatchData['config']['displayTitle'] ) {

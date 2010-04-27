@@ -56,16 +56,32 @@
 					$siteType = $this->_router->getDefaultSiteType();
 				}
 			}
+			$siteType = strtolower( $siteType );
 			if ( !$this->_router->siteTypeExists( $siteType ) ) {
 				$this->_event->error( t('Selected site type does not exist') );
 				return zula_redirect( $this->_router->makeUrl( 'content_layout' ) );
 			}
-			$this->setTitle( sprintf( t('"%s" Content Layouts'), ucfirst( strtolower($siteType) ) ), false );
+			$this->setTitle( sprintf( t('"%s" Content Layouts'), ucfirst( $siteType ) ), false );
+
+			// Find out what module is being used in the fpsc layout
+			$fpsc = new Layout( 'fpsc-'.$siteType );
+			$cntrlrs = $fpsc->getControllers( 'SC' );
+			$fpscCntrlr = reset( $cntrlrs );
+
+			// Get all modules for the user to choose from, with title
+			$modules = array();
+			foreach( Module::getModules() as $mod ) {
+				$modObj = new Module( $mod );
+				$modules[ $modObj->name ] = $modObj->title;
+			}
+
 			// Gather all layouts and build view
 			$view = $this->loadView( 'index/main.html' );
 			$view->assign( array(
-								'SITE_TYPE'	=> $siteType,
-								'LAYOUTS'	=> Layout::getAll( $siteType ),
+								'SITE_TYPE'		=> $siteType,
+								'LAYOUTS'		=> Layout::getAll( $siteType ),
+								'FPSC_MODULE'	=> $fpscCntrlr['mod'],
+								'MODULES'		=> $modules,
 								));
 			$view->assignHtml( array( 'CSRF' => $this->_input->createToken( true ) ) );
 			return $view->getOutput();

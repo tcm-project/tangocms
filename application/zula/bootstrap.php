@@ -118,12 +118,12 @@
 		} else {
 			$fpsc = new Layout( 'fpsc-'.$requestedUrl->siteType );
 		}
-		$controller = $fpsc->getControllers( 'SC' );
-		$controller = array_shift( $controller );
-		$requestedUrl->module( $controller['mod'] )
-					 ->controller( $controller['con'] )
-					 ->section( $controller['sec'] );
-		$dispatchConfig = (array) $controller['config'];
+		$fpscCntrlr = $fpsc->getControllers( 'SC' );
+		$fpscCntrlr = array_shift( $fpscCntrlr );
+		$requestedUrl->module( $fpscCntrlr['mod'] )
+					 ->controller( $fpscCntrlr['con'] )
+					 ->section( $fpscCntrlr['sec'] );
+		$dispatchConfig = (array) $fpscCntrlr['config'];
 	} else {
 		$dispatchConfig = array();
 	}

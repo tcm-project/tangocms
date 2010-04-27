@@ -124,7 +124,15 @@
 				} catch ( Theme_SectorMapNotWriteable $e ) {
 					$this->_event->error( sprintf( t('Unable to edit module in sector map: $s'), $e->getMessage() ) );
 				}
-				return zula_redirect( $this->_router->makeUrl( 'content_layout', 'manage', $layoutName ) );
+				// Redirect back to correct location, FPSC layouts go back to index
+				$url = new Router_Url( 'content_layout' );
+				$url->siteType( $this->_router->getSiteType() );
+				if ( strpos( $layoutName, 'fpsc-' ) === 0 ) {
+					$url->queryArgs( array('type' => substr($layoutName, 5)) );
+				} else {
+					$url->controller( 'manage' )->section( $layoutName );
+				}
+				return zula_redirect( $url );
 			}
 			/**
 			 * Gets all displays modes that this module offers, the current display
