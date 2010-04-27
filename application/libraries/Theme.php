@@ -335,49 +335,51 @@
 		 */
 		public function loadLayout( Layout $layout ) {
 			$cntrlrCount = 0;
-			foreach( $layout->getControllers() as $cntrlr ) {
-				if ( $cntrlr['sector'] == 'SC' || !$this->sectorExists( $cntrlr['sector'] ) ) {
-					continue;
-				}
-				$resource = 'layout_controller_'.$cntrlr['id'];
-				if ( _ACL_ENABLED && ($this->_acl->resourceExists( $resource ) && !$this->_acl->check( $resource, null, false )) ) {
-					continue;
-				}
-				$cntrlrOutput = false;
-				try {
-					$module = new Module( $cntrlr['mod'] );
-					$ident = $cntrlr['mod'].'::'.$cntrlr['con'].'::'.$cntrlr['sec'];
-					$tmpCntrlr = $module->loadController( $cntrlr['con'], $cntrlr['sec'], $cntrlr['config'], $cntrlr['sector'] );
-					if ( $tmpCntrlr['output'] !== false ) {
-						/**
-						 * Wrap the cntrlr in the module_wrap.html file
-						 */
-						if ( $cntrlr['config']['displayTitle'] === 'custom' && !empty( $cntrlr['config']['customTitle'] ) ) {
-							$title = $cntrlr['config']['customTitle'];
-						} else {
-							$title = isset($tmpCntrlr['title']) ? $tmpCntrlr['title'] : t('Oops!', Locale::_DTD);
-						}
-						$wrap = new View( $this->getDetail('path').'/module_wrap.html' );
-						$wrap->assign( array(
-											'ID'			=> $cntrlr['id'],
-											'TITLE'			=> $title,
-											'DISPLAY_TITLE'	=> !empty( $cntrlr['config']['displayTitle'] ),
-											'WRAP_CLASS'	=> $cntrlr['config']['htmlWrapClass'],
-											));
-						$wrap->assignHtml( array('CONTENT' => $tmpCntrlr['output'])  );
-						$this->loadIntoSector( $cntrlr['sector'], $wrap->getOutput() );
-						++$cntrlrCount;
+			foreach( $this->getSectors() as $sector ) {
+				foreach( $layout->getControllers( $sector['id'] ) as $cntrlr ) {
+					if ( $cntrlr['sector'] == 'SC' ) {
+						continue;
 					}
-				} catch ( Module_NoExist $e ) {
-					$this->_log->message( 'sector module "'.(isset($ident) ? $ident : $cntrlr['mod']).'" does not exist',
-											Log::L_WARNING );
-				} catch ( Module_ControllerNoExist $e ) {
-					$this->_log->message( $e->getMessage(), Log::L_WARNING );
-				} catch ( Module_UnableToLoad $e ) {
-					// Could also be a Module_NoPermission
+					$resource = 'layout_controller_'.$cntrlr['id'];
+					if ( _ACL_ENABLED && ($this->_acl->resourceExists( $resource ) && !$this->_acl->check( $resource, null, false )) ) {
+						continue;
+					}
+					$cntrlrOutput = false;
+					try {
+						$module = new Module( $cntrlr['mod'] );
+						$ident = $cntrlr['mod'].'::'.$cntrlr['con'].'::'.$cntrlr['sec'];
+						$tmpCntrlr = $module->loadController( $cntrlr['con'], $cntrlr['sec'], $cntrlr['config'], $sector['id'] );
+						if ( $tmpCntrlr['output'] !== false ) {
+							/**
+							* Wrap the cntrlr in the module_wrap.html file
+							*/
+							if ( $cntrlr['config']['displayTitle'] === 'custom' && !empty( $cntrlr['config']['customTitle'] ) ) {
+								$title = $cntrlr['config']['customTitle'];
+							} else {
+								$title = isset($tmpCntrlr['title']) ? $tmpCntrlr['title'] : t('Oops!', Locale::_DTD);
+							}
+							$wrap = new View( $this->getDetail('path').'/module_wrap.html' );
+							$wrap->assign( array(
+												'ID'			=> $cntrlr['id'],
+												'TITLE'			=> $title,
+												'DISPLAY_TITLE'	=> !empty( $cntrlr['config']['displayTitle'] ),
+												'WRAP_CLASS'	=> $cntrlr['config']['htmlWrapClass'],
+												));
+							$wrap->assignHtml( array('CONTENT' => $tmpCntrlr['output'])  );
+							$this->loadIntoSector( $cntrlr['sector'], $wrap->getOutput() );
+							++$cntrlrCount;
+						}
+					} catch ( Module_NoExist $e ) {
+						$this->_log->message( 'sector module "'.(isset($ident) ? $ident : $cntrlr['mod']).'" does not exist',
+												Log::L_WARNING );
+					} catch ( Module_ControllerNoExist $e ) {
+						$this->_log->message( $e->getMessage(), Log::L_WARNING );
+					} catch ( Module_UnableToLoad $e ) {
+						// Could also be a Module_NoPermission
+					}
 				}
-				if ( !$this->isAssigned( $cntrlr['sector'] ) ) {
-					$this->loadIntoSector( $cntrlr['sector'], '' );
+				if ( !$this->isAssigned( $sector['id'] ) ) {
+					$this->loadIntoSector( $sector['id'], '' );
 				}
 			}
 			return $cntrlrCount;
@@ -646,8 +648,6 @@
 			}
 			return $this->getOutput();
 		}
-
-
 
 	}
 

@@ -334,7 +334,7 @@
 			if ( !$this->_acl->resourceExists( $resource ) ) {
 				$this->_acl->allow( $resource, 'group_guest' );
 			}
-			$this->_cache->delete( 'layout_cntlrs_'.$this->name );
+			$this->_cache->delete( 'layout_cntrls_'.$this->name );
 			Hooks::notifyAll( 'layout_add_cntrlr', $details );
 			return $details['id'];
 		}
@@ -355,7 +355,7 @@
 				return false;
 			} else {
 				$this->dom->documentElement->removeChild( $cntrlr );
-				$this->_cache->delete( 'layout_cntrlrs_'.$this->name );
+				$this->_cache->delete( 'layout_cntrls_'.$this->name );
 				Hooks::notifyAll( 'layout_detach_cntrlr', $id );
 				return true;
 			}
