@@ -88,16 +88,16 @@
 		 */
 		protected function cleanInputData( $data ) {
 			static $hasMQ = null;
+			if ( $hasMQ === null ) {
+				$hasMQ = function_exists( 'get_magic_quotes_gpc' ) && get_magic_quotes_gpc();
+			}
 			if ( is_array( $data ) ) {
 				foreach( $data as $key=>$val ) {
 					$data[ $this->cleanInputKey( $key ) ] = $this->cleanInputData( $val );
 				}
 				return $data;
-			} else if ( $hasMQ || function_exists( 'get_magic_quotes_gpc' ) && get_magic_quotes_gpc() ) {
+			} else if ( $hasMQ ) {
 				$data = stripslashes( $data );
-				$hasMQ = true;
-			} else {
-				$hasMQ = false;
 			}
 			// Standadize newlines
 			return preg_replace( "/\015\012|\015|\012/", "\n", str_replace("\0", '', $data) );
