@@ -431,7 +431,10 @@ ERR;
 			}
 		}
 		// Attempt to get mime type via the 'file' command (will not work on Windows)
-		$mime = exec( 'file -bi '.escapeshellarg($file) );
+		$mime = null;
+		if ( function_exists( 'exec' ) ) {
+			$mime = exec( 'file -bi '.escapeshellarg($file) );
+		}
 		if ( preg_match( '#^([A-Z0-9+.\-]+/[A-Z0-9+.\-]+);?#i', $mime, $matches ) ) {
 			return $matches[1];
 		} else if ( function_exists( 'mime_content_type' ) ) {
