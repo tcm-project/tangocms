@@ -210,7 +210,7 @@
 		 */
 		public function getControllers( $inSector=null ) {
 			if ( empty( $this->controllers ) ) {
-				$cacheKey = 'layout_cntrls_'.$this->name;
+				$cacheKey = 'layout_cntrlrs_'.$this->name;
 				if ( ($this->controllers = $this->_cache->get($cacheKey)) == false ) {
 					$this->controllers = array();
 					foreach( $this->dom->getElementsByTagName('controller') as $node ) {
@@ -334,7 +334,7 @@
 			if ( !$this->_acl->resourceExists( $resource ) ) {
 				$this->_acl->allow( $resource, 'group_guest' );
 			}
-			$this->_cache->delete( 'layout_cntrls_'.$this->name );
+			$this->_cache->delete( 'layout_cntrlrs_'.$this->name );
 			Hooks::notifyAll( 'layout_add_cntrlr', $details );
 			return $details['id'];
 		}
@@ -355,7 +355,7 @@
 				return false;
 			} else {
 				$this->dom->documentElement->removeChild( $cntrlr );
-				$this->_cache->delete( 'layout_cntrls_'.$this->name );
+				$this->_cache->delete( 'layout_cntrlrs_'.$this->name );
 				Hooks::notifyAll( 'layout_detach_cntrlr', $id );
 				return true;
 			}
