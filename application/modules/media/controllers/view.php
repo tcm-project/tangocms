@@ -32,8 +32,6 @@
 				$format = $this->_input->get( 'f' );
 				if ( in_array( $format, array('large', 'medium', 'thumb', 'stream') ) ) {
 					$this->_session->storePrevious( false );
-					$this->_dispatcher->standalone( true )
-									  ->displayErrors( false );
 				} else {
 					$format = null;
 				}
@@ -55,7 +53,8 @@
 				if ( $format == null ) {
 					return $this->buildView( $item, $category );
 				} else {
-					return $this->displayFormat( $item, $format );
+					$this->displayFormat( $item, $format );
+					return false;
 				}
 			} catch ( Media_ItemNoExist $e ) {
 				throw new Module_ControllerNoExist;
@@ -101,7 +100,7 @@
 			} else {
 				$view->assign( array('LIGHTBOX' => false) );
 			}
-			return $view->getOutput();			
+			return $view->getOutput();
 		}
 
 		/**
@@ -127,7 +126,7 @@
 			if ( isset( $file ) && is_file( $file ) ) {
 				zula_readfile( $file );
 				return false;
-			} else if ( $format == 'thumb' ) {				
+			} else if ( $format == 'thumb' ) {
 				zula_readfile( zula_get_icon('misc/missing_'.$item['type'], null, false) );
 				return false;
 			} else if ( $item['type'] == 'image' ) {

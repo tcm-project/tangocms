@@ -29,27 +29,19 @@
 				if ( isset( $http_response_header ) && strpos( $http_response_header[0], '200' ) === false ) {
 					throw new ExternalMediaDriver_InvalidID( 'YouTube ID "'.$this->mediaId.'" does not exist' );
 				}
-				$xml = simplexml_load_string( $youtubeXml );
-				if ( $xml === false ) {
-					return false;
-				}
-				$mediaAttributes = $xml->children( 'http://search.yahoo.com/mrss/' )->group;
-				$this->attributes['title'] = $mediaAttributes->title;
-				$this->attributes['description'] = $mediaAttributes->description;
-				foreach( $mediaAttributes->thumbnail as $thumbnail ) {
-					$thumbnailUrl = $thumbnail->attributes()->url;
-					$thumbnailPath = pathinfo( $thumbnailUrl );
-					if ( !array_key_exists( 'filename', $thumbnailPath ) ) {
-						$thumbnailPath['filename'] = substr( $thumbnailPath['basename'],
-															 0,
-															 strlen($thumbnailPath['basename']) - (strlen($thumbnailPath['extension']) + 1)
-														   );
-					}
-					if ( $thumbnailPath['filename'] === '0' ) {
-						$this->attributes['thumbnail_url'] = $thumbnailUrl;
-					}
-				}
-				$this->attributes['video_url'] = $mediaAttributes->content->attributes()->url;
+				$dom = new DomDocument;
+				$dom->loadXml( $youtubeXml );
+				$xPath = new DomXPath( $dom );
+				// Gather all details
+				$group = $xPath->query( '//media:group' )->item(0);
+				$this->attributes['title'] = $xPath->query( 'media:title', $group )->item(0)->nodeValue;
+				$this->attributes['description'] = $xPath->query( 'media:description', $group )->item(0)->nodeValue;
+				$this->attributes['videoUrl'] = $xPath->query( 'media:content/@url[starts-with(., "http")]', $group )
+														->item(0)
+														->value;
+				$this->attributes['thumbUrl'] = $xPath->query( 'media:thumbnail[position()=1]/@url', $group )
+														->item(0)
+														->value;
 				return true;
 			} else {
 				return false;

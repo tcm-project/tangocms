@@ -8,7 +8,7 @@
  *
  * @author Robert Clipsham
  * @author Alex Cartwright
- * @copyright Copyright (C) 2008, Robert Clipsham
+ * @copyright Copyright (C) 2008, 2010 Robert Clipsham
  * @license http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GNU/GPL 2
  * @package TangoCMS_Rss
  */
@@ -46,7 +46,6 @@
 			if ( preg_match( '#[^A-Z0-9\-_]+#i', $name ) || !file_exists( $file ) ) {
 				throw new Module_ControllerNoExist( 'The RSS feed requested does not exist!' );
 			}
-			$this->_dispatcher->standalone();
 			header( 'Content-Type: application/rss+xml; charset=utf-8' );
 			readfile( $file );
 			return false;

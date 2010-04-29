@@ -19,7 +19,7 @@ Requirements, http://manual.tangocms.org/getting-started/requirements
 	* Webserver		Tested on Apache & Lighttpd (recommended mod_rewrite for SEF, Search Engine Friendly, URLs)
 	* MySQL 		>= 4.1 (recommended 5+)
 
-	* PHP Extensions: ctype, date, dom, filter, hash, pdo, pdo_mysql, pcre, session, simplexml, [gd], [FileInfo]
+	* PHP Extensions: ctype, date, dom, filter, hash, pdo, pdo_mysql, pcre, session, [gd], [FileInfo]
 
 
 Installation, http://manual.tangocms.org/installation

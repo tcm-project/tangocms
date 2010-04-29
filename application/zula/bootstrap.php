@@ -154,7 +154,9 @@
 				// User did not have permission, fallback to 'session' module
 				$dispatchContent = $dispatcher->dispatch( new Router_Url('session') );
 			}
-			if ( $dispatchContent !== false ) {
+			if ( is_bool( $dispatchContent ) ) {
+				$output = $dispatchContent;
+			} else {
 				header( 'Content-Type: text/html; charset=utf-8' );
 				// Include a themes init file, to allow a theme to configure some things
 				$initFile = $zula->getDir( 'themes' ).'/'.$themeName.'/init.php';
@@ -173,8 +175,6 @@
 				$theme->loadDispatcher( $dispatchContent, $dispatcher );
 				$theme->loadLayout( $layout );
 				$output = $theme;
-			} else {
-				$output = false;
 			}
 		} catch ( Theme_NoExist $e ) {
 			Registry::get( 'log' )->message( $e->getMessage(), Log::L_WARNING );

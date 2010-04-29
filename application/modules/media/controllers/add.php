@@ -208,8 +208,8 @@
 			} while ( file_exists( $uploadDir ) || is_dir( $uploadDir ) );
 			// Attempt to make the needed directory
 			if ( zula_make_dir( $uploadDir ) ) {
-				$thumbnailName = 'thumb_'.$uid.'.'.pathinfo( $externalMedia->thumbnail_url, PATHINFO_EXTENSION );
-				if ( copy( $externalMedia->thumbnail_url, $uploadDir.'/'.$thumbnailName ) ) {
+				$thumbnailName = 'thumb_'.$uid.'.'.pathinfo( $externalMedia->thumbUrl, PATHINFO_EXTENSION );
+				if ( copy( $externalMedia->thumbUrl, $uploadDir.'/'.$thumbnailName ) ) {
 					// Resize the thumbnail image
 					try {
 						$thumbnail = new Image( $uploadDir.'/'.$thumbnailName );

@@ -61,13 +61,15 @@
 				$this->path = $this->_zula->getDir( 'config' ).'/layouts/'.$name.'.xml';
 				$this->name = $name;
 			}
-			// Find the regex for this layout
-			$pdoSt = $this->_sql->prepare( 'SELECT regex FROM {SQL_PREFIX}layouts WHERE name = ?' );
-			$pdoSt->execute( array($name) );
-			if ( $regex = $pdoSt->fetchColumn() ) {
-				$this->regex = $regex;
+			if ( Registry::has( 'sql' ) ) {
+				// Find the regex for this layout
+				$pdoSt = $this->_sql->prepare( 'SELECT regex FROM {SQL_PREFIX}layouts WHERE name = ?' );
+				$pdoSt->execute( array($name) );
+				if ( $regex = $pdoSt->fetchColumn() ) {
+					$this->regex = $regex;
+				}
+				$pdoSt->closeCursor();
 			}
-			$pdoSt->closeCursor();
 			// Load the DomDocument (or create if needed)
 			$this->dom = new DomDocument( '1.0', 'UTF-8' );
 			$this->dom->preserveWhiteSpace = false;

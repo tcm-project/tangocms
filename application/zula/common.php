@@ -169,11 +169,6 @@ ERR;
 	/**
 	 * Adds the correct header to zula_redirect to a specific URL
 	 *
-	 * It will also try and set the Controller to load standalone, because if
-	 * the redirect call was from the requested controller, then it is highly
-	 * undoubtful that the other controllers in the sectors will need to be
-	 * loaded.
-	 *
 	 * @param string $url
 	 * @param int $httpStatus
 	 * @return bool
@@ -185,9 +180,6 @@ ERR;
 				$url = $url->makeFull('&');
 			}
 			header( 'Location: '.$url, true, $httpStatus );
-			if ( Registry::has( 'dispatcher' ) ) {
-				Registry::get( 'dispatcher' )->standalone();
-			}
 			return true;
 		} else if ( $zulaMode == 'ajax' ) {
 			Registry::get( 'log' )->message( 'unable to redirect whilst in an AJAX request', Log::L_WARNING );
