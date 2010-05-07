@@ -588,7 +588,7 @@
 					 * Trigger output hooks. Listeners should return a string with the
 					 * html they want to add to the controllers output.
 					 */
-					if ( $details['output'] !== false ) {
+					if ( !is_bool( $details['output'] ) ) {
 						$ota = Hooks::notifyAll( 'module_output_top', self::getLoading(), $details['outputType'], $sector, $details['title'] );
 						$outputTop = count($ota) > 0 ? implode( "\n", $ota ) : '';
 						$oba = Hooks::notifyAll( 'module_output_bottom', self::getLoading(), $details['outputType'], $sector, $details['title'] );
