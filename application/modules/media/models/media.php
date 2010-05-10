@@ -24,7 +24,7 @@
 		 * @var int|bool
 		 */
 		protected $itemCount = false;
-		
+
 		/**
 		 * Gets all categories, can also limit the result set and check
 		 * user ACL permissions
@@ -208,14 +208,8 @@
 			$details = $pdoSt->fetch( PDO::FETCH_ASSOC );
 			$pdoSt->closeCursor();
 			if ( $details ) {
-				if ( $details['filename'] ) {
-					$uid = pathinfo( $details['filename'], PATHINFO_FILENAME );
-				} else {
-					$uid = substr( pathinfo($details['thumbnail'], PATHINFO_FILENAME), 6 );
-				}
-				$mediaPath = 'media/'.$details['cat_id'].'/'.$details['type'].'/'.$uid;
 				// Add in the filesystem path
-				$details['path_fs'] = $this->_zula->getDir( 'uploads' ).'/'.$mediaPath;
+				$details['path_fs'] = $this->_zula->getDir( 'uploads' ).'/media/'.$details['cat_id'].'/'.$details['type'];
 				return $details;
 			} else {
 				throw new Media_ItemNoExist( $item );
@@ -256,7 +250,7 @@
 		 * @return bool
 		 */
 		public function editCategory( $id, $name, $desc ) {
-			$category = $this->getCategory( $id );			
+			$category = $this->getCategory( $id );
 			$pdoSt = $this->_sql->prepare( 'UPDATE {SQL_PREFIX}mod_media_cats
 											SET name = ?, description = ? WHERE id = ?' );
 			$this->_cache->delete( 'media_cats' );
@@ -337,7 +331,7 @@
 						'clean_name'	=> $cleanName,
 						);
 		}
-														
+
 		/**
 		 * Edits a media item
 		 *

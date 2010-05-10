@@ -109,8 +109,11 @@
 				if ( !@unlink( $destination ) ) {
 					throw new Image_SaveFailed( $destination.' already exists and could not be removed' );
 				}
-			} else if ( !zula_is_writable( $directory ) ) {
-				throw new Image_SaveFailed( $directory.' directory is not writable or does not exist' );
+			} else if ( !zula_make_dir( $directory ) ) {
+				throw new Image_SaveFailed( $directory.' directory could not be created' );
+			}
+			if ( !zula_is_writable( $directory ) ) {
+				throw new Image_SaveFailed( $directory.' is not writable' );
 			}
 			return $destination;
 		}
@@ -152,6 +155,15 @@
 				imagedestroy( $this->resource );
 			}
 			return $destination;
+		}
+
+		/**
+		 * Destroys the image resource
+		 *
+		 * @return bool
+		 */
+		public function destroy() {
+			return imagedestroy( $this->resource );
 		}
 
 	}

@@ -520,8 +520,7 @@
 		 * @return bool
 		 */
 		public function controllerExists( $cntrlr ) {
-			$cntrlrFile = $this->path.'/controllers/'.$cntrlr.'.php';
-			return is_readable( $cntrlrFile );
+			return is_readable( $this->path.'/controllers/'.$cntrlr.'.php' );
 		}
 
 		/**

@@ -116,7 +116,18 @@
 			} else if ( $item['type'] == 'image' ) {
 				// Get either full size, or medium image
 				if ( $format == 'medium' ) {
-					$file = $item['path_fs'].'/medium_'.$item['filename'];
+					$mediumX = $this->_config->get( 'media/medium_size_x' );
+					$mediumY = $this->_config->get( 'media/medium_size_y' );
+					$file = $this->_zula->getDir( 'tmp' )."/media/{$item['id']}/{$mediumX}x{$mediumY}";
+					if ( ($ext = pathinfo($item['filename'], PATHINFO_EXTENSION)) ) {
+						$file .= '.'.$ext;
+					}
+					if ( !is_readable( $file ) ) {
+						// Create the new temp medium image
+						$image = new Image( $item['path_fs'].'/'.$item['filename'] );
+						$image->resize( $mediumX, $mediumY, false );
+						$image->save( $file );
+					}
 				} else if ( $format == 'large' ) {
 					$file = $item['path_fs'].'/'.$item['filename'];
 				}

@@ -33,12 +33,13 @@
 		 * @var array
 		 */
 		protected $config = array(
-								'allowedMime'	=> array(),
-								'uploadDir'		=> '',
-								'maxFileSize'	=> 0,
-								'subDir'		=> true,
-								'subDirName'	=> null,
-								'overwrite'		=> false,
+								'allowedMime'		=> array(),
+								'uploadDir'			=> '',
+								'maxFileSize'		=> 0,
+								'subDir'			=> true,
+								'subDirName'		=> null,
+								'overwrite'			=> false,
+								'extractArchives'	=> false,
 								);
 
 		/**
@@ -183,6 +184,34 @@
 		public function allowOverwrite( $allow=true ) {
 			$this->config['overwrite'] = (bool) $allow;
 			return $this;
+		}
+
+		/**
+		 * Allow archives (.tar or .zip) to be uploaded and the contents
+		 * extracted. Each file in the archive must match the allowed mime
+		 * types and file size, if they don't they will not be kept.
+		 *
+		 * bool false will be returned if zipExtraction and tarExtraction
+		 * are not supported.
+		 *
+		 * @param bool $extract
+		 * @return object|bool
+		 */
+		public function extractArchives( $extract=true ) {
+			if ( $extract ) {
+				if ( zula_supports( 'zipExtraction' ) ) {
+					$this->config['extractArchives'] = true;
+					$this->config['allowedMime'][] = 'application/zip';
+				}
+				if ( zula_supports( 'tarExtraction' ) ) {
+					$this->config['extractArchives'] = true;
+					$this->config['allowedMime'][] = 'application/x-tar';
+				}
+				return $this->config['extractArchives'] ? $this : false;
+			} else {
+				$this->config['extractArchives'] = false;
+				return $this;
+			}
 		}
 
 		/**

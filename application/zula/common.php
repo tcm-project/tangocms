@@ -190,6 +190,41 @@ ERR;
 	}
 
 	/**
+	 * Collction of checks to see if the server environemnt supports
+	 * certain features.
+	 *
+	 * @param string $feature
+	 * @return bool
+	 */
+	function zula_supports( $feature ) {
+		static $checks = array(
+							'zipExtraction'	=> null,
+							'tarExtraction'	=> null,
+							);
+		if ( !array_key_exists( $feature, $checks ) ) {
+			trigger_error( 'zula_supports() unknown feature', E_USER_NOTICE );
+			return false;
+		} else if ( $checks[ $feature ] === null ) {
+			switch( $feature ) {
+				case 'zipExtraction':
+					$checks[ $feature ] = extension_loaded( 'zip' );
+					break;
+				case 'tarExtraction':
+					if (
+						strtoupper( substr(PHP_OS, 0, 3) ) !== 'WIN' &&
+						function_exists('shell_exec') && shell_exec('tar --version &> /dev/null; echo -n $?') === '0'
+					) {
+						$checks[ $feature ] = true;
+					} else {
+						$checks[ $feature ] = false;
+					}
+					break;
+			}
+		}
+		return $checks[ $feature ];
+	}
+
+	/**
 	 * Takes a numeric value and returns the correct English word
 	 * such as 'odd' or 'even'. If set to return a numeric value
 	 * then it will return 0 or 1 for odd and even respectively.
@@ -723,6 +758,58 @@ ERR;
 	 */
 	function zula_make_dir( $dir ) {
 		return file_exists($dir) ? true : @mkdir($dir, 0755, true);
+	}
+
+	/**
+	 * Makes a directory name that is unique in the specified directory, by
+	 * default this directory will be created.
+	 *
+	 * bool false will be returned if the directory can not be created
+	 *
+	 * @param string $dir
+	 * @param bool $create
+	 * @return string|bool
+	 */
+	function zula_make_unique_dir( $dir, $create=true ) {
+		$chars = '1234567890ABCDEFGHIJKLMNOPQRSUTVWXYZabcdefghijklmnopqrstuvwxyz';
+		do {
+			$dirname = '';
+			for( $i=0; $i <= 9; $i++ ) {
+				$dirname .= substr( $chars, rand(0, 62), 1 );
+			}
+			$path = $dir.'/'.$dirname;
+		} while ( is_dir( $path ) );
+		if ( $create ) {
+			return zula_make_dir( $path ) ? $dirname : false;
+		}
+		return $dirname;
+	}
+
+	/**
+	 * Makes a file name that is unique in the specified directory, by
+	 * default this file will be created.
+	 *
+	 * @param string $dir
+	 * @param string $extension
+	 * @param bool $create
+	 * @return string
+	 */
+	function zula_make_unique_file( $dir, $extension=null, $create=true ) {
+		$chars = '1234567890ABCDEFGHIJKLMNOPQRSUTVWXYZabcdefghijklmnopqrstuvwxyz';
+		do {
+			$basename = '';
+			for( $i=0; $i <= 9; $i++ ) {
+				$basename .= substr( $chars, rand(0, 62), 1 );
+			}
+			if ( $extension ) {
+				$basename .= '.'.$extension;
+			}
+			$path = $dir.'/'.$basename;
+		} while ( file_exists( $path ) || is_dir( $path ) );
+		if ( $create ) {
+			touch( $path );
+		}
+		return $basename;
 	}
 
 	/**

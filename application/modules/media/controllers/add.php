@@ -24,9 +24,9 @@
 									 'image/png',
 									 'video/x-flv',
 									 'video/mp4',
+									 'audio/mpeg',
 									 'application/octet-stream',
 									 'application/x-flash-video',
-									 'audio/mpeg',
 									 );
 
 		/**
@@ -66,19 +66,25 @@
 					// Handle the provided form data to correctly add the item
 					try {
 						if ( $type == 'upload' ) {
-							$details = $this->handleUpload( $form->getValues('media') );
-							$details['external'] = array('service' => '', 'id' => '');
+							$uploadedFiles = $this->handleUpload( $form->getValues('media') );
 						} else if ( $type == 'external' ) {
-							$details = $this->handleExternal( $form->getValues('media') );
+							$uploadedFiles = $this->handleExternal( $form->getValues('media') );
 						}
-						// Everything is now done, add the new media item
-						$item = $this->_model()->addItem(
-														$category['id'], $details['title'], $details['desc'],
-														$details['type'], $details['file'], $details['thumbnail'],
-														$details['external']['service'], $details['external']['id']
-														);
-						$this->_event->success( t('Added new media item') );
-						return zula_redirect( $this->_router->makeUrl( 'media', 'view', $item['clean_name'] ) );
+						$fileCount = count( $uploadedFiles );
+						foreach( $uploadedFiles as $file ) {
+							if ( !isset( $file['external'] ) ) {
+								$file['external'] = array('service' => '', 'id' => '');
+							}
+							$lastItem = $this->_model()->addItem( $category['id'], $file['title'], $file['desc'], $file['type'], $file['file'],
+																  $file['thumbnail'], $file['external']['service'], $file['external']['id'] );
+						}
+						if ( $fileCount == 1 ) {
+							$this->_event->success( t('Added new media item') );
+							return zula_redirect( $this->_router->makeUrl('media', 'view', $lastItem['clean_name']) );
+						} else {
+							$this->_event->success( sprintf('Added %1$d new media items', $itemCount) );
+							return zula_redirect( $this->_router->makeUrl('media', 'cat', $category['clean_name']) );
+						}
 					} catch ( Media_Exception $e ) {
 						$this->_event->error( $e->getMessage() );
 					}
@@ -102,60 +108,67 @@
 		protected function handleUpload( array $fd ) {
 			try {
 				$uploader = new Uploader( 'media_file', $this->_zula->getDir( 'uploads' ).'/media/'.$fd['cid'].'/{CATEGORY}' );
-				$uploader->allowedMime( $this->allowedMime );
+				$uploader->subDirectories()
+						 ->allowedMime( $this->allowedMime )
+						 ->extractArchives();
 				$file = $uploader->getFile();
 				if ( $file->upload() === false ) {
 					throw new Media_Exception( t('Please select a file to upload') );
-				} else if ( $file->category == 'image' ) {
-					// Make the medium image sizes
-					$image = new Image( $file->path );
-					$image->resize(
-									$this->_config->get('media/medium_size_x'),
-									$this->_config->get('media/medium_size_y'),
-									false
-								  );
-					$image->save( $file->dirname.'/medium_'.$file->basename );
+				}
+				// Upload the thumbail image if one has been provided and resize it
+				$thumbUploader = new Uploader( 'media_thumb', $file->dirname );
+				$thumbUploader->subDirectories(false)
+							  ->allowImages();
+				$thumbnail = $thumbUploader->getFile();
+				if ( $thumbnail->upload() !== false ) {
+					$thumbImage = new Image( $thumbnail->path );
+					$thumbImage->mime = 'image/png';
+					$thumbImage->thumbnail(
+											$this->_config->get('media/thumb_size_x'),
+											$this->_config->get('media/thumb_size_y')
+										);
+					// Remove the original uploaded file
+					unlink( $thumbnail->path );
 				}
 				/**
-				 * Attempt to upload the thumbnail image. If one is not provided
-				 * then use the image uploaded (if it is an image)
+				 * Get details of all the images (could have been an archive containing
+				 * multiple media files
 				 */
-				try {
-					$uploader = new Uploader( 'media_thumb', $file->dirname );
-					$uploader->allowedMime( array('image/gif', 'image/jpeg', 'image/png') )
-							 ->subDirectories(false);
-					$thumbnail = $uploader->getFile();
-					if ( $thumbnail->upload() !== false ) {
-						$thumbnailPath = $thumbnail->path;
-					} else if ( $file->category == 'image' ) {
-						// Create thumbnail from the main image
-						$thumbnailPath = $file->path;
-					}
-					if ( isset( $thumbnailPath ) ) {
-						$thumbImage = new Image( $thumbnailPath );
-						$thumbImage->mime = 'image/png';
-						$thumbImage->thumbnail(
+				$uploadedItems = array();
+				while( $details = $file->getDetails() ) {
+					if ( isset( $details['path'] ) ) {
+						// Get the directory name where the files are stored (just the name, not path)
+						$dirname = substr( $details['dirname'], strrpos($details['dirname'], DIRECTORY_SEPARATOR)+1 );
+						/**
+						 * Use uploaded thumbnail, or attempt to create one from the uploaded image
+						 */
+						$thumbname = $details['filename'].'_thumb.png';
+						if ( isset( $thumbImage ) ) {
+							$thumbImage->save( $details['dirname'].'/'.$thumbname, false );
+						} else if ( $details['category'] == 'image' ) {
+							$tmpThumb = new Image( $details['path'] );
+							$tmpThumb->mime = 'image/png';
+							$tmpThumb->thumbnail(
 												$this->_config->get('media/thumb_size_x'),
 												$this->_config->get('media/thumb_size_y')
-											  );
-						$thumbnailName = 'thumb_'.$file->filename.'.png';
-						$thumbImage->save( $file->dirname.'/'.$thumbnailName );
+											);
+							$tmpThumb->save( $details['dirname'].'/'.$thumbname );
+						} else {
+							unset( $thumbname );
+						}
+						$uploadedItems[] = array(
+												'title'		=> $fd['title'],
+												'desc'		=> $fd['desc'],
+												'type'		=> $details['category'],
+												'file'		=> $dirname.'/'.$details['basename'],
+												'thumbnail'	=> isset($thumbname) ? $dirname.'/'.$thumbname : '',
+												);
 					}
-					// Remove the original uploaded file, if it exists
-					if ( isset( $thumbnail->path ) ) {
-						unlink( $thumbnail->path );
-					}
-				} catch ( Image_Exception $e ) {
-					// We don't care so much if thumbnail can't be made, handle it differently.
-					$this->_log->message( 'failed to create thumbnail: '.$e->getMessage(), Log::L_NOTICE );
 				}
-				return array(
-							'title'		=> $fd['title'],
-							'desc'		=> $fd['desc'],
-							'type'		=> $file->category,
-							'file'		=> $file->basename,
-							'thumbnail'	=> isset($thumbnailName) ? $thumbnailName : '',
-							);
+				if ( isset( $thumbImage ) ) {
+					$thumbImage->destroy();
+				}
+				return $uploadedItems;
 			} catch ( Uploader_NotEnabled $e ) {
 				$msg = t('Sorry, it appears file uploads are disabled within your PHP configuration');
 			} catch ( Uploader_MaxFileSize $e ) {
@@ -196,23 +209,15 @@
 				throw new Media_Exception( $e->getMessage() );
 			}
 			// Generate a random directory as the uploader would, to store thumbnail
-			$chars = '1234567890ABCDEFGHIJKLMNOPQRSUTVWXYZabcdefghijklmnopqrstuvwxyz';
-			$charsLen = strlen( $chars );
 			$uploadDir = $this->_zula->getDir( 'uploads' ).'/media/'.$fd['cid'].'/external';
-			do {
-				$uid = '';
-				for( $i=0; $i <= 9; $i++ ) {
-					$uid .= substr( $chars, rand(0, $charsLen), 1 );
-				}
-				$uploadDir .= '/'.$uid;
-			} while ( file_exists( $uploadDir ) || is_dir( $uploadDir ) );
-			// Attempt to make the needed directory
-			if ( zula_make_dir( $uploadDir ) ) {
-				$thumbnailName = 'thumb_'.$uid.'.'.pathinfo( $externalMedia->thumbUrl, PATHINFO_EXTENSION );
-				if ( copy( $externalMedia->thumbUrl, $uploadDir.'/'.$thumbnailName ) ) {
+			if ( ($dirname = zula_make_unique_dir($uploadDir)) ) {
+				$uploadDir .= '/'.$dirname;
+				$thumbname = $dirname.'_thumb.png';
+				if ( copy( $externalMedia->thumbUrl, $uploadDir.'/'.$thumbname ) ) {
 					// Resize the thumbnail image
 					try {
-						$thumbnail = new Image( $uploadDir.'/'.$thumbnailName );
+						$thumbnail = new Image( $uploadDir.'/'.$thumbname );
+						$thumbnail->mime = 'image/png';
 						$thumbnail->thumbnail(
 											$this->_config->get('media/thumb_size_x'),
 											$this->_config->get('media/thumb_size_y')
@@ -224,18 +229,19 @@
 					}
 				} else {
 					$this->_event->error( t('Unable to save thumbnail image') );
-					$thumbnailName = '';
+					$thumbname = null;
 				}
-				return array(
-							'title'		=> empty($fd['title']) ? $externalMedia->title : $fd['title'],
-							'desc'		=> empty($fd['desc']) ? $externalMedia->description : $fd['desc'],
-							'type'		=> 'external',
-							'file'		=> '',
-							'thumbnail'	=> $thumbnailName,
-							'external'	=> array(
-												'service'	=> $fd['external_service'],
-												'id'		=> $fd['external_id'],
-												),
+				return array( array(
+								'title'		=> empty($fd['title']) ? $externalMedia->title : $fd['title'],
+								'desc'		=> empty($fd['desc']) ? $externalMedia->description : $fd['desc'],
+								'type'		=> 'external',
+								'file'		=> '',
+								'thumbnail'	=> isset($thumbname) ? $dirname.'/'.$thumbname : '',
+								'external'	=> array(
+													'service'	=> $fd['external_service'],
+													'id'		=> $fd['external_id'],
+													),
+								)
 							);
 			} else {
 				throw new Media_Exception( t('Unable to create directory') );
