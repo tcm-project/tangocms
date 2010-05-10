@@ -250,12 +250,12 @@
 					if ( is_array( $val ) ) {
 						$value[$key] = $this->cleanTagValue( $val );
 					} else if ( is_string( $val ) ) {
-						$value[$key] = htmlspecialchars( $val, ENT_COMPAT, 'UTF-8' );
+						$value[$key] = zula_htmlspecialchars( $val );
 					}
 				}
 				return $value;
 			} else if ( is_string( $value ) ) {
-				return htmlspecialchars( $value, ENT_COMPAT, 'UTF-8' );
+				return zula_htmlspecialchars( $value );
 			} else {
 				return $value;
 			}

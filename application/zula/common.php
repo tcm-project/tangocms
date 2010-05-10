@@ -665,7 +665,7 @@ ERR;
 	 * @return string
 	 */
 	function zula_htmlspecialchars( $string ) {
-		return htmlspecialchars( htmlspecialchars_decode($string), ENT_COMPAT, 'UTF-8' );
+		return htmlspecialchars( htmlspecialchars_decode($string, ENT_QUOTES), ENT_QUOTES, 'UTF-8' );
 	}
 
 	/**
