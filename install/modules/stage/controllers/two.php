@@ -49,6 +49,8 @@
 																	$this->_zula->getDir( 'config' ).'/config.ini.php',
 																	$this->_zula->getDir( 'config' ).'/layouts/admin-default.xml',
 																	$this->_zula->getDir( 'config' ).'/layouts/main-default.xml',
+																	$this->_zula->getDir( 'config' ).'/layouts/fpsc-admin.xml',
+																	$this->_zula->getDir( 'config' ).'/layouts/fpsc-main.xml',
 																	)
 													),
 							'directories'	=> array(
