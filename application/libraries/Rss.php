@@ -292,7 +292,7 @@
 		protected function prepareDescription( $str ) {
 			$editor = new Editor( $str );
 			$editor->preParse();
-			return $editor->parse();
+			return $editor->parse( true );
 		}
 
 		/**
