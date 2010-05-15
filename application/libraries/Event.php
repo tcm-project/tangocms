@@ -30,7 +30,7 @@
 		 * Event types to be used
 		 * @var array
 		 */
-		protected $eventTypes = array('error', 'success', 'info');
+		protected $eventTypes = array('success', 'info', 'error');
 
 		/**
 		 * Constructor function

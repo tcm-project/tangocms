@@ -34,6 +34,7 @@
 								'2.3.0'			=> '2.3.1',
 
 								# Dev Releases
+								'2.5.51'		=> '2.6.0-alpha1',
 								'2.5.50'		=> '2.6.0-alpha1',
 
 								'2.4.90'		=> '2.5.0',
@@ -412,7 +413,9 @@
 						$layout->addController( 'SC', $sc, $sc['id'] );
 						$layout->save();
 					}
-					return '2.5.51';
+				case '2.5.51':
+					$this->sqlFile( '2.6.0-alpha1/2.5.52.sql' );
+					return '2.5.52';
 				default:
 					return '2.5.60';
 			}

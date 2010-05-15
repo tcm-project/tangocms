@@ -360,7 +360,7 @@
 				}
 				// Check if it is valid
 				$validator = new Validator( $value, $element['title'] );
-				foreach( $element['validators'] as $tmpValidator ) {
+				foreach( array_filter($element['validators']) as $tmpValidator ) {
 					$validator->add( $tmpValidator );
 				}
 				if ( $validator->validate() === false ) {

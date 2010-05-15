@@ -14,6 +14,7 @@ INSERT INTO {SQL_PREFIX}mod_media_cats (name, clean_name) VALUES
 DROP TABLE IF EXISTS {SQL_PREFIX}mod_media_items;
 CREATE TABLE {SQL_PREFIX}mod_media_items (
   id mediumint(6) NOT NULL AUTO_INCREMENT,
+  `outstanding` tinyint(1) NOT NULL DEFAULT '1',
   cat_id smallint(4) NOT NULL DEFAULT '1',
   `date` datetime NOT NULL,
   `type` enum('image','video','audio','external') COLLATE utf8_unicode_ci NOT NULL,

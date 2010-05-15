@@ -81,10 +81,10 @@
 					$uploadAcl = $this->_acl->check( 'media-cat_upload_'.$cid );
 					if ( $moderateAcl || $uploadAcl ) {
 						$this->setPageLinks( array(
-													t('Upload Media Item')		=> $this->_router->makeUrl( 'media', 'add', 'upload', null, array('id' => $cid) ),
-													t('Add External Media Item')=> $this->_router->makeUrl( 'media', 'add', 'external', null, array('id' => $cid) ),
+													t('Upload Media Item')		=> $this->_router->makeUrl('media', 'add', 'upload')->queryArgs(array('cid' => $cid)),
+													t('Add External Media Item')=> $this->_router->makeUrl('media', 'add', 'external')->queryArgs(array('cid' => $cid)),
 													));
-					}					
+					}
 				} catch ( Media_CategoryNoExist $e ) {
 					throw new Module_ControllerNoExist;
 				}

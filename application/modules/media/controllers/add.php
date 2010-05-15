@@ -46,7 +46,7 @@
 			$this->setTitle( t('Add new media item') );
 			// Get details for the category we'll be adding to
 			try {
-				$cid = $this->_router->getArgument( 'id' );
+				$cid = $this->_input->get( 'cid' );
 				$category = $this->_model()->getCategory( $cid );
 				$resource = 'media-cat_upload_'.$category['id'];
 				if ( !$this->_acl->resourceExists( $resource ) || !$this->_acl->check( $resource ) ) {
@@ -55,8 +55,6 @@
 				// Prepare form validation
 				$form = new View_form( 'add/'.$type.'.html', 'media' );
 				$form->addElement( 'media/cid', $category['id'], 'CID', new Validator_Confirm($category['id']) );
-				$form->addElement( 'media/title', null, t('Title'), new Validator_Length(1, 255), ($type == 'upload') );
-				$form->addElement( 'media/desc', null, t('Description'), new Validator_Length(0, 1000) );
 				if ( $type == 'external' ) {
 					// Specific for external media/YouTube
 					$form->addElement( 'media/external_id', null, t('External Media ID'), new Validator_Length(6, 128) );
@@ -80,18 +78,19 @@
 						}
 						if ( $fileCount == 1 ) {
 							$this->_event->success( t('Added new media item') );
-							return zula_redirect( $this->_router->makeUrl('media', 'view', $lastItem['clean_name']) );
 						} else {
-							$this->_event->success( sprintf('Added %1$d new media items', $itemCount) );
-							return zula_redirect( $this->_router->makeUrl('media', 'cat', $category['clean_name']) );
+							$this->_event->success( sprintf('Added %1$d new media items', $fileCount) );
 						}
+						return zula_redirect( $this->_router->makeUrl('media', 'manage', 'outstanding')
+															->queryArgs( array('cid' => $category['id']) )
+											);
 					} catch ( Media_Exception $e ) {
 						$this->_event->error( $e->getMessage() );
 					}
 				}
 				$form->assign( array('CATEGORY' => $category) );
 				return $form->getOutput();
-			} catch ( Router_ArgNoExist $e ) {
+			} catch ( Input_KeyNoExist $e ) {
 				$this->_event->error( t('No media category selected') );
 			} catch ( Media_CategoryNoExist $e ) {
 				$this->_event->error( t('Media category does not exist') );
@@ -156,9 +155,11 @@
 						} else {
 							unset( $thumbname );
 						}
+						// Generate a title from the filename automatically
+						$title = str_replace( array('-', '_', '+'), ' ', pathinfo($details['name'], PATHINFO_FILENAME) );
 						$uploadedItems[] = array(
-												'title'		=> $fd['title'],
-												'desc'		=> $fd['desc'],
+												'title'		=> trim( ucfirst(strtolower($title)) ),
+												'desc'		=> '',
 												'type'		=> $details['category'],
 												'file'		=> $dirname.'/'.$details['basename'],
 												'thumbnail'	=> isset($thumbname) ? $dirname.'/'.$thumbname : '',

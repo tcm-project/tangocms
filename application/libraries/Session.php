@@ -118,6 +118,9 @@
 				session_set_cookie_params( $conf['lifetime'], $conf['path'], $conf['domain'], $conf['secure'], $conf['httponly'] );
 				session_name( 'ZULA_'.md5(_BASE_DIR) );
 				session_start();
+				if ( !array_key_exists( 'previous_url', $_SESSION ) ) {
+					$_SESSION['previous_url'] = null;
+				}
 			}
 			return session_id();
 		}
