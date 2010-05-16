@@ -58,6 +58,7 @@
 			// Get all outstanding media items
 			$outstanding = $this->_model()->getOutstandingItems( $cid );
 			if ( ($count = count($outstanding)) == 0 ) {
+				$this->_event->error( t('There are currently no outstanding media items') );
 				return zula_redirect( $redirectUrl );
 			} else {
 				$form = new View_form( 'manage/outstanding.html', 'media' );

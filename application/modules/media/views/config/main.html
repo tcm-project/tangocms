@@ -24,6 +24,7 @@
 						<td><?php echo zula_snippet( $cat['name'], 80, true ); ?></td>
 						<td class="managecol">
 							<a href="<?php echo $edit_url; ?>" title="{L_[Edit Category]}">{L_[Edit]}</a>
+							| <a href="<?php echo $this->_router->makeUrl('media', 'add', 'upload')->queryArgs(array('cid' => $cat['id'])); ?>">{L_[Upload media item]}</a>
 						</td>
 					</tr>
 			<?php $i++; } } ?>

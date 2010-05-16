@@ -25,6 +25,7 @@
 			$this->setPageLinks( array(
 										t('Manage Categories')	=> $this->_router->makeUrl( 'media', 'config' ),
 										t('Add Category')		=> $this->_router->makeUrl( 'media', 'config', 'addcat'),
+										t('Manage Outstanding')	=> $this->_router->makeUrl( 'media', 'manage', 'outstanding' ),
 										t('Settings')			=> $this->_router->makeUrl( 'media', 'config', 'settings' ),
 										));
 		}
@@ -155,7 +156,7 @@
 		 *
 		 * @return bool
 		 */
-		public function bridgeSection() {			
+		public function bridgeSection() {
 			$type = $this->_input->has( 'post', 'media_purge' ) ? 'purge' : 'delete';
 			if ( !$this->_acl->resourceExists( 'media_'.$type.'_category' ) || !$this->_acl->check( 'media_'.$type.'_category' ) ) {
 				throw new Module_NoPermission;

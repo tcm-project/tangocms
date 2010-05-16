@@ -40,23 +40,32 @@
 
 		/**
 		 * Constructor
-		 * Can load a given request path and parses it into the
-		 * parts. Query arguments and a fragment can be provided.
+		 * Can take a URL and parse it into the various parts (mod/con/sec). All parts
+		 * of a URL including query arguments and fragment can be provided.
 		 *
-		 * @param string $requestPath
+		 * @param string $url
 		 * @return object
 		 */
-		public function __construct( $requestPath=null ) {
-			if ( $requestPath = trim($requestPath, '/') ) {
+		public function __construct( $url=null ) {
+			if ( $url = trim($url, '/') ) {
+				$parsedUrl = array_merge( array('host' => null, 'path' => null, 'query' => null, 'fragment' => null),
+										  parse_url($url)
+										);
 				// Get any query arguments or fragments from the URL
-				$this->fragment = parse_url( $requestPath, PHP_URL_FRAGMENT );
-				if ( $queryParsed = parse_url($requestPath, PHP_URL_QUERY) ) {
-					parse_str( $queryParsed, $this->queryStringArgs );
+				$this->fragment = $parsedUrl['fragment'];
+				if ( !empty( $parsedUrl['query'] ) ) {
+					parse_str( $parsedUrl['query'], $this->queryStringArgs );
 				}
 				/**
 				 * Begin the actual parsing of the URL to find out what data is given
 				 */
-				$splitPath = explode( '/', parse_url($requestPath, PHP_URL_PATH) );
+				if ( $parsedUrl['host'] == $_SERVER['SERVER_NAME'] && strpos('/'.$parsedUrl['path'], _BASE_DIR) === 0 ) {
+					// We're given a URL of this Zula install, remove base dir from path
+					$requestPath = substr( $parsedUrl['path'], strlen(_BASE_DIR) );
+				} else {
+					$requestPath = $parsedUrl['path'];
+				}
+				$splitPath = explode( '/', $requestPath );
 				// Check for a provided site type
 				if ( in_array( $splitPath[0], $this->_router->getSiteTypes() ) ) {
 					$this->parsed['siteType'] = $splitPath[0];
