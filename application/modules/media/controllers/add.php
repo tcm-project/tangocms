@@ -109,6 +109,7 @@
 				$uploader = new Uploader( 'media_file', $this->_zula->getDir( 'uploads' ).'/media/'.$fd['cid'].'/{CATEGORY}' );
 				$uploader->subDirectories()
 						 ->allowedMime( $this->allowedMime )
+						 ->maxFileSize( $this->_config->get('media/max_fs') )
 						 ->extractArchives();
 				$file = $uploader->getFile();
 				if ( $file->upload() === false ) {
@@ -122,10 +123,7 @@
 				if ( $thumbnail->upload() !== false ) {
 					$thumbImage = new Image( $thumbnail->path );
 					$thumbImage->mime = 'image/png';
-					$thumbImage->thumbnail(
-											$this->_config->get('media/thumb_size_x'),
-											$this->_config->get('media/thumb_size_y')
-										);
+					$thumbImage->resize( $this->_config->get('media/max_thumb_width'), null, false );
 					// Remove the original uploaded file
 					unlink( $thumbnail->path );
 				}
@@ -147,11 +145,8 @@
 						} else if ( $details['category'] == 'image' ) {
 							$tmpThumb = new Image( $details['path'] );
 							$tmpThumb->mime = 'image/png';
-							$tmpThumb->thumbnail(
-												$this->_config->get('media/thumb_size_x'),
-												$this->_config->get('media/thumb_size_y')
-											);
-							$tmpThumb->save( $details['dirname'].'/'.$thumbname );
+							$tmpThumb->resize( $this->_config->get('media/max_thumb_width'), null, false )
+									 ->save( $details['dirname'].'/'.$thumbname );
 						} else {
 							unset( $thumbname );
 						}

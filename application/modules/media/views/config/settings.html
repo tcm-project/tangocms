@@ -14,7 +14,7 @@
 					</dl>
 				</td>
 				<td class="confcol">
-					{S_PER_PAGE}
+					<input type="number" name="media[per_page]" value="{media.per_page}">
 				</td>
 			</tr>
 			<tr class="odd">
@@ -25,7 +25,11 @@
 					</dl>
 				</td>
 				<td class="confcol">
-					{S_LIGHTBOX}
+					<input type="radio" id="mediaLbYes" name="media[use_lightbox]" value="1" <?php echo $media['use_lightbox'] ? 'checked="checked"' : ''; ?>>
+					<label class="horizontal" for="mediaLbYes">{L_[Yes]}</label>
+					<br>
+					<input type="radio" id="mediaLbNo" name="media[use_lightbox]" value="0" <?php echo $media['use_lightbox'] ? '' : 'checked="checked"'; ?>>
+					<label class="horizontal" for="mediaLbNo">{L_[No]}</label>
 				</td>
 			</tr>
 		</tbody>
@@ -34,70 +38,51 @@
 	<table>
 		<thead>
 			<tr>
-				<th colspan="2">{L_[Thumbnail Sizes]}</th>
+				<th colspan="2">{L_[Files sizes and image dimensions]}</th>
 			</tr>
 		</thead>
 		<tbody>
 			<tr class="even">
 				<td>
 					<dl>
-						<dt>{L_[Width]}</dt>
-						<dd>{L_[Set the width that the thumbnail images should be created at (In pixels).]}</dd>
+						<dt>{L_[Maximum file size]}</dt>
+						<dd>{L_[The maximum file size allowed for an upload file.]}</dd>
 					</dl>
 				</td>
 				<td class="confcol">
-					{S_THUMB_WIDTH}
+					<input type="number" name="media[max_fs]" value="<?php echo (float) zula_human_readable( $media['max_fs'] ); ?>">
+					<select name="media[max_fs_unit]">
+						<option value="k" <?php echo $media['max_fs'] >= 1048576 ? '' : 'selected="selected"'; ?>>KiB</option>
+						<option value="m" <?php echo $media['max_fs'] >= 1048576 ? 'selected="selected"' : ''; ?>>MiB</option>
+					</select>
 				</td>
 			</tr>
 			<tr class="odd">
 				<td>
 					<dl>
-						<dt>{L_[Height]}</dt>
-						<dd>{L_[Set the height that the thumbnail images should be created at (In pixels).]}</dd>
+						<dt>{L_[Thumbnail width]}</dt>
+						<dd>{L_[Thumbnails generated will not exceed the width set here.]}</dd>
 					</dl>
 				</td>
 				<td class="confcol">
-					{S_THUMB_HEIGHT}
+					<input type="number" min="20" max="200" step="5" name="media[max_thumb_width]" value="{media.max_thumb_width}"> px
 				</td>
 			</tr>
-		</tbody>
-	</table>
-
-	<table>
-		<thead>
-			<tr>
-				<th colspan="2">{L_[Image Post-Processing]}</th>
-			</tr>
-		</thead>
-		<tbody>			
 			<tr class="even">
 				<td>
 					<dl>
-						<dt>{L_[Image Width]}</dt>
-						<dd>{L_[Set the Width for the medium/preview image (Smaller than original, and bigger than thumbnail). If this is left blank, the width will scale to the Height set.]}</dd>
+						<dt>{L_[Maximum width of displayed images]}</dt>
+						<dd>{L_[Large versions of images displayed to users will never exceed the width set here.]}</dd>
 					</dl>
 				</td>
 				<td class="confcol">
-					{S_MEDIUM_WIDTH}
-				</td>
-			</tr>
-			<tr class="odd">
-				<td>
-					<dl>
-						<dt>{L_[Image Height]}</dt>
-						<dd>{L_[Set the Height for the medium/preview image (Smaller than original, and bigger than thumbnail). If this is left blank, the height will scale to the Width set.]}</dd>
-					</dl>
-				</td>
-				<td class="confcol">
-					{S_MEDIUM_HEIGHT}
+					<input type="number" min="200" max="90000" step="100" name="media[max_image_width]" value="{media.max_image_width}"> px
 				</td>
 			</tr>
 		</tbody>
 	</table>
 
-	{CSRF}
-
-	<p>
+	<div class="actions">
 		<input type="submit" value="{L_[Update]}">
-	</p>
+	</div>
 </form>

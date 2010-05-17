@@ -200,43 +200,31 @@
 			if ( !$this->_acl->check( 'media_manage_settings' ) ) {
 				throw new Module_NoPermission;
 			}
-			if ( $this->_input->has( 'post', 'setting/media' ) ) {
-				if ( $this->_input->checkToken() ) {
-					// Update the settings
-					foreach( $this->_input->post( 'setting/media' ) as $key=>$val ) {
-						try {
-							$this->_config_sql->update( 'media/'.$key, $val );
-						} catch ( Config_KeyNoExist $e ) {
-							$this->_event->error( $e->getMessage() );
+			// Prepare the form of settings
+			$mediaConf = $this->_config->get( 'media' );
+			$form = new View_form( 'config/settings.html', 'media' );
+			$form->addElement( 'media/per_page', $mediaConf['per_page'], t('Per page'), new Validator_Int )
+				 ->addElement( 'media/use_lightbox', $mediaConf['use_lightbox'], t('Use lightbox'), new Validator_Bool )
+				 ->addElement( 'media/max_fs', $mediaConf['max_fs'], t('Maximum file size'), new Validator_Int )
+				 ->addElement( 'media/max_thumb_width', $mediaConf['max_thumb_width'], t('Thumbnail width'), new Validator_Between(20, 200) )
+				 ->addElement( 'media/max_image_width', $mediaConf['max_image_width'], t('Maximum image width'), new Validator_Between(200, 90000) );
+			if ( $form->hasInput() && $form->isValid() ) {
+				foreach( $form->getValues( 'media' ) as $key=>$val ) {
+					if ( $key == 'max_image_width' && $mediaConf['max_image_width'] != $val ) {
+						// Remove the tmp images which are no longer going to be used
+						$files = (array) glob( $this->_zula->getDir('tmp').'/media/max*-*' );
+						foreach( array_filter( $files ) as $tmpFile ) {
+							unlink( $tmpFile );
 						}
+					} else if ( $key == 'max_fs' ) {
+						$val = zula_byte_value( $val.$this->_input->post('media/max_fs_unit') );
 					}
-					$this->_event->success( t('Updated Media Settings') );
-				} else {
-					$this->_event->error( Input::csrfMsg() );
+					$this->_config_sql->update( 'media/'.$key, $val );
 				}
-				return zula_redirect( $this->_router->makeUrl( 'media', 'config', 'settings' ) );
-			} else {
-				/**
-				 * Display all of the needed media settings, fun.
-				 */
-				$html = new Html( 'setting[media][%s]' );
-				$options = array(
-								'yn' => array( t('Yes') => true, t('No') => false ),
-								);
-				$view = $this->loadView( 'config/settings.html' );
-				$view->assignHtml( array(
-									'S_THUMB_WIDTH'		=> $html->input( 'thumb_size_x', $this->_config->get( 'media/thumb_size_x' ) ),
-									'S_THUMB_HEIGHT'	=> $html->input( 'thumb_size_y', $this->_config->get( 'media/thumb_size_y' ) ),
-									'S_MEDIUM_WIDTH'	=> $html->input( 'medium_size_x', $this->_config->get( 'media/medium_size_x' ) ),
-									'S_MEDIUM_HEIGHT'	=> $html->input( 'medium_size_y', $this->_config->get( 'media/medium_size_y' ) ),
-
-									'S_PER_PAGE'		=> $html->input( 'per_page', $this->_config->get( 'media/per_page' ) ),
-									'S_LIGHTBOX'		=> $html->radio( 'use_lightbox', $this->_config->get( 'media/use_lightbox' ), $options['yn'] ),
-
-									'CSRF'				=> $this->_input->createToken( true ),
-									));
-				return $view->getOutput();
+				$this->_event->success( t('Updated media settings') );
+				return zula_redirect( $this->_router->makeUrl('media', 'config', 'settings') );
 			}
+			return $form->getOutput();
 		}
 
 	}

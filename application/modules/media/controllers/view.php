@@ -114,22 +114,35 @@
 			if ( $format == 'thumb' ) {
 				$file = $item['path_fs'].'/'.$item['thumbnail'];
 			} else if ( $item['type'] == 'image' ) {
-				// Get either full size, or medium image
-				if ( $format == 'medium' ) {
-					$mediumX = $this->_config->get( 'media/medium_size_x' );
-					$mediumY = $this->_config->get( 'media/medium_size_y' );
-					$file = $this->_zula->getDir( 'tmp' )."/media/{$item['id']}/{$mediumX}x{$mediumY}";
-					if ( ($ext = pathinfo($item['filename'], PATHINFO_EXTENSION)) ) {
-						$file .= '.'.$ext;
+				/**
+				 * Get either full or medium sized image, however no large than
+				 * the specified max width.
+				 */
+				$imgPath = $item['path_fs'].'/'.$item['filename'];
+				if ( is_file( $imgPath ) ) {
+					list( $imgWidth ) = getimagesize( $imgPath );
+					$maxWidth = $this->_config->get( 'media/max_image_width' );
+					if ( $format == 'medium' ) {
+						// Display the medium size image no wider than the themes content
+						try {
+							$contentWidth = $this->_theme->getDetail( 'contentWidth' );
+						} catch ( Theme_DetailNoExist $e ) {
+							$contentWidth = 500;
+						}
+						if ( $contentWidth < $maxWidth ) {
+							$maxWidth = $contentWidth;
+						}
 					}
-					if ( !is_readable( $file ) ) {
-						// Create the new temp medium image
-						$image = new Image( $item['path_fs'].'/'.$item['filename'] );
-						$image->resize( $mediumX, $mediumY, false );
-						$image->save( $file );
+					if ( $imgWidth > $maxWidth ) {
+						$file = $this->_zula->getDir( 'tmp' )."/media/max{$maxWidth}-".pathinfo($item['filename'], PATHINFO_BASENAME);
+						if ( !is_file( $file ) ) {
+							$image = new Image( $imgPath );
+							$image->resize( $maxWidth )
+								  ->save( $file );
+						}
+					} else {
+						$file = $imgPath;
 					}
-				} else if ( $format == 'large' ) {
-					$file = $item['path_fs'].'/'.$item['filename'];
 				}
 			} else if ( $format == 'stream' && $item['type'] == 'audio' || $item['type'] == 'video' ) {
 				$file = $item['path_fs'].'/'.$item['filename'];

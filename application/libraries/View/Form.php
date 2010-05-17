@@ -164,7 +164,7 @@
 		 * @param bool $required		Is the field required to have a value?
 		 * @param int $source			Where the data is to come from, GET or POST
 		 * @param bool $forHtml 		Should HTML be allowed in the tag value?
-		 * @return bool
+		 * @return object
 		 */
 		public function addElement( $inputName, $defaultVal=null, $title=null, $validators=null, $required=true, $source=self::_POST, $forHtml=false ) {
 			$details = array(
@@ -190,7 +190,7 @@
 				$this->assign( $value );
 			}
 			$this->elements[] = $details;
-			return true;
+			return $this;
 		}
 
 		/**
