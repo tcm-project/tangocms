@@ -20,7 +20,7 @@
 		 * @return string
 		 */
 		public function editSection() {
-			$this->_locale->textDomain( $this->textDomain() );
+			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setTitle( t('Edit Media Item') );
 			// Get details for the media item to edit
 			try {
@@ -57,7 +57,7 @@
 		 * @return string
 		 */
 		public function deleteSection() {
-			$this->_locale->textDomain( $this->textDomain() );
+			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setTitle( t('Delete Media Item') );
 			// Attempt to remove the single media item
 			try {

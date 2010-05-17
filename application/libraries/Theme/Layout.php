@@ -304,7 +304,7 @@
 						$this->sectors = array(
 											'SC' => array(
 														'id' 			=> 'SC',
-														'description' 	=> t('Requested Module', Locale::_DTD),
+														'description' 	=> t('Requested Module', I18n::_DTD),
 														),
 											);
 					} else {

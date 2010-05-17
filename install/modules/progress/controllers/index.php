@@ -22,7 +22,7 @@
 		 * Basically a welcome message given options to either Upgrade or Fresh Install
 		 */
 		public function indexSection() {
-			$this->_locale->textDomain( $this->textDomain() );
+			$this->_i18n->textDomain( $this->textDomain() );
 			$reqCntrl = $this->_dispatcher->getDispatchData();
 			switch( $reqCntrl['module'] ) {
 				case 'stage':

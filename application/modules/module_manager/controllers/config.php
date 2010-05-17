@@ -123,7 +123,7 @@
 		 * @return string|bool
 		 */
 		public function loadorderSection() {
-			$this->_locale->textDomain( $this->textDomain() );
+			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setTitle( t('Module Load Order') );
 			$this->setOutputType( self::_OT_CONFIG );
 			// Build form validation

@@ -22,7 +22,7 @@
 		 * @return strng
 		 */
 		public function indexSection() {
-			$this->_locale->textDomain( $this->textDomain() );
+			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setTitle( t('Security Check') );
 			// Set default install stage and attempt to check for code file
 			$_SESSION['install_stage'] = 1;

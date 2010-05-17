@@ -1,17 +1,17 @@
 <?php
 
 /**
- * Zula Framework Locale Base
+ * Zula Framework
  *
  * @patches submit all patches to patches@tangocms.org
  *
  * @author Alex Cartwright
- * @copyright Copyright (C) 2007, 2008, 2009 Alex Cartwright
+ * @copyright Copyright (C) 2007, 2008, 2009, 2010 Alex Cartwright
  * @license http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html GNU/LGPL 2.1
- * @package Zula_Locale
+ * @package Zula_I18n
  */
 
-	abstract class Locale_base extends Zula_LibraryBase {
+	abstract class I18n_base extends Zula_LibraryBase {
 
 		/**
 		 * The current locale we are using
@@ -67,7 +67,7 @@
 		 * @param string $path
 		 * @return string|bool
 		 */
-		abstract public function bindTextDomain( $domain=Locale::_DTD, $path=null, $force=false );
+		abstract public function bindTextDomain( $domain=I18n::_DTD, $path=null, $force=false );
 
 		/**
 		 * Sets the default text domain to be using
@@ -97,7 +97,7 @@
 			if ( $this->textDomainExists( $domain ) ) {
 				return $this->textDomains[ $domain ];
 			} else {
-				trigger_error( 'Locale_base::get_domain_path() domain "'.$domain.'" does not exist', E_USER_NOTICE );
+				trigger_error( 'I18n_base::get_domain_path() domain "'.$domain.'" does not exist', E_USER_NOTICE );
 				return false;
 			}
 		}
@@ -120,7 +120,6 @@
 			putenv( 'LANG='.$locale );
 			$this->currentLocale = setlocale( LC_ALL, $locale );
 			if ( $this->currentLocale === false ) {
-				$this->_log->message( 'Locale "'.$locale.'" could not be set as it is not supported', Log::L_WARNING );
 				return false;
 			}
 			return $this->getCurrentLocale();

@@ -21,7 +21,7 @@
 		 * @return string
 		 */
 		public function indexSection() {
-			$this->_locale->textDomain( $this->textDomain() );
+			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setTitle( t('Install Complete!') );
 			/**
 			 * Check user is not skipping ahead

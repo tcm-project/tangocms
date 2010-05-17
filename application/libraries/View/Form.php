@@ -228,7 +228,7 @@
 			$amcTable = '<table>
 							<thead>
 								<tr>
-									<th colspan="2">'.t('Additional Content', Locale::_DTD).'</th>
+									<th colspan="2">'.t('Additional Content', I18n::_DTD).'</th>
 								</tr>
 							</thead>
 							<tbody>';
@@ -303,7 +303,7 @@
 					$this->assignHtml( array('ANTISPAM' => $form) );
 				} else {
 					$this->assignHtml( array('ANTISPAM' => '') );
-					$this->_event->error( t('Unable to create antispam, please check the logs.', Locale::_DTD) );
+					$this->_event->error( t('Unable to create antispam, please check the logs.', I18n::_DTD) );
 				}
 			}
 			$output = parent::getOutput( $parseConfigTags );
@@ -379,7 +379,7 @@
 				if ( !$antispam->check() ) {
 					$this->valid = false;
 					if ( $this->storeErrors === true ) {
-						$this->_event->error( t('Sorry, incorrect answer to the captcha', Locale::_DTD) );
+						$this->_event->error( t('Sorry, incorrect answer to the captcha', I18n::_DTD) );
 					}
 				}
 			}

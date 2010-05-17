@@ -21,7 +21,7 @@
 		 * @return bool|string
 		 */
 		public function validate( $value ) {
-			return (is_numeric( $value ) ? true : t('%1$s must be a numeric value', Locale::_DTD));
+			return (is_numeric( $value ) ? true : t('%1$s must be a numeric value', I18n::_DTD));
 		}
 
 	}

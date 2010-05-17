@@ -209,23 +209,23 @@
 			// Configure the formats used for relative date
 			if ( $date > new DateTime ) {
 				$format = array(
-								'y'	=> array( 'singular' => t('within 1 year', Locale::_DTD), 'plural' => t('within %d years', Locale::_DTD) ),
-								'm'	=> array( 'singular' => t('within 1 month', Locale::_DTD), 'plural' => t('within %d months', Locale::_DTD) ),
-								'w'	=> array( 'singular' => t('within 1 week', Locale::_DTD), 'plural' => t('within %d weeks', Locale::_DTD) ),
-								'd'	=> array( 'singular' => t('within 1 day', Locale::_DTD), 'plural' => t('within %d days', Locale::_DTD) ),
-								'h'	=> array( 'singular' => t('within 1 hour', Locale::_DTD), 'plural' => t('within %d hours', Locale::_DTD) ),
-								'i'	=> array( 'singular' => t('within 1 minute', Locale::_DTD), 'plural' => t('within %d minutes', Locale::_DTD) ),
-								's'	=> array( 'singular' => t('within 1 second', Locale::_DTD), 'plural' => t('within %d seconds', Locale::_DTD) ),
+								'y'	=> array( 'singular' => t('within 1 year', I18n::_DTD), 'plural' => t('within %d years', I18n::_DTD) ),
+								'm'	=> array( 'singular' => t('within 1 month', I18n::_DTD), 'plural' => t('within %d months', I18n::_DTD) ),
+								'w'	=> array( 'singular' => t('within 1 week', I18n::_DTD), 'plural' => t('within %d weeks', I18n::_DTD) ),
+								'd'	=> array( 'singular' => t('within 1 day', I18n::_DTD), 'plural' => t('within %d days', I18n::_DTD) ),
+								'h'	=> array( 'singular' => t('within 1 hour', I18n::_DTD), 'plural' => t('within %d hours', I18n::_DTD) ),
+								'i'	=> array( 'singular' => t('within 1 minute', I18n::_DTD), 'plural' => t('within %d minutes', I18n::_DTD) ),
+								's'	=> array( 'singular' => t('within 1 second', I18n::_DTD), 'plural' => t('within %d seconds', I18n::_DTD) ),
 								);
 			} else {
 				$format = array(
-								'y'	=> array( 'singular' => t('1 year ago', Locale::_DTD), 'plural' => t('%d years ago', Locale::_DTD) ),
-								'm'	=> array( 'singular' => t('1 month ago', Locale::_DTD), 'plural' => t('%d months ago', Locale::_DTD) ),
-								'w'	=> array( 'singular' => t('1 week ago', Locale::_DTD), 'plural' => t('%d weeks ago', Locale::_DTD) ),
-								'd'	=> array( 'singular' => t('1 day ago', Locale::_DTD), 'plural' => t('%d days ago', Locale::_DTD) ),
-								'h'	=> array( 'singular' => t('1 hour ago', Locale::_DTD), 'plural' => t('%d hours ago', Locale::_DTD) ),
-								'i'	=> array( 'singular' => t('1 minute ago', Locale::_DTD), 'plural' => t('%d minutes ago', Locale::_DTD) ),
-								's'	=> array( 'singular' => t('1 second ago', Locale::_DTD), 'plural' => t('%d seconds ago', Locale::_DTD) ),
+								'y'	=> array( 'singular' => t('1 year ago', I18n::_DTD), 'plural' => t('%d years ago', I18n::_DTD) ),
+								'm'	=> array( 'singular' => t('1 month ago', I18n::_DTD), 'plural' => t('%d months ago', I18n::_DTD) ),
+								'w'	=> array( 'singular' => t('1 week ago', I18n::_DTD), 'plural' => t('%d weeks ago', I18n::_DTD) ),
+								'd'	=> array( 'singular' => t('1 day ago', I18n::_DTD), 'plural' => t('%d days ago', I18n::_DTD) ),
+								'h'	=> array( 'singular' => t('1 hour ago', I18n::_DTD), 'plural' => t('%d hours ago', I18n::_DTD) ),
+								'i'	=> array( 'singular' => t('1 minute ago', I18n::_DTD), 'plural' => t('%d minutes ago', I18n::_DTD) ),
+								's'	=> array( 'singular' => t('1 second ago', I18n::_DTD), 'plural' => t('%d seconds ago', I18n::_DTD) ),
 								);
 			}
 			// Get the largest precision that has a value
@@ -239,7 +239,7 @@
 			if ( isset( $precision, $value ) && $value > 0 ) {
 				return sprintf( $format[ $precision ][ ($value>1 ? 'plural' : 'singular') ], $value );
 			} else {
-				return t('now', Locale::_DTD);
+				return t('now', I18n::_DTD);
 			}
 		}
 

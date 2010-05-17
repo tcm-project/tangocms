@@ -22,7 +22,7 @@
 		protected $viewPath = false;
 
 		/**
-		 * The module this is for (for locale)
+		 * The module this is for (for i18n)
 		 * @var string
 		 */
 		protected $module = null;
@@ -437,8 +437,8 @@
 			if ( !empty( $this->module ) ) {
 				// Bind the text domain and set the domain to use
 				$domain = _PROJECT_ID.'-'.$this->module;
-				$this->_locale->bindTextDomain( $domain, $this->_zula->getDir( 'modules' ).'/'.$this->module.'/locale' );
-				$this->_locale->textDomain( $domain );
+				$this->_i18n->bindTextDomain( $domain, $this->_zula->getDir( 'modules' ).'/'.$this->module.'/locale' );
+				$this->_i18n->textDomain( $domain );
 			}
 			// Gather all languages tags
 			preg_match_all( '#{L_\[(.*?)\](?=})#', $content, $tags);
@@ -451,7 +451,7 @@
 					$languageTags[ $tag ] = $value;
 				}
 				// Restore the text domain back
-				$this->_locale->textDomain( Locale::_DTD );
+				$this->_i18n->textDomain( I18n::_DTD );
 				return $languageTags;
 			} else {
 				return array();

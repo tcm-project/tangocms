@@ -42,7 +42,7 @@
 				$protocol = '('.$protocol.')?';
 			}
 			$regex = '#^'.$protocol.'[A-Z0-9][A-Z0-9.\-]+\.[A-Z0-9.\-]+(:\d+)?(/([^\s]+)?)?$#i';
-			return preg_match( $regex, $value ) ? true : t('%1$s must be a valid URL', Locale::_DTD );
+			return preg_match( $regex, $value ) ? true : t('%1$s must be a valid URL', I18n::_DTD );
 		}
 
 	}

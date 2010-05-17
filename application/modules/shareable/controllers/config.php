@@ -23,7 +23,7 @@
 			if ( !$this->_acl->check( 'shareable_manage' ) ) {
 				throw new Module_NoPermission;
 			}
-			$this->_locale->textDomain( $this->textDomain() );
+			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setTitle( t('Shareable Configuration') );
 			$this->setOutputType( self::_OT_CONFIG );
 			// Get sites

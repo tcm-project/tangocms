@@ -495,11 +495,11 @@
 							if ( $cntrlrOutput === false ) {
 								continue;
 							} else if ( !trim( $cntrlrOutput ) ) {
-								$cntrlrOutput = '<p>'.t('Controller loaded but appears to display no content', Locale::_DTD).'</p>';
+								$cntrlrOutput = '<p>'.t('Controller loaded but appears to display no content', I18n::_DTD).'</p>';
 							}
 						} catch ( Module_ControllerNoExist $e ) {
 							$this->_log->message( $e->getMessage(), Log::L_WARNING );
-							$cntrlrOutput .= '<p>'.sprintf( t('requested controller "%s" does not exist', Locale::_DTD), $ident ).'</p>';
+							$cntrlrOutput .= '<p>'.sprintf( t('requested controller "%s" does not exist', I18n::_DTD), $ident ).'</p>';
 						} catch ( Module_AjaxOnly $e ) {
 							$this->_log->message( 'controller "'.$ident.'" must be loaded in an AJAX request only', Log::L_WARNING );
 							continue;
@@ -515,7 +515,7 @@
 					if ( $cntrlr['config']['displayTitle'] === 'custom' && !empty( $cntrlr['config']['customTitle'] ) ) {
 						$title = $cntrlr['config']['customTitle'];
 					} else {
-						$title = isset($tmpCntrlr['title']) ? $tmpCntrlr['title'] : t('Oops!', Locale::_DTD);
+						$title = isset($tmpCntrlr['title']) ? $tmpCntrlr['title'] : t('Oops!', I18n::_DTD);
 					}
 					if ( empty( $cntrlr['config']['htmlWrapClass'] ) ) {
 						$htmlWrapClass = null;
@@ -613,7 +613,7 @@
 			}
 			$details = array(
 							'page_links'	=> '',
-							'cntrlr_title'	=> t('Oops!', Locale::_DTD),
+							'cntrlr_title'	=> t('Oops!', I18n::_DTD),
 							'module'		=> 'unknown',
 							'controller'	=> 'unknown',
 							'section'		=> 'unknown',

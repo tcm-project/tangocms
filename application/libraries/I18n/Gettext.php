@@ -1,17 +1,17 @@
 <?php
 
 /**
- * Zula Framework Locale [Gettext]
+ * Zula Framework
  *
  * @patches submit all patches to patches@tangocms.org
  *
  * @author Alex Cartwright
- * @copyright Copyright (C) 2007, 2008, 2009 Alex Cartwright
+ * @copyright Copyright (C) 2007, 2008, 2009, 2010 Alex Cartwright
  * @license http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html GNU/LGPL 2.1
- * @package Zula_Locale
+ * @package Zula_I18n
  */
 
-	class Locale_gettext extends Locale_base {
+	class I18n_gettext extends I18n_base {
 
 		/**
 		 * Constructor function
@@ -20,14 +20,14 @@
 		 */
 		public function __construct() {
 			if ( !extension_loaded( 'gettext' ) || !function_exists( 'gettext' ) ) {
-				throw new Locale_InvalidEngine( 'server does not have gettext extension loaded - unable to use gettext locale engine' );
+				throw new I18n_InvalidEngine( 'server does not have gettext extension loaded - unable to use gettext i18n engine' );
 			}
 			if ( $this->_config->has( 'locale/default' ) ) {
 				putenv( 'LANG='.$this->_config->get( 'locale/default' ) );
 				$this->setLocale( $this->_config->get( 'locale/default' ) );
 			}
 			$this->bindTextDomain();
-			$this->textDomain( Locale::_DTD );
+			$this->textDomain( I18n::_DTD );
 		}
 
 		/**
@@ -72,9 +72,9 @@
 		 * @param string $path
 		 * @return string|bool
 		 */
-		public function bindTextDomain( $domain=Locale::_DTD, $path=null, $force=false ) {
+		public function bindTextDomain( $domain=I18n::_DTD, $path=null, $force=false ) {
 			if ( empty( $domain ) ) {
-				$domain = Locale::_DTD;
+				$domain = I18n::_DTD;
 			}
 			if ( empty( $path ) ) {
 				$path = $this->_zula->getDir( 'locale' );
@@ -85,7 +85,7 @@
 			} else if ( !$this->textDomainExists( $domain ) || ($this->textDomainExists( $domain ) && $force) ) {
 				$this->textDomains[ $domain ] = bindtextdomain( $domain, $path );
 			}
-			$this->_log->message( 'Locale_gettext::bindTextDomain() added domain "'.$domain.'" with path "'.$path.'"', Log::L_DEBUG, __FILE__, __LINE__ );
+			$this->_log->message( 'I18n_gettext::bindTextDomain() added domain "'.$domain.'" with path "'.$path.'"', Log::L_DEBUG, __FILE__, __LINE__ );
 			return $this->textDomains[ $domain ];
 		}
 
@@ -103,7 +103,7 @@
 				return $this->DTD;
 			} else {
 				$this->DTD = textdomain( $textDomain );
-				$this->_log->message( 'Locale_gettext::textDomain() set text domain to "'.$this->DTD.'"', Log::L_DEBUG );
+				$this->_log->message( 'I18n_gettext::textDomain() set text domain to "'.$this->DTD.'"', Log::L_DEBUG );
 				return $this->DTD;
 			}
 		}

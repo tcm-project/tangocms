@@ -38,7 +38,7 @@
 		 * @return mixed
 		 */
 		public function __call( $name, $args ) {
-			$this->_locale->textDomain( $this->textDomain() );
+			$this->_i18n->textDomain( $this->textDomain() );
 			$type = substr( $name, 0, -7 );
 			if ( $type != 'external' && $type != 'upload' ) {
 				throw new Module_ControllerNoExist;

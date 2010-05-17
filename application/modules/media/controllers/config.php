@@ -35,7 +35,7 @@
 		 * @return string
 		 */
 		public function indexSection() {
-			$this->_locale->textDomain( $this->textDomain() );
+			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setTitle( t('Manage Media') );
 			// Check user has correct permission
 			if ( !$this->_acl->checkMulti( array('media_add_category', 'media_edit_category', 'media_delete_category') ) ) {
@@ -57,7 +57,7 @@
 		 * @return string
 		 */
 		public function addCatSection() {
-			$this->_locale->textDomain( $this->textDomain() );
+			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setTitle( t('Add Media Category') );
 			// Check permission
 			if ( !$this->_acl->check( 'media_add_category' ) ) {
@@ -88,7 +88,7 @@
 		 * @return string
 		 */
 		public function editCatSection() {
-			$this->_locale->textDomain( $this->textDomain() );
+			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setTitle( t('Edit Category') );
 			if ( !$this->_acl->check( 'media_edit_category' ) ) {
 				throw new Module_NoPermission;
@@ -193,7 +193,7 @@
 		 * @return string
 		 */
 		public function settingsSection() {
-			$this->_locale->textDomain( $this->textDomain() );
+			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setTitle( t('Media Settings') );
 			$this->setOutputType( self::_OT_CONFIG );
 			if ( !$this->_acl->check( 'media_manage_settings' ) ) {

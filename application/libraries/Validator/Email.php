@@ -21,7 +21,7 @@
 		 * @return bool|string
 		 */
 		public function validate( $value ) {
-			return filter_var($value, FILTER_VALIDATE_EMAIL) ? true : t('%1$s must be a valid email address', Locale::_DTD);
+			return filter_var($value, FILTER_VALIDATE_EMAIL) ? true : t('%1$s must be a valid email address', I18n::_DTD);
 		}
 
 	}

@@ -51,7 +51,7 @@
 			if ( $count >= $this->min && $count <= $this->max ) {
 				return true;
 			}
-			$langStr = t('%%1$s must be between %1$d and %2$d words, currently %3$d', Locale::_DTD);
+			$langStr = t('%%1$s must be between %1$d and %2$d words, currently %3$d', I18n::_DTD);
 			return sprintf( $langStr, $this->min, $this->max, $count );
 		}
 

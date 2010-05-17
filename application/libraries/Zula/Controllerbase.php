@@ -105,8 +105,8 @@
 				$domain = _PROJECT_ID.'-'.$moduleDetails['name'];
 				$path = $this->getPath().'/locale';
 			}
-			$this->_locale->bindTextDomain( $domain, $path );
-			$this->textDomain = $this->_locale->textDomain( $domain );
+			$this->_i18n->bindTextDomain( $domain, $path );
+			$this->textDomain = $this->_i18n->textDomain( $domain );
 			$this->_log->message( 'Cntrlr constructed as "'.$moduleDetails['name'].'/'.$sector.'"', Log::L_DEBUG );
 		}
 

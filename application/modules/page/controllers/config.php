@@ -42,7 +42,7 @@
 		 * @return string
 		 */
 		public function indexSection() {
-			$this->_locale->textDomain( $this->textDomain() );
+			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setTitle( t('Manage Pages') );
 			$this->setOutputType( self::_OT_CONFIG );
 			if ( !$this->_acl->checkMulti( array('page_add', 'page_edit', 'page_delete') ) ) {
@@ -106,7 +106,7 @@
 		 * @return string
 		 */
 		public function addSection() {
-			$this->_locale->textDomain( $this->textDomain() );
+			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setTitle( t('Add Page') );
 			$this->setOutputType( self::_OT_CONFIG | self::_OT_CONTENT_STATIC );
 			if ( !$this->_acl->check( 'page_add' ) ) {
@@ -170,7 +170,7 @@
 		 * @return string
 		 */
 		public function editSection() {
-			$this->_locale->textDomain( $this->textDomain() );
+			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setTitle( t('Edit Page') );
 			$this->setOutputType( self::_OT_CONFIG | self::_OT_CONTENT_STATIC );
 			if ( !$this->_acl->check( 'page_edit' ) ) {
@@ -361,7 +361,7 @@
 		 * @return mixed
 		 */
 		public function bridgeSection() {
-			$this->_locale->textDomain( $this->textDomain() );
+			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setOutputType( self::_OT_CONFIG );
 			if ( !$this->_input->checkToken() ) {
 				$this->_event->error( Input::csrfMsg() );

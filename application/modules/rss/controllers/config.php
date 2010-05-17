@@ -47,7 +47,7 @@
 			if ( !$this->_acl->check( 'rss_edit' ) ) {
 				throw new Module_NoPermission();
 			}
-			$this->_locale->textDomain( $this->textDomain() );
+			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setTitle( t('RSS Configuration') );
 			$this->setOutputType( self::_OT_CONFIG );
 			/**

@@ -24,7 +24,7 @@
 		 */
 		public function resetSection() {
 			$this->setTitle( t('Reset Password') );
-			$this->_locale->textDomain( $this->textDomain() );
+			$this->_i18n->textDomain( $this->textDomain() );
 			// Build form
 			$form = new View_form( 'pwd/username.html', 'session' );
 			$form->addElement( 'session/username', null, t('Username'), new Validator_Length(0, 255) );
@@ -69,7 +69,7 @@
 		 * @return string|bool
 		 */
 		public function codeSection() {
-			$this->_locale->textDomain( $this->textDomain() );
+			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setTitle( t('Enter Reset Code') );
 			// Prepare validation of the form
 			$form = new View_form( 'pwd/reset.html', 'session' );
@@ -97,7 +97,7 @@
 		 * @return string|bool
 		 */
 		public function expireSection() {
-			$this->_locale->textDomain( $this->textDomain() );
+			$this->_i18n->textDomain( $this->textDomain() );
 			if ( empty( $_SESSION['mod']['session']['changePw'] ) ) {
 				throw new Module_ControllerNoExist;
 			}

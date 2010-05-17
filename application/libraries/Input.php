@@ -47,7 +47,7 @@
 		 * @return string
 		 */
 		static public function csrfMsg() {
-			return t('Suspected malicious CSRF attack, unable to proceed', Locale::_DTD);
+			return t('Suspected malicious CSRF attack, unable to proceed', I18n::_DTD);
 		}
 
 		/**

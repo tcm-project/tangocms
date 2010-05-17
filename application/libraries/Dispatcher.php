@@ -270,7 +270,7 @@
 			if ( is_bool( $loadedCntrlr['output'] ) || trim( $loadedCntrlr['output'] ) ) {
 				return $loadedCntrlr['output'];
 			} else {
-				return $ajax ? '' : '<p>'.t('Controller loaded but appears to display no content', Locale::_DTD).'</p>';
+				return $ajax ? '' : '<p>'.t('Controller loaded but appears to display no content', I18n::_DTD).'</p>';
 			}
 		}
 
@@ -287,7 +287,7 @@
 							'section'	=> trim($routerData['section']) ? $routerData['section'] : 'index',
 							);
 			$this->_log->message( sprintf( 'controller "%s" must only be accessed by an AJAX request', implode('::', $routerData) ), Log::L_WARNING );
-			return '<p>'.sprintf(t('Sorry, the requested controller "%s" can only be accessed by an AJAX request', Locale::_DTD), implode( '::', $routerData ) ).'</p>';
+			return '<p>'.sprintf(t('Sorry, the requested controller "%s" can only be accessed by an AJAX request', I18n::_DTD), implode( '::', $routerData ) ).'</p>';
 		}
 
 		/**
@@ -325,7 +325,7 @@
 			if ( $this->displayErrors ) {
 				// Continue to display the custom error pages
 				if ( $this->isDispatched() ) {
-					$this->reqCntrl->setTitle( t('Oops!', Locale::_DTD) );
+					$this->reqCntrl->setTitle( t('Oops!', I18n::_DTD) );
 				}
 				$view = new View( $viewFile );
 				$view->assign( $routerData );

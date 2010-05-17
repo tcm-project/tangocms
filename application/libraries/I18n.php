@@ -1,15 +1,15 @@
 <?php
 
 /**
- * Zula Framework Locale
- * Language Support/Locale Factory
+ * Zula Framework I18n
+ * i18n factory
  *
  * @patches submit all patches to patches@tangocms.org
  *
  * @author Alex Cartwright
- * @copyright Copyright (C) 2007, 2008, 2009 Alex Cartwright
+ * @copyright Copyright (C) 2007, 2008, 2009, 2010 Alex Cartwright
  * @license http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html GNU/LGPL 2.1
- * @package Zula_Locale
+ * @package Zula_I18n
  */
 
 	/**
@@ -21,10 +21,10 @@
 	 * @return string
 	 */
 	function t( $string, $textDomain=null ) {
-		if ( Registry::has( 'locale' ) ) {
-			return Registry::get( 'locale' )->t( $string, $textDomain );
+		if ( Registry::has( 'i18n' ) ) {
+			return Registry::get( 'i18n' )->t( $string, $textDomain );
 		} else {
-			trigger_error( 't() no locale engine has currently been loaded', E_USER_NOTICE );
+			trigger_error( 't() no i18n engine has currently been loaded', E_USER_NOTICE );
 			return $string;
 		}
 	}
@@ -39,10 +39,10 @@
 	 * @return string
 	 */
 	function nt( $string1, $string2, $n, $textDomain=null ) {
-		if ( Registry::has( 'locale' ) ) {
-			return Registry::get( 'locale' )->nt( $string1, $string2, $n, $textDomain );
+		if ( Registry::has( 'i18n' ) ) {
+			return Registry::get( 'i18n' )->nt( $string1, $string2, $n, $textDomain );
 		} else {
-			trigger_error( 'nt() no locale engine has currently been loaded', E_USER_NOTICE );
+			trigger_error( 'nt() no i18n engine has currently been loaded', E_USER_NOTICE );
 			return $string1;
 		}
 	}
@@ -57,10 +57,10 @@
 	 * @return string|bool
 	 */
 	function bind_text_domain( $domain='messages', $path=null, $force=false ) {
-		if ( Registry::has( 'locale' ) ) {
-			return Registry::get( 'locale' )->bindTextDomain( $domain, $path, $force );
+		if ( Registry::has( 'i18n' ) ) {
+			return Registry::get( 'i18n' )->bindTextDomain( $domain, $path, $force );
 		} else {
-			trigger_error( 'bind_text_domain() no locale engine has currently been loaded', E_USER_NOTICE );
+			trigger_error( 'bind_text_domain() no i18n engine has currently been loaded', E_USER_NOTICE );
 			return false;
 		}
 	}
@@ -72,15 +72,15 @@
 	 * @return string|bool
 	 */
 	function text_domain( $textDomain=null ) {
-		if ( Registry::has( 'locale' ) ) {
-			return Registry::get( 'locale' )->textDomain( $textDomain );
+		if ( Registry::has( 'i18n' ) ) {
+			return Registry::get( 'i18n' )->textDomain( $textDomain );
 		} else {
-			trigger_error( 'text_domain() no locale engine has currently been loaded', E_USER_NOTICE );
+			trigger_error( 'text_domain() no i18n engine has currently been loaded', E_USER_NOTICE );
 			return false;
 		}
 	}
 
-	class Locale {
+	class I18n {
 
 		/**
 		 * Default textdomain used
@@ -94,8 +94,8 @@
 		}
 
 		/**
-		 * Creates the correct Locale engine to use via Factory pattern. All Locale classes
-		 * must extend the Locale_base. If the locale engine can not be constructed then it
+		 * Creates the correct i18n engine to use via Factory pattern. All i18n classes
+		 * must extend the I18n_Base. If the i18n engine can not be constructed then it
 		 * will revert to a fail-safe translation class that will work on every server
 		 *
 		 * @param string $engine
@@ -106,18 +106,18 @@
 				// Change to the newer 'gettext' instead of the older 'native_gettext'
 				$engine = 'gettext';
 			}
-			$engine = 'Locale_'.$engine;
+			$engine = 'I18n_'.$engine;
 			try {
-				$tmpLocale = Registry::get( 'zula' )->loadLib( $engine, 'locale' );
-				if ( !($tmpLocale instanceof Locale_base) ) {
-					throw new Locale_InvalidEngine( 'Locale engine "'.$engine.'" does not extend Locale_base, reverting to failsafe engine.' );
+				$tmpEngine = Registry::get( 'zula' )->loadLib( $engine, 'i18n' );
+				if ( !($tmpEngine instanceof I18n_Base) ) {
+					throw new I18n_InvalidEngine( 'i18n engine "'.$engine.'" does not extend I18n_Base, reverting to failsafe engine.' );
 				}
-			} catch ( Locale_InvalidEngine $e ) {
+			} catch ( I18n_InvalidEngine $e ) {
 				Registry::get( 'log' )->message( $e->getMessage(), Log::L_WARNING );
-				// Revert to the failsafe locale engine
-				$tmpLocale = Registry::get( 'zula' )->loadLib( 'Locale_failsafe', 'locale' );
+				// Revert to the failsafe i18n engine
+				$tmpEngine = Registry::get( 'zula' )->loadLib( 'I18n_Failsafe', 'i18n' );
 			}
-			return $tmpLocale;
+			return $tmpEngine;
 		}
 
 	}

@@ -25,7 +25,7 @@
 		 * @return mixed
 		 */
 		public function __call( $name, $args ) {
-			$this->_locale->textDomain( $this->textDomain() );
+			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setTitle( t('View Media Item') );
 			// Which format to display the media item as (mostly for Image types)
 			try {
