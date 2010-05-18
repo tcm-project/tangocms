@@ -21,7 +21,7 @@
 		 * @return bool
 		 */
 		public function indexSection() {
-			$this->_locale->textDomain( $this->textDomain() );
+			$this->_i18n->textDomain( $this->textDomain() );
 			try {
 				$oid = $this->_input->post( 'poll/oid' );
 				$option = $this->_model()->getOption( $oid );

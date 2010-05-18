@@ -30,7 +30,7 @@
 		 * @return bool|string
 		 */
 		public function indexSection( $commentId=null ) {
-			$this->_locale->textDomain( $this->textDomain() );
+			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setTitle( t('Edit Comment') );
 			// Check if we are editing 'inline' or via the main config cntrlr
 			if ( $this->_router->hasArgument( 'inline' ) || $this->_input->has( 'post', 'comments_inline' ) ) {

@@ -1,8 +1,9 @@
 <?php
 
 /**
- * Zula Framework Fail Safe Locale Engine
- * Provides some functions that are used incase the selected Locale engine could
+ * Zula Framework
+ *
+ * Provides some functions that are used incase the selected i18n engine could
  * not be used for some reason. This class will give a fail-safe approach
  * and will basically just return the value that was supposed to be translated
  * straight back without doing any translating ... hey, I did say it was fail-safe ;)
@@ -10,18 +11,18 @@
  * @patches submit all patches to patches@tangocms.org
  *
  * @author Alex Cartwright
- * @copyright Copyright (C) 2007, 2008, 2009 Alex Cartwright
+ * @copyright Copyright (C) 2007, 2008, 2009, 2010 Alex Cartwright
  * @license http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html GNU/LGPL 2.1
- * @package Zula_Locale
+ * @package Zula_I18n
  */
 
-	class Locale_failsafe extends Locale_base {
+	class I18n_failsafe extends I18n_base {
 
 		/**
 		 * Constructor function
 		 */
 		public function __construct() {
-			$this->_log->message( 'Using fail-safe locale engine', Log::L_DEBUG );
+			$this->_log->message( 'Using fail-safe i18n engine', Log::L_DEBUG );
 		}
 
 		/**
@@ -65,9 +66,9 @@
 		 * @param string $path
 		 * @return string|bool
 		 */
-		public function bindTextDomain( $domain=Locale::_DTD, $path=null, $force=false ) {
+		public function bindTextDomain( $domain=I18n::_DTD, $path=null, $force=false ) {
 			if ( !trim( $domain ) ) {
-				$domain = Locale::_DTD;
+				$domain = I18n::_DTD;
 			}
 			if ( empty( $path ) ) {
 				$path = $this->_zula->getDir( 'locale' );

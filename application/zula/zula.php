@@ -35,7 +35,7 @@
 		 * The default libraries the the framework will load upon startup
 		 * @var array
 		 */
-		private $defaultLibs = array('date', 'log', 'locale', 'cache', 'error', 'input');
+		private $defaultLibs = array('date', 'log', 'i18n', 'cache', 'error', 'input');
 
 		/**
 		 * Current state that Zula is running in, mostly either 'production',
@@ -264,11 +264,11 @@
 					try {
 						$cache->ttl( $config->get( 'cache/ttl' ) );
 					} catch ( Exception $e ) {}
-				} else if ( $library == 'locale' ) {
+				} else if ( $library == 'i18n' ) {
 					try {
-						Locale::factory( $config->get( 'locale/engine' ) );
+						I18n::factory( $config->get( 'locale/engine' ) );
 					} catch ( Config_KeyNoExist $e ) {
-						Locale::factory( 'failsafe' );
+						I18n::factory( 'failsafe' );
 					}
 				} else {
 					$this->loadLib( $library );

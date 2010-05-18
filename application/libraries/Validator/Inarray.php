@@ -58,7 +58,7 @@
 			} else if ( in_array( $value, $this->testArray, $this->strict ) ) {
 				return true;
 			}
-			return t('Value of %1$s is not an acceptable value', Locale::_DTD);
+			return t('Value of %1$s is not an acceptable value', I18n::_DTD);
 		}
 
 	}

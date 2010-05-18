@@ -49,7 +49,7 @@
 		 * @return string
 		 */
 		protected function displayArticles( $category=false, $catSelector=true ) {
-			$this->_locale->textDomain( $this->textDomain() );
+			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setOutputType( self::_OT_CONTENT_INDEX );
 			if ( empty( $category ) ) {
 				$this->setTitle( t('Latest Articles') );

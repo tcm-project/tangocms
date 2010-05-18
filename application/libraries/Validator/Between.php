@@ -60,14 +60,14 @@
 			}
 			if ( $this->strict === true ) {
 				if ( !($value > $this->min && $value < $this->max) ) {
-					return '%1$s '.sprintf( t('must be between %s and %s', Locale::_DTD),
+					return '%1$s '.sprintf( t('must be between %s and %s', I18n::_DTD),
 											number_format($this->min),
 											number_format($this->max)
 										  );
 				}
 			} else {
 				if ( !($value >= $this->min && $value <= $this->max) ) {
-					return '%1$s '.sprintf( t('must be between %s and %s inclusive', Locale::_DTD),
+					return '%1$s '.sprintf( t('must be between %s and %s inclusive', I18n::_DTD),
 											number_format($this->min),
 											number_format($this->max)
 										  );

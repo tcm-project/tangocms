@@ -40,7 +40,7 @@
 		 */
 		public function indexSection() {
 			$this->setTitle( t('Module Manager') );
-			$this->_locale->textDomain( $this->textDomain() );
+			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setOutputType( self::_OT_CONTENT_INDEX );
 			// Gather all modules
 			$categories = array();

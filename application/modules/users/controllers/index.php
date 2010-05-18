@@ -26,7 +26,7 @@
 		 * @return string
 		 */
 		public function indexSection() {
-			$this->_locale->textDomain( $this->textDomain() );
+			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setTitle( t('User List') );
 			// Get correct page/offset
 			if ( $this->inSector('SC') && $this->_input->has( 'get', 'page' ) ) {

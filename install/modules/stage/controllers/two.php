@@ -19,7 +19,7 @@
 		 * and the needed directories/files are writeable.
 		 */
 		public function indexSection() {
-			$this->_locale->textDomain( $this->textDomain() );
+			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setTitle( t('Pre installation Checks') );
 			/**
 			 * Make sure user is not trying to skip a head a stage.

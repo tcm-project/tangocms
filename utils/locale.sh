@@ -114,7 +114,7 @@ msgstr \"\"
 		if [ "$SPELL_CHECK" == "1" ]; then
 			echo -e "\e[1mFile:\e[m $f"
 		fi
-		MATCHES=`perl -ne '@matches = m/\st\(\s?'"'"'([^'"'"']+)'"'"'\s?,\s?Locale::_DTD\s?\)/g; foreach(@matches) { print "$.\t"; $_ =~ s/\"/\\\"/g; print "$_\t"; }' $f`
+		MATCHES=`perl -ne '@matches = m/\st\(\s?'"'"'([^'"'"']+)'"'"'\s?,\s?I18n::_DTD\s?\)/g; foreach(@matches) { print "$.\t"; $_ =~ s/\"/\\\"/g; print "$_\t"; }' $f`
 		make_arr "$MATCHES"
 		output "$MATCHARR" "$pot_file"
 	done
@@ -122,7 +122,7 @@ msgstr \"\"
 		if [ "$SPELL_CHECK" == "1" ]; then
 			echo -e "\e[1mFile:\e[m $f"
 		fi
-		MATCHES=`perl -ne '@matches = m/\st\(\s?'"'"'([^'"'"']+)'"'"'\s?,\s?Locale::_DTD\s?\)/g; foreach(@matches) { print "$.\t"; $_ =~ s/\"/\\\"/g; print "$_\t"; }' $f`
+		MATCHES=`perl -ne '@matches = m/\st\(\s?'"'"'([^'"'"']+)'"'"'\s?,\s?I18n::_DTD\s?\)/g; foreach(@matches) { print "$.\t"; $_ =~ s/\"/\\\"/g; print "$_\t"; }' $f`
 		make_arr "$MATCHES"
 		output "$MATCHARR" "$pot_file"
 		MATCHES=`perl -ne '@matches = m/{L_\[([^\]]+)\]}/g; foreach(@matches) { print "$.\t"; $_ =~ s/\"/\\\"/g; print "$_\t"; }' $f`

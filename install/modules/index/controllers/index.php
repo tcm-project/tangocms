@@ -22,7 +22,7 @@
 		 * @return string
 		 */
 		public function indexSection() {
-			$this->_locale->textDomain( $this->textDomain() );
+			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setTitle( 'Welcome!' );
 			// Display view
 			$_SESSION['install_stage'] = 'one';

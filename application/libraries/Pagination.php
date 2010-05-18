@@ -132,10 +132,10 @@
 			$pagination = array();
 			// Build next and previus
 			if ( $curPage > $this->numLinks ) {
-				$pagination[] = sprintf( $this->formats['first'], $this->makeUrl(), t('First', Locale::_DTD) );
+				$pagination[] = sprintf( $this->formats['first'], $this->makeUrl(), t('First', I18n::_DTD) );
 			}
 			if ( $curPage - $this->numLinks >= 0 ) {
-				$pagination[] = sprintf( $this->formats['previous'], $this->makeUrl( $curPage-1 ), t('Previous', Locale::_DTD) );
+				$pagination[] = sprintf( $this->formats['previous'], $this->makeUrl( $curPage-1 ), t('Previous', I18n::_DTD) );
 			}
 			// Calculate the start and end numbers for the digit links
 			$digits = array(
@@ -148,15 +148,15 @@
 					$pagination[] = sprintf( $this->formats['current'], $i );
 				} else if ( $i > 0 ) {
 					$page = $i == 0 ? '' : $i;
-					$pagination[] = sprintf( $this->formats['digit'], $this->makeUrl( $page ), $i, t('Page', Locale::_DTD) );
+					$pagination[] = sprintf( $this->formats['digit'], $this->makeUrl( $page ), $i, t('Page', I18n::_DTD) );
 				}
 			}
 			// Build next and last
 			if ( $curPage < $numPages ) {
-				$pagination[] = sprintf( $this->formats['next'], $this->makeUrl( $curPage+1 ), t('Next', Locale::_DTD) );
+				$pagination[] = sprintf( $this->formats['next'], $this->makeUrl( $curPage+1 ), t('Next', I18n::_DTD) );
 			}
 			if ( $curPage + $this->numLinks < $numPages ) {
-				$pagination[] = sprintf( $this->formats['last'], $this->makeUrl( $numPages ), t('Last', Locale::_DTD) );
+				$pagination[] = sprintf( $this->formats['last'], $this->makeUrl( $numPages ), t('Last', I18n::_DTD) );
 			}
 			return sprintf( $this->formats['overall'], implode( ' ', $pagination ) );
 		}

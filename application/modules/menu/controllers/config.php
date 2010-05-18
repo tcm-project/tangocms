@@ -37,7 +37,7 @@
 			if ( !$this->_acl->checkMulti( $aclRules ) ) {
 				throw new Module_NoPermission;
 			}
-			$this->_locale->textDomain( $this->textDomain() );
+			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setTitle( t('Manage Menu Categories') );
 			$this->setOutputType( self::_OT_CONFIG );
 			// Build and output main view
@@ -56,7 +56,7 @@
 			if ( !$this->_acl->check( 'menu_add_cat' ) ) {
 				throw new Module_NoPermission;
 			}
-			$this->_locale->textDomain( $this->textDomain() );
+			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setTitle( t('Add Menu Category') );
 			$this->setOutputType( self::_OT_CONFIG );
 			// Prepare form validation
@@ -86,7 +86,7 @@
 			if ( !$this->_acl->check( 'menu_edit_cat' ) ) {
 				throw new Module_NoPermission;
 			}
-			$this->_locale->textDomain( $this->textDomain() );
+			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setTitle( t('Edit Menu Category') );
 			$this->setOutputType( self::_OT_CONFIG );
 			// Attempt to get category details and check permission
@@ -132,7 +132,7 @@
 		 * @return object
 		 */
 		protected function buildCategoryForm( $catName=null, $cid=null ) {
-			$this->_locale->textDomain( $this->textDomain() );
+			$this->_i18n->textDomain( $this->textDomain() );
 			// Build form
 			if ( is_null( $cid ) ) {
 				$op = 'add';
@@ -165,7 +165,7 @@
 			if ( !$this->_acl->check( 'menu_delete_cat' ) ) {
 				throw new Module_NoPermission;
 			} else if ( $this->_input->checkToken() ) {
-				$this->_locale->textDomain( $this->textDomain() );
+				$this->_i18n->textDomain( $this->textDomain() );
 				$this->setTitle( t('Delete Menu Category') );
 				$this->setOutputType( self::_OT_CONFIG );
 				try {
@@ -206,7 +206,7 @@
 				// No permission to add an item
 				throw new Module_NoPermission;
 			}
-			$this->_locale->textDomain( $this->textDomain() );
+			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setTitle( t('Add menu item') );
 			$this->setOutputType( self::_OT_CONFIG );
 			// Get details for the category and check permissions
@@ -260,7 +260,7 @@
 				// No permission to edit an item
 				throw new Module_NoPermission;
 			}
-			$this->_locale->textDomain( $this->textDomain() );
+			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setTitle( t('Edit Menu Item') );
 			$this->setOutputType( self::_OT_CONFIG );
 			// Attempt to get details for the menu item and category, checking permission
@@ -316,7 +316,7 @@
 		 * @return object
 		 */
 		protected function buildItemForm( $cid, $name=null, $parentHeading=0, $url=null, $attrTitle=null, $itemId=null ) {
-			$this->_locale->textDomain( $this->textDomain() );
+			$this->_i18n->textDomain( $this->textDomain() );
 			if ( is_null( $itemId ) ) {
 				$op = 'add';
 				$aclResource = 'menu-item';

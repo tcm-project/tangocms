@@ -23,7 +23,7 @@
 		 * @return mixed
 		 */
 		public function __call( $name, $args ) {
-			$this->_locale->textDomain( $this->textDomain() );
+			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setTitle( t('Contact') );
 			$this->setOutputType( self::_OT_COLLECTIVE );
 			// Get the correct form ID to use

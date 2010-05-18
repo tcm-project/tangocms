@@ -37,11 +37,11 @@
 				}
 				return sprintf( $format,
 								$url,
-								t('View Users Profile', Locale::_DTD),
+								t('View Users Profile', I18n::_DTD),
 								zula_htmlspecialchars( (trim($name) ? $name : $user['username']) )
 							   );
 			} catch ( Ugmanager_UserNoExist $e ) {
-				return t('Unknown User', Locale::_DTD);
+				return t('Unknown User', I18n::_DTD);
 			}
 		}
 
@@ -56,7 +56,7 @@
 				$user = $this->_ugmanager->getUser( $userId );
 				return zula_htmlspecialchars( $user['username'] );
 			} catch ( Ugmanager_UserNoExist $e ) {
-				return t('Unknown User', Locale::_DTD);
+				return t('Unknown User', I18n::_DTD);
 			}
 		}
 

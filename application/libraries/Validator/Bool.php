@@ -25,7 +25,7 @@
 				!is_bool( $value ) && !(strtolower($value) === 'true' ||
 				strtolower($value) === 'false') && !($value === '1' || $value === '0')
 			) {
-				return t('%1$s must be a bool value', Locale::_DTD);
+				return t('%1$s must be a bool value', I18n::_DTD);
 			} else {
 				return true;
 			}

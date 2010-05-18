@@ -35,7 +35,7 @@
 		 */
 		public function indexSection() {
 			$this->setTitle( t('Manage Themes') );
-			$this->_locale->textDomain( $this->textDomain() );
+			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setOutputType( self::_OT_CONFIG );
 			/**
 			 * Gather all site types and get which theme it is currently using
@@ -72,7 +72,7 @@
 			if ( !$this->_acl->check( 'theme_update' ) ) {
 				throw new Module_NoPermission;
 			} else if ( $this->_input->checkToken() ) {
-				$this->_locale->textDomain( $this->textDomain() );
+				$this->_i18n->textDomain( $this->textDomain() );
 				foreach( $this->_input->post( 'theme' ) as $siteType=>$theme ) {
 					if ( Theme::exists( $theme ) ) {
 						$this->_config_sql->update( 'theme/'.$siteType.'_default', $theme );
@@ -92,7 +92,7 @@
 		 */
 		public function deleteSection() {
 			$this->setOutputType( self::_OT_CONFIG );
-			$this->_locale->textDomain( $this->textDomain() );
+			$this->_i18n->textDomain( $this->textDomain() );
 			if ( !$this->_acl->check( 'theme_delete' ) ) {
 				throw new Module_NoPermission;
 			} else if ( $this->_input->checkToken() ) {
@@ -144,7 +144,7 @@
 		 * @return string
 		 */
 		public function settingsSection() {
-			$this->_locale->textDomain( $this->textDomain() );
+			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setTitle( t('Theme Settings') );
 			$this->setOutputType( self::_OT_CONFIG );
 			// Prepare form validation

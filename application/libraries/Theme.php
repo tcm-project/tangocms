@@ -289,7 +289,7 @@
 		 */
 		public function loadDispatcher( $content, Dispatcher $dispatcher ) {
 			$pageLinks = $pageId = null;
-			$cntrlrTitle = t('Oops!', Locale::_DTD);
+			$cntrlrTitle = t('Oops!', I18n::_DTD);
 			if ( $dispatcher->isDispatched() ) {
 				$reqCntrlr = $dispatcher->getReqCntrlr();
 				$dispatchData = $dispatcher->getDispatchData();
@@ -356,7 +356,7 @@
 							if ( $cntrlr['config']['displayTitle'] === 'custom' && !empty( $cntrlr['config']['customTitle'] ) ) {
 								$title = $cntrlr['config']['customTitle'];
 							} else {
-								$title = isset($tmpCntrlr['title']) ? $tmpCntrlr['title'] : t('Oops!', Locale::_DTD);
+								$title = isset($tmpCntrlr['title']) ? $tmpCntrlr['title'] : t('Oops!', I18n::_DTD);
 							}
 							$wrap = new View( $this->getDetail('path').'/module_wrap.html' );
 							$wrap->assign( array(

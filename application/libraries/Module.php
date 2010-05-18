@@ -595,17 +595,17 @@
 						$details['output'] = $outputTop.$details['output'].$outputBottom;
 					}
 					Hooks::notifyAll( 'module_controller_loaded', self::getLoading(), $details['outputType'], $sector, $details['title'] );
-					// Reset MCS details and restore Locale domain
+					// Reset MCS details and restore i18n domain
 					self::$currentMcs = false;
 					self::$currentCntrlrObj = false;
-					$this->_locale->textDomain( Locale::_DTD );
+					$this->_i18n->textDomain( I18n::_DTD );
 					return $details;
 				} else {
 					throw new Module_ControllerNoExist( 'controller "'.$class.'" must extend Zula_ControllerBase' );
 				}
 			} catch ( Exception $e ) {
 				// Catch any exceptions throw to reset the MCS details, then re-throw
-				$this->_locale->textDomain( Locale::_DTD );
+				$this->_i18n->textDomain( I18n::_DTD );
 				self::$currentMcs = false;
 				self::$currentCntrlrObj = false;
 				throw $e;

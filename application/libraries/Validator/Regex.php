@@ -48,7 +48,7 @@
 		 */
 		public function validate( $value ) {
 			return preg_match( $this->pattern, $value ) ? true
-														: sprintf( t('%%1$s value must match %1$s', Locale::_DTD),
+														: sprintf( t('%%1$s value must match %1$s', I18n::_DTD),
 																	$this->patternDisplay
 																 );
 		}

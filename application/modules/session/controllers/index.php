@@ -62,7 +62,7 @@
 				// The session module is already loaded into another sector (not 'SC'), do not display it
 				return false;
 			}
-			$this->_locale->textDomain( $this->textDomain() );
+			$this->_i18n->textDomain( $this->textDomain() );
 			if ( $this->_session->isLoggedIn() ) {
 				$this->setTitle( t('Simple Profile') );
 				// Display a very simple profile
@@ -116,7 +116,7 @@
 		 * @return string
 		 */
 		public function loginSection() {
-			$this->_locale->textDomain( $this->textDomain() );
+			$this->_i18n->textDomain( $this->textDomain() );
 			$this->_session->storePrevious( false );
 			$loggedIn = false;
 			if ( $this->maxLoginAttempts > 0 && $this->_model()->getLoginAttempts() >= $this->maxLoginAttempts ) {

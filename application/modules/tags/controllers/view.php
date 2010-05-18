@@ -23,7 +23,7 @@
 		 */
 		public function __call( $name, $args ) {
 			$tagName = substr( $name, 0, -7 );
-			$this->_locale->textDomain( $this->textDomain() );
+			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setTitle( sprintf( t('Content Tagged "%1$s"'), $tagName ) );
 			$this->setOutputType( self::_OT_CONTENT_INDEX );
 			// Display the view

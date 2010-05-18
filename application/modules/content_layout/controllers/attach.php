@@ -37,7 +37,7 @@
 		 * @return mixed
 		 */
 		public function __call( $name, $args ) {
-			$this->_locale->textDomain( $this->textDomain() );
+			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setTitle( t('Attach New Module') );
 			$this->setOutputType( self::_OT_CONFIG );
 			if ( !$this->_acl->check( 'content_layout_attach_module' ) ) {

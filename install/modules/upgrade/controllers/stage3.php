@@ -31,7 +31,7 @@
 		 * @return string
 		 */
 		public function indexSection() {
-			$this->_locale->textDomain( $this->textDomain() );
+			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setTitle( t('Pre Upgrade Checks') );
 			if ( !isset( $_SESSION['upgrade_stage'] ) || $_SESSION['upgrade_stage'] !== 3 ) {
 				return zula_redirect( $this->_router->makeUrl( 'upgrade', 'stage1' ) );

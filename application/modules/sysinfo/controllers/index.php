@@ -39,7 +39,7 @@
 		 * @return string
 		 */
 		public function indexSection() {
-			$this->_locale->textDomain( $this->textDomain() );
+			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setTitle( t('System Information') );
 			$this->setOutputType( self::_OT_INFORMATIVE );
 			// Build view with all the lovely information
@@ -69,7 +69,7 @@
 		 * @return string
 		 */
 		public function writableSection() {
-			$this->_locale->textDomain( $this->textDomain() );
+			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setTitle( t('Writable Files/Directories') );
 			$this->setOutputType( self::_OT_INFORMATIVE );
 			// Generate array of all files/dirs
@@ -107,7 +107,7 @@
 		 */
 		public function updateSection() {
 			$this->setTitle( t('Update Checker') );
-			$this->_locale->textDomain( $this->textDomain() );
+			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setOutputType( self::_OT_INFORMATIVE );
 			// Gather the latest stable and unstable versions
 			$versions = array( 'stable' => t('Unknown'), 'unstable' => t('Unknown') );

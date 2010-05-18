@@ -42,7 +42,7 @@
 					return true;
 				}
 			}
-			return t('%1$s must be a valid Credit Card Number', Locale::_DTD);
+			return t('%1$s must be a valid Credit Card Number', I18n::_DTD);
 		}
 
 	}

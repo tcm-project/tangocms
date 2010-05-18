@@ -36,7 +36,7 @@
 		 * @return string|bool
 		 */
 		public function indexSection() {
-			$this->_locale->textDomain( $this->textDomain() );
+			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setTitle( t('Manage Polls') );
 			$this->setOutputType( self::_OT_CONFIG );
 			if ( $this->_input->checkToken() ) {
@@ -98,7 +98,7 @@
 			if ( !$this->_acl->check( 'poll_add' ) ) {
 				throw new Module_NoPermission;
 			}
-			$this->_locale->textDomain( $this->textDomain() );
+			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setTitle( t('Add Poll') );
 			$this->setOutputType( self::_OT_CONFIG );
 			// Get and check if form is valid
@@ -129,7 +129,7 @@
 			if ( !$this->_acl->check( 'poll_edit' ) ) {
 				throw new Module_NoPermission;
 			}
-			$this->_locale->textDomain( $this->textDomain() );
+			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setTitle( t('Edit Poll') );
 			$this->setOutputType( self::_OT_CONFIG );
 			try {
@@ -212,7 +212,7 @@
 			if ( !$this->_acl->check( 'poll_edit' ) ) {
 				throw new Module_NoPermission;
 			}
-			$this->_locale->textDomain( $this->textDomain() );
+			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setTitle( t('Add Option') );
 			$this->setOutputType( self::_OT_CONFIG );
 			// Get which poll to add the option to
@@ -250,7 +250,7 @@
 			if ( !$this->_acl->check( 'poll_edit' ) ) {
 				throw new Module_NoPermission;
 			}
-			$this->_locale->textDomain( $this->textDomain() );
+			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setTitle( t('Edit Poll Option') );
 			$this->setOutputType( self::_OT_CONFIG );
 			// Get which option we are to edit
@@ -301,7 +301,7 @@
 		 * @return string
 		 */
 		public function delOptSection() {
-			$this->_locale->textDomain( $this->textDomain() );
+			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setOutputType( self::_OT_CONFIG );
 			if ( !$this->_acl->check( 'poll_delete' ) ) {
 				throw new Module_NoPermission;
