@@ -126,6 +126,7 @@
 					$themes[] = $file->getFileName();
 				}
 			}
+			sort( $themes );
 			return $themes;
 		}
 

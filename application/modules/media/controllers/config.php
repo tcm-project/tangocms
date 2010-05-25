@@ -207,23 +207,76 @@
 				 ->addElement( 'media/use_lightbox', $mediaConf['use_lightbox'], t('Use lightbox'), new Validator_Bool )
 				 ->addElement( 'media/max_fs', $mediaConf['max_fs'], t('Maximum file size'), new Validator_Int )
 				 ->addElement( 'media/max_thumb_width', $mediaConf['max_thumb_width'], t('Thumbnail width'), new Validator_Between(20, 200) )
-				 ->addElement( 'media/max_image_width', $mediaConf['max_image_width'], t('Maximum image width'), new Validator_Between(200, 90000) );
+				 ->addElement( 'media/max_image_width', $mediaConf['max_image_width'], t('Maximum image width'), new Validator_Between(200, 90000) )
+				 ->addElement( 'media/wm_position', $mediaConf['wm_position'], t('Watermark position'),
+								new Validator_InArray( array('t', 'tr', 'r', 'br', 'b', 'bl', 'l', 'tl') ),
+								false
+							 );
 			if ( $form->hasInput() && $form->isValid() ) {
+				$purgeTmpImages = false;
 				foreach( $form->getValues( 'media' ) as $key=>$val ) {
-					if ( $key == 'max_image_width' && $mediaConf['max_image_width'] != $val ) {
-						// Remove the tmp images which are no longer going to be used
-						$files = (array) glob( $this->_zula->getDir('tmp').'/media/max*-*' );
-						foreach( array_filter( $files ) as $tmpFile ) {
-							unlink( $tmpFile );
-						}
+					if (
+						($key == 'max_image_width' && $mediaConf['max_image_width'] != $val)
+						||
+						($key == 'wm_position' && $mediaConf['wm_position'] != $val)
+					) {
+						$purgeTmpImages = true;
 					} else if ( $key == 'max_fs' ) {
 						$val = zula_byte_value( $val.$this->_input->post('media/max_fs_unit') );
 					}
 					$this->_config_sql->update( 'media/'.$key, $val );
 				}
+				// Upload the watermark
+				if ( $this->_input->has( 'post', 'media_wm_delete' ) ) {
+					unlink( $this->_zula->getDir('uploads').'/media/wm.png' );
+					unlink( $this->_zula->getDir('uploads').'/media/wm_thumb.png' );
+					$purgeTmpImages = true;
+				}
+				try {
+					$uploader = new Uploader( 'media_wm', $this->_zula->getDir('uploads').'/media' );
+					$uploader->subDirectories( false )
+							 ->allowImages();
+					$file = $uploader->getFile();
+					if ( $file->upload() !== false ) {
+						$image = new Image( $file->path );
+						$image->mime = 'image/png';
+						$image->save( $file->dirname.'/wm.png', false );
+						$image->thumbnail( 80, 80 )
+							  ->save( $file->dirname.'/wm_thumb.png' );
+						$purgeTmpImages = true;
+					}
+				} catch ( Uploader_NotEnabled $e ) {
+					$this->_event->error( t('Sorry, it appears file uploads are disabled within your PHP configuration') );
+				} catch ( Uploader_MaxFileSize $e ) {
+					$msg = sprintf( t('Selected file exceeds the maximum allowed file size of %s'),
+									zula_human_readable($e->getMessage())
+								);
+					$this->_event->error( $msg );
+				} catch ( Uploader_InvalidMime $e ) {
+					$this->_event->error( t('Sorry, the uploaded file is of the wrong file type') );
+				} catch ( Uploader_Exception $e ) {
+					$this->_log->message( $e->getMessage(), Log::L_WARNING );
+					$this->_event->error( t('Oops, an error occurred while uploading your files') );
+				} catch ( Image_Exception $e ) {
+					$this->_log->message( $e->getMessage(), Log::L_WARNING );
+					$this->_event->error( t('Oops, an error occurred while processing an image') );
+				}
+				// Purge tmp images if needed and redirect
+				if ( $purgeTmpImages ) {
+					$files = (array) glob( $this->_zula->getDir('tmp').'/media/max*-*' );
+					foreach( array_filter( $files ) as $tmpFile ) {
+						unlink( $tmpFile );
+					}
+				}
 				$this->_event->success( t('Updated media settings') );
 				return zula_redirect( $this->_router->makeUrl('media', 'config', 'settings') );
 			}
+			if ( is_file( $this->_zula->getDir('uploads').'/media/wm_thumb.png' ) ) {
+				$wmThumbPath = $this->_zula->getDir( 'uploads', true ).'/media/wm_thumb.png';
+			} else {
+				$wmThumbPath = null;
+			}
+			$form->assign( array('WM_THUMB_PATH' => $wmThumbPath) );
 			return $form->getOutput();
 		}
 

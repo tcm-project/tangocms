@@ -133,15 +133,20 @@
 							$maxWidth = $contentWidth;
 						}
 					}
-					if ( $imgWidth > $maxWidth ) {
+					// Resize and add watermark if needed
+					$wmPath = $this->_zula->getDir( 'uploads' ).'/media/wm.png';
+					if ( $imgWidth <= $maxWidth && !is_file( $wmPath ) ) {
+						$file = $imgPath;
+					} else {
 						$file = $this->_zula->getDir( 'tmp' )."/media/max{$maxWidth}-".pathinfo($item['filename'], PATHINFO_BASENAME);
 						if ( !is_file( $file ) ) {
 							$image = new Image( $imgPath );
-							$image->resize( $maxWidth )
-								  ->save( $file );
+							$image->resize( $maxWidth, null, false );
+							if ( is_file( $wmPath ) ) {
+								$image->watermark( $wmPath, $this->_config->get('media/wm_position') );
+							}
+							$image->save( $file );
 						}
-					} else {
-						$file = $imgPath;
 					}
 				}
 			} else if ( $format == 'stream' && $item['type'] == 'audio' || $item['type'] == 'video' ) {

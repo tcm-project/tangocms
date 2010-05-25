@@ -281,10 +281,11 @@
 		 */
 		protected function checkMime( $mime ) {
 			$mime = trim( $mime );
-			if ( empty( $mime ) || empty( $this->uploader->allowedMime ) ) {
+			$allowedMime = array_unique( $this->uploader->allowedMime );
+			if ( empty( $mime ) || empty( $allowedMime ) ) {
 				return true;
 			} else {
-				foreach( array_unique($this->uploader->allowedMime) as $allowed ) {
+				foreach( $allowedMime as $allowed ) {
 					if ( $allowed == $mime ) {
 						return true;
 					}

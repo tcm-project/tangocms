@@ -34,8 +34,9 @@
 				$imageInfo['channels'] = 1;
 			}
 			if ( isset( $imageInfo['bits'] ) ) {
-				$memoryNeeded = round( ($imageInfo[0] * $imageInfo[1] * $imageInfo['bits'] * $imageInfo['channels'] / 8 + pow( 2, 16 ) ) * 1.65 );
-				if ( (memory_get_usage() + $memoryNeeded) > ini_get('memory_limit') * pow( 1024, 2 ) ) {
+				$memoryNeeded = round( ($imageInfo[0] * $imageInfo[1] * $imageInfo['bits'] * $imageInfo['channels'] / 8 + pow(2, 16)) * 1.65 );
+				$memoryLimit = zula_byte_value( ini_get('memory_limit') );
+				if ( (memory_get_usage() + $memoryNeeded) > $memoryLimit * pow( 1024, 2 ) ) {
 					throw new Image_LoadFailed( 'image would consume more memory than current limit' );
 				}
 			}
@@ -73,6 +74,15 @@
 			if ( !is_resource( $this->resource ) ) {
 				throw new Image_LoadFailed( 'failed to create image resource' );
 			}
+		}
+
+		/**
+		 * Returns the GD image resource
+		 *
+		 * @return resource|bool
+		 */
+		public function getResource() {
+			return $this->resource;
 		}
 
 		/**
@@ -163,7 +173,11 @@
 		 * @return bool
 		 */
 		public function destroy() {
-			return imagedestroy( $this->resource );
+			if ( is_resource( $this->resource ) ) {
+				return imagedestroy( $this->resource );
+			} else {
+				return false;
+			}
 		}
 
 	}

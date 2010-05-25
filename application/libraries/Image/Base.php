@@ -270,6 +270,39 @@
 			}
 		}
 
+		/**
+		 * Copies the provided image into the current open image at set locations
+		 * which is mainly used for watermarks
+		 *
+		 * @param string $file
+		 * @param string $position
+		 * @return object
+		 */
+		public function watermark( $file, $position='bl' ) {
+			$wmImage = new Image( $file );
+			if ( !in_array( $position, array('t', 'tr', 'r', 'br', 'b', 'bl', 'l', 'tl') ) ) {
+				trigger_error( 'Image_Base::watermark() invalid value for argument 2, reverting to "bl"', E_USER_NOTICE );
+				$position = 'bl';
+			}
+			// Work out position
+			$posX = $posY = 0;
+			if ( substr( $position, -1, 1 ) == 'r' ) {
+				$posX = $this->width - $wmImage->width;
+			} else if ( $position == 't' || $position == 'b' ) {
+				$posX = ($this->width - $wmImage->width) / 2;
+			}
+			if ( $position[0] == 'b' ) {
+				$posY = $this->height - $wmImage->height;
+			} else if ( $position == 'l' || $position == 'r' ) {
+				$posY = ($this->height - $wmImage->height) / 2;
+			}
+			imagecopymerge( $this->resource, $wmImage->getResource(),
+							$posX, $posY, 0, 0,
+							$wmImage->width, $wmImage->height, 100 );
+			$wmImage->destroy();
+			return $this;
+		}
+
 	}
 
 ?>

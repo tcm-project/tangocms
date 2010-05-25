@@ -1,4 +1,4 @@
-<form action="<?php echo $this->_router->makeUrl( 'media', 'config', 'settings' ); ?>" method="post">
+<form action="<?php echo $this->_router->makeUrl( 'media', 'config', 'settings' ); ?>" method="post" enctype="multipart/form-data">
 	<table>
 		<thead>
 			<tr>
@@ -79,6 +79,63 @@
 					<input type="number" min="200" max="90000" step="100" name="media[max_image_width]" value="{media.max_image_width}"> px
 				</td>
 			</tr>
+		</tbody>
+	</table>
+
+	<table>
+		<thead>
+			<tr>
+				<th colspan="2">{L_[Image watermark]}</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr class="even">
+				<td>
+					<dl>
+						<dt>{L_[Upload from your computer]}</dt>
+						<dd>{L_[Select an image to upload (this will replace any existing watermark uploaded).]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<?php if ( $wm_thumb_path ) { ?>
+						<img src="{wm_thumb_path}" alt="{L_[Current watermark]}">
+						<input type="checkbox" name="media_wm_delete" id="mediaWmDelete">
+						<label class="horizontal" for="mediaWmDelete">{L_[Delete image]}</label>
+					<?php } ?>
+					<input type="file" name="media_wm">
+				</td>
+			</tr>
+			<tr class="odd">
+					<td>
+						<dl>
+							<dt>{L_[Watermark position]}</dt>
+							<dd>{L_[Select where the uploaded watermark should appear on images.]}</dd>
+						</dl>
+					</td>
+					<td class="confcol">
+						<select name="media[wm_position]">
+							<?php
+								$opts = array(
+											't'		=> t('Top'),
+											'tr'	=> t('Top right'),
+											'r'		=> t('Right'),
+											'br'	=> t('Bottom right'),
+											'b'		=> t('Bottom'),
+											'bl'	=> t('Bottom left'),
+											'l'		=> t('Left'),
+											'tl'	=> t('Top Left'),
+											);
+								foreach( $opts as $key=>$val ) {
+									printf( '<option value="%1$s" %2$s>%3$s</option',
+											 $key,
+											 ($key == $media['wm_position'] ? 'selected="selected"' : ''),
+											 $val
+											);
+								}
+							?>
+						</select>
+					</td>
+				</tr>
 		</tbody>
 	</table>
 
