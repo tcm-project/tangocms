@@ -458,7 +458,7 @@ if [ ! -z "$INSTALL_DIR" ]; then
 		if [ -d "$lang/LC_MESSAGES" ]; then
 			for domain in `find "$lang/LC_MESSAGES" -name \*.mo`; do
 				project=`echo $domain | perl -p -e 's/.*(zula|tangocms)\-([A-Za-z0-9_\-]+)\.mo/\1/'`
-				module=`echo $domain | perl -p -e 's/.*(zula|tangocms)\-([A-Za-z0-9_\-]+)\.mo/\2/'`
+				module=`echo $domain | perl -p -e 's/.*(zula|tangocms)\-([A-Za-z0-9_\-]+)\.mo/\2/' | perl -p -e 's/\-/_/g'`
 				if [ $project = "zula" ]; then
 					mkdir -p ../application/locale/`basename $lang`/LC_MESSAGES
 					cp "$domain" ../application/locale/`basename $lang`/LC_MESSAGES
