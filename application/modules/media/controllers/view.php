@@ -86,11 +86,36 @@
 			if ( $item['type'] == 'video' || $item['type'] == 'audio' ) {
 				$this->_theme->addJsFile( 'flowplayer/flowplayer.js' );
 				$this->addAsset( 'js/player.js' );
+				// Calculate the width/height of the player
+				try {
+					$contentWidth = $this->_theme->getDetail( 'contentWidth' );
+				} catch ( Theme_DetailNoExist $e ) {
+					$contentWidth = 500;
+				}
+				if ( $contentWidth <= 240 ) {
+					$playerWidth = 240;
+				} else if ( $contentWidth <= 320 ) {
+					$playerWidth = 320;
+				} else if ( $contentWidth <= 480 ) {
+					$playerWidth = 480;
+				} else if ( $contentWidth <= 560 ) {
+					$playerWidth = 560;
+				} else if ( $contentWidth <= 640 ) {
+					$playerWidth = 640;
+				} else if ( $contentWidth <= 720 ) {
+					$playerWidth = 720;
+				} else {
+					$playerWidth = 960;
+				}
 			}
 			$view = $this->loadView( 'view/view.html' );
 			$view->assign( array(
 								'ITEM'		=> $item,
 								'CATEGORY'	=> $category,
+								'PLAYER'	=> array(
+													'WIDTH'		=> isset($playerWidth) ? $playerWidth : null,
+													'HEIGHT'	=> isset($playerWidth) ? $playerWidth / 16*9 : null,
+													),
 								));
 			// Check if lightbox effect needs to be used
 			if ( $item['type'] == 'image' && $this->_config->get( 'media/use_lightbox' ) ) {

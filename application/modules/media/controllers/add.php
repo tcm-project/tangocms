@@ -88,7 +88,10 @@
 						$this->_event->error( $e->getMessage() );
 					}
 				}
-				$form->assign( array('CATEGORY' => $category) );
+				$form->assign( array(
+									'CATEGORY'	=> $category,
+									'MAX_FS'	=> $this->_config->get('media/max_fs'),
+									));
 				return $form->getOutput();
 			} catch ( Input_KeyNoExist $e ) {
 				$this->_event->error( t('No media category selected') );

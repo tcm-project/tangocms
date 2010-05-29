@@ -12,6 +12,10 @@
 
 $(document).ready(
 	function() {
+		var defaultOpts = {
+							canvas: {backgroundColor: "#0C1013", backgroundGradient: "low", border: "1px solid #000", borderRadius: "10"},
+							clip: {autoPlay: true}
+						  }
 		$("a.mediaPlayer").each( function() {
 			if ( $(this).hasClass("audio") ) {
 				var playerOpts = {
@@ -29,10 +33,11 @@ $(document).ready(
 											queryString: escape("&start=${start}")
 										}
 									},
-									playlist: [{url: $(this).attr("href"), provider: "pseudo"}]
+									playlist: [{url: $(this).attr("href"), provider: "pseudo", scaling: "fit"}]
 								}
 			}
-			$(this).flowplayer( {src: zula_dir_js+"/flowplayer/flowplayer.swf", wmode: "transparent"}, playerOpts );
+			$(this).flowplayer( {src: zula_dir_js+"/flowplayer/flowplayer.swf", wmode: "transparent"},
+								$.extend(defaultOpts, playerOpts) );
 		});
 	}
 );
