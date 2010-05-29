@@ -34,7 +34,7 @@
 													'passed'=> false,
 													'values'=> array(
 																	'ctype', 'date', 'dom', 'hash', 'pdo',
-																	'pdo_mysql', 'pcre', 'session',
+																	'pdo_mysql', 'pcre', 'session', 'json',
 																	)
 													),
 							'optional-ext'	=> array(
