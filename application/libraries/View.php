@@ -437,7 +437,7 @@
 			if ( !empty( $this->module ) ) {
 				// Bind the text domain and set the domain to use
 				$domain = _PROJECT_ID.'-'.$this->module;
-				$this->_i18n->bindTextDomain( $domain, $this->_zula->getDir( 'modules' ).'/'.$this->module.'/locale' );
+				$this->_i18n->bindTextDomain( $domain, $this->_zula->getDir( 'locale' ) );
 				$this->_i18n->textDomain( $domain );
 			}
 			// Gather all languages tags

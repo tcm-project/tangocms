@@ -6,6 +6,7 @@
  * @patches submit all patches to patches@tangocms.org
  *
  * @author Alex Cartwright
+ * @author Robert Clipsham
  * @copyright Copyright (C) 2007, 2008, 2009 Alex Cartwright
  * @license http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GNU/GPL 2
  * @package TangoCMS_Settings
@@ -59,6 +60,9 @@
 													'DEFAULT'		=> 'editor/default',
 													'PARSE_PHP'		=> 'editor/parse_php',
 													),
+								'language'	=> array(		'DEFAULT'	=> 'locale/default',
+													'ENGINE'	=> 'locale/engine',
+													),
 								);
 
 		/**
@@ -75,6 +79,7 @@
 										t('Server & Security') => $this->_router->makeUrl( 'settings', 'security' ),
 										t('Cache & Performance')=> $this->_router->makeUrl( 'settings', 'cache' ),
 										t('Editing')		=> $this->_router->makeUrl( 'settings', 'editing' ),
+										t('Language')		=> $this->_router->makeUrl( 'settings', 'language' ),
 										));
 		}
 
@@ -123,6 +128,10 @@
 				case 'editing':
 					$this->setTitle( t('Editing Settings') );
 					$view = $this->loadView( 'editing.html' );
+					break;
+				case 'language':
+					$this->setTitle( t('Language Settings') );
+					$view = $this->loadView( 'language.html' );
 					break;
 
 				default:

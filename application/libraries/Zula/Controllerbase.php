@@ -98,12 +98,11 @@
 					$this->_config->add( $key, $val );
 				}
 			}
+			$path = $this->_zula->getDir( 'locale' );
 			if ( $this->_zula->getState() == 'installation' ) {
 				$domain = 'zula-installer';
-				$path = $this->_zula->getDir( 'locale' );
 			} else {
 				$domain = _PROJECT_ID.'-'.$moduleDetails['name'];
-				$path = $this->getPath().'/locale';
 			}
 			$this->_i18n->bindTextDomain( $domain, $path );
 			$this->textDomain = $this->_i18n->textDomain( $domain );

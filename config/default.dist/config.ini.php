@@ -130,12 +130,12 @@ zula_log_ttl = 1209600
 ; Languages/Locale
 ; Zula is a multi-lingual framework, you can tweak the settings here
 ;
-; @engine	string	How should translations be made? Supported: gettet
+; @engine	string	How should translations be made? Supported: failsafe, gettext, php
 ; @default 	string	Default locale to use
 ;---
 [locale]
 engine = gettext
-default = en_GB.utf8
+default = en_US.UTF-8
 
 ;---
 ; General Configuration Details

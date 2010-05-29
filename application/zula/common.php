@@ -1024,6 +1024,37 @@ ERR;
 	}
 
 	/**
+	 * Map a development version onto the previous milestone
+	 * Eg. 2.5.63 => 2.6.0-alpha1
+	 *
+	 * Stable versions remain the same, .5x map to 'latest'
+	 *
+	 * @param string $version
+	 * @return string
+	 */
+	function zula_version_map( $version ) {
+		if ( zula_version_type( $version ) == 'unstable' ) {
+			if ( strpos( $version, '-' ) !== false ) {
+				return $version;
+			} else {
+				list( $major, $minor, $rev ) = explode( '.', $version );
+				if ( $rev >= 90 ) {
+					return sprintf( '%s.%d.0-rc1', $major, $minor + 1 );
+				} else if ( $rev >= 80 ) {
+					return sprintf( '%s.%d.0-beta1', $major, $minor + 1 );
+				} else if ( $rev >= 70 ) {
+					return sprintf( '%s.%d.0-alpha2', $major, $minor + 1 );
+				} else if ( $rev >= 60 ) {
+					return sprintf( '%s.%d.0-alpha1', $major, $minor + 1 );
+				}
+				return 'latest';
+			}
+		} else {
+			return $version;
+		}
+	}
+
+	/**
 	 * Recursive version of PHPs array_map
 	 *
 	 * @param mixed $callback
