@@ -31,10 +31,10 @@
 						editorShebangs[i] = shebang[1].toLowerCase();
 					}
 					if ( editorShebangs[i] == "html" ) {
-						// Add in class so that TinyMCE knows where to load
+						// Configure TinyMCE including preinit to set different base dir to the script url
+						tinyMCEPreInit = {base: zula_dir_js+"/tinymce", suffix: null, query: "cb=20100530"}
 						$(this).tinymce({
 										script_url: zula_dir_base+"index.php?url=editor/compressor/gzip",
-										assets_base: zula_dir_js+"/tinymce/",
 										width: "100%",
 
 										document_base_url: zula_dir_base,
