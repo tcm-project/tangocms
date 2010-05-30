@@ -47,39 +47,6 @@
 		}
 	}
 
-	/**
-	 * Binds a domain to a path if it does not already exists.
-	 * If it does, then it wont be set again (unless given the
-	 * third argument to force it to).
-	 *
-	 * @param string $domain
-	 * @param string $path
-	 * @return string|bool
-	 */
-	function bind_text_domain( $domain='messages', $path=null, $force=false ) {
-		if ( Registry::has( 'i18n' ) ) {
-			return Registry::get( 'i18n' )->bindTextDomain( $domain, $path, $force );
-		} else {
-			trigger_error( 'bind_text_domain() no i18n engine has currently been loaded', E_USER_NOTICE );
-			return false;
-		}
-	}
-
-	/**
-	 * Sets the default text domain to be using
-	 *
-	 * @param string $textDomain
-	 * @return string|bool
-	 */
-	function text_domain( $textDomain=null ) {
-		if ( Registry::has( 'i18n' ) ) {
-			return Registry::get( 'i18n' )->textDomain( $textDomain );
-		} else {
-			trigger_error( 'text_domain() no i18n engine has currently been loaded', E_USER_NOTICE );
-			return false;
-		}
-	}
-
 	class I18n {
 
 		/**

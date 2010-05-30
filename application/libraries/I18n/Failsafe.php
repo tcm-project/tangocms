@@ -19,13 +19,6 @@
 	class I18n_failsafe extends I18n_base {
 
 		/**
-		 * Constructor function
-		 */
-		public function __construct() {
-			$this->_log->message( 'Using fail-safe i18n engine', Log::L_DEBUG );
-		}
-
-		/**
 		 * Translates a string in the current domain, or the domain
 		 * provided as the second argument.
 		 *
@@ -67,17 +60,14 @@
 		 * @return string|bool
 		 */
 		public function bindTextDomain( $domain=I18n::_DTD, $path=null, $force=false ) {
-			if ( !trim( $domain ) ) {
+			if ( !$domain ) {
 				$domain = I18n::_DTD;
-			}
-			if ( empty( $path ) ) {
-				$path = $this->_zula->getDir( 'locale' );
 			}
 			// If it exists then don't set it again unless we have to
 			if ( $this->textDomainExists( $domain ) && $force === false ) {
 				return $this->getDomainPath( $domain );
 			} else if ( !$this->textDomainExists( $domain ) || ($this->textDomainExists( $domain ) && $force === true) ) {
-				$this->textDomains[ $domain ] = $path;
+				$this->textDomains[ $domain ] = $path ? $path : $this->_zula->getDir( 'locale' );
 			}
 			return $this->textDomains[ $domain ];
 		}

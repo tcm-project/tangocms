@@ -17,17 +17,14 @@
 		 * Constructor function
 		 * Checks if the gettext extension is loaded, if so then set
 		 * the locale if there is one provided, and set textdomain to use
+		 *
+		 * @return object
 		 */
 		public function __construct() {
 			if ( !extension_loaded( 'gettext' ) || !function_exists( 'gettext' ) ) {
 				throw new I18n_InvalidEngine( 'server does not have gettext extension loaded - unable to use gettext i18n engine' );
 			}
-			if ( $this->_config->has( 'locale/default' ) ) {
-				putenv( 'LANG='.$this->_config->get( 'locale/default' ) );
-				$this->setLocale( $this->_config->get( 'locale/default' ) );
-			}
-			$this->bindTextDomain();
-			$this->textDomain( I18n::_DTD );
+			parent::__construct();
 		}
 
 		/**
@@ -73,10 +70,10 @@
 		 * @return string|bool
 		 */
 		public function bindTextDomain( $domain=I18n::_DTD, $path=null, $force=false ) {
-			if ( empty( $domain ) ) {
+			if ( !$domain ) {
 				$domain = I18n::_DTD;
 			}
-			if ( empty( $path ) ) {
+			if ( !$path ) {
 				$path = $this->_zula->getDir( 'locale' );
 			}
 			// If it exists then don't set it again unless we have to
@@ -106,24 +103,6 @@
 				$this->_log->message( 'I18n_gettext::textDomain() set text domain to "'.$this->DTD.'"', Log::L_DEBUG );
 				return $this->DTD;
 			}
-		}
-
-		/**
-		 * Checks if a text domain name exists
-		 *
-		 * @param string $domain
-		 * @return bool
-		 */
-		public function textDomainExists( $domain ) {
-			return isset( $this->textDomains[ $domain ] );
-		}
-
-		/**
-		 * Returns the current locale we are using
-		 * @return string
-		 */
-		public function getCurrentLocale() {
-			return $this->currentLocale;
 		}
 
 	}

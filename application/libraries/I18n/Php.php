@@ -11,26 +11,13 @@
  * @package Zula_I18n
  */
 
-	require_once 'MoReader.php';
-
-	class I18n_php extends I18n_base {
+	class I18n_Php extends I18n_base {
 
 		/**
 		 * An array of moReaders
 		 * @var array
 		 */
 		protected $moReaders = array();
-
-		/**
-		 * Constructor function
-		 */
-		public function __construct() {
-			if ( $this->_config->has( 'locale/default' ) ) {
-				$this->setLocale( $this->_config->get( 'locale/default' ) );
-			}
-			$this->bindTextDomain();
-			$this->textDomain( I18n::_DTD );
-		}
 
 		/**
 		 * Set the current locale
@@ -60,8 +47,8 @@
 			if ( !isset( $this->moReaders[ $textDomain ] ) ) {
 				try {
 					$path = $this->getDomainPath( $textDomain );
-					$locale = substr( $this->getCurrentLocale(), 0, 5 ); 
-					$this->moReaders[ $textDomain ] = new MoReader( $path, $textDomain, $locale );
+					$locale = substr( $this->getCurrentLocale(), 0, 5 );
+					$this->moReaders[ $textDomain ] = new I18n_Moreader( $path, $textDomain, $locale );
 				} catch ( Exception $e ) {
 					$this->_log->message( $e->getMessage(), Log::L_WARNING );
 					return $string;
@@ -128,24 +115,6 @@
 				$this->_log->message( 'I18n_php::textDomain() set text domain to "'.$this->DTD.'"', Log::L_DEBUG );
 				return $this->DTD;
 			}
-		}
-
-		/**
-		 * Checks if a text domain name exists
-		 *
-		 * @param string $domain
-		 * @return bool
-		 */
-		public function textDomainExists( $domain ) {
-			return isset( $this->textDomains[ $domain ] );
-		}
-
-		/**
-		 * Returns the current locale we are using
-		 * @return string
-		 */
-		public function getCurrentLocale() {
-			return $this->currentLocale;
 		}
 
 	}

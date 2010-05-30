@@ -35,6 +35,8 @@
 		 * Constructor function
 		 */
 		public function __construct() {
+			$this->bindTextDomain();
+			$this->textDomain( I18n::_DTD );
 		}
 
 		/**
@@ -97,7 +99,7 @@
 			if ( $this->textDomainExists( $domain ) ) {
 				return $this->textDomains[ $domain ];
 			} else {
-				trigger_error( 'I18n_base::get_domain_path() domain "'.$domain.'" does not exist', E_USER_NOTICE );
+				trigger_error( 'I18n_base::getDomainPath() domain "'.$domain.'" does not exist', E_USER_NOTICE );
 				return false;
 			}
 		}
@@ -119,10 +121,7 @@
 		public function setLocale( $locale ) {
 			putenv( 'LANG='.$locale );
 			$this->currentLocale = setlocale( LC_ALL, $locale );
-			if ( $this->currentLocale === false ) {
-				return false;
-			}
-			return $this->getCurrentLocale();
+			return $this->currentLocale;
 		}
 
 		/**

@@ -2,6 +2,7 @@
 
 /**
  * Zula Framework
+ * Reads a .mo file, see http://www.gnu.org/software/hello/manual/gettext/MO-Files.html
  *
  * @patches submit all patches to patches@tangocms.org
  *
@@ -11,13 +12,7 @@
  * @package Zula_I18n
  */
 
-	/**
-	 * Read a .mo file
-	 *
-	 * See http://www.gnu.org/software/hello/manual/gettext/MO-Files.html
-	 * for file format
-	 */
-	class MoReader {
+	class I18n_Moreader {
 
 		/**
 		 * Resource for the .mo
@@ -39,19 +34,18 @@
 		 * @param string $locale - locale to use
 		 */
 		public function __construct( $path, $domain, $locale ) {
-			$moPath = $path . '/' . $locale . '/LC_MESSAGES/' . $domain . '.mo';
+			$moPath = $path.'/'.$locale.'/LC_MESSAGES/'.$domain.'.mo';
 			if ( !file_exists( $moPath ) ) {
-				throw new MoReader_Exception( 'Unable to open .mo file: File does not exist: '. $moPath );
+				throw new MoReader_Exception( 'Unable to open .mo file: File does not exist: '.$moPath );
 			}
 			$this->resource = fopen( $moPath, 'rb' );
 			if ( $this->resource === false ) {
 				throw new MoReader_Exception( 'Unable to open .mo file' );
 			}
 			$this->header = unpack( 'Lmagic/Lrev/LN/LO/LT/LS/LH', fread( $this->resource, 28 ));
-		 	if ( $this->header['magic'] != 0x950412de && $this->header['magic'] != 0xde120495 ) {
+			if ( $this->header['magic'] != 0x950412de && $this->header['magic'] != 0xde120495 ) {
 				throw new MoReader_Exception( 'Invalid .mo file' );
-			}
-			if ( ($this->header['rev'] >> 16) != 0 && ($this->header['rev'] >> 16) != 1 ) {
+			} else if ( ($this->header['rev'] >> 16) != 0 && ($this->header['rev'] >> 16) != 1 ) {
 				throw new MoReader_Exception( 'Unsupported .mo file version' );
 			}
 		}

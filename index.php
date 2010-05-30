@@ -96,6 +96,7 @@
 	 * load more, then simply use $zula->loadLib()
 	 */
 	$zula->loadDefaultLibs();
+	Registry::get( 'i18n' )->setLocale( $config->get('locale/default') );
 	Module::setDirectory( $zula->getDir( 'modules' ) );
 
 	// Bootstrap
