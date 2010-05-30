@@ -60,6 +60,7 @@
 																	$this->_zula->getDir( 'logs' ),
 																	$this->_zula->getDir( 'tmp' ),
 																	$this->_zula->getDir( 'uploads' ),
+																	$this->_zula->getDir( 'locale' ),
 																	)
 													),
 						);
