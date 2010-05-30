@@ -45,7 +45,6 @@
 		 * @return string
 		 */
 		public function indexSection( $layoutName=null ) {
-			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setTitle( t('Edit Module') );
 			$this->setOutputType( self::_OT_CONFIG );
 			// Check permission and if a layout has been provided

@@ -35,7 +35,6 @@
 		 * @return string
 		 */
 		public function indexSection() {
-			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setTitle( t('Manage Groups') );
 			$this->setOutputType( self::_OT_CONFIG );
 			if ( !$this->_acl->checkMulti( array('groups_add', 'groups_edit', 'groups_delete') ) ) {
@@ -134,7 +133,6 @@
 		 * @return string
 		 */
 		public function addSection() {
-			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setTitle( t('Add Group') );
 			$this->setOutputType( self::_OT_CONFIG );
 			if ( !$this->_acl->check( 'groups_add' ) ) {
@@ -163,7 +161,6 @@
 		 * @return string
 		 */
 		public function editSection() {
-			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setTitle( t('Edit Group') );
 			$this->setOutputType( self::_OT_CONFIG );
 			if ( !$this->_acl->check( 'groups_edit' ) ) {
@@ -214,7 +211,6 @@
 		 * @return object
 		 */
 		protected function buildForm( $id=null, $name=null, $inherits=null, $roleId=null, $status='active' ) {
-			$this->_i18n->textDomain( $this->textDomain() );
 			if ( is_null( $id ) ) {
 				$op = 'add';
 				$inherits = Ugmanager::_GUEST_GID;

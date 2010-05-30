@@ -42,7 +42,6 @@
 			if ( !$this->_acl->checkMulti( array('aliases_add', 'aliases_edit', 'aliases_delete') ) ) {
 				throw new Module_NoPermission;
 			}
-			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setTitle( t('URL Aliases') );
 			$this->setOutputType( self::_OT_CONFIG );
 			// Get all the needed aliases to display
@@ -105,7 +104,6 @@
 			if ( !$this->_acl->check( 'aliases_add' ) ) {
 				throw new Module_NoPermission;
 			}
-			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setTitle( t('Add URL Alias') );
 			$this->setOutputType( self::_OT_CONFIG );
 			// Create form
@@ -132,7 +130,6 @@
 			if ( !$this->_acl->check( 'aliases_edit' ) ) {
 				throw new Module_NoPermission;
 			}
-			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setOutputType( self::_OT_CONFIG );
 			// Get ID of the alias to edit
 			try {
@@ -170,7 +167,6 @@
 		 * @return string
 		 */
 		protected function aliasForm( $alias=null, $url=null, $redirect=false, $id=null ) {
-			$this->_i18n->textDomain( $this->textDomain() );
 			// Make view form class and set operation
 			$op = is_null($id) ? 'add' : 'edit';
 			$form = new View_form( 'form.html', 'aliases', is_null($id) );
@@ -197,7 +193,6 @@
 			if ( !$this->_acl->check( 'aliases_delete' ) ) {
 				throw new Module_NoPermission;
 			} else if ( $this->_input->checkToken() ) {
-				$this->_i18n->textDomain( $this->textDomain() );
 				$this->setOutputType( self::_OT_CONFIG );
 				try {
 					$aliasId = $this->_input->post( 'alias_ids' );

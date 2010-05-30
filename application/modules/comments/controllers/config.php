@@ -38,7 +38,6 @@
 		 * @return string
 		 */
 		public function indexSection() {
-			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setTitle( t('Manage Comments') );
 			$this->setOutputType( self::_OT_CONFIG );
 			if ( !$this->_acl->check( 'comments_manage' ) ) {
@@ -98,7 +97,6 @@
 		 * @return string|bool
 		 */
 		public function settingsSection() {
-			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setTitle( t('Comments Settings') );
 			$this->setOutputType( self::_OT_CONFIG );
 			if ( !$this->_acl->check( 'comments_manage' ) ) {

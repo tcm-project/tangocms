@@ -20,7 +20,6 @@
 		 * @return string
 		 */
 		public function indexSection() {
-			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setTitle( t('Register an Account') );
 			// Check that registrations are actually available
 			if ( $this->_config->get( 'session/allow_register' ) == false ) {
@@ -136,7 +135,6 @@
 		 */
 		public function activateSection() {
 			$this->setTitle( t('Activate Account') );
-			$this->_i18n->textDomain( $this->textDomain() );
 			/**
 			 * Use the provided activation code
 			 */

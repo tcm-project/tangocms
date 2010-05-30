@@ -22,7 +22,6 @@
 		 * @return string
 		 */
 		public function indexSection() {
-			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setTitle( t('First User') );
 			/**
 			 * Make sure user is not skipping a head

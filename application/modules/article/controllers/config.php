@@ -40,7 +40,6 @@
 		 * @return string|bool
 		 */
 		public function indexSection() {
-			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setTitle( t('Manage Articles') );
 			$this->setOutputType( self::_OT_CONFIG );
 			if ( $this->_input->checkToken() ) {
@@ -165,7 +164,6 @@
 			if ( !$this->_acl->checkMulti( array('article_edit_cat', 'article_delete_cat', 'article_add_cat') ) ) {
 				throw new Module_NoPermission;
 			}
-			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setTitle( t('Manage Categories') );
 			$this->setOutputType( self::_OT_CONFIG );
 			if ( $this->_input->checkToken() ) {
@@ -215,7 +213,6 @@
 		 * @return string|bool
 		 */
 		public function addCatSection() {
-			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setTitle( t('Add Article Category') );
 			$this->setOutputType( self::_OT_CONFIG );
 			if ( !$this->_acl->check( 'article_add_cat' ) ) {
@@ -250,7 +247,6 @@
 		 */
 		public function editCatSection() {
 			$this->setTitle( t('Edit Article Category') );
-			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setOutputType( self::_OT_CONFIG );
 			if ( !$this->_acl->check( 'article_edit_cat' ) ) {
 				throw new Module_NoPermission;
@@ -318,7 +314,6 @@
 		 */
 		public function addSection() {
 			$this->setTitle( t('Add Article') );
-			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setOutputType( self::_OT_CONFIG );
 			if ( !$this->_acl->check( 'article_add_article' ) ) {
 				throw new Module_NoPermission;
@@ -368,7 +363,6 @@
 		 * @return string|bool
 		 */
 		public function editSection() {
-			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setOutputType( self::_OT_CONFIG );
 			if ( !$this->_acl->check( 'article_edit_article' ) ) {
 				throw new Module_NoPermission;
@@ -423,7 +417,6 @@
 		 */
 		public function addPartSection() {
 			$this->setTitle( t('Add Article Part') );
-			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setOutputType( self::_OT_CONFIG );
 			if ( !$this->_acl->check( 'article_edit_article' ) ) {
 				throw new Module_NoPermission;
@@ -462,7 +455,6 @@
 		 * @return string|bool
 		 */
 		public function editPartSection() {
-			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setOutputType( self::_OT_CONFIG );
 			$this->setTitle( t('Edit Article Part') );
 			if ( !$this->_acl->check( 'article_edit_article' ) ) {
@@ -532,7 +524,6 @@
 		 * @return bool
 		 */
 		public function deletePartSection() {
-			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setOutputType( self::_OT_CONFIG );
 			if ( !$this->_acl->check( 'article_edit_article' ) ) {
 				throw new Module_NoPermission;
@@ -581,7 +572,6 @@
 		 */
 		public function settingsSection() {
 			$this->setTitle( t('Article Settings') );
-			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setOutputType( self::_OT_CONFIG );
 			if ( !$this->_acl->check( 'article_manage_settings' ) ) {
 				throw new Module_NoPermission;

@@ -70,7 +70,6 @@
 			if ( !$this->_session->isLoggedIn() ) {
 				throw new Module_NoPermission;
 			}
-			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setTitle( t('Edit Profile') );			
 			// Gather user details and set page links
 			$user = $this->_session->getUser();
@@ -98,7 +97,6 @@
 			if ( !$this->_session->isLoggedIn() ) {
 				throw new Module_NoPermission;
 			}
-			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setTitle( t('Edit Account Settings') );
 			// Gather user details
 			$this->displayPageLinks();

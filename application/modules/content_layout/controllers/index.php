@@ -46,7 +46,6 @@
 		 * @return string
 		 */
 		public function indexSection( $siteType=null ) {
-			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setOutputType( self::_OT_CONFIG );
 			// Check if there is a specified site type to manage layout for
 			if ( empty( $siteType ) ) {
@@ -95,7 +94,6 @@
 		 * @return string
 		 */
 		public function addSection() {
-			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setTitle( t('Add New Layout') );
 			$this->setOutputType( self::_OT_CONFIG );
 			try {
@@ -146,7 +144,6 @@
 		 * @return bool
 		 */
 		public function deleteSection() {
-			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setTitle( t('Delete Layouts') );
 			$this->setOutputType( self::_OT_CONFIG );
 			if ( $this->_input->checkToken() ) {

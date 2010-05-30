@@ -92,7 +92,6 @@
 		 * @return strng
 		 */
 		public function __call( $name, $args ) {
-			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setTitle( t('Settings') );
 			$this->setOutputType( self::_OT_CONFIG );
 			$name = substr( $name, 0, -7 );

@@ -39,7 +39,6 @@
 			if ( !$this->_acl->check( 'theme_view_css' ) ) {
 				throw new Module_NoPermission;
 			}
-			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setTitle( t('Edit CSS Files') );
 			$this->setOutputType( self::_OT_CONFIG );
 			/**

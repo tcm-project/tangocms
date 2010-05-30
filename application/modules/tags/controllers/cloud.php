@@ -20,7 +20,6 @@
 		 * @return string
 		 */
 		public function indexSection() {
-			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setTitle( t('Tag Cloud') );
 			$view = $this->loadView( 'cloud.html' );
 			$view->assign( array('CLOUD' => $this->createCloud()) );

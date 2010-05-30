@@ -37,7 +37,6 @@
 		 * @return mixed
 		 */
 		public function __call( $name, $args ) {
-			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setOutputType( self::_OT_CONFIG );
 			if ( !$this->_acl->check( 'content_layout_config_module' ) ) {
 				throw new Module_NoPermission;

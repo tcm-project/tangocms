@@ -36,7 +36,6 @@
 			if ( !$this->_acl->check( 'session_manage' ) ) {
 				throw new Module_NoPermission;
 			}
-			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setTitle( t('Session Configuration') );
 			$this->setOutputType( self::_OT_CONFIG );
 			// Check for input data or display the view file
@@ -70,7 +69,6 @@
 		 * @return string
 		 */
 		public function validationsSection() {
-			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setTitle( t('Manage Validations') );
 			$this->setOutputType( self::_OT_CONFIG );
 			if ( !$this->_acl->check( 'session_manage' ) ) {

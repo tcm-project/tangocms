@@ -20,7 +20,6 @@
 		 * @return string
 		 */
 		public function indexSection() {
-			$this->_i18n->textDomain( $this->textDomain() );
 			try {
 				$cid = $this->_config->get( 'menu/display_category' );
 			} catch ( Config_KeyNoExist $e ) {

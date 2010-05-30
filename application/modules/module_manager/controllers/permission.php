@@ -50,7 +50,6 @@
 		 */
 		public function indexSection( $name=null ) {
 			$this->setTitle( t('Manage Permissions') );
-			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setOutputType( self::_OT_CONFIG );
 			if ( !trim( $name ) ) {
 				$this->_event->error( t('No module provided, could not get permissions') );
@@ -100,7 +99,7 @@
 								));
 
 			// Set the correct text domain to use to the module when building the form
-			$this->_i18n->bindTextDomain( $module->name, $this->_zula->getDir( 'modules' ).'/'.$module->name.'/locale' );
+			$this->_i18n->bindTextDomain( $module->name, $this->_zula->getDir( 'locale' ) );
 			$this->_i18n->textDomain( $module->name );
 			$aclForm = $this->_acl->buildForm( $resources, 'group_' );
 			$this->_i18n->textDomain( I18n::_DTD ); # Reset text domain
@@ -119,7 +118,6 @@
 		 * @return bool
 		 */
 		public function updateSection() {
-			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setTitle( t('Update Module Permissions') );
 			$this->setOutputType( self::_OT_CONFIG );
 			if ( !$this->_acl->check( 'module_manager_edit_permissions' ) ) {

@@ -22,7 +22,6 @@
 		 * @return string
 		 */
 		public function indexSection() {
-			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setTitle( t('Welcome!') );
 			// Display view
 			$_SESSION['install_stage'] = 'one';

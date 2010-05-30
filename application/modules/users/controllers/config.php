@@ -40,7 +40,6 @@
 		 * @return string
 		 */
 		public function indexSection() {
-			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setTitle( t('User Management') );
 			$this->setOutputType( self::_OT_CONFIG );
 			// Check user has correct permission
@@ -103,7 +102,6 @@
 		 * @return string|bool
 		 */
 		public function addSection() {
-			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setTitle( t('Add User') );
 			$this->setOutputType( self::_OT_CONFIG );
 			if ( !$this->_acl->check( 'users_add' ) ) {
@@ -132,7 +130,6 @@
 		 * @return string|bool
 		 */
 		public function editSection() {
-			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setTitle( t('Edit User') );
 			$this->setOutputType( self::_OT_CONFIG );
 			if ( !$this->_acl->check( 'users_edit' ) ) {
@@ -177,7 +174,6 @@
 		 * @return object
 		 */
 		protected function buildUserForm( array $details=array() ) {
-			$this->_i18n->textDomain( $this->textDomain() );
 			$op = empty($details['id']) ? 'add' : 'edit';
 			$details = zula_merge_recursive( array(
 												'id'			=> null,
@@ -242,7 +238,6 @@
 		 * @return string
 		 */
 		public function deleteSection() {
-			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setOutputType( self::_OT_CONFIG );
 			if ( !$this->_acl->check( 'users_delete' ) ) {
 				throw new Module_NoPermission;

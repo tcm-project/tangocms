@@ -37,7 +37,6 @@
 				$this->_event->error( Input::csrfMsg() );
 				return zula_redirect( $this->_router->makeUrl( 'settings', $name ) );
 			}
-			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setTitle( t('Update Settings') );
 			// Update all of the provided settings, or insert if they don't exist
 			foreach( $this->_input->post( 'setting' ) as $key=>$val ) {

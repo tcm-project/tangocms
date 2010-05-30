@@ -49,7 +49,6 @@
 		 * @return string
 		 */
 		protected function displayArticles( $category=false, $catSelector=true ) {
-			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setOutputType( self::_OT_CONTENT_INDEX );
 			if ( empty( $category ) ) {
 				$this->setTitle( t('Latest Articles') );

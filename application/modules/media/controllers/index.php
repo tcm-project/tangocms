@@ -21,7 +21,6 @@
 		 * @return string
 		 */
 		public function indexSection() {
-			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setTitle( t('Media') );
 			// Build main view and output with the latest media
 			$view = $this->loadView( 'index/cat_selector.html' );
@@ -35,7 +34,6 @@
 		 * @return string
 		 */
 		public function latestSection() {
-			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setTitle( t('Latest Media') );
 			return $this->buildLatest();
 		}
@@ -46,7 +44,6 @@
 		 * @return mixed
 		 */
 		public function catSection() {
-			$this->_i18n->textDomain( $this->textDomain() );
 			if ( $this->inSector( 'SC' ) && $this->_router->hasArgument( 'name' ) ) {
 				$category = $this->_router->getArgument( 'name' );
 			} else if ( $this->_config->has( 'media/display_cat' ) ) {

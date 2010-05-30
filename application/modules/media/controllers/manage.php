@@ -21,7 +21,6 @@
 		 * @return string
 		 */
 		public function outstandingSection() {
-			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setTitle( t('Manage uploaded files') );
 			try {
 				$category = $this->_model()->getCategory( $this->_input->get('cid') );
@@ -116,7 +115,6 @@
 		 * @return string
 		 */
 		public function editSection() {
-			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setTitle( t('Edit media ttem') );
 			// Get details for the media item to edit
 			try {
@@ -153,7 +151,6 @@
 		 * @return string
 		 */
 		public function deleteSection() {
-			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setTitle( t('Delete media item') );
 			// Attempt to remove the single media item
 			try {

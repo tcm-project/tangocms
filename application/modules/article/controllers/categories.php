@@ -20,7 +20,6 @@
 		 * @return string
 		 */
 		public function indexSection() {
-			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setTitle( t('Categories') );
 			$this->setOutputType( self::_OT_CONTENT_INDEX );
 			/**

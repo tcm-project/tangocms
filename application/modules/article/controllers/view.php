@@ -23,7 +23,6 @@
 		 * @return string
 		 */
 		public function __call( $name, $args ) {
-			$this->_i18n->textDomain( $this->textDomain() );
 			$this->setOutputType( self::_OT_CONTENT_DYNAMIC );
 			try {
 				$article = $this->_model()->getArticle( substr($name, 0, -7), false );
