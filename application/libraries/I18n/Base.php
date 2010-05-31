@@ -134,6 +134,23 @@
 			return $this->currentLocale;
 		}
 
+		/**
+		 * Gets all available i18n locales that are present
+		 *
+		 * @return array
+		 */
+		public function getAvailableLangs() {
+			$langs = array();
+			$glob = glob( $this->_zula->getDir( 'locale' ).'/*/settings.json' );
+			if ( $glob ) {
+				foreach( $glob as $file ) {
+					$json = json_decode( file_get_contents($file) );
+					$langs[ $json->locale ] = $json->lang;
+				}
+			}
+			return $langs;
+		}
+
 	}
 
 ?>

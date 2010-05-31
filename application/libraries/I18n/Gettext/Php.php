@@ -11,7 +11,7 @@
  * @package Zula_I18n
  */
 
-	class I18n_Php extends I18n_base {
+	class I18n_Gettext_Php extends I18n_base {
 
 		/**
 		 * An array of moReaders
@@ -38,7 +38,7 @@
 				try {
 					$path = $this->getDomainPath( $textDomain );
 					$locale = substr( $this->getCurrentLocale(), 0, 5 );
-					$this->moReaders[ $textDomain ] = new I18n_Moreader( $path, $textDomain, $locale );
+					$this->moReaders[ $textDomain ] = new I18n_Gettext_Moreader( $path, $textDomain, $locale );
 				} catch ( Exception $e ) {
 					$this->_log->message( $e->getMessage(), Log::L_WARNING );
 					return $string;

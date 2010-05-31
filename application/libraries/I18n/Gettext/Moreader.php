@@ -36,17 +36,17 @@
 		public function __construct( $path, $domain, $locale ) {
 			$moPath = $path.'/'.$locale.'/LC_MESSAGES/'.$domain.'.mo';
 			if ( !file_exists( $moPath ) ) {
-				throw new MoReader_Exception( 'Unable to open .mo file: File does not exist: '.$moPath );
+				throw new I18n_Exception( 'Unable to open .mo file: File does not exist: '.$moPath );
 			}
 			$this->resource = fopen( $moPath, 'rb' );
 			if ( $this->resource === false ) {
-				throw new MoReader_Exception( 'Unable to open .mo file' );
+				throw new I18n_Exception( 'Unable to open .mo file' );
 			}
 			$this->header = unpack( 'Lmagic/Lrev/LN/LO/LT/LS/LH', fread( $this->resource, 28 ));
 			if ( $this->header['magic'] != 0x950412de && $this->header['magic'] != 0xde120495 ) {
-				throw new MoReader_Exception( 'Invalid .mo file' );
+				throw new I18n_Exception( 'Invalid .mo file' );
 			} else if ( ($this->header['rev'] >> 16) != 0 && ($this->header['rev'] >> 16) != 1 ) {
-				throw new MoReader_Exception( 'Unsupported .mo file version' );
+				throw new I18n_Exception( 'Unsupported .mo file version' );
 			}
 		}
 

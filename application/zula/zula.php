@@ -295,6 +295,8 @@
 			$regName = trim($regName) ? $regName : $className;
 			if ( Registry::has( $regName ) ) {
 				return Registry::get( $regName );
+			} else if ( class_exists( $className ) === false ) {
+				throw new Zula_Exception( 'Zula library "'.$className.'" does not exist' );
 			}
 			$tmpLib = new $className;
 			if ( $tmpLib instanceof Zula_LibraryBase ) {

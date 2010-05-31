@@ -17,7 +17,7 @@
  	Registry::get( 'cache' )->purge();
  	Registry::unregister( 'cache' );
 	Cache::factory( 'disabled' );
-	I18n::factory( 'php' );
+	I18n::factory( 'gettext_php' );
 
 	$config->update( 'config/title', _PROJECT_NAME.' '._PROJECT_LATEST_VERSION.t(' Installation/Upgrade') );
 	$config->update( 'acl/enable', 0 );

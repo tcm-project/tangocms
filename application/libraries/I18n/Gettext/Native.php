@@ -11,7 +11,7 @@
  * @package Zula_I18n
  */
 
-	class I18n_gettext extends I18n_base {
+	class I18n_Gettext_Native extends I18n_base {
 
 		/**
 		 * Constructor function

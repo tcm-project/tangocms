@@ -12,7 +12,7 @@
  * @package Zula_I18n
  */
 
-	class I18n_InvalidEngine extends Zula_Exception {}
-	class MoReader_Exception extends Zula_Exception {}
+	class I18n_Exception extends Zula_Exception {}
+	class I18n_InvalidEngine extends I18n_Exception {}
 
 ?>

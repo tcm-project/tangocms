@@ -36,9 +36,8 @@
 		 * @return object
 		 */
 		static public function factory( $engine ) {
-			if ( $engine == 'native_gettext' ) {
-				// Change to the newer 'gettext' instead of the older 'native_gettext'
-				$engine = 'gettext';
+			if ( $engine == 'native_gettext' || $engine == 'gettext' ) {
+				$engine = 'gettext_native';
 			}
 			$engine = 'I18n_'.$engine;
 			try {
