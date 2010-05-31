@@ -12,41 +12,6 @@
  * @package Zula_I18n
  */
 
-	/**
-	 * Translates a string in the current domain, or the domain
-	 * provided as the second argument.
-	 *
-	 * @param string $string
-	 * @param string $textDomain
-	 * @return string
-	 */
-	function t( $string, $textDomain=null ) {
-		if ( Registry::has( 'i18n' ) ) {
-			return Registry::get( 'i18n' )->t( $string, $textDomain );
-		} else {
-			trigger_error( 't() no i18n engine has currently been loaded', E_USER_NOTICE );
-			return $string;
-		}
-	}
-
-	/**
-	 * Plural version of t()
-	 *
-	 * @param string $string1
-	 * @param string $string2
-	 * @param int $n
-	 * @param string $textDomain	Textdomain to use
-	 * @return string
-	 */
-	function nt( $string1, $string2, $n, $textDomain=null ) {
-		if ( Registry::has( 'i18n' ) ) {
-			return Registry::get( 'i18n' )->nt( $string1, $string2, $n, $textDomain );
-		} else {
-			trigger_error( 'nt() no i18n engine has currently been loaded', E_USER_NOTICE );
-			return $string1;
-		}
-	}
-
 	class I18n {
 
 		/**
@@ -55,7 +20,9 @@
 		const _DTD = 'zula-base';
 
 		/**
-		 * Constructor function
+		 * Constructor
+		 *
+		 * @return object
 		 */
 		private function __construct() {
 		}

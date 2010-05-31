@@ -36,51 +36,11 @@
 		 * @param string $string1
 		 * @param string $string2
 		 * @param int $n
-		 * @param string $textDomain	Textdomain to use
+		 * @param string $textDomain
 		 * @return string
 		 */
 		public function nt( $string1, $string2, $n, $textDomain=null ) {
-			if ( trim( $textDomain ) ) {
-				$this->textDomain( $textDomain );
-			}
-			if ( $n == 1 ) {
-				return $string1;
-			} else {
-				return $string2;
-			}
-		}
-
-		/**
-		 * Binds a domain to a path if it does not already exists.
-		 * If it does, then it wont be set again (unless given the
-		 * third argument to force it to).
-		 *
-		 * @param string $domain
-		 * @param string $path
-		 * @return string|bool
-		 */
-		public function bindTextDomain( $domain=I18n::_DTD, $path=null, $force=false ) {
-			if ( !$domain ) {
-				$domain = I18n::_DTD;
-			}
-			// If it exists then don't set it again unless we have to
-			if ( $this->textDomainExists( $domain ) && $force === false ) {
-				return $this->getDomainPath( $domain );
-			} else if ( !$this->textDomainExists( $domain ) || ($this->textDomainExists( $domain ) && $force === true) ) {
-				$this->textDomains[ $domain ] = $path ? $path : $this->_zula->getDir( 'locale' );
-			}
-			return $this->textDomains[ $domain ];
-		}
-
-		/**
-		 * Sets the default text domain to be using
-		 *
-		 * @param string $textDomain
-		 * @return string|bool
-		 */
-		public function textDomain( $textDomain=null ) {
-			$this->DTD = $textDomain;
-			return $textDomain;
+			return $n == 1 ? $string1 : $string2;
 		}
 
 	}

@@ -70,39 +70,40 @@
 		 * @return string|bool
 		 */
 		public function bindTextDomain( $domain=I18n::_DTD, $path=null, $force=false ) {
-			if ( !$domain ) {
-				$domain = I18n::_DTD;
-			}
-			if ( !$path ) {
-				$path = $this->_zula->getDir( 'locale' );
-			}
-			// If it exists then don't set it again unless we have to
-			if ( $this->textDomainExists( $domain ) && $force == false ) {
-				return $this->getDomainPath( $domain );
-			} else if ( !$this->textDomainExists( $domain ) || ($this->textDomainExists( $domain ) && $force) ) {
+			if ( !$this->textDomainExists( $domain ) || ($this->textDomainExists( $domain ) && $force) ) {
+				if ( $path == false ) {
+					$path = $this->_zula->getDir( 'locale' );
+				}
 				$this->textDomains[ $domain ] = bindtextdomain( $domain, $path );
 			}
-			$this->_log->message( 'I18n_gettext::bindTextDomain() added domain "'.$domain.'" with path "'.$path.'"', Log::L_DEBUG, __FILE__, __LINE__ );
 			return $this->textDomains[ $domain ];
 		}
 
 		/**
-		 * Sets the default text domain to be using or
-		 * returns the current if null is passed
+		 * Sets the default text domain to be using, or if passed an empty
+		 * value the current text domain will be returned.
 		 *
 		 * @param string $textDomain
 		 * @return string|bool
 		 */
 		public function textDomain( $textDomain=null ) {
-			if ( empty( $textDomain ) ) {
-				return textdomain( $textDomain );
-			} else if ( $this->DTD == $textDomain ) {
+			if ( $textDomain ) {
+				$this->DTD = textdomain( $textDomain );
 				return $this->DTD;
 			} else {
-				$this->DTD = textdomain( $textDomain );
-				$this->_log->message( 'I18n_gettext::textDomain() set text domain to "'.$this->DTD.'"', Log::L_DEBUG );
-				return $this->DTD;
+				return textdomain( null );
 			}
+		}
+
+		/**
+		 * Sets the locale to use for translations and then returns the locale
+		 *
+		 * @param string $locale
+		 * @return string|bool
+		 */
+		public function setLocale( $locale ) {
+			setlocale( LC_ALL, $locale );
+			return parent::setLocale( $locale );
 		}
 
 	}

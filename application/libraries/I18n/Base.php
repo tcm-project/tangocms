@@ -32,7 +32,9 @@
 		private $DTD = '';
 
 		/**
-		 * Constructor function
+		 * Binds the default text domain and sets that as the one to use
+		 *
+		 * @return object
 		 */
 		public function __construct() {
 			$this->bindTextDomain();
@@ -55,7 +57,7 @@
 		 * @param string $string1
 		 * @param string $string2
 		 * @param int $n
-		 * @param string $textDomain	Textdomain to use
+		 * @param string $textDomain
 		 * @return string
 		 */
 		abstract public function nt( $string1, $string2, $n, $textDomain=null );
@@ -69,15 +71,28 @@
 		 * @param string $path
 		 * @return string|bool
 		 */
-		abstract public function bindTextDomain( $domain=I18n::_DTD, $path=null, $force=false );
+		public function bindTextDomain( $domain=I18n::_DTD, $path=null, $force=false ) {
+			if ( !$this->textDomainExists( $domain ) || ($this->textDomainExists( $domain ) && $force) ) {
+				$this->textDomains[ $domain ] = $path ? $path : $this->_zula->getDir( 'locale' );
+			}
+			return $this->textDomains[ $domain ];
+		}
 
 		/**
-		 * Sets the default text domain to be using
+		 * Sets the default text domain to be using, or if passed an empty
+		 * value the current text domain will be returned.
 		 *
 		 * @param string $textDomain
 		 * @return string|bool
 		 */
-		abstract public function textDomain( $textDomain=null );
+		public function textDomain( $textDomain=null ) {
+			if ( $textDomain ) {
+				$this->DTD = $textDomain;
+				return $this->DTD;
+			} else {
+				return $this->textDomain;
+			}
+		}
 
 		/**
 		 * Checks if a text domain name exists
@@ -86,7 +101,7 @@
 		 * @return bool
 		 */
 		public function textDomainExists( $domain ) {
-			return isset( $this->textDomains[ $domain ] );
+			return isset( $this->textDomains[$domain] );
 		}
 
 		/**
@@ -96,12 +111,7 @@
 		 * @return string|bool
 		 */
 		public function getDomainPath( $domain ) {
-			if ( $this->textDomainExists( $domain ) ) {
-				return $this->textDomains[ $domain ];
-			} else {
-				trigger_error( 'I18n_base::getDomainPath() domain "'.$domain.'" does not exist', E_USER_NOTICE );
-				return false;
-			}
+			return isset( $this->textDomains[$domain] ) ? $this->textDomains[ $domain ] : false;
 		}
 
 		/**
@@ -122,24 +132,6 @@
 			putenv( 'LANG='.$locale );
 			$this->currentLocale = setlocale( LC_ALL, $locale );
 			return $this->currentLocale;
-		}
-
-		/**
-		 * Alias to the 'translate' method
-		 *
-		 * @return string
-		 */
-		public function _( $string ) {
-			return Registry::get( $this->getRegistryName() )->t( $string );
-		}
-
-		/**
-		 * Alias to 'text_domain' method
-		 *
-		 * @return string|bool
-		 */
-		public function setTextDomain( $textDomain=null ) {
-			return Registry::get( $this->getRegistryName() )->text_domain( $textDomain );
 		}
 
 	}
