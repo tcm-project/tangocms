@@ -78,16 +78,15 @@
 		public function t( $string ) {
 			$low = 0;
 			$high = $this->header['N'] - 1;
-			do {
+			while ( $low < $high ) {
 				$mid = floor( ( $low + $high ) / 2 );
 				if ( $string > $this->getString( $mid ) ) {
 					$low = $mid + 1;
 				} else {
-					$high = $mid - 1;
+					$high = $mid;
 				}
-			} while( $string != $this->getString( $mid ) && $low <= $high );
-
-			if ( $string == $this->getString( $mid ) ) {
+			}
+			if ( $low < ($this->header['N'] - 1) && $string == $this->getString( $mid ) ) {
 				return $this->getString( $mid, true );
 			}
 			return $string;
