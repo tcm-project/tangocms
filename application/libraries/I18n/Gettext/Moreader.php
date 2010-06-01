@@ -12,7 +12,7 @@
  * @package Zula_I18n
  */
 
-	class I18n_Moreader {
+	class I18n_Gettext_Moreader {
 
 		/**
 		 * Resource for the .mo

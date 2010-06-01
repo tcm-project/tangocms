@@ -28,11 +28,10 @@
 		 * @return string
 		 */
 		public function t( $string, $textDomain=null ) {
-			if ( $this->getCurrentLocale() == null ) {
+			if ( stripos( $this->getCurrentLocale(), 'en_US' ) === 0 ) {
 				return $string;
-			}
-			if ( empty( $textDomain ) ) {
-				$textDomain = $this->DTD;
+			} else if ( empty( $textDomain ) ) {
+				$textDomain = $this->textDomain();
 			}
 			if ( !isset( $this->moReaders[ $textDomain ] ) ) {
 				try {

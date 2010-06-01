@@ -17,7 +17,7 @@
 		 * The current locale we are using
 		 * @var string
 		 */
-		protected $currentLocale = '';
+		protected $currentLocale = 'en_US.UTF-8';
 
 		/**
 		 * All stored text domains
@@ -29,7 +29,7 @@
 		 * Text domain being used by default
 		 * @var string
 		 */
-		private $DTD = '';
+		private $currentTextDomain = I18n::_DTD;
 
 		/**
 		 * Binds the default text domain and sets that as the one to use
@@ -87,11 +87,9 @@
 		 */
 		public function textDomain( $textDomain=null ) {
 			if ( $textDomain ) {
-				$this->DTD = $textDomain;
-				return $this->DTD;
-			} else {
-				return $this->textDomain;
+				$this->currentTextDomain = $textDomain;
 			}
+			return $this->currentTextDomain;
 		}
 
 		/**
@@ -130,7 +128,7 @@
 		 */
 		public function setLocale( $locale ) {
 			putenv( 'LANG='.$locale );
-			$this->currentLocale = setlocale( LC_ALL, $locale );
+			$this->currentLocale = $locale;
 			return $this->currentLocale;
 		}
 

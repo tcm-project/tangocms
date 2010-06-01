@@ -88,8 +88,8 @@
 		 */
 		public function textDomain( $textDomain=null ) {
 			if ( $textDomain ) {
-				$this->DTD = textdomain( $textDomain );
-				return $this->DTD;
+				$this->currentTextDomain = textdomain( $textDomain );
+				return $this->currentTextDomain;
 			} else {
 				return textdomain( null );
 			}
