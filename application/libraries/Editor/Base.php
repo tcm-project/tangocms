@@ -64,10 +64,10 @@
 		 */
 		protected function breakText( $break=false ) {
 			if ( $break ) {
-				$split = preg_split( '#(?<!\\\)<!--break-->#', $this->text );
+				$split = preg_split( '#(?:<p>)?(?<!\\\)<!--break-->#', $this->text );
 				$text = $split[0];
 			} else {
-				$text = preg_replace( '#(?<!\\\)<!--break-->#', '', $this->text );
+				$text = preg_replace( '#(?:<p>)?(?<!\\\)<!--break-->(?:</p>)?#', '', $this->text );
 			}
 			return trim( str_replace( '\<!--break-->', '<!--break-->', $text ) );
 		}
