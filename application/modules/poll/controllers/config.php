@@ -183,7 +183,7 @@
 			$form->addElement( 'poll/duration', $duration, t('Duration'), new Validator_Between(0, 7) );
 			$form->addElement( 'poll/status', $status, t('Status'), new Validator_InArray( array('active', 'closed') ) );
 			if ( $op == 'add' ) {
-				$form->addElement( 'poll/options', $options, t('Options'), new Validator_Between(2, 10) );
+				$form->addElement( 'poll/options', $options, t('Options'), new Validator_Between(2, 100) );
 				try {
 					foreach( $this->_input->post( 'poll/options' ) as $key=>$tmpOpt ) {
 						$form->addElement( 'poll/options/'.$key, $key, sprintf( t('Option %1$d'), $key+1 ), new Validator_Length(1, 255) );
