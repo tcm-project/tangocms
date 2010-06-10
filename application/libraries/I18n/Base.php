@@ -143,7 +143,7 @@
 			if ( $glob ) {
 				foreach( $glob as $file ) {
 					$json = json_decode( file_get_contents($file) );
-					$langs[ $json->locale ] = $json->lang;
+					$langs[ $json->locale ] = $json->name;
 				}
 			}
 			return $langs;
