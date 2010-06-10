@@ -85,11 +85,11 @@
 						$this->_event->error( $e->getMessage() );
 						$this->_log->message( $e->getMessage(), Log::L_WARNING );
 					}
-					if ( ($pkg = $this->_input->post( 'lang_pkg' )) === 'none' ) {
+					if ( ($pkg = $this->_input->post( 'lang_pkg' )) !== 'none' ) {
 						// Download and install a new locale
 						if ( !zula_supports( 'zipExtraction' ) ) {
 							$this->_event->error( t('Cannot install locale, server does not support zip extraction') );
-						} else if ( false && !preg_match( '#^[a-z]{2}_[A-Z]{2}$#', $pkg ) ) {
+						} else if ( !preg_match( '#^[a-z]{2}_[A-Z]{2}$#', $pkg ) ) {
 							$this->_event->error( t('Provided locale is invalid, unable to install') );
 						} else if ( !zula_is_writable( $this->_zula->getDir('locale') ) ) {
 							$this->_event->error( t('Locale directory is not writable, unable to install') );
