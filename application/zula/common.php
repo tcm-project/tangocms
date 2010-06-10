@@ -216,8 +216,8 @@ ERR;
 			}
 			header( 'Location: '.$url, true, $httpStatus );
 			return true;
-		} else if ( $zulaMode == 'ajax' ) {
-			Registry::get( 'log' )->message( 'unable to redirect whilst in an AJAX request', Log::L_WARNING );
+		} else if ( $zulaMode == 'standalone' ) {
+			Registry::get( 'log' )->message( 'unable to redirect whilst in standalone mode', Log::L_WARNING );
 		} else if ( $zulaMode == 'cli' ) {
 			Registry::get( 'event' )->error( 'unable to redirect in CLI mode' );
 		}

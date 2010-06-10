@@ -45,7 +45,7 @@
 		private $state = 'production';
 
 		/**
-		 * Current mode the request to Zula is, either 'normal', 'ajax' or 'cli'
+		 * Current mode the request to Zula is, either 'normal', 'standalone' or 'cli'
 		 * @var string
 		 */
 		private $mode = 'normal';
@@ -99,8 +99,12 @@
 		private function __construct( $rootDir, $state='production' ) {
 			$this->cwd = getcwd();
 			$this->state = (string) $state;
-			if ( zula_http_header_get('X-Requested-With') == 'XMLHttpRequest' ) {
-				$this->mode = 'ajax';
+			if (
+				zula_http_header_get('X-Requested-With') == 'XMLHttpRequest'
+				||
+				zula_http_header_get('X-Zula-Mode') == 'standalone'
+			) {
+				$this->mode = 'standalone';
 			} else {
 				$this->mode = (PHP_SAPI == 'cli') ? 'cli' : 'normal';
 			}

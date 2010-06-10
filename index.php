@@ -36,7 +36,7 @@
 	Registry::register( 'zula', $zula );
 
 	// _AJAX_REQUEST is DEPRECATED please use Zula::getMode() instead
-	define( '_AJAX_REQUEST', $zula->getMode() == 'ajax' );
+	define( '_AJAX_REQUEST', $zula->getMode() == 'standalone' );
 
 	/**
 	 * Default directories in Zula should be fine, though you can configure
