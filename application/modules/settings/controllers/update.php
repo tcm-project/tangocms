@@ -18,7 +18,7 @@
 		 * All of the avaialble 'categories'
 		 * @var array
 		 */
-		protected $categories = array( 'general', 'email', 'date', 'security', 'cache', 'editing', 'language' );
+		protected $categories = array( 'general', 'email', 'locale', 'security', 'cache', 'editing' );
 
 		/**
 		 * Update the settings based on the post-data provided
@@ -60,9 +60,7 @@
 					$this->_cache->delete( 'view_default_tags' );
 					break;
 
-
 				case 'cache':
-					// Update the config.ini.php file
 					try {
 						$this->_config_ini->update( 'cache/type', $this->_input->post( 'setting/cache\/type' ) );
 						$this->_config_ini->update( 'cache/ttl', $this->_input->post( 'setting/cache\/ttl' ) );
@@ -78,56 +76,42 @@
 						$this->_log->message( $e->getMessage(), Log::L_WARNING );
 					}
 					break;
-				case 'language':
-					// Update the config.ini.php file
+
+				case 'locale':
 					try {
-						$this->_config_ini->update( 'locale/engine', $this->_input->post( 'setting/locale\/engine' ) );
 						$this->_config_ini->update( 'locale/default', $this->_input->post( 'setting/locale\/default' ) );
 						$this->_config_ini->writeIni();
 					} catch( Exception $e ) {
 						$this->_event->error( $e->getMessage() );
 						$this->_log->message( $e->getMessage(), Log::L_WARNING );
 					}
-					// Refresh the language list if needed
-					if ( $this->_input->post( 'langlist_refresh' ) ) {
-						$this->_cache->delete( 'settings/lang_pkgs' );
-					}
-					$pkg = $this->_input->post( 'lang_pkg' );
-					if ( $pkg == 'none' ) {
-						break;
-					}
-					// Download and install a new locale
-					if ( !preg_match( '[a-z]{2}_[A-Z]{2}', $pkg ) ) {
-						$this->_event->error( t('Cannot install locale: Invalid locale') );
-						break;
-					}
-					if ( !zula_supports( 'zipExtraction' ) ) {
-						$this->_event->error( t('Cannot install locale: zip extension not loaded') );
-						break;
-					}
-					$stream = stream_context_create( array(
-										'http' => array(
-												'method'	=>	'GET',
-												'header'	=>	'X-TangoCMS-Version: '._PROJECT_VERSION."\r\n".
-															'X-TangoCMS-USI: '.zula_hash( $_SERVER['HTTP_HOST'] )."\r\n",
-												'timeout'	=>	6,
-												)
-										));
-					$version = str_replace( '-', '/', zula_version_map( _PROJECT_VERSION ) );
-					$zip = @file_get_contents( 'http://releases.tangocms.org/'.$version.'/i18n/'.$pkg.'.zip', false, $stream );	
-					if ( isset( $http_response_header[0] ) && strpos( $http_response_header[0], '200' ) !== false ) {
-						$zipFile = $this->_zula->getDir( 'tmp' ) . $pkg . '.zip';
-						file_put_contents( $zipFile, $zip );
-						$zip = new ZipArchive;
-						$opened = $zip->open( $zipFile );
-						if ( $opened === true ) {
-							$zip->extractTo( $this->_zula->getDir( 'locale' ) );
-							$zip->close();
-							$this->_event->success( t('Locale successfully installed') );
+					if ( ($pkg = $this->_input->post( 'lang_pkg' )) === 'none' ) {
+						// Download and install a new locale
+						if ( !zula_supports( 'zipExtraction' ) ) {
+							$this->_event->error( t('Cannot install locale, server does not support zip extraction') );
+						} else if ( false && !preg_match( '#^[a-z]{2}_[A-Z]{2}$#', $pkg ) ) {
+							$this->_event->error( t('Provided locale is invalid, unable to install') );
+						} else if ( !zula_is_writable( $this->_zula->getDir('locale') ) ) {
+							$this->_event->error( t('Locale directory is not writable, unable to install') );
 						} else {
-							$this->_event->error( t('Could not install locale: Extracting archive failed') );
+							$version = str_replace( '-', '/', zula_version_map(_PROJECT_VERSION) );
+							$zipDest = $this->_zula->getDir('tmp').'/i18n-'.$pkg.'.zip';
+							$copyResult = @copy( 'http://releases.tangocms.org/'.$version.'/i18n/'.$pkg.'.zip', $zipDest );
+							if ( $copyResult ) {
+								// Extract the archive to the locale dir
+								$zip = new ZipArchive;
+								if ( $zip->open( $zipDest ) ) {
+									$zip->extractTo( $this->_zula->getDir('locale') );
+									$zip->close();
+									$this->_event->success( t('Locale successfully installed') );
+								} else {
+									$this->_event->error( t('Could not install locale, zip extraction failed') );
+								}
+								unlink( $zipDest );
+							} else {
+								$this->_event->error( t('Failed to get remote language archive') );
+							}
 						}
-						@unlink( $zipFile );
 					}
 					break;
 			}

@@ -1,8 +1,8 @@
-<form action="<?php echo $this->_router->makeUrl( 'settings', 'update', 'date' ); ?>" method="post">
+<form action="<?php echo $this->_router->makeUrl( 'settings', 'update', 'locale' ); ?>" method="post">
 	<table>
 		<thead>
 			<tr>
-				<th colspan="2">{L_[General Date/Time]}</th>
+				<th colspan="2">{L_[Date & Time]}</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -25,11 +25,11 @@
 											'D M j H:i:s, Y',
 											'jS F Y, H:i',
 											);
-							foreach( $formats as $date_format ) {
+							foreach( $formats as $dateFormat ) {
 								printf( '<option value="%1$s" %2$s>%3$s</option>',
-										$date_format,
-										($config['format'] == $date_format ? 'selected="selected"' : ''),
-										date( $date_format )
+										$dateFormat,
+										($config['date_format'] == $dateFormat ? 'selected="selected"' : ''),
+										date( $dateFormat )
 									  );
 							}
 						?>
@@ -44,10 +44,10 @@
 					</dl>
 				</td>
 				<td class="confcol">
-					<input type="radio" id="settings-daterelative-yes" name="setting[date/use_relative]" value="1" <?php echo $config['relative'] ? 'checked="checked"' : ''; ?>>
+					<input type="radio" id="settings-daterelative-yes" name="setting[date/use_relative]" value="1" <?php echo $config['date_relative'] ? 'checked="checked"' : ''; ?>>
 					<label class="horizontal" for="settings-daterelative-yes">{L_[Yes]}</label>
 					<br>
-					<input type="radio" id="settings-daterelative-no" name="setting[date/use_relative]" value="0" <?php echo $config['relative'] ? '' : 'checked="checked"'; ?>>
+					<input type="radio" id="settings-daterelative-no" name="setting[date/use_relative]" value="0" <?php echo $config['date_relative'] ? '' : 'checked="checked"'; ?>>
 					<label class="horizontal" for="settings-daterelative-no">{L_[No]}</label>
 				</td>
 			</tr>
@@ -99,9 +99,59 @@
 							foreach( $tz as $timezone=>$ident ) {
 								printf( '<option value="%1$s" %2$s>%3$s</option>',
 										$timezone,
-										($config['timezone'] == $timezone ? 'selected="selected"' : ''),
+										($config['date_timezone'] == $timezone ? 'selected="selected"' : ''),
 										$ident
 									  );
+							}
+						?>
+					</select>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<table>
+		<thead>
+			<tr>
+				<th colspan="2">{L_[Locale (i18n)]}</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr class="even">
+				<td>
+					<dl>
+						<dt>{L_[Default Language]}</dt>
+						<dd>{L_[Select the default language used for this website.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<select name="setting[locale/default]">
+						<option value="en_US.UTF-8">English (US)</option>
+						<?php
+							foreach( $locales as $locale=>$name ) {
+								printf( '<option value="%1$s.UTF-8" %2$s>%3$s</option>',
+										$locale,
+										(stripos( $config['i18n_lang'], $locale ) === 0 ? 'selected="selected"' : ''),
+										$name
+									  );
+							}
+						?>
+					</select>
+				</td>
+			</tr>
+			<tr class="odd">
+				<td>
+					<dl>
+						<dt>{L_[Install Language Package]}</dt>
+						<dd>{L_[Select the language package you would like to install.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<select name="lang_pkg">
+						<option value="none">{L_[None available]}</option>
+						<?php
+							foreach( $installable as $locale=>$name ) {
+								printf( '<option value="%s">%s</option>', $locale, $name );
 							}
 						?>
 					</select>
