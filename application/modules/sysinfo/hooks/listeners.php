@@ -62,11 +62,11 @@
 		/**
 		 * 'bootstrap_loaded' hook
 		 *
-		 * @param bool ajax
+		 * @param bool $themeLoaded
 		 * @return bool
 		 */
-		public function hookBootstrapLoaded( $ajax ) {
-			if ( !$ajax && $this->_router->getSiteType() == 'admin' && is_array( $this->versions ) ) {
+		public function hookBootstrapLoaded( $themeLoaded ) {
+			if ( $themeLoaded && $this->_router->getSiteType() == 'admin' && is_array( $this->versions ) ) {
 				$curVerType = zula_version_type( _PROJECT_VERSION );
 				if ( version_compare( _PROJECT_VERSION, $this->versions[ $curVerType ], '<' ) ) {
 					$this->_event->success( sprintf( t('A new TangoCMS version (%1$s) is available', _PROJECT_ID.'-sysinfo'),

@@ -36,7 +36,7 @@
 		 *
 		 * @return array
 		 */
-		public function hookBootstrapLoaded( $ajaxRequest ) {
+		public function hookBootstrapLoaded() {
 			if ( $this->loadEditor === true && Registry::has( 'theme' ) ) {
 				foreach( new DirectoryIterator( $this->_zula->getDir( 'js' ).'/tinymce/plugins' ) as $file ) {
 					if ( substr( $file, 0, 1 ) != '.' && $file->isDir() ) {
