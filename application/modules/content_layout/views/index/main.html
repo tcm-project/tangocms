@@ -3,10 +3,10 @@
 		<div><input type="hidden" name="url" value="<?php echo $this->_router->getRawRequestPath(); ?>"></div>
 	<?php } ?>
 	<p>
-		<label for="content_layout-site-select" class="horizontal">{L_[Manage layouts for site type:]}</label>
+		<label for="content_layout-site-select" class="horizontal">{L_[Manage layouts for:]}</label>
 		<select id="content_layout-site-select" name="type">
-			<option value="main" <?php echo $site_type == 'main' ? 'selected="selected"' : ''; ?>>{L_[Main]}</option>
-			<option value="admin" <?php echo $site_type == 'admin' ? 'selected="selected"' : ''; ?>>{L_[Admin]}</option>
+			<option value="main" <?php echo $site_type == 'main' ? 'selected="selected"' : ''; ?>>{L_[Main website]}</option>
+			<option value="admin" <?php echo $site_type == 'admin' ? 'selected="selected"' : ''; ?>>{L_[Control panel]}</option>
 		</select>
 		<input type="submit" value="{L_[Update]}">
 	</p>
