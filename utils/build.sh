@@ -19,6 +19,7 @@ OPT_IS_MSWAG=false
 TASK_JS_COMPRESS=false
 TASK_PACKAGE=false
 TASK_CHECK_EXCEPTIONS=false
+TASK_LINT=false
 
 while [[ $1 == -* ]]; do
 	case "$1" in
@@ -30,6 +31,10 @@ while [[ $1 == -* ]]; do
 			else
 				shift
 			fi
+			;;
+		-l)
+			TASK_LINT=true
+			shift
 			;;
 		-m)
 			OPT_IS_MSWAG=true
@@ -53,11 +58,12 @@ while [[ $1 == -* ]]; do
 			shift
 			;;
 		-h)
-			echo -e "Zula Framework building tools.\nUsage: build.sh [-j [jar-path]] [-p [mode] [-m]] [-xvh]"
+			echo -e "Zula Framework building tools.\nUsage: build.sh [-j [jar-path]] [-p [mode] [-m]] [-vxlh]"
 			echo "Options:"
 			echo -e "\t-j\tCompress source JavaScript files using Google Closure Compiler (requires Java)"
+			echo -e "\t-l\tCheck PHP syntax on *.php, *.html and *.txt files (lint check)."
 			echo -e "\t-m\tCreates Microsoft Web App Gallery package (used only with '-p')."
-			echo -e "\t-p\tCreates .tar.gz, .tar.bz2 and .zip archives. This implies '-j' always. Zula" \
+			echo -e "\t-p\tCreates .tar.gz, .tar.bz2 and .zip archives. This implies '-l' and '-j'. Zula" \
 					"\n\t\tapplication mode argument optional, 'development' or 'production' which" \
 					"\n\t\tdefaults to 'production'."
 			echo -e "\t-x\tCheck all thrown PHP exceptions are defined, and list those not used."
@@ -83,20 +89,45 @@ verbose() {
 ##
 ## Begin processing of the tasks
 ##
+if [ $TASK_LINT == "true" ]; then
+	verbose || echo -n ":: PHP syntax check on *.php, *.html and *.txt files (this may take a while) ....."
+	failedCount=0
+	for file in `find . -name "*.php" -or -name "*.html" -or -name "*.txt"`; do
+		lintResult=$(php -l $file 2>&1 > /dev/null)
+		if [ $? -gt 0 ]; then
+			if [ $failedCount -eq 0 -a $OPT_VERBOSE == "true" ]; then
+				echo "" # Add a new line
+			fi
+			echo $lintResult
+			let failedCount++
+		fi
+	done
+	if [ $failedCount -gt 0 -a "$TASK_PACKAGE" == "true" ]; then
+		## See if the user wants to continue if there are syntax errors
+		echo
+		read -p "---- PHP syntax errors detected, do you wish to continue? (y/n) [n]: "
+		if [ "$REPLY" != "y" ]; then
+			exit 0
+		fi
+	elif [ $failedCount -eq 0 -a $OPT_VERBOSE == "true" ]; then
+		echo  " done!"
+	fi
+fi
+
 if [ $TASK_JS_COMPRESS == "true" -o $TASK_PACKAGE == "true" ]; then
 	verbose || echo -ne ":: Compressing source JavaScript files (*.src.js) "
 	if [ -n "$JAVA_HOME" ]; then
 		javaBin="${JAVA_HOME}/bin/java"
 	else
 		javaBin=`which java`
-		if [ $? == "1" ]; then
+		if [ $? -eq 1 ]; then
 			echo -e "\n---- 'java' bin not found. Please set JAVA_HOME variable or install Java."
-			exit 1
+			exit 2
 		fi
 	fi
 	if [ ! -f $OPT_PATH_CLOSURE ]; then
 		echo -e "\n---- jar file '$OPT_PATH_CLOSURE' does not exist."
-		exit 1
+		exit 2
 	fi
 	for sourceFile in `find . -name "*.src.js"`; do
 		fileName=`basename $sourceFile .src.js`.js
@@ -160,7 +191,7 @@ if [ $TASK_PACKAGE == "true" ]; then
 	verbose || echo -ne ":: Creating package archives "
 	if [ ! -f "index.php" ]; then
 		echo -e "\n---- unable to find 'index.php', unable to create project packages"
-		exit 1
+		exit 2
 	fi
 
 	projectId=`grep -oP "(?<=_PROJECT_ID', ')([^']*)" index.php`
