@@ -212,7 +212,7 @@ if [ $TASK_PACKAGE == "true" ]; then
 	## Move some files around and do certain edits depending on application mode
 	rm -rf "${tmpDir}/config/default" "${tmpDir}/tmp/*" "${tmpDir}/application/logs/*.log" \
 		   "${tmpDir}/assets/uploads/*" "${tmpDir}/.gitignore" "${tmpDir}/*~"
-	touch "${tmDir}/tmp/index.html" "${tmpDir}/assets/uploads/index.html" 2> /dev/null
+	touch "${tmpDir}/tmp/index.html" "${tmpDir}/assets/uploads/index.html" 2> /dev/null
 	mv "${tmpDir}/config/default.dist" "${tmpDir}/config/default"
 
 	## Edit and remove some files depending on required application mode
