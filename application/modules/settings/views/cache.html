@@ -18,7 +18,7 @@
 						<?php
 							$format = '<option value="%s" %s>%s</option>';
 							foreach( Cache::getAvailable() as $type ) {
-								$selected = ($type == $config['type']) ? 'selected="selected"' : '';
+								$selected = (strcasecmp($type, $config['type']) === 0) ? 'selected="selected"' : '';
 								printf( $format, $type, $selected, ucfirst($type) );
 							}
 						?>
