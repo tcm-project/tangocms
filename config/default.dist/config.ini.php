@@ -83,19 +83,6 @@ default = cappuccino
 admin_default = innocent
 
 ;---
-; Input
-; How should Zula handle Input data? ($_POST, $_GET, $_COOKIE etc)
-;
-; @allow_post		bool	should post data be allowed? Default true
-; @allow_get 		bool	allow get data? Default false
-; @allow_cookies	bool	should cookies be allowed? Default false
-;---
-[input]
-allow_post = 1
-allow_get = 1
-allow_cookies = 1
-
-;---
 ; Debug/Error Reporting and Logging
 ; Configure how Zula should display and log errors
 ;

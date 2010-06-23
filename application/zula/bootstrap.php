@@ -107,7 +107,7 @@
 	Hooks::notifyAll( 'bootstrap_pre_request' );
 	$dispatcher = new Dispatcher;
 	$dispatcher->setDisplayErrors( ($zula->getMode() == 'normal') ) # Display dispatchers own error msgs
-			   ->setStatusHeader();
+			   ->setStatusHeader( ($zula->getMode() != 'cli') );
 	Registry::register( 'dispatcher', $dispatcher ); # For compatibility, not sure if we should still have this
 
 	$requestedUrl = $router->getParsedUrl();

@@ -205,7 +205,7 @@
 				$body = 'Uncaught exception in "'.$e->getFile().'" on line '.$e->getLine().' with code "'.$formatCode.'"';
 				$body .= "\n\nProject Version: ".(defined('_PROJECT_VERSION') ? _PROJECT_VERSION : 'unknown');
 				$body .= "\nTime & Date: ".date( 'c' );
-				$body .= "\nRequest Method: ".$_SERVER['REQUEST_METHOD'];
+				$body .= "\nRequest Method: ".(PHP_SAPI == 'cli' ? 'cli' : $_SERVER['REQUEST_METHOD']);
 				if ( Registry::has( 'router' ) ) {
 					$body .= "\nRequest Path: ".Registry::get( 'router' )->getRequestPath();
 					$body .= "\nRaw Request Path: ".Registry::get( 'router' )->getRawRequestPath();

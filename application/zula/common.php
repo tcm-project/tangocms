@@ -144,14 +144,18 @@
 	}
 
 	/**
-	 * Produces HTML output for a fatal error message, and kill script
+	 * Produces a fatal error message and displays it to the user, then
+	 * kills the script with appropriate exit code
 	 *
 	 * @param string $title
 	 * @param string $body
 	 * @return void
 	 */
 	function zula_fatal_error( $title, $body ) {
-		$format = <<<ERR
+		if ( PHP_SAPI == 'cli' ) {
+			$format = "$body\n";
+		} else {
+			$format = <<<ERR
 <!DOCTYPE HTML>
 <html lang="en">
 <head>
@@ -176,12 +180,13 @@
 <body>%2\$s</body>
 </html>
 ERR;
-		if ( !headers_sent() ) {
-			header( 'HTTP/1.1 503 Service Unavailable', true, 503 );
-			header( 'Content-Type: text/html; charset=utf-8' );
+			if ( !headers_sent() ) {
+				header( 'HTTP/1.1 503 Service Unavailable', true, 503 );
+				header( 'Content-Type: text/html; charset=utf-8' );
+			}
 		}
 		printf( $format, $title, $body );
-		die;
+		exit( 1 );
 	}
 
 	/**

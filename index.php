@@ -3,6 +3,10 @@
 /**
  * Zula Framework index (collector/front controller)
  *
+ * Please do not use any PHP5 specific syntax within this file, other wise a PHP4
+ * syntax error will occur. Instead we want to display our own, nicer error message
+ * to users of PHP4.
+ *
  * @patches submit all patches to patches@tangocms.org
  *
  * @author Alex Cartwright
@@ -38,10 +42,15 @@
 	// _AJAX_REQUEST is DEPRECATED please use Zula::getMode() instead
 	define( '_AJAX_REQUEST', $zula->getMode() == 'standalone' );
 
+	if ( UNICODE_MBSTRING === false ) {
+		// Load needed unicode libraries
+		require $zula->getDir( '3rd_party' ).'/phputf8/utils/unicode.php';
+		require $zula->getDir( '3rd_party' ).'/phputf8/native/core.php';
+	}
+
 	/**
 	 * Default directories in Zula should be fine, though you can configure
-	 * them from here if you want, via $zula->setDir(); EG:
-	 * $zula->setDir( 'lib', '/libaries' );
+	 * them from here if you want, via Zula::setDir()
 	 */
 	if ( $zula->getState() == 'installation' ) {
 		define( '_REAL_MODULE_DIR', $zula->getDir( 'modules' ) );
@@ -56,19 +65,15 @@
 		$zula->setDir( 'config', '../config' );
 	}
 
-	if ( UNICODE_MBSTRING === false ) {
-		// Load needed unicode libraries
-		require $zula->getDir( '3rd_party' ).'/phputf8/utils/unicode.php';
-		require $zula->getDir( '3rd_party' ).'/phputf8/native/core.php';
-	}
-
 	/**
-	 * Work out the path to the config directory, based upon the server name
-	 * If the directory does not exist, then it will fall back to the
-	 * default directory.
+	 * Get the correct config name to set the config directory, either based
+	 * upon the server name or the provided CLI configuration.
 	 */
-	$confDir = $zula->getDir( 'config' ).'/default';
-	if ( $zula->getMode() != 'cli' ) {
+	$configName = 'default';
+	if ( $zula->getMode() == 'cli' ) {
+		$input = $zula->loadLib( 'input' ); # Early loading of a default lib
+		$configName = $input->cli( 'config' );
+	} else {
 		$serverName = $_SERVER['SERVER_NAME'];
 		if ( strlen( _BASE_DIR ) != 1 ) {
 			$serverName .= _BASE_DIR;
@@ -82,31 +87,28 @@
 				$serverName = substr( $serverName, 4 );
 			}
 			if ( is_dir( $zula->getDir( 'config' ).'/'.$serverName ) ) {
-				$confDir = $zula->getDir( 'config' ).'/'.$serverName;
+				$configName = $serverName;
 			}
 		}
 	}
-	$zula->setDir( 'config', $confDir );
+	$zula->setDir( 'config', $zula->getDir('config').'/'.$configName );
 	// Load the main configuration file for the project and define version
 	$config = $zula->loadMainConfig( $zula->getDir( 'config' ).'/config.ini.php' );
 	define( '_PROJECT_VERSION', $config->get( 'config/version' ) );
 
 	/**
-	 * Load the default libraries that are most commonly needed if you wish to
-	 * load more, then simply use $zula->loadLib()
+	 * Load the default libraries that are most commonly needed
 	 */
 	$zula->loadDefaultLibs();
 	Registry::get( 'i18n' )->setLocale( $config->get('locale/default') );
 	Module::setDirectory( $zula->getDir( 'modules' ) );
 
 	// Bootstrap
-	require 'application/zula/bootstrap.php';
-
-	/**
-	 * No method chaining, or class constant here, as PHP4 syntax
-	 * error will occur. Normally, 1 would be Log::L_DEBUG
-	 */
+	$status = require 'application/zula/bootstrap.php';
+	$msg = sprintf( 'Zula request finished %1$s in %2$f seconds',
+					($status ? 'successfully' : 'unsuccessfully'),
+					microtime(true)-$sTime );
 	$log = Registry::get( 'log' );
-	$log->message( sprintf('Zula request finished in %f seconds', microtime(true)-$sTime), 1 );
+	$log->message( $msg, 1 );
 
 ?>

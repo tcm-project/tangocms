@@ -66,7 +66,9 @@
 				$this->type = $this->_config->get( 'url_router/type' );
 			}
 			// Get the raw request path and the scheme of the server
-			if ( $this->_input->has( 'get', 'url' ) ) {
+			if ( $this->_zula->getMode() == 'cli' ) {
+				$this->requestPath = $this->_input->cli( 'requestPath' );
+			} else if ( $this->_input->has( 'get', 'url' ) ) {
 				$this->requestPath = $this->_input->get( 'url' );
 			}
 			try {
@@ -94,7 +96,6 @@
 		public function getParsedUrl() {
 			if ( !($this->requestUrl instanceof Router_Url) ) {
 				// Parse the current raw request path and store it. Call the router_pre_parse hook first, though
-				$this->requestPath = $this->getRawRequestPath();
 				while( ($tmpUrl = Hooks::notify( 'router_pre_parse', trim($this->requestPath, '/'))) !== null ) {
 					$this->requestPath = $tmpUrl;
 				}

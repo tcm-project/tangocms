@@ -59,7 +59,10 @@
 				/**
 				 * Begin the actual parsing of the URL to find out what data is given
 				 */
-				if ( $parsedUrl['host'] == $_SERVER['SERVER_NAME'] && strpos('/'.$parsedUrl['path'], _BASE_DIR) === 0 ) {
+				if (
+					isset($_SERVER['SERVER_NAME']) && $parsedUrl['host'] == $_SERVER['SERVER_NAME']
+					&& strpos('/'.$parsedUrl['path'], _BASE_DIR) === 0
+				) {
 					// We're given a URL of this Zula install, remove base dir from path
 					$requestPath = substr( $parsedUrl['path'], strlen(_BASE_DIR) );
 				} else {
@@ -383,13 +386,17 @@
 		 * @return string
 		 */
 		public function makeFull( $separator='&amp;', $type=null, $useHttps=null ) {
-			$host = $_SERVER['HTTP_HOST'];
-			if ( is_bool( $useHttps ) ) {
-				$host = preg_replace( '#^(https?://)?#i', ($useHttps ? 'https://' : 'http://'), $host );
+			if ( empty( $_SERVER['HTTP_HOST'] ) ) {
+				return $this->make( $separator, $type );
 			} else {
-				$host = zula_url_add_scheme( $host, $this->_router->getDefaultScheme() );
+				$host = $_SERVER['HTTP_HOST'];
+				if ( is_bool( $useHttps ) ) {
+					$host = preg_replace( '#^(https?://)?#i', ($useHttps ? 'https://' : 'http://'), $host );
+				} else {
+					$host = zula_url_add_scheme( $host, $this->_router->getDefaultScheme() );
+				}
+				return trim( $host, '/' ).$this->make( $separator, $type );
 			}
-			return trim( $host, '/' ).$this->make( $separator, $type );
 		}
 
 	}

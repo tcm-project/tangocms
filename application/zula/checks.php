@@ -21,7 +21,7 @@
 						   <p><strong>Installed PHP version ('.PHP_VERSION.') does not meet the minimum requirement for the Zula Framework (5.2.0)</strong></p>
 						   <p>Please install a version of PHP that meets the minimum requirements.</p>'
 						);
-	} else if ( is_dir( './install' ) && is_readable( './install' ) ) {
+	} else if ( PHP_SAPI != 'cli' && is_dir( './install' ) && is_readable( './install' ) ) {
 		$base = trim( dirname( $_SERVER['SCRIPT_NAME'] ), './\ ' );
 		$base = empty( $base ) ? '/' : '/'.rtrim( $base, '/' ).'/';
 		zula_fatal_error( 'Installation - '._PROJECT_NAME,
