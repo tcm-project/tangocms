@@ -207,9 +207,14 @@ ERR;
 	}
 
 	/**
-	 * Adds the correct header to zula_redirect to a specific URL
+	 * If running via CLI, a new request will be made using the same arguments but
+	 * a different request path. Otherwise it will add the correct HTTP headers and
+	 * redirect to the specified URL.
 	 *
-	 * @param string $url
+	 * Redirections are not possible whilst Zula is in 'standalone' mode, or when
+	 * provided with a URL when running via CLI.
+	 *
+	 * @param string|Router_Url $url
 	 * @param int $httpStatus
 	 * @return bool
 	 */
@@ -220,13 +225,22 @@ ERR;
 				$url = $url->makeFull('&');
 			}
 			header( 'Location: '.$url, true, $httpStatus );
-			return true;
 		} else if ( $zulaMode == 'standalone' ) {
 			Registry::get( 'log' )->message( 'unable to redirect whilst in standalone mode', Log::L_WARNING );
+			return false;
 		} else if ( $zulaMode == 'cli' ) {
-			Registry::get( 'event' )->error( 'unable to redirect in CLI mode' );
+			if ( $url instanceof Router_Url ) {
+				$url = $url->make( '&', null, true );
+			} else if ( zula_url_has_scheme( $url ) ) {
+				trigger_error( 'zula_redirect() unable to redirect to a URL whilst in CLI mode', E_USER_WARNING );
+				return false;
+			}
+			// Create a new request via CLI using same args, but changed request path
+			$_SERVER['argv'][ $_SERVER['argc']-1 ] = $url;
+			$args = array_map( 'escapeshellarg', $_SERVER['argv'] );
+			system( $_SERVER['_'].' -f '.implode(' ', $args) );
 		}
-		return false;
+		return true;
 	}
 
 	/**

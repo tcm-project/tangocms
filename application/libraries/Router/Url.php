@@ -321,9 +321,10 @@
 		 *
 		 * @param string $separator
 		 * @param string $type
+		 * @param bool $noBase
 		 * @return string
 		 */
-		public function make( $separator='&amp;', $type=null ) {
+		public function make( $separator='&amp;', $type=null, $noBase=false ) {
 			$data = array();
 			foreach( $this->parsed as $key=>$val ) {
 				if ( $key == 'arguments' || $key == 'siteType' && $val == $this->_router->getDefaultSiteType() ) {
@@ -366,9 +367,9 @@
 				if ( $this->_input->has( 'get', 'ns' ) ) {
 					$this->queryStringArgs['ns'] = '';
 				}
-				$url = _BASE_DIR.'index.php';
+				$url = $noBase ? 'index.php' : _BASE_DIR.'index.php';
 			} else {
-				$url = _BASE_DIR.$requestPath;
+				$url = $noBase ? $requestPath : _BASE_DIR.$requestPath;
 			}
 			if ( !empty( $this->queryStringArgs ) ) {
 				$url .= '?'.str_replace( '%2F', '/', http_build_query($this->queryStringArgs, null, $separator) );
