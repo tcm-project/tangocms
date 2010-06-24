@@ -32,17 +32,20 @@
 		 */
 		public function indexSection() {
 			$this->setTitle( t('Pre Upgrade Checks') );
-			if ( !isset( $_SESSION['upgrade_stage'] ) || $_SESSION['upgrade_stage'] !== 3 ) {
-				return zula_redirect( $this->_router->makeUrl( 'upgrade', 'stage1' ) );
+			if (
+				$this->_zula->getMode() != 'cli' &&
+				(!isset( $_SESSION['upgrade_stage'] ) || $_SESSION['upgrade_stage'] !== 3)
+			) {
+				return zula_redirect( $this->_router->makeUrl('upgrade', 'stage1') );
 			}
 			/**
 			 * All the checks that need to be run, and then actualy run the needed checks
 			 */
-			$passed = true;
 			$tests = array(
 							'file'	=> array( $this->_zula->getConfigPath() => '' ),
 							'dir'	=> array( $this->_zula->getDir( 'config' ) => '' ),
 							);
+			$passed = true;
 			foreach( $tests as $type=>&$items ) {
 				foreach( $items as $itemName=>$status ) {
 					$writable = zula_is_writable( $itemName );
@@ -52,11 +55,15 @@
 					}
 				}
 			}
-			if ( $passed === true ) {
+			if ( $passed == false ) {
+				$this->_event->error( t('Please ensure the following directories/files are writable.') );
+			} else if ( $this->_zula->getMode() == 'cli' ) {
+				return zula_redirect( $this->_router->makeUrl('upgrade', 'stage4') );
+			} else {
 				$this->_event->success( t('The next stage will start the upgrade process which could take some time. Please ensure you have backed up first!') );
 				$_SESSION['upgrade_stage']++;
 			}
-			$view = $this->loadView( 'stage3/checks.html' );
+			$view = $this->loadView( 'stage3/checks'.($this->_zula->getMode() == 'cli' ? '-cli.txt' : '.html') );
 			$view->assign( array(
 								'FILE_RESULTS'	=> $tests['file'],
 								'DIR_RESULTS'	=> $tests['dir'],

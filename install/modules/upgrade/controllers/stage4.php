@@ -96,18 +96,27 @@
 		 */
 		public function indexSection() {
 			$this->setTitle( 'Upgrading' );
-			if ( !isset( $_SESSION['upgrade_stage'] ) || $_SESSION['upgrade_stage'] !== 4 ) {
-				return zula_redirect( $this->_router->makeUrl( 'upgrade', 'stage1' ) );
+			if (
+				$this->_zula->getMode() != 'cli' &&
+				(!isset( $_SESSION['upgrade_stage'] ) || $_SESSION['upgrade_stage'] !== 4)
+			) {
+				return zula_redirect( $this->_router->makeUrl('upgrade', 'stage1') );
 			}
 			if ( !isset( $this->routes[ _PROJECT_VERSION ] ) ) {
 				// Eek, this isn't suppose to happen
-				$this->setTitle( t('Current Version Unsupported') );
-				$view = $this->loadView( 'stage1/not_supported.html' );
-				$view->assign( array (
-									'CURRENT_VERSION'	=> _PROJECT_VERSION,
-									'LATEST_VERSION'	=> _PROJECT_LATEST_VERSION,
-									));
-				return $view->getOutput();
+				if ( $this->_zula->getMode() == 'cli' ) {
+					$langStr = t('Version %s is not supported by this upgrader');
+					$this->_event->error( sprintf( $langStr, _PROJECT_VERSION ) );
+					exit( 3 );
+				} else {
+					$this->setTitle( t('Current Version Unsupported') );
+					$view = $this->loadView( 'stage1/not_supported.html' );
+					$view->assign( array (
+										'CURRENT_VERSION'	=> _PROJECT_VERSION,
+										'LATEST_VERSION'	=> _PROJECT_LATEST_VERSION,
+										));
+					return $view->getOutput();
+				}
 			}
 			/**
 			 * Run the correct upgrade route, storing the current version
@@ -147,13 +156,20 @@
 				$this->_event->error( sprintf( t('Configuration file "%s" is not writable'), $this->_config_ini->getFile() ) );
 			}
 			// Check if upgrade was (fully) successful
-			if ( $success === false ) {
-				$view = $this->loadView( 'stage4/fail.html' );
-				return $view->getOutput();
+			if ( $this->_zula->getMode() == 'cli' ) {
+				if ( $success ) {
+					$this->_event->success( sprintf( t('Successfully upgraded from "%1$s" to "%2$s"'), _PROJECT_VERSION, $this->version ) );
+				}
+				return true;
 			} else {
-				$this->_event->success( sprintf( t('Successfully upgraded from "%1$s" to "%2$s"'), _PROJECT_VERSION, $this->version ) );
-				$_SESSION['upgrade_stage']++;
-				return zula_redirect( $this->_router->makeUrl( 'upgrade', 'stage5' ) );
+				if ( $success === false ) {
+					$view = $this->loadView( 'stage4/fail.html' );
+					return $view->getOutput();
+				} else {
+					$this->_event->success( sprintf( t('Successfully upgraded from "%1$s" to "%2$s"'), _PROJECT_VERSION, $this->version ) );
+					$_SESSION['upgrade_stage']++;
+					return zula_redirect( $this->_router->makeUrl( 'upgrade', 'stage5' ) );
+				}
 			}
 		}
 
