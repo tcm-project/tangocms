@@ -65,13 +65,14 @@
 		$zula->setDir( 'config', '../config' );
 	}
 
+	$input = $zula->loadLib( 'input' ); # Early loading of a default lib
+
 	/**
 	 * Get the correct config name to set the config directory, either based
 	 * upon the server name or the provided CLI configuration.
 	 */
 	$configName = 'default';
 	if ( $zula->getMode() == 'cli' ) {
-		$input = $zula->loadLib( 'input' ); # Early loading of a default lib
 		$configName = $input->cli( 'config' );
 	} else {
 		$serverName = $_SERVER['SERVER_NAME'];
@@ -96,19 +97,21 @@
 	$config = $zula->loadMainConfig( $zula->getDir( 'config' ).'/config.ini.php' );
 	define( '_PROJECT_VERSION', $config->get( 'config/version' ) );
 
-	/**
-	 * Load the default libraries that are most commonly needed
-	 */
+	// Load the default libraries that are most commonly needed
 	$zula->loadDefaultLibs();
 	Registry::get( 'i18n' )->setLocale( $config->get('locale/default') );
 	Module::setDirectory( $zula->getDir( 'modules' ) );
 
-	// Bootstrap
+	/**
+	 * Finally run the bootstrap to handle our request, and exit correctly
+	 */
 	$status = require 'application/zula/bootstrap.php';
 	$msg = sprintf( 'Zula request finished %1$s in %2$f seconds',
 					($status ? 'successfully' : 'unsuccessfully'),
 					microtime(true)-$sTime );
 	$log = Registry::get( 'log' );
 	$log->message( $msg, 1 );
+
+	exit( $zula->getExitCode() );
 
 ?>

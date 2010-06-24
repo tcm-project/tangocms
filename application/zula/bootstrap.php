@@ -13,7 +13,7 @@
  */
 
 	try {
-		$rawRequestPath = Registry::get('input')->get('url');
+		$rawRequestPath = $input->get('url');
 		if ( strpos( $rawRequestPath, 'assets/v/' ) === 0 ) {
 			// Hard coded 'assets' URL route for simple file pass-thru
 			return require 'assets.php';
@@ -183,13 +183,30 @@
 		}
 	} else {
 		$output = $dispatcher->dispatch( $requestedUrl, $dispatchConfig );
-		if ( $dispatcher->getStatusCode() !== 200 && $zula->getMode() == 'cli') {
+		if ( $zula->getMode() == 'cli' ) {
+			// Display a friendly message to stdout
+			switch( $dispatcher->getStatusCode() ) {
+				case 200:
+					if ( !is_bool( $output ) ) {
+						$output .= "\n";
+					}
+					break;
 
+				case 403:
+					$output = sprintf( t('---- Permission denied to "%s"', I18n::_DTD), $input->cli('requestPath') )."\n";
+					$zula->setExitCode( 5 );
+					break;
+
+				case 404:
+					$output = sprintf( t('---- The request path "%s" does not exist', I18n::_DTD), $input->cli('requestPath') )."\n";
+					$zula->setExitCode( 4 );
+					break;
+			}
 		}
 	}
-
 	Hooks::notifyAll( 'bootstrap_loaded', (isset($output) && $output instanceof Theme),
-										  $dispatcher->getStatusCode(), $dispatcher->getDispatchData() );
-	return print $output;
+										  $dispatcher->getStatusCode(),
+										  $dispatcher->getDispatchData() );
+	return is_bool($output) ? true : print $output;
 
 ?>

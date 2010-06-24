@@ -153,7 +153,8 @@
 	 */
 	function zula_fatal_error( $title, $body ) {
 		if ( PHP_SAPI == 'cli' ) {
-			$format = "$body\n";
+			fwrite( STDERR, "$body\n" );
+			exit( 2 );
 		} else {
 			$format = <<<ERR
 <!DOCTYPE HTML>
@@ -186,7 +187,7 @@ ERR;
 			}
 		}
 		printf( $format, $title, $body );
-		exit( 1 );
+		exit( 2 );
 	}
 
 	/**

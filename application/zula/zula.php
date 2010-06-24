@@ -23,13 +23,19 @@
 		/**
 		 * Current version of Zula being used
 		 */
-		const _VERSION = '0.7.80';
+		const _VERSION = '0.7.90';
 
 		/**
 		 * Holds the singleton instance of this class
 		 * @var object
 		 */
 		static private $_instance = null;
+
+		/**
+		 * The exit code that Zula will use upon clean shutdown
+		 * @var int
+		 */
+		private $exitCode = 0;
 
 		/**
 		 * The default libraries the the framework will load upon startup
@@ -248,6 +254,34 @@
 		 */
 		public function getConfigPath() {
 			return $this->configPath;
+		}
+
+		/**
+		 * Returns the exit code that will be used, mainly (if not exclusively)
+		 * for CLI only. By default the following are used:
+		 *
+		 * 0 - Everything is ok
+		 * 1 - Reservered for zula.sh
+		 * 2 - Internal error
+		 * 3 - Application error
+		 * 4 - Non-existant request path (HTTP 404)
+		 * 5 - Permission denied (HTTP 403)
+		 *
+		 * @return int
+		 */
+		public function getExitCode() {
+			return $this->exitCode;
+		}
+
+		/**
+		 * Sets the exit code to use when Zula cleanly shutdowns
+		 *
+		 * @var int $code
+		 * @return object
+		 */
+		public function setExitCode( $code ) {
+			$this->exitCode = (int) $code;
+			return $this;
 		}
 
 		/**

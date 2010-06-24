@@ -194,11 +194,12 @@
 		protected function warning( $message, $file, $line ) {
 			if ( $this->displayErrors ) {
 				if ( $this->_zula->getMode() == 'cli' ) {
-					$format = "Zula Warning: %1$s in %2$s on line %3$d\n";
+					fwrite( STDERR, sprintf("Zula Warning: %1\$s in %2\$s on line %3\$d\n",
+											$message, $file, $line) );
 				} else {
-					$format = '<p><strong>Zula Warning:</strong> %1$s - in <strong>%2$s</strong> on line <strong>%3$d</strong>';
+					printf( '<p><strong>Zula Warning:</strong> %1$s - in <strong>%2$s</strong> on line <strong>%3$d</strong>',
+							$message, $file, $line );
 				}
-				printf( $format, $message, $file, $line );
 				return true;
 			} else {
 				return false;
@@ -216,11 +217,12 @@
 		protected function notice( $message, $file, $line ) {
 			if ( $this->displayErrors ) {
 				if ( $this->_zula->getMode() == 'cli' ) {
-					$format = "Zula Notice: %1$s in %2$s on line %3$d\n";
+					fwrite( STDERR, sprintf("Zula Notice: %1\$s in %2\$s on line %3\$d\n",
+											$message, $file, $line) );
 				} else {
-					$format = '<p><strong>Zula Notice:</strong> %1$s - in <strong>%2$s</strong> on line <strong>%3$d</strong>';
+					printf( '<p><strong>Zula Notice:</strong> %1$s - in <strong>%2$s</strong> on line <strong>%3$d</strong>',
+							$message, $file, $line );
 				}
-				printf( $format, $message, $file, $line );
 				return true;
 			} else {
 				return false;
@@ -238,11 +240,12 @@
 		protected function strict( $message, $file, $line ) {
 			if ( $this->displayErrors ) {
 				if ( $this->_zula->getMode() == 'cli' ) {
-					$format = "Zula Strict: %1$s in %2$s on line %3$d\n";
+					fwrite( STDERR, sprintf("Zula Strict: %1\$s in %2\$s on line %3\$d\n",
+											$message, $file, $line) );
 				} else {
-					$format = '<p><strong>Zula Strict:</strong> %1$s - in <strong>%2$s</strong> on line <strong>%3$d</strong>';
+					printf( '<p><strong>Zula Strict:</strong> %1$s - in <strong>%2$s</strong> on line <strong>%3$d</strong>',
+							$message, $file, $line );
 				}
-				printf( $format, $message, $file, $line );
 				return true;
 			} else {
 				return false;

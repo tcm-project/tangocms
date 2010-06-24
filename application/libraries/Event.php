@@ -46,20 +46,22 @@
 		}
 
 		/**
-		 * Handles the storing of all event messages.
+		 * Handles the storing of all event messages. If within CLI mode
+		 * then the event message will be displayed directly to stdout.
 		 *
 		 * @param string $type
 		 * @param string $msg
 		 * @return bool
 		 */
-		protected function handle( $name, $msg ) {
-			if ( $msg && $this->_zula->getMode() == 'normal' ) {
-				$this->_log->message( '('.$name.') '.$msg, Log::L_EVENT );
-				$_SESSION['event_feedback'][ $name ][] = zula_htmlspecialchars( $msg );
-				return true;
-			} else {
-				return false;
+		protected function handle( $type, $msg ) {
+			$zulaMode = $this->_zula->getMode();
+			if ( $zulaMode == 'normal' ) {
+				$this->_log->message( '('.$type.') '.$msg, Log::L_EVENT );
+				$_SESSION['event_feedback'][ $type ][] = zula_htmlspecialchars( $msg );
+			} else if ( $zulaMode == 'cli' ) {
+				fwrite( ($type == 'error' ? STDERR : STDOUT), ":: ($type) $msg\n" );
 			}
+			return true;
 		}
 
 		/**
