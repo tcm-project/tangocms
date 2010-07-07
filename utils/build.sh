@@ -1,60 +1,60 @@
-#!/bin/bash
+#!/bin/sh
 #---
 # Zula Framework building tools
 #
 # @author Alex Cartwright
 # @author Evangelos Foutras
 # @author Robert Clipsham
-# @copyright Copyright (c) 2010, Alex Cartwright
+# @copyright Copyright (c) 2010 Alex Cartwright
 # @license http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GNU/GPL 2
 # @package Zula_Utils
 #---
 
 ## All options and tasks with their default values
-OPT_PATH_CLOSURE=/usr/share/java/closure-compiler/closure-compiler.jar
-OPT_VERBOSE=false
-OPT_PACKAGE_MODE=production
-OPT_IS_MSWAG=false
+optPathClosure=/usr/share/java/closure-compiler/closure-compiler.jar
+optVerbose=false
+optPackageMode=production
+optIsMsWag=false
 
-TASK_JS_COMPRESS=false
-TASK_PACKAGE=false
-TASK_CHECK_EXCEPTIONS=false
-TASK_LINT=false
+taskJsCompress=false
+taskPackage=false
+taskCheckExceptions=false
+taskLint=false
 
 while [[ $1 == -* ]]; do
 	case "$1" in
 		-j)
-			TASK_JS_COMPRESS=true
-			if [ $# -gt 1 -a "${2:0:1}" != "-" ]; then
-				OPT_PATH_CLOSURE="$2"
+			taskJsCompress=true
+			if [[ $# -gt 1 && $2 =~ ^[^-] ]]; then
+				optPathClosure="$2"
 				shift 2;
 			else
 				shift
 			fi
 			;;
 		-l)
-			TASK_LINT=true
+			taskLint=true
 			shift
 			;;
 		-m)
-			OPT_IS_MSWAG=true
+			optIsMsWag=true
 			shift
 			;;
 		-p)
-			TASK_PACKAGE=true
-			if [ $# -gt 1 -a "${2:0:1}" != "-" ]; then
-				OPT_PACKAGE_MODE="$2"
+			taskPackage=true
+			if [[ $# -gt 1 && $2 =~ ^[^-] ]]; then
+				optPackageMode="$2"
 				shift 2;
 			else
 				shift
 			fi
 			;;
 		-v)
-			OPT_VERBOSE=true
+			optVerbose=true
 			shift
 			;;
 		-x)
-			TASK_CHECK_EXCEPTIONS=true
+			taskCheckExceptions=true
 			shift
 			;;
 		-h)
@@ -73,7 +73,7 @@ while [[ $1 == -* ]]; do
 			exit 0
 			;;
 		-*)
-			echo "Invalid argument '$1'. See '-h' for help text."
+			echo "Invalid argument '$1'. See '-h' for help text." >&2
 			exit 1
 			;;
 	esac
@@ -83,62 +83,62 @@ done
 # Returns if Verbose mode is enabled
 ##
 verbose() {
-	[ $OPT_VERBOSE == "true" ] && return 1 || return 0
+	[[ $optVerbose = true ]] && return 1 || return 0
 }
 
 ##
 ## Begin processing of the tasks
 ##
-if [ $TASK_LINT == "true" ]; then
+if [[ $taskLint = true ]]; then
 	verbose || echo -n ":: PHP syntax check on *.php, *.html and *.txt files (this may take a while) ....."
 	failedCount=0
-	for file in `find . -name "*.php" -or -name "*.html" -or -name "*.txt"`; do
+	for file in $(find . -name "*.php" -o -name "*.html" -o -name "*.txt"); do
 		lintResult=$(php -l $file 2>&1 > /dev/null)
-		if [ $? -gt 0 ]; then
-			if [ $failedCount -eq 0 -a $OPT_VERBOSE == "true" ]; then
+		if (( $? > 0 )); then
+			if [[ $failedCount -eq 0 && $optVerbose = true ]]; then
 				echo "" # Add a new line
 			fi
 			echo $lintResult
 			let failedCount++
 		fi
 	done
-	if [ $failedCount -gt 0 -a "$TASK_PACKAGE" == "true" ]; then
+	if [[ $failedCount -gt 0 && $taskPackage = true ]]; then
 		## See if the user wants to continue if there are syntax errors
 		echo
 		read -p "---- PHP syntax errors detected, do you wish to continue? (y/n) [n]: "
-		if [ "$REPLY" != "y" ]; then
+		if [[ $REPLY != y ]]; then
 			exit 0
 		fi
-	elif [ $failedCount -eq 0 -a $OPT_VERBOSE == "true" ]; then
+	elif [[ $failedCount -eq 0 && $optVerbose = true ]]; then
 		echo  " done!"
 	fi
 fi
 
-if [ $TASK_JS_COMPRESS == "true" -o $TASK_PACKAGE == "true" ]; then
+if [[ $taskJsCompress = true || $taskPackage = true ]]; then
 	verbose || echo -ne ":: Compressing source JavaScript files (*.src.js) "
-	if [ -n "$JAVA_HOME" ]; then
-		javaBin="${JAVA_HOME}/bin/java"
+	if [[ -n $JAVA_HOME ]]; then
+		javaBin=$JAVA_HOME/bin/java
 	else
-		javaBin=`which java`
-		if [ $? -eq 1 ]; then
-			echo -e "\n---- 'java' bin not found. Please set JAVA_HOME variable or install Java."
+		javaBin=$(which java)
+		if (( $? == 1 )); then
+			echo -e "\n---- 'java' bin not found. Please set JAVA_HOME variable or install Java." >&2
 			exit 2
 		fi
 	fi
-	if [ ! -f $OPT_PATH_CLOSURE ]; then
-		echo -e "\n---- jar file '$OPT_PATH_CLOSURE' does not exist."
+	if [[ ! -f $optPathClosure ]]; then
+		echo -e "\n---- jar file '$optPathClosure' does not exist." >&2
 		exit 2
 	fi
-	for sourceFile in `find . -name "*.src.js"`; do
-		fileName=`basename $sourceFile .src.js`.js
-		$javaBin -jar $OPT_PATH_CLOSURE --js $sourceFile --charset utf-8 --js_output_file `dirname $sourceFile`/$fileName \
+	for sourceFile in $(find . -name "*.src.js"); do
+		fileName=$(basename $sourceFile .src.js).js
+		$javaBin -jar $optPathClosure --js $sourceFile --charset utf-8 --js_output_file $(dirname $sourceFile)/$fileName \
 					  --warning_level QUIET
 		verbose || echo -ne "."
 	done
 	verbose || echo " done!"
 fi
 
-if [ $TASK_CHECK_EXCEPTIONS == "true" ]; then
+if [[ $taskCheckExceptions = true ]]; then
 	##
 	## List all exceptions that a) Are defined but not thrown B) Thrown but not defined
 	##
@@ -153,12 +153,12 @@ if [ $TASK_CHECK_EXCEPTIONS == "true" ]; then
 				 sort | uniq | tr '\n' ' ' | sed 's/ $//')
 	## Classes which extend previously discovered exceptions
 	toCheck="$expDefined"
-	while [ ! -z "$toCheck" ]; do
+	while [[ ! -z $toCheck ]]; do
 		expDefinedTmp=$(find . -name '*.php' -not -path "*/3rd_party/*" -print0 | xargs -0 grep -iE "extends (${toCheck// /|})" |
 						perl -pi -e 's/.* ([^\(; ]+) extends.*/\1/' |
 						sort | uniq | tr '\n' ' ' | sed 's/ $//')
-		expDefined="$expDefined ${expDefinedTmp}"
-		toCheck="${expDefinedTmp}"
+		expDefined="$expDefined $expDefinedTmp"
+		toCheck="$expDefinedTmp"
 	done
 	expDefined=$(echo $expDefined | tr ' ' '\n' | sort | tr '\n' ' ' | sed 's/ $//')
 
@@ -166,81 +166,80 @@ if [ $TASK_CHECK_EXCEPTIONS == "true" ]; then
 	echo ":: Exceptions that need to be defined"
 	for thrownException in $expThrown; do
 		for definedException in $expDefined; do
-			if [ ${thrownException} == ${definedException} ]; then
+			if [[ $thrownException = $definedException ]]; then
 				continue 2
 			fi
 		done
-		echo -e "\t${thrownException}"
+		echo -e "\t$thrownException"
 	done
 
 	echo ":: Exceptions that are unused"
 	for definedException in $expDefined; do
 		for thrownException in $expThrown; do
-			if [ ${definedException} == ${thrownException} ]; then
+			if [[ $definedException = $thrownException ]]; then
 				continue 2
 			fi
 		done
-		echo -e "\t${definedException}"
+		echo -e "\t$definedException"
 	done
 fi
 
-if [ $TASK_PACKAGE == "true" ]; then
+if [[ $taskPackage = true ]]; then
 	##
 	## Create the tar.gz, tar.bz2 and .zip archive of this project
 	##
 	verbose || echo -ne ":: Creating package archives "
-	if [ ! -f "index.php" ]; then
-		echo -e "\n---- unable to find 'index.php', unable to create project packages"
+	if [[ ! -f index.php ]]; then
+		echo -e "\n---- unable to find 'index.php', unable to create project packages" >&2
 		exit 2
 	fi
 
-	projectId=`grep -oP "(?<=_PROJECT_ID', ')([^']*)" index.php`
-	projectVersion=`grep -oP "(?<=version\s=\s).*$" config/default.dist/config.ini.php`
-	packageName="${projectId}-${projectVersion}"
+	projectId=$(grep -oP "(?<=_PROJECT_ID', ')([^']*)" index.php)
+	projectVersion=$(grep -oP "(?<=version\s=\s).*$" config/default.dist/config.ini.php)
+	packageName=$projectId-$projectVersion
 
-	tmpDir=`mktemp -d`"/${packageName}"
+	tmpDir=$(mktemp -d)/$packageName
 	curPwd=$PWD
 
-	if [ -d ".git" ]; then
-		git checkout-index -a -f --prefix="${tmpDir}/"
-	elif [ -d ".svn" ]; then
-		svn export . "${tmpDir}/"
+	if [[ -d .git ]]; then
+		git checkout-index -a -f --prefix=$tmpDir/
+	elif [[ -d .svn ]]; then
+		svn export . $tmpDir/
 	else
 		cp -ar . $tmpDir
 	fi
 
 	## Move some files around and do certain edits depending on application mode
-	rm -rf "${tmpDir}/config/default" "${tmpDir}/tmp/*" "${tmpDir}/application/logs/*.log" \
-		   "${tmpDir}/assets/uploads/*" "${tmpDir}/.gitignore" "${tmpDir}/*~"
-	touch "${tmpDir}/tmp/index.html" "${tmpDir}/assets/uploads/index.html" 2> /dev/null
-	mv "${tmpDir}/config/default.dist" "${tmpDir}/config/default"
+	rm -rf $tmpDir/{config/default,tmp/*,application/logs/*.log,assets/uploads/*,.gitignore,*~}
+	touch $tmpDir/{tmp/index.html,assets/uploads/index.html} 2> /dev/null
+	mv $tmpDir/config/default.dist $tmpDir/config/default
 
 	## Edit and remove some files depending on required application mode
-	if [ "$OPT_PACKAGE_MODE" == "production" ]; then
-		find "${tmpDir}" -name "*.src.js" -delete
-		rm -rf "${tmpDir}/assets/js/ckeditor/_source" "${tmpDir}/utils"
+	if [[ $optPackageMode = production ]]; then
+		find $tmpDir -name "*.src.js" -delete
+		rm -rf $tmpDir/assets/js/ckeditor/_source $tmpDir/utils
 		confDebugFlag=0
 	else
-		OPT_PACKAGE_MODE=development
+		optPackageMode=development
 		confDebugFlag=1
 	fi
-	sed -i "s/'\(development\|production\)'/'${OPT_PACKAGE_MODE}'/" "${tmpDir}/index.php"
-	sed -i -e "s/\(php_display_errors\|zula_detailed_error\|zula_show_errors\) = \([0-1]\{1\}\)/\1 = ${confDebugFlag}/" \
-		"${tmpDir}/config/default/config.ini.php"
+	sed -i "s/'\(development\|production\)'/'$optPackageMode'/" $tmpDir/index.php
+	sed -i -e "s/\(php_display_errors\|zula_detailed_error\|zula_show_errors\) = \([0-1]\{1\}\)/\1 = $confDebugFlag/" \
+		$tmpDir/config/default/config.ini.php
 
-	if [ "$OPT_IS_MSWAG" == "true" -a -d "${tmpDir}/ms-webapp" ]; then
-		mkdir "${tmpDir}/${projectId}"
-		mv ${tmpDir}/* ${tmpDir}/${projectId} 2> /dev/null
-		mv ${tmpDir}/${projectId}/ms-webapp/* ${tmpDir}
-		mv "${tmpDir}/${projectId}/install/modules/stage/sql/base_tables.sql" "${tmpDir}/${projectId}.sql"
-		rm -rf "${tmpDir}/${projectId}/install" "${tmpDir}/${projectId}/ms-webapp"
+	if [[ $optIsMsWag = true && -d $tmpDir/ms-webapp ]]; then
+		mkdir $tmpDir/$projectId
+		mv $tmpDir/* $tmpDir/$projectId 2> /dev/null
+		mv $tmpDir/$projectId/ms-webapp/* $tmpDir
+		mv $tmpDir/$projectId/install/modules/stage/sql/base_tables.sql $tmpDir/$projectId.sql
+		rm -rf $tmpDir/$projectId/install $tmpDir/$projectId/ms-webapp
 
-		(cd ${tmpDir} && zip -qr9 $curPwd/${packageName}-wag.zip . && verbose || echo -ne ".")
+		(cd $tmpDir && zip -qr9 $curPwd/$packageName-wag.zip . && verbose || echo -ne ".")
 	else
-		rm -rf "${tmpDir}/ms-webapp"
-		tar -czf ${packageName}.tar.gz -C "${tmpDir}/../" "${packageName}" && verbose || echo -ne "."
-		tar -cjf ${packageName}.tar.bz2 -C "${tmpDir}/../" "${packageName}" && verbose || echo -ne "."
-		(cd "${tmpDir}/../" && zip -qr9 $curPwd/${packageName}.zip "${packageName}" && verbose || echo -ne ".")
+		rm -rf $tmpDir/ms-webapp
+		tar -czf $packageName.tar.gz -C $tmpDir/../ $packageName && verbose || echo -ne "."
+		tar -cjf $packageName.tar.bz2 -C $tmpDir/../ $packageName && verbose || echo -ne "."
+		(cd $tmpDir/../ && zip -qr9 $curPwd/$packageName.zip $packageName && verbose || echo -ne ".")
 	fi
 
 	rm -rf $tmpDir

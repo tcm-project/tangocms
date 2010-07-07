@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 #---
 # Zula Framework CLI
 #
@@ -9,17 +9,18 @@
 #---
 
 ## All options with their default values
-OPT_CONFIG=default
-## Available tasks
-TASK_UPGRADE=false
+optConfig=default
 
-if [ ! -f index.php -o ! -d config ]; then
+## Available tasks
+taskUpgrade=false
+
+if [[ ! -f index.php || ! -d config ]]; then
 	echo "---- Please run from the root directory of your Zula Framework application." >&2
 	exit 1
 fi
 
-PATH_PHP=`which php 2> /dev/null`
-if [ -z "$PATH_PHP" -o `$PATH_PHP -v | grep "(cli)" &> /dev/null; echo $?` -ne 0 ]; then
+pathPHP=$(which php 2> /dev/null)
+if [[ -z $pathPHP || $($pathPHP -v | grep "(cli)" &> /dev/null; echo $?) -ne 0 ]]; then
 	echo "---- Unable to find PHP (CLI) binary, please install or update your PATH variable." >&2
 	exit 1
 fi
@@ -27,11 +28,11 @@ fi
 while [[ $1 == -* ]]; do
 	case "$1" in
 		--upgrade)
-			TASK_UPGRADE=true
+			taskUpgrade=true
 			shift
 			;;
 		-c)
-			OPT_CONFIG="$2"
+			optConfig="$2"
 			shift 2
 			;;
 		-h)
@@ -51,24 +52,27 @@ while [[ $1 == -* ]]; do
 	esac
 done
 
-if [ $TASK_UPGRADE == true ]; then
+if [[ $taskUpgrade = true ]]; then
 	## Attempt to upgrade to the latest version
-	if [ ! -f install/index.php ]; then
+	if [[ ! -f install/index.php ]]; then
 		echo "---- Unable to find 'install/index.php', failed to upgrade." >&2
 		exit 1
 	fi
 	count=0
-	for CONFIG in `find config -maxdepth 1 -type d -path "config/*" \! -name "default.dist" -printf '%f\n'`; do
-		if [ $count -gt 0 ]; then
+	for config in $(find config -maxdepth 1 -type d -path "config/*" \! -name "default.dist" -printf '%f\n'); do
+		if (( $count > 0 )); then
 			echo -en "\n"
 		fi
-		echo "Starting upgrade for '$CONFIG' ..."
-		(cd install && $PATH_PHP -f index.php "$CONFIG" upgrade/stage1)
+		echo "Starting upgrade for '$config' ..."
+		(cd install && $pathPHP -f index.php "$config" upgrade/stage1)
 		let count++;
 	done;
+	if (( $count == 0 )); then
+		echo "There are no available configurations."
+	fi
 	exit 0
 else
 	## Get output from the provided request path
-	$PATH_PHP -f index.php "$OPT_CONFIG" "${!#}"
+	$pathPHP -f index.php "$optConfig" "${!#}"
 	exit $?
 fi
