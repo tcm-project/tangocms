@@ -8,7 +8,7 @@
  * @author Alex Cartwright
  * @author Robert Clipsham
  * @author: Evangelos Foutras
- * @copyright Copyright (C) 2007, 2008, 2009 Alex Cartwright
+ * @copyright Copyright (C) 2007, 2008, 2009, 2010 Alex Cartwright
  * @license http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html GNU/LGPL 2.1
  * @package Zula
  */
@@ -109,15 +109,55 @@
 	}
 
 	/**
-	 * Produces HTML output for a fatal error message, and kill script
+	 * Translates a string in the current domain, or the domain
+	 * provided as the second argument.
+	 *
+	 * @param string $string
+	 * @param string $textDomain
+	 * @return string
+	 */
+	function t( $string, $textDomain=null ) {
+		if ( Registry::has( 'i18n' ) ) {
+			return Registry::get( 'i18n' )->t( $string, $textDomain );
+		} else {
+			trigger_error( 't() no i18n engine has currently been loaded', E_USER_WARNING );
+			return $string;
+		}
+	}
+
+	/**
+	 * Plural version of t()
+	 *
+	 * @param string $string1
+	 * @param string $string2
+	 * @param int $n
+	 * @param string $textDomain
+	 * @return string
+	 */
+	function nt( $string1, $string2, $n, $textDomain=null ) {
+		if ( Registry::has( 'i18n' ) ) {
+			return Registry::get( 'i18n' )->nt( $string1, $string2, $n, $textDomain );
+		} else {
+			trigger_error( 'nt() no i18n engine has currently been loaded', E_USER_WARNING );
+			return $string1;
+		}
+	}
+
+	/**
+	 * Produces a fatal error message and displays it to the user, then
+	 * kills the script with appropriate exit code
 	 *
 	 * @param string $title
 	 * @param string $body
 	 * @return void
 	 */
 	function zula_fatal_error( $title, $body ) {
-		$format = <<<ERR
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+		if ( PHP_SAPI == 'cli' ) {
+			fwrite( STDERR, "$body\n" );
+			exit( 2 );
+		} else {
+			$format = <<<ERR
+<!DOCTYPE HTML>
 <html lang="en">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -141,11 +181,13 @@
 <body>%2\$s</body>
 </html>
 ERR;
-		if ( !headers_sent() ) {
-			header( 'HTTP/1.1 503 Service Unavailable', true, 503 );
+			if ( !headers_sent() ) {
+				header( 'HTTP/1.1 503 Service Unavailable', true, 503 );
+				header( 'Content-Type: text/html; charset=utf-8' );
+			}
 		}
 		printf( $format, $title, $body );
-		die;
+		exit( 2 );
 	}
 
 	/**
@@ -166,31 +208,75 @@ ERR;
 	}
 
 	/**
-	 * Adds the correct header to zula_redirect to a specific URL
+	 * If running via CLI, a new request will be made using the same arguments but
+	 * a different request path. Otherwise it will add the correct HTTP headers and
+	 * redirect to the specified URL.
 	 *
-	 * It will also try and set the Controller to load standalone, because if
-	 * the redirect call was from the requested controller, then it is highly
-	 * undoubtful that the other controllers in the sectors will need to be
-	 * loaded.
+	 * Redirections are not possible whilst Zula is in 'standalone' mode, or when
+	 * provided with a URL when running via CLI.
 	 *
-	 * @param string $url
+	 * @param string|Router_Url $url
 	 * @param int $httpStatus
 	 * @return bool
 	 */
 	function zula_redirect( $url, $httpStatus=303 ) {
-		if ( _AJAX_REQUEST ) {
-			Registry::get( 'log' )->message( 'Controller tried to redirect while in an AJAX Request', Log::L_WARNING );
-			return false;
-		} else {
+		$zulaMode = Registry::get( 'zula' )->getMode();
+		if ( $zulaMode == 'normal' ) {
 			if ( $url instanceof Router_Url ) {
 				$url = $url->makeFull('&');
 			}
 			header( 'Location: '.$url, true, $httpStatus );
-			if ( Registry::has( 'dispatcher' ) ) {
-				Registry::get( 'dispatcher' )->standalone();
+		} else if ( $zulaMode == 'standalone' ) {
+			Registry::get( 'log' )->message( 'unable to redirect whilst in standalone mode', Log::L_WARNING );
+			return false;
+		} else if ( $zulaMode == 'cli' ) {
+			if ( $url instanceof Router_Url ) {
+				$url = $url->make( '&', null, true );
+			} else if ( zula_url_has_scheme( $url ) ) {
+				trigger_error( 'zula_redirect() unable to redirect to a URL whilst in CLI mode', E_USER_WARNING );
+				return false;
 			}
-			return true;
+			// Create a new request via CLI using same args, but changed request path
+			$_SERVER['argv'][ $_SERVER['argc']-1 ] = $url;
+			$args = array_map( 'escapeshellarg', $_SERVER['argv'] );
+			system( $_SERVER['_'].' -f '.implode(' ', $args) );
 		}
+		return true;
+	}
+
+	/**
+	 * Collction of checks to see if the server environemnt supports
+	 * certain features.
+	 *
+	 * @param string $feature
+	 * @return bool
+	 */
+	function zula_supports( $feature ) {
+		static $checks = array(
+							'zipExtraction'	=> null,
+							'tarExtraction'	=> null,
+							);
+		if ( !array_key_exists( $feature, $checks ) ) {
+			trigger_error( 'zula_supports() unknown feature', E_USER_NOTICE );
+			return false;
+		} else if ( $checks[ $feature ] === null ) {
+			switch( $feature ) {
+				case 'zipExtraction':
+					$checks[ $feature ] = extension_loaded( 'zip' );
+					break;
+				case 'tarExtraction':
+					if (
+						strtoupper( substr(PHP_OS, 0, 3) ) !== 'WIN' &&
+						function_exists('shell_exec') && shell_exec('tar --version &> /dev/null; echo -n $?') === '0'
+					) {
+						$checks[ $feature ] = true;
+					} else {
+						$checks[ $feature ] = false;
+					}
+					break;
+			}
+		}
+		return $checks[ $feature ];
 	}
 
 	/**
@@ -281,11 +367,7 @@ ERR;
 	 * @param int $amount
 	 * @return array
 	 */
-	function zula_array_multi_pop( $array, $amount=1 ) {
-		if ( !is_array( $array ) || empty( $array ) ) {
-			trigger_error( 'zula_array_multi_pop() was unable to pop elements off an array. Value given is not an array or is empty', E_USER_NOTICE );
-			return array();
-		}
+	function zula_array_multi_pop( array $array, $amount=1 ) {
 		for( $i=0; $i < $amount; $i++ ) {
 			if ( !is_array( $array ) ) {
 				return $array;
@@ -327,18 +409,14 @@ ERR;
 	 * @param string $suffixGlue
 	 * @return string|bool
 	 */
-	function zula_implode_adv( $array, $prefixGlue, $suffixGlue=NULL ) {
+	function zula_implode_adv( array $array, $prefixGlue, $suffixGlue=NULL ) {
 		if ( empty( $suffixGlue ) ) {
 			return implode( $prefixGlue, $array );
-		} else if ( is_array( $array ) ) {
-			foreach( $array as $key=>$val ) {
-				$array[ $key ] = $prefixGlue.$val.$suffixGlue;
-			}
-			return implode( '', $array );
-		} else {
-			trigger_error( 'zula_implode_adv() is unable to implode array. Value given is not an array', E_USER_NOTICE );
-			return false;
 		}
+		foreach( $array as $key=>$val ) {
+			$array[ $key ] = $prefixGlue.$val.$suffixGlue;
+		}
+		return implode( '', $array );
 	}
 
 	/**
@@ -348,11 +426,7 @@ ERR;
 	 * @return string
 	 */
 	function zula_bool2str( $bool ) {
-		if ( !is_bool( $bool ) ) {
-			trigger_error( 'zula_bool2str() unable to convert bool to string. Value given is not a bool', E_USER_NOTICE );
-			return false;
-		}
-		return $bool ? 'true' : 'false';
+		return (bool) $bool ? 'true' : 'false';
 	}
 
 	/**
@@ -416,7 +490,7 @@ ERR;
 	 */
 	function zula_get_file_mime( $file ) {
 		if ( !is_file( $file ) || !is_readable( $file ) ) {
-			trigger_error( 'File mime type could not be got. File "'.$file.'" does not exist or is not readable', E_USER_WARNING );
+			trigger_error( 'zula_get_file_mime() file "'.$file.'" does not exist or is not readable', E_USER_WARNING );
 			return false;
 		}
 		$libLog = Registry::get( 'log' );
@@ -428,7 +502,7 @@ ERR;
 				$finfo = finfo_open( FILEINFO_MIME );
 			}
 			if ( $finfo === false ) {
-				$libLog->message( 'zula_get_file_mime() Unable to create FileInfo resource for file "'.$file.'"', Log::L_WARNING );
+				$libLog->message( 'zula_get_file_mime() unable to create FileInfo resource for file "'.$file.'"', Log::L_WARNING );
 			} else {
 			 	$mime = finfo_file( $finfo, $file, FILEINFO_MIME );
 			 	finfo_close( $finfo );
@@ -439,16 +513,19 @@ ERR;
 			}
 		}
 		// Attempt to get mime type via the 'file' command (will not work on Windows)
-		$mime = exec( 'file -bi '.escapeshellarg($file) );
+		$mime = null;
+		if ( function_exists( 'exec' ) ) {
+			$mime = exec( 'file -bi '.escapeshellarg($file) );
+		}
 		if ( preg_match( '#^([A-Z0-9+.\-]+/[A-Z0-9+.\-]+);?#i', $mime, $matches ) ) {
 			return $matches[1];
 		} else if ( function_exists( 'mime_content_type' ) ) {
-			$libLog->message( 'zula_get_file_mime() reverting to "mime_content_type", advised to install "FileInfo" extension', Log::L_INFO );
+			$libLog->message( 'zula_get_file_mime() reverting to "mime_content_type", please install "FileInfo" extension', Log::L_INFO );
 			if ( ($mime = mime_content_type($file)) !== false ) {
 				return $mime;
 			}
 		}
-		$libLog->message( 'zula_get_file_mime() no method to get mime type, advised to install "FileInfo" extension', Log::L_WARNING );
+		$libLog->message( 'zula_get_file_mime() no method to get mime type, please install "FileInfo" extension', Log::L_WARNING );
 		return false;
 	}
 
@@ -513,11 +590,7 @@ ERR;
 	 * @param array $array
 	 * @return string|bool
 	 */
-	 function zula_array_js_string( $array ) {
-	 	if ( !is_array( $array ) ) {
-	 		trigger_error( 'Unable to convert array to JS string. Value given is not an array', E_USER_NOTICE );
-	 		return false;
-	 	}
+	 function zula_array_js_string( array $array ) {
 	 	$tmp = array();
 	 	foreach( $array as $key=>$val ) {
 	 		$tmp[] = $key.'='.$val;
@@ -647,7 +720,7 @@ ERR;
 	 * @return string
 	 */
 	function zula_htmlspecialchars( $string ) {
-		return htmlspecialchars( htmlspecialchars_decode($string), ENT_COMPAT, 'UTF-8' );
+		return htmlspecialchars( htmlspecialchars_decode($string, ENT_QUOTES), ENT_QUOTES, 'UTF-8' );
 	}
 
 	/**
@@ -687,6 +760,10 @@ ERR;
 	function zula_byte_value( $val ) {
 		$val = strtolower( trim( $val ) );
 		switch ( substr( $val, -1 ) ) {
+			case 'p':
+				$val *= 1024;
+			case 't':
+				$val *= 1024;
 			case 'g':
 				$val *= 1024;
 			case 'm':
@@ -694,7 +771,38 @@ ERR;
 			case 'k':
 				$val *= 1024;
 		}
-		return (int) $val;
+		return abs( $val );
+	}
+
+	/**
+	 * Converts a byte interger value to a human readable
+	 * version such as 4MiB, 16.84GiB etc
+	 *
+	 * @param int $val
+	 * @param int $precision
+	 * @return string
+	 */
+	function zula_human_readable( $val, $precision=2 ) {
+		$val = abs( $val );
+		if ( $val >= pow(1024, 5) ) {
+			$suffix = 'PiB';
+			$val /= pow(1024, 5);
+		} else if ( $val >= pow(1024, 4) ) {
+			$suffix = 'TiB';
+			$val /= pow(1024, 4);
+		} else if ( $val >= pow(1024, 3) ) {
+			$suffix = 'GiB';
+			$val /= pow(1024, 3);
+		} else if ( $val >= pow(1024, 2) ) {
+			$suffix = 'MiB';
+			$val /= pow(1024, 2);
+		} else if ( $val >= 1024 ) {
+			$suffix = 'KiB';
+			$val /= 1024;
+		} else {
+			$suffix = 'B';
+		}
+		return number_format($val, $precision).$suffix;
 	}
 
 	/**
@@ -704,11 +812,59 @@ ERR;
 	 * @return bool
 	 */
 	function zula_make_dir( $dir ) {
-		if ( file_exists( $dir ) ) {
-			return true;
-		} else {
-			return @mkdir( $dir, 0755, true );
+		return file_exists($dir) ? true : @mkdir($dir, 0755, true);
+	}
+
+	/**
+	 * Makes a directory name that is unique in the specified directory, by
+	 * default this directory will be created.
+	 *
+	 * bool false will be returned if the directory can not be created
+	 *
+	 * @param string $dir
+	 * @param bool $create
+	 * @return string|bool
+	 */
+	function zula_make_unique_dir( $dir, $create=true ) {
+		$chars = '1234567890ABCDEFGHIJKLMNOPQRSUTVWXYZabcdefghijklmnopqrstuvwxyz';
+		do {
+			$dirname = '';
+			for( $i=0; $i <= 9; $i++ ) {
+				$dirname .= substr( $chars, rand(0, 62), 1 );
+			}
+			$path = $dir.'/'.$dirname;
+		} while ( is_dir( $path ) );
+		if ( $create ) {
+			return zula_make_dir( $path ) ? $dirname : false;
 		}
+		return $dirname;
+	}
+
+	/**
+	 * Makes a file name that is unique in the specified directory, by
+	 * default this file will be created.
+	 *
+	 * @param string $dir
+	 * @param string $extension
+	 * @param bool $create
+	 * @return string
+	 */
+	function zula_make_unique_file( $dir, $extension=null, $create=true ) {
+		$chars = '1234567890ABCDEFGHIJKLMNOPQRSUTVWXYZabcdefghijklmnopqrstuvwxyz';
+		do {
+			$basename = '';
+			for( $i=0; $i <= 9; $i++ ) {
+				$basename .= substr( $chars, rand(0, 62), 1 );
+			}
+			if ( $extension ) {
+				$basename .= '.'.$extension;
+			}
+			$path = $dir.'/'.$basename;
+		} while ( file_exists( $path ) || is_dir( $path ) );
+		if ( $create ) {
+			touch( $path );
+		}
+		return $basename;
 	}
 
 	/**
@@ -718,19 +874,14 @@ ERR;
 	 * @param int $case
 	 * @return bool
 	 */
-	function zula_array_key_case( &$arr, $case=CASE_LOWER ) {
-		if ( is_array( $arr ) ) {
-			$arr = array_change_key_case( $arr, $case );
-			foreach( $arr as &$val ) {
-				if ( is_array( $val ) ) {
-					zula_array_key_case( $val, $case );
-				}
+	function zula_array_key_case( array &$arr, $case=CASE_LOWER ) {
+		$arr = array_change_key_case( $arr, $case );
+		foreach( $arr as &$val ) {
+			if ( is_array( $val ) ) {
+				zula_array_key_case( $val, $case );
 			}
-			return true;
-		} else {
-			trigger_error( 'zula_array_key_case() value provided is not an array', E_USER_WARNING );
-			return false;
 		}
+		return true;
 	}
 
 	/**
@@ -815,7 +966,7 @@ ERR;
 			$useType = 'theme';
 		}
 		if ( $useType == 'module' ) {
-			return Registry::get( 'router' )->makeUrl( 'assets/v/'.$module.'/icons/'.$icon );
+			return Registry::get( 'router' )->makeUrl( 'assets/v/'.$module ).'/icons/'.$icon;
 		} else {
 			return $zula->getDir( 'themes', $forHtml ).'/'._THEME_NAME.'/icons/'.$icon;
 		}
@@ -924,6 +1075,37 @@ ERR;
 		} else {
 			$split = explode( '.', $version );
 			return (ctype_digit( $split[2] ) && $split[2] >= 50) ? 'unstable' : 'stable';
+		}
+	}
+
+	/**
+	 * Map a development version onto the previous milestone
+	 * Eg. 2.5.63 => 2.6.0-alpha1
+	 *
+	 * Stable versions remain the same, .5x map to 'latest'
+	 *
+	 * @param string $version
+	 * @return string
+	 */
+	function zula_version_map( $version ) {
+		if ( zula_version_type( $version ) == 'unstable' ) {
+			if ( strpos( $version, '-' ) !== false ) {
+				return $version;
+			} else {
+				list( $major, $minor, $rev ) = explode( '.', $version );
+				if ( $rev >= 90 ) {
+					return sprintf( '%s.%d.0-rc1', $major, $minor + 1 );
+				} else if ( $rev >= 80 ) {
+					return sprintf( '%s.%d.0-beta1', $major, $minor + 1 );
+				} else if ( $rev >= 70 ) {
+					return sprintf( '%s.%d.0-alpha2', $major, $minor + 1 );
+				} else if ( $rev >= 60 ) {
+					return sprintf( '%s.%d.0-alpha1', $major, $minor + 1 );
+				}
+				return 'latest';
+			}
+		} else {
+			return $version;
 		}
 	}
 

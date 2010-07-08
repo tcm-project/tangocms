@@ -40,7 +40,7 @@
 			if ( Module::exists( $value, $this->checkInstallable ) ) {
 				return true;
 			}
-			return t('%1$s must be a valid module', Locale::_DTD);
+			return t('%1$s must be a valid module', I18n::_DTD);
 		}
 
 	}

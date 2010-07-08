@@ -8,7 +8,7 @@
  * @author Evangelos Foutras
  * @author Alex Cartwright
  * @author Robert Clipsham
- * @copyright Copyright (C) 2007, 2008, 2009 Alex Cartwright
+ * @copyright Copyright (C) 2007, 2008, 2009, 2010 Alex Cartwright
  * @license http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html GNU/LGPL 2.1
  * @package Zula_Installer
  */
@@ -22,6 +22,7 @@
 											# Stable versions
 											'2.3.0', '2.3.1', '2.3.2', '2.3.3',
 											'2.4.0',
+											'2.5.0', '2.5.1', '2.5.2', '2.5.3', '2.5.4',
 
 											# Dev versions
 											'2.3.50', '2.3.51', '2.3.52', '2.3.53', '2.3.54', '2.3.55', '2.3.56',
@@ -30,7 +31,10 @@
 											'2.3.80', '2.3.81',
 											'2.3.90',
 
-											'2.4.50',
+											'2.4.50', '2.4.51', '2.4.52', '2.4.53', '2.4.54', '2.4.55',
+											'2.4.90',
+
+											'2.5.50', '2.5.51', '2.5.52', '2.5.53',
 											);
 
 		/**
@@ -52,21 +56,17 @@
 			$_SESSION['upgrade_stage'] = 1;
 			if ( Registry::has( 'sql' ) ) {
 				if ( in_array( _PROJECT_VERSION, $this->supportedVersions ) ) {
-					// Ugly hack for the CLI upgrader sure is ugly.
-					if ( PHP_SAPI == 'cli' ) {
-						exit(0);
-					}
 					$_SESSION['upgrade_stage']++;
 					$_SESSION['project_version'] = _PROJECT_VERSION;
 					// Set the event and zula_redirect to next stage
 					$langStr = t('Found version "%1$s" and will upgrade to "%2$s"');
 					$this->_event->success( sprintf( $langStr, _PROJECT_VERSION, _PROJECT_LATEST_VERSION ) );
 					return zula_redirect( $this->_router->makeUrl( 'upgrade', 'stage2' ) );
+				} else if ( $this->_zula->getMode() == 'cli' ) {
+					$langStr = t('Version %s is not supported by this upgrader');
+					$this->_event->error( sprintf( $langStr, _PROJECT_VERSION ) );
+					exit( 3 );
 				} else {
-					// Ugly hack for the CLI upgrader sure is ugly.
-					if ( PHP_SAPI == 'cli' ) {
-						exit(1);
-					}
 					$this->setTitle( t('Current Version Unsupported') );
 					$view = $this->loadView( 'stage1/not_supported.html' );
 					$view->assign( array (

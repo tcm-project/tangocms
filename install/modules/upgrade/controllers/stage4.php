@@ -8,7 +8,7 @@
  * @author Evangelos Foutras
  * @author Alex Cartwright
  * @author Robert Clipsham
- * @copyright Copyright (C) 2007, 2008, 2009 Alex Cartwright
+ * @copyright Copyright (C) 2007, 2008, 2009, 2010 Alex Cartwright
  * @license http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html GNU/LGPL 2.1
  * @package Zula_Installer
  */
@@ -21,6 +21,12 @@
 		 */
 		protected $routes = array(
 								# Stable Releases
+								'2.5.4'			=> '2.6.0-alpha1',
+								'2.5.3'			=> '2.5.4',
+								'2.5.2'			=> '2.5.3',
+								'2.5.1'			=> '2.5.2',
+								'2.5.0'			=> '2.5.1',
+
 								'2.4.0'			=> '2.5.0-alpha1',
 
 								'2.3.3'			=> '2.4.0-alpha1',
@@ -29,6 +35,19 @@
 								'2.3.0'			=> '2.3.1',
 
 								# Dev Releases
+								'2.5.53'		=> '2.6.0-alpha1',
+								'2.5.52'		=> '2.6.0-alpha1',
+								'2.5.51'		=> '2.6.0-alpha1',
+								'2.5.50'		=> '2.6.0-alpha1',
+
+								'2.4.90'		=> '2.5.0',
+
+								'2.4.55'		=> '2.5.0-rc1',
+
+								'2.4.54'		=> '2.5.0-alpha1',
+								'2.4.53'		=> '2.5.0-alpha1',
+								'2.4.52'		=> '2.5.0-alpha1',
+								'2.4.51'		=> '2.5.0-alpha1',
 								'2.4.50'		=> '2.5.0-alpha1',
 
 								'2.3.90'		=> '2.4.0',
@@ -76,20 +95,28 @@
 		 * @return string
 		 */
 		public function indexSection() {
-			$this->_locale->textDomain( $this->textDomain() );
 			$this->setTitle( 'Upgrading' );
-			if ( !isset( $_SESSION['upgrade_stage'] ) || $_SESSION['upgrade_stage'] !== 4 ) {
-				return zula_redirect( $this->_router->makeUrl( 'upgrade', 'stage1' ) );
+			if (
+				$this->_zula->getMode() != 'cli' &&
+				(!isset( $_SESSION['upgrade_stage'] ) || $_SESSION['upgrade_stage'] !== 4)
+			) {
+				return zula_redirect( $this->_router->makeUrl('upgrade', 'stage1') );
 			}
 			if ( !isset( $this->routes[ _PROJECT_VERSION ] ) ) {
 				// Eek, this isn't suppose to happen
-				$this->setTitle( t('Current Version Unsupported') );
-				$view = $this->loadView( 'stage1/not_supported.html' );
-				$view->assign( array (
-									'CURRENT_VERSION'	=> _PROJECT_VERSION,
-									'LATEST_VERSION'	=> _PROJECT_LATEST_VERSION,
-									));
-				return $view->getOutput();
+				if ( $this->_zula->getMode() == 'cli' ) {
+					$langStr = t('Version %s is not supported by this upgrader');
+					$this->_event->error( sprintf( $langStr, _PROJECT_VERSION ) );
+					exit( 3 );
+				} else {
+					$this->setTitle( t('Current Version Unsupported') );
+					$view = $this->loadView( 'stage1/not_supported.html' );
+					$view->assign( array (
+										'CURRENT_VERSION'	=> _PROJECT_VERSION,
+										'LATEST_VERSION'	=> _PROJECT_LATEST_VERSION,
+										));
+					return $view->getOutput();
+				}
 			}
 			/**
 			 * Run the correct upgrade route, storing the current version
@@ -117,28 +144,32 @@
 					} else {
 						$this->version = $upgradeTo;
 					}
+					$this->_config_ini->update( 'config/version', $this->version );
 				}
 			}
 			$_SESSION['project_version'] = $this->version;
+			// Remove all unused ACL rules and rewrite the config.ini.php file
+			$this->_acl->cleanRules();
+			try {
+				$this->_config_ini->writeIni();
+			} catch ( Config_ini_FileNotWriteable $e ) {
+				$this->_event->error( sprintf( t('Configuration file "%s" is not writable'), $this->_config_ini->getFile() ) );
+			}
 			// Check if upgrade was (fully) successful
-			if ( $success === false ) {
-				$view = $this->loadView( 'stage4/fail.html' );
-				return $view->getOutput();
-			} else {
-				/**
-				 * Upgrade was a success, remove all unused ACL rules
-				 * and re-write the config ini file
-				 */
-				$this->_acl->cleanRules();
-				$this->_config_ini->update( 'config/version', $this->version );
-				try {
-					$this->_config_ini->writeIni();
-				} catch ( Config_ini_FileNotWriteable $e ) {
-					$this->_event->error( sprintf( t('Upgrader could not write a new configuration file "%s" as it is not writable'), $this->_config_ini->getFile() ) );
+			if ( $this->_zula->getMode() == 'cli' ) {
+				if ( $success ) {
+					$this->_event->success( sprintf( t('Successfully upgraded from "%1$s" to "%2$s"'), _PROJECT_VERSION, $this->version ) );
 				}
-				$this->_event->success( sprintf( t('Successfully upgraded from "%1$s" to "%2$s"'), _PROJECT_VERSION, $this->version ) );
-				$_SESSION['upgrade_stage']++;
-				return zula_redirect( $this->_router->makeUrl( 'upgrade', 'stage5' ) );
+				return true;
+			} else {
+				if ( $success === false ) {
+					$view = $this->loadView( 'stage4/fail.html' );
+					return $view->getOutput();
+				} else {
+					$this->_event->success( sprintf( t('Successfully upgraded from "%1$s" to "%2$s"'), _PROJECT_VERSION, $this->version ) );
+					$_SESSION['upgrade_stage']++;
+					return zula_redirect( $this->_router->makeUrl( 'upgrade', 'stage5' ) );
+				}
 			}
 		}
 
@@ -181,8 +212,8 @@
 				case '2.3.2':
 				case '2.3.3':
 				case '2.3.50':
-					foreach( Theme_Layout::getAll() as $layout ) {
-						$layoutObj = new Theme_Layout( $layout['name'] );
+					foreach( Layout::getAll() as $layout ) {
+						$layoutObj = new Layout( $layout['name'] );
 						foreach( $layoutObj->getControllers() as $cntrlr ) {
 							if ( empty( $cntrlr['config']['force_title'] ) ) {
 								if ( isset( $cntrlr['config']['display_title'] ) ) {
@@ -204,8 +235,8 @@
 					$this->sqlFile( '2.4.0-alpha1/2.3.52.sql' );
 				case '2.3.52':
 					$this->sqlFile( '2.4.0-alpha1/2.3.53.sql' );
-					foreach( Theme_Layout::getAll() as $layout ) {
-						$layoutObj = new Theme_Layout( $layout['name'] );
+					foreach( Layout::getAll() as $layout ) {
+						$layoutObj = new Layout( $layout['name'] );
 						foreach( $layoutObj->getControllers() as $cntrlr ) {
 							if ( $cntrlr['mod'] == 'poll' ) {
 								$cntrlr['con'] = 'view';
@@ -276,8 +307,8 @@
 			switch( $this->version ) {
 				case '2.3.70':
 					$this->sqlFile( '2.4.0-beta1/2.3.71.sql' );
-					foreach( Theme_Layout::getAll() as $layout ) {
-						$layoutObj = new Theme_Layout( $layout['name'] );
+					foreach( Layout::getAll() as $layout ) {
+						$layoutObj = new Layout( $layout['name'] );
 						foreach( $layoutObj->getControllers() as $cntrlr ) {
 							if ( $cntrlr['mod'] == 'media' && $cntrlr['con'] == 'cat' ) {
 								$cntrlr['con'] = 'index';
@@ -307,8 +338,8 @@
 		protected function upgradeTo_240_rc1() {
 			switch( $this->version ) {
 				case '2.3.80':
-					foreach( Theme_Layout::getAll() as $layout ) {
-						$layoutObj = new Theme_Layout( $layout['name'] );
+					foreach( Layout::getAll() as $layout ) {
+						$layoutObj = new Layout( $layout['name'] );
 						foreach( $layoutObj->getControllers() as $cntrlr ) {
 							if ( $cntrlr['mod'] == 'media' && $cntrlr['con'] == 'index' && $cntrlr['sec'] == 'latest' ) {
 								$cntrlr['sec'] = 'cat';
@@ -335,9 +366,81 @@
 				case '2.4.0':
 				case '2.4.50':
 					$this->sqlFile( '2.5.0-alpha1/2.4.51.sql' );
-					return '2.4.51';
+				case '2.4.51':
+					$this->sqlFile( '2.5.0-alpha1/2.4.52.sql' );
+				case '2.4.52':
+					$this->sqlFile( '2.5.0-alpha1/2.4.53.sql' );
+				case '2.4.53':
+					$this->sqlFile( '2.5.0-alpha1/2.4.54.sql' );
+				case '2.4.54':
+					$this->sqlFile( '2.5.0-alpha1/2.4.55.sql' );
+					$this->_config_sql->add( 'session/expire_pw', '0' );
+					return '2.4.55';
 				default:
-					return '2.4.50';
+					return '2.4.60';
+			}
+		}
+
+		/**
+		 * Upgrades to 2.5.0-rc1 (2.4.90)
+		 *
+		 * @return bool|string
+		 */
+		protected function upgradeTo_250_rc1() {
+			switch( $this->version ) {
+				case '2.4.55':
+				default:
+					return '2.4.90';
+			}
+		}
+
+		/**
+		 * Upgrades to 2.5.1
+		 *
+		 * @return bool|string
+		 */
+		protected function upgradeTo_251() {
+			switch( $this->version ) {
+				case '2.5.0':
+					$this->sqlFile( '2.5.1/2.5.1.sql' );
+				default:
+					return '2.5.1';
+			}
+		}
+
+		/**
+		 * Upgrades to 2.6.0-alpha1 (2.5.60)
+		 *
+		 * @return bool|string
+		 */
+		protected function upgradeTo_260_alpha1() {
+			switch( $this->version ) {
+				case '2.5.0':
+				case '2.5.1':
+				case '2.5.2':
+				case '2.5.3':
+				case '2.5.4':
+				case '2.5.50':
+					foreach( array('main', 'admin') as $siteType ) {
+						$layout = new Layout( $siteType.'-default' );
+						$sc = $layout->getControllers( 'SC' );
+						$sc = array_shift( $sc );
+						$layout->detachController( $sc['id'] );
+						$layout->save();
+						// Create the new FPSC (FrontPage Sector Content) layout
+						$layout = new Layout( 'fpsc-'.$siteType );
+						$layout->addController( 'SC', $sc, $sc['id'] );
+						$layout->save();
+					}
+				case '2.5.51':
+					$this->sqlFile( '2.6.0-alpha1/2.5.52.sql' );
+				case '2.5.52':
+					$this->sqlFile( '2.6.0-alpha1/2.5.53.sql' );
+				case '2.5.53':
+					$this->_config_sql->add( 'media/wm_position', 'bl' );
+					return '2.5.54';
+				default:
+					return '2.5.60';
 			}
 		}
 

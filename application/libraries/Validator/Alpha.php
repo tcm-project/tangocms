@@ -46,8 +46,8 @@
 		 */
 		public function validate( $value ) {
 			if ( !is_string( $value ) || preg_match( $this->pattern, $value ) ) {
-				$msg = t('%1$s must contain only alpha characters ', Locale::_DTD);
-				return $msg.($this->allowSpace ? t('(spaces allowed)', Locale::_DTD) : t('only', Locale::_DTD));
+				$msg = t('%1$s must contain only alpha characters ', I18n::_DTD);
+				return $msg.($this->allowSpace ? t('(spaces allowed)', I18n::_DTD) : t('only', I18n::_DTD));
 			} else {
 				return true;
 			}

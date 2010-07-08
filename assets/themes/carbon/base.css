@@ -2,7 +2,7 @@
 /**
  * TangoCMS "carbon" theme
  *
- * @copyright Copyright (C) 2009 Alex Cartwright
+ * @copyright Copyright (C) 2009, 2010 Alex Cartwright
  * @license X11/MIT (see COPYING file)
  * @package TangoCMS_Themes
 */
@@ -83,7 +83,7 @@ label.horizontal {
 blockquote {
 	background-color: #f9f9f9;
 	border-left: 2px solid #ccc;
-	margin-left: 10px;
+	margin: 0 0 1em 1em;
 	padding: 3px 6px;
 }
 
@@ -148,7 +148,7 @@ a[href]:hover {
 /**
  * Various Input styles
  */
-input[type="text"], input[type="password"] {
+input {
 	background-color: #fff;
 	border: 1px solid #bbb;
 	color: #000;
@@ -157,7 +157,7 @@ input[type="text"], input[type="password"] {
 	width: 190px;
 }
 
-input[type="text"].error, input[type="password"].error {
+input.error {
 	border-color: #cd310d !important;
 	color: #cd310d;
 }
@@ -187,6 +187,7 @@ input[type="submit"], input[type="button"], a.general-button {
 	font-weight: bold;
 	margin: 5px 0;
 	padding: 3px;
+	width: auto;
 }
 
 a.general-button, a.general-button:hover {
@@ -195,9 +196,14 @@ a.general-button, a.general-button:hover {
 	padding: 2px 9px;
 }
 
-input[type="radio"], input[type="checkbox"] {
-	margin-bottom: 3px;
-	margin-right: 3px;
+input[type="radio"], input[type="checkbox"],
+input[type="radio"]:hover, input[type="checkbox"]:hover
+input[type="radio"]:focus, input[type="checkbox"]:focus {
+	background: #fff;
+	border-width: 0 !important;
+	font-size: auto;
+	margin: auto 3px 3px auto;
+	width: auto;
 }
 
 option {
@@ -212,18 +218,22 @@ input[type="submit"]:hover, input[type="button"]:hover, a.general-button:hover {
 	text-decoration: none;
 }
 
-input[type="text"]:hover, input[type="text"]:focus,
-input[type="password"]:hover, input[type="password"]:focus,
-textarea:hover, textarea:focus {
+input:hover, input:focus, textarea:hover, textarea:focus {
 	border-color: #838271;
 	border-width: 1px;
 }
 
-input[type="text"][readonly], input[type="password"][readonly], textarea[readonly],
-input[type="text"][readonly]:hover, input[type="password"][readonly]:hover, textarea[readonly]:hover,
-input[type="text"][readonly]:focus, input[type="password"][readonly]:focus, textarea[readonly]:focus {
+input[readonly], input[readonly]:hover, input[readonly]:focus,
+textarea[readonly], textarea[readonly]:hover, textarea[readonly]:focus {
 	border-color: #bbb;
 	background-color: #F8F8F8;
+}
+
+input[disabled], input[disabled]:hover, input[disabled]:focus,
+textarea[disabled], textarea[disabled]:hover, textarea[disabled]:focus {
+	border-color: #a1a1a1;
+	background-color: #E6E6E6;
+	color: #515151;
 }
 
 /**
@@ -299,12 +309,16 @@ tr.subheading td {
 }
 
 /** Table specific element overrides */
-td.confcol input[type="text"], td.confcol input[type="password"] {
+td.confcol input {
 	width: 244px;
 }
 
+td.confcol input[type="checkbox"], td.confcol input[type="radio"] {
+	width: auto;
+}
+
 td.confcol textarea {
-	height: 100px;
+	height: 70px;
 	width: 244px;
 }
 

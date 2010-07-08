@@ -1,9 +1,38 @@
-<?php
-	$url = $this->_router->makeUrl( 'content_layout' ).'/index';
-	include $this->getPath( '../sitetype_selector.html' );
-?>
+<form action="<?php echo $this->_router->makeUrl( 'content_layout' ); ?>" method="get">
+	<?php if ( $this->_router->getType() == 'standard' ) { ?>
+		<div><input type="hidden" name="url" value="<?php echo $this->_router->getRawRequestPath(); ?>"></div>
+	<?php } ?>
+	<p>
+		<label for="content_layout-site-select" class="horizontal">{L_[Manage layouts for:]}</label>
+		<select id="content_layout-site-select" name="type">
+			<option value="main" <?php echo $site_type == 'main' ? 'selected="selected"' : ''; ?>>{L_[Main website]}</option>
+			<option value="admin" <?php echo $site_type == 'admin' ? 'selected="selected"' : ''; ?>>{L_[Control panel]}</option>
+		</select>
+		<input type="submit" value="{L_[Update]}">
+	</p>
+</form>
+
+<form action="<?php echo $this->_router->makeUrl( 'content_layout', 'manage', 'fpsc' ); ?>" method="post">
+	<h3>{L_[Homepage Content]}</h3>
+	<p>{L_[Select the module you wish to display on your homepage, then configure this further by selecting 'Update & Configure'.]}</p>
+
+	<select name="content_layout[module]">
+		<?php
+			foreach( $modules as $name=>$title ) {
+				printf( '<option value="%1$s" %2$s>%3$s</option>',
+						$name,
+						($name == $fpsc_module ? 'selected="selected"' : ''),
+						$title );
+			}
+		?>
+	</select>
+	<input type="hidden" name="content_layout[siteType]" value="{SITE_TYPE}">
+	<input type="submit" value="{L_[Update & Configure]}">
+</form>
 
 <form action="<?php echo $this->_router->makeUrl( 'content_layout', 'index', 'delete' ); ?>" method="post">
+	<h3>{L_[Layouts]}</h3>
+	<p>{L_[Control which modules should appear around your content, such as in the sidebar or menu area of the current theme.]}</p>
 	<table id="content_layout" class="contentdata">
 		<thead>
 			<tr>
@@ -19,9 +48,10 @@
 					<td class="checkcol">
 						<?php
 							$default = $layout['name'] == $site_type.'-default';
-							$format = '<input type="checkbox" name="layout_names[]" value="%1$s" %2$s>';
-							$disabled = $default ? 'disabled="disabled"' : '';
-							printf( $format, $layout['name'], $disabled );
+							printf( '<input type="checkbox" name="layout_names[]" value="%1$s" %2$s>',
+									$layout['name'],
+									($default ? 'disabled="disabled"' : '')
+								  );
 						?>
 					</td>
 					<td><?php

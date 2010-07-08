@@ -56,7 +56,7 @@
 					</td>
 					<td><?php echo $this->_helper('user')->link( $article['author'] ); ?></td>
 					<td><?php echo isset($categories[ $article['cat_id'] ]) ? $categories[ $article['cat_id'] ]['title'] : t('Unknown'); ?></td>
-					<td><?php echo $article['published'] ? $this->_date->formatStamp( $article['date'] ) : '<strong>'.t('Unpublished').'</strong>'; ?></td>
+					<td><?php echo $article['published'] ? $this->_date->format( $article['date'] ) : '<strong>'.t('Unpublished').'</strong>'; ?></td>
 					<td class="managecol">
 						<a href="<?php echo $this->_router->makeUrl( 'article', 'config', 'edit', null, array('id' => $article['id']) ); ?>" title="{L_[Edit Article]}">{L_[Edit]}</a> |
 						<a href="<?php echo $this->_router->makeUrl( 'article', 'config', 'addpart', null, array('id' => $article['id']) ); ?>">{L_[Add Part]}</a>

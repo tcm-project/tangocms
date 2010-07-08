@@ -36,24 +36,24 @@
 		 * @param array $args
 		 * @return mixed
 		 */
-		public function __call( $name, $args ) {			
-			$this->_locale->textDomain( $this->textDomain() );
+		public function __call( $name, $args ) {
 			$this->setTitle( t('Attach New Module') );
 			$this->setOutputType( self::_OT_CONFIG );
 			if ( !$this->_acl->check( 'content_layout_attach_module' ) ) {
 				throw new Module_NoPermission;
 			}
 			/**
-			 * Create the layout to get needed sectors, then build
-			 * the view form for validation.
+			 * Create the layout object and get all sectors from the theme of
+			 * the site type of this layout
 			 */
-			$layoutName = substr( $name, 0, -7 );
-			$siteType = substr( $layoutName, 0, strpos($layoutName, '-') );
-			$layout = new Theme_layout( $layoutName, Theme::getSiteTypeTheme( $siteType ) );
+			$layout = new Layout( substr($name, 0, -7) );
+			$siteType = substr( $layout->getName(), 0, strpos($layout->getName(), '-') );
+			$theme = new Theme( $this->_config->get('theme/'.$siteType.'_default') );
+			// Build the form with validation
 			$form = new View_form( 'attach/attach.html', 'content_layout' );
-			$form->action( $this->_router->makeUrl( 'content_layout', 'attach', $layoutName ) );
+			$form->action( $this->_router->makeUrl( 'content_layout', 'attach', $layout->getName() ) );
 			$form->addElement( 'content_layout/module', null, t('Module'), new Validator_InArray( Module::getModules() ) );
-			$form->addElement( 'content_layout/sector', null, t('Sector'), new Validator_InArray( array_keys($layout->getSectors()) ) );
+			$form->addElement( 'content_layout/sector', null, t('Sector'), new Validator_InArray( array_keys($theme->getSectors()) ) );
 			if ( $form->hasInput() && $form->isValid() ) {
 				$fd = $form->getValues( 'content_layout' );
 				// Attach the new module to the correct sector
@@ -61,7 +61,7 @@
 					$cntrlrId = $layout->addController( $fd['sector'], array('mod' => $fd['module']) );
 					if ( $layout->save() ) {
 						$this->_event->success( t('Successfully added module') );
-						return zula_redirect( $this->_router->makeUrl( 'content_layout', 'edit', $layoutName, null, array('id' => $cntrlrId) ) );
+						return zula_redirect( $this->_router->makeUrl( 'content_layout', 'edit', $layout->getName(), null, array('id' => $cntrlrId) ) );
 					} else {
 						$this->_event->error( t('Unable to save content layout file') );
 					}
@@ -71,8 +71,8 @@
 			}
 			// Assign additional data
 			$form->assign( array(
-								'SECTORS'	=> $layout->getSectors(),
-								'LAYOUT'	=> $layoutName,
+								'SECTORS'	=> $theme->getSectors(),
+								'LAYOUT'	=> $layout->getName(),
 								));
 			return $form->getOutput();
 		}

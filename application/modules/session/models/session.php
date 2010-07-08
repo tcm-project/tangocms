@@ -34,8 +34,8 @@
 			 */
 			$remoteAddr = zula_ip2long( $_SERVER['REMOTE_ADDR'] );
 			if ( empty( $user ) ) {
-				$pdoSt = $this->_sql->prepare( 'INSERT INTO {SQL_PREFIX}mod_session ( ip, attempts ) VALUES ( ?, 1 )
-												ON DUPLICATE KEY UPDATE attempts = attempts+1' );
+				$pdoSt = $this->_sql->prepare( 'INSERT INTO {SQL_PREFIX}mod_session (ip, attempts, blocked) VALUES (?, 1, UTC_TIMESTAMP())
+												ON DUPLICATE KEY UPDATE attempts = attempts+1, blocked = UTC_TIMESTAMP()' );
 				$pdoSt->execute( array($remoteAddr) );
 				throw new Session_InvalidCredentials;
 			} else {
@@ -61,7 +61,9 @@
 			$results = $query->fetch( PDO::FETCH_ASSOC );
 			$query->closeCursor();
 			if ( $results )  {
-				if ( $this->_date->utcStrtotime( $results['blocked'].' +10 minutes' ) <= time() ) {
+				$blockedUntil = $this->_date->getDateTime( $results['blocked'] )
+											->modify( '+10 minutes' );
+				if ( $blockedUntil < new DateTime ) {
 					// Remove the entry as it has now expired
 					$this->_sql->exec( 'DELETE FROM {SQL_PREFIX}mod_session WHERE ip = '.$remoteAddr );
 					$results['attempts'] = 0;

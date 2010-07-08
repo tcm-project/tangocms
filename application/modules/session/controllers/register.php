@@ -20,7 +20,6 @@
 		 * @return string
 		 */
 		public function indexSection() {
-			$this->_locale->textDomain( $this->textDomain() );
 			$this->setTitle( t('Register an Account') );
 			// Check that registrations are actually available
 			if ( $this->_config->get( 'session/allow_register' ) == false ) {
@@ -136,7 +135,6 @@
 		 */
 		public function activateSection() {
 			$this->setTitle( t('Activate Account') );
-			$this->_locale->textDomain( $this->textDomain() );
 			/**
 			 * Use the provided activation code
 			 */
@@ -146,9 +144,9 @@
 				$this->_event->success( sprintf( t('The account "%s" has now been activated'), $user['username'] ) );				
 			} catch ( Router_ArgNoExist $e ) {
 				$this->_event->error( t('No activation code provided') );
-			} catch ( UGManager_InvalidActivationCode $e ) {
+			} catch ( Ugmanager_InvalidActivationCode $e ) {
 				$this->_event->error( t('There is no user with that activation code') );
-			} catch ( UGManager_UserNoExist $e ) {
+			} catch ( Ugmanager_UserNoExist $e ) {
 				$this->_event->error( t('User does not exist') );
 			}
 			return zula_redirect( $this->_router->makeUrl( 'session' ) );

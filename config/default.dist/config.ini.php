@@ -83,19 +83,6 @@ default = cappuccino
 admin_default = innocent
 
 ;---
-; Input
-; How should Zula handle Input data? ($_POST, $_GET, $_COOKIE etc)
-;
-; @allow_post		bool	should post data be allowed? Default true
-; @allow_get 		bool	allow get data? Default false
-; @allow_cookies	bool	should cookies be allowed? Default false
-;---
-[input]
-allow_post = 1
-allow_get = 1
-allow_cookies = 1
-
-;---
 ; Debug/Error Reporting and Logging
 ; Configure how Zula should display and log errors
 ;
@@ -130,12 +117,12 @@ zula_log_ttl = 1209600
 ; Languages/Locale
 ; Zula is a multi-lingual framework, you can tweak the settings here
 ;
-; @engine	string	How should translations be made? Supported: gettet
+; @engine	string	How should translations be made? Supported: failsafe, gettext, gettext_php
 ; @default 	string	Default locale to use
 ;---
 [locale]
-engine = gettext
-default = en_GB.utf8
+engine = gettext_php
+default = en_US.UTF-8
 
 ;---
 ; General Configuration Details
@@ -151,7 +138,7 @@ default = en_GB.utf8
 title = "Powered By TangoCMS"
 title_format = "[PAGE] | [SITE_TITLE]"
 slogan = "Powered by TangoCMS"
-version = 2.4.51
+version = 2.5.54
 
 ;---
 ; Meta Data

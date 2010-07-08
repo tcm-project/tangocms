@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<controllers>
+	<controller id="123" sector="SC">
+		<mod>index</mod>
+		<con>index</con>
+		<sec>index</sec>
+		<config>
+			<displayTitle>true</displayTitle>
+		</config>
+	</controller>
+</controllers>

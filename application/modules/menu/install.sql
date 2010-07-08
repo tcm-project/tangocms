@@ -14,7 +14,7 @@ CREATE TABLE {SQL_PREFIX}mod_menu (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=15 ;
 
 INSERT INTO {SQL_PREFIX}mod_menu (id, cat_id, heading_id, url, name, attr_title, `order`) VALUES
-(1, 1, 0, '[FRONT_PAGE]', 'Main Site', '', 1),
+(1, 1, 0, '/', 'Main Site', '', 1),
 (2, 1, 0, 'admin', 'AdminCP Home', '', 2),
 (3, 1, 0, 'admin/settings', 'Settings', '', 3),
 (4, 1, 0, 'admin/theme', 'Theme and Style', '', 4),

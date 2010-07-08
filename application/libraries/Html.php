@@ -64,7 +64,7 @@
 		public function selectGroups( $name, $default=null, $id=null ) {
 			$groups = array();
 			foreach( $this->_ugmanager->getAllGroups() as $group ) {
-				if ( $group['id'] != UGManager::_GUEST_ID ) {
+				if ( $group['id'] != Ugmanager::_GUEST_ID ) {
 					$groups[ $group['name'] ] = $group['id'];
 				}
 			}

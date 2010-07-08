@@ -40,7 +40,6 @@
 		 */
 		public function indexSection() {
 			$this->setTitle( t('Manage Contact Forms') );
-			$this->_locale->textDomain( $this->textDomain() );
 			$this->setOutputType( self::_OT_CONFIG );
 			if ( $this->_input->checkToken() ) {
 				if ( !$this->_acl->check( 'contact_delete' ) ) {
@@ -103,7 +102,6 @@
 			if ( !$this->_acl->check( 'contact_add' ) ) {
 				throw new Module_NoPermission;
 			}
-			$this->_locale->textDomain( $this->textDomain() );
 			$this->setTitle( t('Add Contact Form') );
 			$this->setOutputType( self::_OT_CONFIG );
 			// Build and check form
@@ -133,7 +131,6 @@
 			if ( !$this->_acl->check( 'contact_edit' ) ) {
 				throw new Module_NoPermission;
 			}
-			$this->_locale->textDomain( $this->textDomain() );
 			$this->setTitle( t('Edit contact form') );
 			$this->setOutputType( self::_OT_CONFIG );
 			try {
@@ -212,7 +209,6 @@
 			if ( !$this->_acl->check( 'contact_add' ) ) {
 				throw new Module_NoPermission;
 			}
-			$this->_locale->textDomain( $this->textDomain() );
 			$this->setTitle( t('Add Contact Form Field') );
 			$this->setOutputType( self::_OT_CONFIG );
 			// Get details of the form this field will attach to
@@ -250,7 +246,6 @@
 			if ( !$this->_acl->check( 'contact_edit' ) ) {
 				throw new Module_NoPermission;
 			}
-			$this->_locale->textDomain( $this->textDomain() );
 			$this->setTitle( t('Edit Contact Form Field') );
 			$this->setOutputType( self::_OT_CONFIG );
 			// Get details of the form field

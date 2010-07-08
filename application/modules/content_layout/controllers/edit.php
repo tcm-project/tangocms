@@ -45,7 +45,6 @@
 		 * @return string
 		 */
 		public function indexSection( $layoutName=null ) {
-			$this->_locale->textDomain( $this->textDomain() );
 			$this->setTitle( t('Edit Module') );
 			$this->setOutputType( self::_OT_CONFIG );
 			// Check permission and if a layout has been provided
@@ -67,8 +66,7 @@
 				}
 			}
 			// Create the correct layout and ensure cntrlr exists
-			$siteType = substr( $layoutName, 0, strpos($layoutName, '-') );
-			$layout = new Theme_Layout( $layoutName, Theme::getSiteTypeTheme( $siteType ) );
+			$layout = new Layout( $layoutName );
 			try {
 				$cntrlr = $layout->getControllerDetails( $cntrlrId );
 				$module = new Module( $cntrlr['mod'] );
@@ -76,7 +74,7 @@
 				if ( !isset( $cntrlr['config']['clDescription'] ) ) {
 					$cntrlr['config']['clDescription'] = '';
 				}
-			} catch ( Theme_Layout_ControllerNoExist $e ) {
+			} catch ( Layout_ControllerNoExist $e ) {
 				$this->_event->error( sprintf( t('Unable to edit controller "%1$d" as it does not exist'), $cntrlrId ) );
 				return zula_redirect( $this->_router->makeUrl( 'content_layout', 'manage', $layoutName ) );
 			} catch ( Module_NoExist $e ) {
@@ -120,12 +118,20 @@
 					} else {
 						$this->_event->error( t('Unable to save layout, ensure file is writable') );
 					}
-				} catch ( Theme_Layout_ControllerNoExist $e ) {
+				} catch ( Layout_ControllerNoExist $e ) {
 					$this->_event->error( sprintf( t('Unable to edit attached module ID "%d" as it does not exist'), $cntrlr['id'] ) );
 				} catch ( Theme_SectorMapNotWriteable $e ) {
 					$this->_event->error( sprintf( t('Unable to edit module in sector map: $s'), $e->getMessage() ) );
 				}
-				return zula_redirect( $this->_router->makeUrl( 'content_layout', 'manage', $layoutName ) );
+				// Redirect back to correct location, FPSC layouts go back to index
+				$url = new Router_Url( 'content_layout' );
+				$url->siteType( $this->_router->getSiteType() );
+				if ( strpos( $layoutName, 'fpsc-' ) === 0 ) {
+					$url->queryArgs( array('type' => substr($layoutName, 5)) );
+				} else {
+					$url->controller( 'manage' )->section( $layoutName );
+				}
+				return zula_redirect( $url );
 			}
 			/**
 			 * Gets all displays modes that this module offers, the current display
@@ -152,17 +158,18 @@
 
 		/**
 		 * Gets the display mode configuration details from the hooks
-		 * of the correct module. This is AJAX only.
+		 * of the correct module.
 		 *
-		 * @return string
+		 * @return string|bool
 		 */
 		public function modeConfigSection() {
-			if ( !_AJAX_REQUEST ) {
-				throw new Module_AjaxOnly;
+			try {
+				$hook = $this->_router->getArgument( 'module' ).'_display_mode_config';
+				$data = Hooks::notifyAll( $hook, $this->_router->getArgument('mode') );
+				return $data ? implode( "\n", $data ) : false;
+			} catch ( Router_ArgNoExist $e ) {
+				return false;
 			}
-			$hook = $this->_router->getArgument( 'module' ).'_display_mode_config';
-			$data = Hooks::notifyAll( $hook, $this->_router->getArgument('mode') );
-			return $data ? implode( "\n", $data ) : false;
 		}
 
 	}

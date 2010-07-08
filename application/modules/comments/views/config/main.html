@@ -41,7 +41,7 @@
 					</td>
 					<td>
 						<?php
-							if ( $comment['user_id'] != UGManager::_GUEST_ID ) {
+							if ( $comment['user_id'] != Ugmanager::_GUEST_ID ) {
 								$comment['website'] = null;
 							}
 							echo $this->_helper( 'user' )->link( $comment['user_id'], $comment['name'], $comment['website'] );

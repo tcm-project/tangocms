@@ -7,7 +7,7 @@
  * @patches submit all patches to patches@tangocms.org
  *
  * @author Alex Cartwright
- * @copyright Copyright (C) 2009, Alex Cartwright
+ * @copyright Copyright (C) 2009 Alex Cartwright
  * @license http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GNU/GPL 2
  * @package TangoCMS_media
  */
@@ -39,6 +39,19 @@
 		}
 
 		/**
+		 * Hook: cache_purge
+		 * Remove tmp media images that have been created when the cache is purged
+		 *
+		 * @return null
+		 */
+		public function hookCachePurge() {
+			$files = (array) glob( $this->_zula->getDir('tmp').'/media/max*-*' );
+			foreach( array_filter( $files ) as $tmpFile ) {
+				unlink( $tmpFile );
+			}
+		}
+
+		/**
 		 * Hook: media_display_modes
 		 * Gets all display modes that this module has
 		 *
@@ -46,7 +59,7 @@
 		 */
 		public function hookMediaDisplayModes() {
 			return array(
-						'categorylist'	=> t('Category List & Latest Media', _PROJECT_ID.'-media'),						
+						'categorylist'	=> t('Category List & Latest Media', _PROJECT_ID.'-media'),
 						'category'		=> t('Media Category', _PROJECT_ID.'-media'),
 						'item'			=> t('Media Item', _PROJECT_ID.'-media'),
 						);

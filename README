@@ -7,7 +7,7 @@ Details
 ========================
 
 	* TangoCMS, http://tangocms.org, is an Open Source (GNU/GPL 2.1) PHP Content Management System (CMS).
-	* Version, 2.4.51
+	* Version, 2.5.54
 	* Advised to read the User Guide/Manual, http://manual.tangocms.org, prior to installation.
 	* For more support, see http://tangocms.org/community for details on how to get community support on any issue you may have.
 
@@ -19,7 +19,7 @@ Requirements, http://manual.tangocms.org/getting-started/requirements
 	* Webserver		Tested on Apache & Lighttpd (recommended mod_rewrite for SEF, Search Engine Friendly, URLs)
 	* MySQL 		>= 4.1 (recommended 5+)
 
-	* PHP Extensions: ctype, date, dom, filter, hash, pdo, pdo_mysql, pcre, session, simplexml, [gd], [FileInfo]
+	* PHP Extensions: ctype, date, dom, filter, hash, pdo, pdo_mysql, pcre, session, [gd], [FileInfo]
 
 
 Installation, http://manual.tangocms.org/installation

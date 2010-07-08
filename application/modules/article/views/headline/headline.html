@@ -14,7 +14,7 @@
 						<?php
 							printf( t('Published by %1$s, %2$s'),
 									$this->_helper('user')->link( $article['author'] ),
-									$this->_date->formatStamp( $article['date'] )
+									$this->_date->format( $article['date'] )
 								   );
 						?>
 					</em>

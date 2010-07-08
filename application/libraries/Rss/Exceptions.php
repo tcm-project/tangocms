@@ -11,10 +11,10 @@
  * @package Zula_Rss
  */
 
- 	class Rss_NoFeedInfo extends Exception {}
-	class Rss_RemoteFeed extends Exception {}
-	class Rss_NoSuchNameSpace extends Exception {}
-	class Rss_NoSuchElement extends Exception {}
-	class Rss_ItemNoExist extends Exception {}
+	class Rss_NoFeedInfo extends Zula_Exception {}
+	class Rss_RemoteFeed extends Zula_Exception {}
+	class Rss_NoSuchNameSpace extends Zula_Exception {}
+	class Rss_NoSuchElement extends Zula_Exception {}
+	class Rss_ItemNoExist extends Zula_Exception {}
 
 ?>

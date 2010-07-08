@@ -19,7 +19,6 @@
 		 * and the needed directories/files are writeable.
 		 */
 		public function indexSection() {
-			$this->_locale->textDomain( $this->textDomain() );
 			$this->setTitle( t('Pre installation Checks') );
 			/**
 			 * Make sure user is not trying to skip a head a stage.
@@ -34,7 +33,7 @@
 													'passed'=> false,
 													'values'=> array(
 																	'ctype', 'date', 'dom', 'hash', 'pdo',
-																	'pdo_mysql', 'pcre', 'session', 'simplexml',
+																	'pdo_mysql', 'pcre', 'session', 'json',
 																	)
 													),
 							'optional-ext'	=> array(
@@ -49,6 +48,8 @@
 																	$this->_zula->getDir( 'config' ).'/config.ini.php',
 																	$this->_zula->getDir( 'config' ).'/layouts/admin-default.xml',
 																	$this->_zula->getDir( 'config' ).'/layouts/main-default.xml',
+																	$this->_zula->getDir( 'config' ).'/layouts/fpsc-admin.xml',
+																	$this->_zula->getDir( 'config' ).'/layouts/fpsc-main.xml',
 																	)
 													),
 							'directories'	=> array(
@@ -59,6 +60,7 @@
 																	$this->_zula->getDir( 'logs' ),
 																	$this->_zula->getDir( 'tmp' ),
 																	$this->_zula->getDir( 'uploads' ),
+																	$this->_zula->getDir( 'locale' ),
 																	)
 													),
 						);

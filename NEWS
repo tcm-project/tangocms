@@ -4,13 +4,94 @@ TangoCMS NEWS (Basic ChangeLog for Users)
 
 A complete ChangeLog can be found at http://tangocms.org/changelog
 
+
+2.5.4 (2010-05-18)
+========================
+
+-- Bug Fixes
+
+	*  Bug #285: Zula 'Locale' lib conflicts with PHP intl extension
+
+
+2.5.3 (2010-04-06)
+========================
+
+-- Bug Fixes
+
+	* Bug #260: SQL query error in Media module
+
+
+2.5.2 (2010-04-03)
+========================
+
+-- Feature Improvements/Modifications
+
+	* Feature #253: Display a close button (Tangobox)
+
+-- Bug Fixes
+
+	* Bug #252: AJAX/Inline data closes on button click (Tangobox)
+	* Bug #249: zula_human_readable() is given an object in Media_controller_add
+	* Bug #250: file inputs look ugly in MSIE, and border on hover in chrome
+	* Bug #255: Media, no error message about invalid mime type
+	* Bug #256: Password reset redirects to non existent page
+	* Bug #259: SQL query error upon registering new users
+
+
+2.5.1 (2010-03-21)
+========================
+
+-- Security Fixes
+
+	* Security #237: File Upload Filter Bypass in TangoCMS <=2.5.0
+
+-- Feature Improvements/Modifications
+
+	* Feature #234: Upgrade to TinyMCE 3.3 final
+
+-- Bug Fixes
+
+	* Bug #208: Timezone is not always correctly set, and incorrect dates shown
+	* Bug #233: Session password expire, can still view various URLs
+	* Bug #240: Email signature prepends 2 new lines
+	* Bug #241: WYSIWYG editor does not load with 'standard' router type
+	* Bug #242: Themes file inputs have a border around them
+	* Bug #243: Media thumbnails have a black background in the image
+
+
+2.5.0 (2010-02-17)
+========================
+
+-- Feature Improvements/Modifications
+
+	* Feature #198: Expire users passwords
+	* Feature #200: Lock user accounts so they can not login
+	* Feature #209: Display image title/description
+	* Feature #212: Slideshow for images
+	* Feature #218: Add a 'description' field to Content Layout when managing attached modules
+	* Feature #221: Microsoft Web App Gallery installer
+	* Feature #225: Move 'Mange Validations' from Users to Session module
+	* Feature #227: Upgrade to jQuery 1.4
+
+-- Bug Fixes
+
+	* Bug #205: Manually adding editor shebang with TinyMCE does not change editor type
+	* Bug #210: Contact form converts input options to lowercase
+	* Bug #214: Media upload not work under Windows
+	* Bug #217: Don't install Media module if PHP 'gd' extension is not available
+	* Bug #219: Page Quick Edit Moves Pages in Page Hierarchy
+	* Bug #222: overlayOpacity does not work in MSIE
+	* Bug #223: Duplicate menu in content layout breaks W3C validation
+	* Bug #230: Unable to change case of a group name
+
+
 2.4.0 (2009-12-14)
 ========================
 
 -- Security Fixes
 
 	* Security #188: Media item physical files can be viewed outside of TCM, bypasses ACL checks
-	
+
 -- Feature Improvements/Modifications
 
 	* Feature #145: True 'remember me' feature
@@ -49,8 +130,8 @@ A complete ChangeLog can be found at http://tangocms.org/changelog
 	* Bug #172: RSS fatal error when 'Number of items per feed' set to 0
 	* Bug #173: Incorrect pagination URL at frontpage with 'standard' router
 	* Bug #174: Issue with table prefix over 12 chars long when installing
-	
-	
+
+
 2.3.2 (2009-08-04)
 ========================
 

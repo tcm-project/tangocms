@@ -35,6 +35,12 @@
 		protected $parser;
 
 		/**
+		 * The URL for the content produced by the editor
+		 * @var string
+		 */
+		protected $contentUrl = null;
+
+		/**
 		 * All of the editor libs that have been used
 		 * @var array
 		 */
@@ -163,6 +169,16 @@
 		}
 
 		/**
+		 * Set the content URL to add to a read more link
+		 * if page breaks are enabled when parsing
+		 *
+		 * @param string $url
+		 */
+		public function setContentUrl( $url ) {
+			$this->contentUrl = $url;
+		}
+
+		/**
 		 * Parses text using correct parser, if $break is set
 		 * to a value which equates to true, the text will be
 		 * split at the '<!--break-->' point, instead of
@@ -185,9 +201,14 @@
 					$parsed = $tmpText;
 				}
 			}
+			// Fix for bug #275, replace #foobar with {URL}#foobar (needed due to <base>)
+			$parsed = preg_replace( '/\shref="#([^"]*?)"/i', ' href="' . $this->_router->getRequestPath() . '#$1"', $parsed );
 			if ( $this->_router->getType() == 'standard' ) {
 				// Fix for Bug #167, rewrite URLs to include 'index.php?url='
 				$parsed = preg_replace_callback( '#\shref="(?!(/|[A-Z][A-Z0-9+.\-]+://))(.*?)"#i', array($this, 'cbFixSefUrl'), $parsed );
+			}
+			if ( $break && $this->contentUrl != null ) {
+				$parsed .= sprintf( '<p><a href="%s">%s</a></p>', $this->contentUrl, t('Read more...') );
 			}
 			return $parsed;
 		}

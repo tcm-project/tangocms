@@ -3,7 +3,7 @@
 # Zula Locale Tools
 #
 # Author: Robert Clipsham
-# Copyright: Copyright (c) 2008, 2009 Robert Clipsham
+# Copyright: Copyright (c) 2008, 2009, 2010 Robert Clipsham
 # Licence: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html GNU/LGPL 2.1
 #---
 
@@ -114,7 +114,7 @@ msgstr \"\"
 		if [ "$SPELL_CHECK" == "1" ]; then
 			echo -e "\e[1mFile:\e[m $f"
 		fi
-		MATCHES=`perl -ne '@matches = m/\st\(\s?'"'"'([^'"'"']+)'"'"'\s?,\s?Locale::_DTD\s?\)/g; foreach(@matches) { print "$.\t"; $_ =~ s/\"/\\\"/g; print "$_\t"; }' $f`
+		MATCHES=`perl -ne '@matches = m/\st\(\s?'"'"'([^'"'"']+)'"'"'\s?,\s?I18n::_DTD\s?\)/g; foreach(@matches) { print "$.\t"; $_ =~ s/\"/\\\"/g; print "$_\t"; }' $f`
 		make_arr "$MATCHES"
 		output "$MATCHARR" "$pot_file"
 	done
@@ -122,7 +122,7 @@ msgstr \"\"
 		if [ "$SPELL_CHECK" == "1" ]; then
 			echo -e "\e[1mFile:\e[m $f"
 		fi
-		MATCHES=`perl -ne '@matches = m/\st\(\s?'"'"'([^'"'"']+)'"'"'\s?,\s?Locale::_DTD\s?\)/g; foreach(@matches) { print "$.\t"; $_ =~ s/\"/\\\"/g; print "$_\t"; }' $f`
+		MATCHES=`perl -ne '@matches = m/\st\(\s?'"'"'([^'"'"']+)'"'"'\s?,\s?I18n::_DTD\s?\)/g; foreach(@matches) { print "$.\t"; $_ =~ s/\"/\\\"/g; print "$_\t"; }' $f`
 		make_arr "$MATCHES"
 		output "$MATCHARR" "$pot_file"
 		MATCHES=`perl -ne '@matches = m/{L_\[([^\]]+)\]}/g; foreach(@matches) { print "$.\t"; $_ =~ s/\"/\\\"/g; print "$_\t"; }' $f`
@@ -227,15 +227,16 @@ help() {
 	echo -e "\e[1mUsage:\e[m $0 [OPTIONS]"
 	echo
 	becho "Options"
-	echo -e "\t--gen-mo <language>\t\tGenerate the completed .mo files"
-	echo -e "\t--gen-po <language>\t\tGenerate blank po files for the given langauge (given in the form en_GB)"
-	echo -e "\t--help\t\t\t\tShow this help message"
-	echo -e "\t--merge <language>\t\tMerge the newly generated .pot files with previous completed .po files"
-	echo -e "\t--merge-launchpad\t\tMerge the newly generated .pot files with .po files downloaded from launchpad"
-	echo -e "\t--project-id <id>\t\tThe name of the project"
-	echo -e "\t--project-version <version>\tThe version (guessed if not supplied)"
-	echo -e "\t--spell-check\t\t\tRun a spell check on strings"
-	echo -e "\t--verbose\t\t\tGive debug output"
+	echo "	--gen-mo <language>		Generate the completed .mo files"
+	echo "	--gen-po <language>		Generate blank po files for the given langauge (given in the form en_GB)"
+	echo "	--help				Show this help message"
+	echo "	--install-locales <directory>	Install locales from <directory>"
+	echo "	--merge <language>		Merge the newly generated .pot files with previous completed .po files"
+	echo "	--merge-launchpad		Merge the newly generated .pot files with .po files downloaded from launchpad"
+	echo "	--project-id <id>		The name of the project"
+	echo "	--project-version <version>	The version (guessed if not supplied)"
+	echo "	--spell-check			Run a spell check on strings"
+	echo "	--verbose			Give debug output"
 }
 
 #---
@@ -400,6 +401,14 @@ do
 			help
 			exit 0
 		;;
+		--install-locales)
+			if [ -z "$2" ]; then
+				help
+				exit 1
+			fi
+			INSTALL_DIR=$2
+			shift
+		;;
 		--merge)
 			if [ -z "$2" ]; then
 				help
@@ -443,6 +452,25 @@ do
 	esac
 	shift
 done
+
+if [ ! -z "$INSTALL_DIR" ]; then
+	for lang in `find "$INSTALL_DIR" -type d`; do
+		if [ -d "$lang/LC_MESSAGES" ]; then
+			for domain in `find "$lang/LC_MESSAGES" -name \*.mo`; do
+				project=`echo $domain | perl -p -e 's/.*(zula|tangocms)\-([A-Za-z0-9_\-]+)\.mo/\1/'`
+				module=`echo $domain | perl -p -e 's/.*(zula|tangocms)\-([A-Za-z0-9_\-]+)\.mo/\2/' | perl -p -e 's/\-/_/g'`
+				if [ $project = "zula" ]; then
+					mkdir -p ../application/locale/`basename $lang`/LC_MESSAGES
+					cp "$domain" ../application/locale/`basename $lang`/LC_MESSAGES
+				else
+					mkdir -p ../application/modules/$module/locale/`basename $lang`/LC_MESSAGES
+					cp "$domain" ../application/modules/$module/locale/`basename $lang`/LC_MESSAGES
+				fi
+			done
+		fi
+	done
+	exit
+fi
 
 if [ "$SPELL_CHECK" != "0" ]; then
 	IGNORE_LIST=`cat ignore.list`

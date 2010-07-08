@@ -25,6 +25,7 @@
 			$this->setPageLinks( array(
 										t('Manage Categories')	=> $this->_router->makeUrl( 'media', 'config' ),
 										t('Add Category')		=> $this->_router->makeUrl( 'media', 'config', 'addcat'),
+										t('Manage Outstanding')	=> $this->_router->makeUrl( 'media', 'manage', 'outstanding' ),
 										t('Settings')			=> $this->_router->makeUrl( 'media', 'config', 'settings' ),
 										));
 		}
@@ -35,7 +36,6 @@
 		 * @return string
 		 */
 		public function indexSection() {
-			$this->_locale->textDomain( $this->textDomain() );
 			$this->setTitle( t('Manage Media') );
 			// Check user has correct permission
 			if ( !$this->_acl->checkMulti( array('media_add_category', 'media_edit_category', 'media_delete_category') ) ) {
@@ -57,7 +57,6 @@
 		 * @return string
 		 */
 		public function addCatSection() {
-			$this->_locale->textDomain( $this->textDomain() );
 			$this->setTitle( t('Add Media Category') );
 			// Check permission
 			if ( !$this->_acl->check( 'media_add_category' ) ) {
@@ -88,7 +87,6 @@
 		 * @return string
 		 */
 		public function editCatSection() {
-			$this->_locale->textDomain( $this->textDomain() );
 			$this->setTitle( t('Edit Category') );
 			if ( !$this->_acl->check( 'media_edit_category' ) ) {
 				throw new Module_NoPermission;
@@ -155,7 +153,7 @@
 		 *
 		 * @return bool
 		 */
-		public function bridgeSection() {			
+		public function bridgeSection() {
 			$type = $this->_input->has( 'post', 'media_purge' ) ? 'purge' : 'delete';
 			if ( !$this->_acl->resourceExists( 'media_'.$type.'_category' ) || !$this->_acl->check( 'media_'.$type.'_category' ) ) {
 				throw new Module_NoPermission;
@@ -193,49 +191,89 @@
 		 * @return string
 		 */
 		public function settingsSection() {
-			$this->_locale->textDomain( $this->textDomain() );
 			$this->setTitle( t('Media Settings') );
 			$this->setOutputType( self::_OT_CONFIG );
 			if ( !$this->_acl->check( 'media_manage_settings' ) ) {
 				throw new Module_NoPermission;
 			}
-			if ( $this->_input->has( 'post', 'setting/media' ) ) {
-				if ( $this->_input->checkToken() ) {
-					// Update the settings
-					foreach( $this->_input->post( 'setting/media' ) as $key=>$val ) {
-						try {
-							$this->_config_sql->update( 'media/'.$key, $val );
-						} catch ( Config_KeyNoExist $e ) {
-							$this->_event->error( $e->getMessage() );
-						}
+			// Prepare the form of settings
+			$mediaConf = $this->_config->get( 'media' );
+			$form = new View_form( 'config/settings.html', 'media' );
+			$form->addElement( 'media/per_page', $mediaConf['per_page'], t('Per page'), new Validator_Int )
+				 ->addElement( 'media/use_lightbox', $mediaConf['use_lightbox'], t('Use lightbox'), new Validator_Bool )
+				 ->addElement( 'media/max_fs', $mediaConf['max_fs'], t('Maximum file size'), new Validator_Int )
+				 ->addElement( 'media/max_thumb_width', $mediaConf['max_thumb_width'], t('Thumbnail width'), new Validator_Between(20, 200) )
+				 ->addElement( 'media/max_image_width', $mediaConf['max_image_width'], t('Maximum image width'), new Validator_Between(200, 90000) )
+				 ->addElement( 'media/wm_position', $mediaConf['wm_position'], t('Watermark position'),
+								new Validator_InArray( array('t', 'tr', 'r', 'br', 'b', 'bl', 'l', 'tl') ),
+								false
+							 );
+			if ( $form->hasInput() && $form->isValid() ) {
+				$purgeTmpImages = false;
+				foreach( $form->getValues( 'media' ) as $key=>$val ) {
+					if (
+						($key == 'max_image_width' && $mediaConf['max_image_width'] != $val)
+						||
+						($key == 'wm_position' && $mediaConf['wm_position'] != $val)
+					) {
+						$purgeTmpImages = true;
+					} else if ( $key == 'max_fs' ) {
+						$val = zula_byte_value( $val.$this->_input->post('media/max_fs_unit') );
 					}
-					$this->_event->success( t('Updated Media Settings') );
-				} else {
-					$this->_event->error( Input::csrfMsg() );
+					$this->_config_sql->update( 'media/'.$key, $val );
 				}
-				return zula_redirect( $this->_router->makeUrl( 'media', 'config', 'settings' ) );
-			} else {
-				/**
-				 * Display all of the needed media settings, fun.
-				 */
-				$html = new Html( 'setting[media][%s]' );
-				$options = array(
-								'yn' => array( t('Yes') => true, t('No') => false ),
+				// Upload the watermark
+				if ( $this->_input->has( 'post', 'media_wm_delete' ) ) {
+					unlink( $this->_zula->getDir('uploads').'/media/wm.png' );
+					unlink( $this->_zula->getDir('uploads').'/media/wm_thumb.png' );
+					$purgeTmpImages = true;
+				}
+				try {
+					$uploader = new Uploader( 'media_wm', $this->_zula->getDir('uploads').'/media' );
+					$uploader->subDirectories( false )
+							 ->allowImages();
+					$file = $uploader->getFile();
+					if ( $file->upload() !== false ) {
+						$image = new Image( $file->path );
+						$image->mime = 'image/png';
+						$image->save( $file->dirname.'/wm.png', false );
+						$image->thumbnail( 80, 80 )
+							  ->save( $file->dirname.'/wm_thumb.png' );
+						$purgeTmpImages = true;
+					}
+				} catch ( Uploader_NotEnabled $e ) {
+					$this->_event->error( t('Sorry, it appears file uploads are disabled within your PHP configuration') );
+				} catch ( Uploader_MaxFileSize $e ) {
+					$msg = sprintf( t('Selected file exceeds the maximum allowed file size of %s'),
+									zula_human_readable($e->getMessage())
 								);
-				$view = $this->loadView( 'config/settings.html' );
-				$view->assignHtml( array(
-									'S_THUMB_WIDTH'		=> $html->input( 'thumb_size_x', $this->_config->get( 'media/thumb_size_x' ) ),
-									'S_THUMB_HEIGHT'	=> $html->input( 'thumb_size_y', $this->_config->get( 'media/thumb_size_y' ) ),
-									'S_MEDIUM_WIDTH'	=> $html->input( 'medium_size_x', $this->_config->get( 'media/medium_size_x' ) ),
-									'S_MEDIUM_HEIGHT'	=> $html->input( 'medium_size_y', $this->_config->get( 'media/medium_size_y' ) ),
-
-									'S_PER_PAGE'		=> $html->input( 'per_page', $this->_config->get( 'media/per_page' ) ),
-									'S_LIGHTBOX'		=> $html->radio( 'use_lightbox', $this->_config->get( 'media/use_lightbox' ), $options['yn'] ),
-
-									'CSRF'				=> $this->_input->createToken( true ),
-									));
-				return $view->getOutput();
+					$this->_event->error( $msg );
+				} catch ( Uploader_InvalidMime $e ) {
+					$this->_event->error( t('Sorry, the uploaded file is of the wrong file type') );
+				} catch ( Uploader_Exception $e ) {
+					$this->_log->message( $e->getMessage(), Log::L_WARNING );
+					$this->_event->error( t('Oops, an error occurred while uploading your files') );
+				} catch ( Image_Exception $e ) {
+					$this->_log->message( $e->getMessage(), Log::L_WARNING );
+					$this->_event->error( t('Oops, an error occurred while processing an image') );
+				}
+				// Purge tmp images if needed and redirect
+				if ( $purgeTmpImages ) {
+					$files = (array) glob( $this->_zula->getDir('tmp').'/media/max*-*' );
+					foreach( array_filter( $files ) as $tmpFile ) {
+						unlink( $tmpFile );
+					}
+				}
+				$this->_event->success( t('Updated media settings') );
+				return zula_redirect( $this->_router->makeUrl('media', 'config', 'settings') );
 			}
+			if ( is_file( $this->_zula->getDir('uploads').'/media/wm_thumb.png' ) ) {
+				$wmThumbPath = $this->_zula->getDir( 'uploads', true ).'/media/wm_thumb.png';
+			} else {
+				$wmThumbPath = null;
+			}
+			$form->assign( array('WM_THUMB_PATH' => $wmThumbPath) );
+			return $form->getOutput();
 		}
 
 	}

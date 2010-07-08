@@ -164,7 +164,7 @@
 		 * @param bool $required		Is the field required to have a value?
 		 * @param int $source			Where the data is to come from, GET or POST
 		 * @param bool $forHtml 		Should HTML be allowed in the tag value?
-		 * @return bool
+		 * @return object
 		 */
 		public function addElement( $inputName, $defaultVal=null, $title=null, $validators=null, $required=true, $source=self::_POST, $forHtml=false ) {
 			$details = array(
@@ -190,7 +190,7 @@
 				$this->assign( $value );
 			}
 			$this->elements[] = $details;
-			return true;
+			return $this;
 		}
 
 		/**
@@ -228,7 +228,7 @@
 			$amcTable = '<table>
 							<thead>
 								<tr>
-									<th colspan="2">'.t('Additional Content', Locale::_DTD).'</th>
+									<th colspan="2">'.t('Additional Content', I18n::_DTD).'</th>
 								</tr>
 							</thead>
 							<tbody>';
@@ -303,7 +303,7 @@
 					$this->assignHtml( array('ANTISPAM' => $form) );
 				} else {
 					$this->assignHtml( array('ANTISPAM' => '') );
-					$this->_event->error( t('Unable to create antispam, please check the logs.', Locale::_DTD) );
+					$this->_event->error( t('Unable to create antispam, please check the logs.', I18n::_DTD) );
 				}
 			}
 			$output = parent::getOutput( $parseConfigTags );
@@ -360,7 +360,7 @@
 				}
 				// Check if it is valid
 				$validator = new Validator( $value, $element['title'] );
-				foreach( $element['validators'] as $tmpValidator ) {
+				foreach( array_filter($element['validators']) as $tmpValidator ) {
 					$validator->add( $tmpValidator );
 				}
 				if ( $validator->validate() === false ) {
@@ -379,7 +379,7 @@
 				if ( !$antispam->check() ) {
 					$this->valid = false;
 					if ( $this->storeErrors === true ) {
-						$this->_event->error( t('Sorry, incorrect answer to the captcha', Locale::_DTD) );
+						$this->_event->error( t('Sorry, incorrect answer to the captcha', I18n::_DTD) );
 					}
 				}
 			}

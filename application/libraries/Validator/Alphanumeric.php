@@ -62,12 +62,12 @@
 		public function validate( $value ) {
 			if ( preg_match( $this->pattern, $value ) ) {
 				if ( empty( $this->extra ) ) {
-					$msg = t('%1$s must be alphanumeric only', Locale::_DTD);
+					$msg = t('%1$s must be alphanumeric only', I18n::_DTD);
 				} else {
-					$msg = t('%1$s must be alphanumeric, with additional: ', Locale::_DTD).str_replace( '%', '%%', $this->extra );
+					$msg = t('%1$s must be alphanumeric, with additional: ', I18n::_DTD).str_replace( '%', '%%', $this->extra );
 				}
 				if ( $this->allowSpaces === true ) {
-					$msg .= ' '.t('(spaces allowed)', Locale::_DTD);
+					$msg .= ' '.t('(spaces allowed)', I18n::_DTD);
 				}
 				return $msg;
 			} else {

@@ -287,12 +287,14 @@
 		 * possible shebang (from editor) and other small jazzy things
 		 *
 		 * @param string $str
+		 * @param string $link
 		 * @return string
 		 */
-		protected function prepareDescription( $str ) {
+		protected function prepareDescription( $str, $link ) {
 			$editor = new Editor( $str );
 			$editor->preParse();
-			return $editor->parse();
+			$editor->setContentUrl( $link );
+			return $editor->parse( true );
 		}
 
 		/**
@@ -339,7 +341,7 @@
 			$other = array_merge( $other, array( 'title' 		=> $title,
 							     'link'		=> $link,
 							     'guid'		=> $link,
-							     'description'	=> $this->prepareDescription( $desc ),
+							     'description'	=> $this->prepareDescription( $desc, $link ),
 							     'pubDate'		=> date( 'r' ),
 							   )
 					);
@@ -409,7 +411,7 @@
 			$other['title'] = $title;
 			$other['link']  = $link;
 			$other['guid']  = $link;
-			$other['description'] = is_null($desc) ? null : $this->prepareDescription( $desc );
+			$other['description'] = is_null($desc) ? null : $this->prepareDescription( $desc, $link );
 			$other = array_filter( $other );
 			// Update $this->items
 			foreach( $other as $name=>$value ) {

@@ -5,7 +5,7 @@
  * @patches submit all patches to patches@tangocms.org
  *
  * @author Alex Cartwright
- * @copyright Copyright (C) 2009, Alex Cartwright
+ * @copyright Copyright (C) 2009 Alex Cartwright
  * @license http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GNU/GPL 2
  * @package TangoCMS_Comments
  */
@@ -30,7 +30,6 @@
 		 * @return bool|string
 		 */
 		public function indexSection( $commentId=null ) {
-			$this->_locale->textDomain( $this->textDomain() );
 			$this->setTitle( t('Edit Comment') );
 			// Check if we are editing 'inline' or via the main config cntrlr
 			if ( $this->_router->hasArgument( 'inline' ) || $this->_input->has( 'post', 'comments_inline' ) ) {
@@ -53,7 +52,7 @@
 				return zula_redirect( $url );
 			}
 			if (
-				($comment['user_id'] == UGManager::_GUEST_ID  || $comment['user_id'] != $this->_session->getUserId())
+				($comment['user_id'] == Ugmanager::_GUEST_ID  || $comment['user_id'] != $this->_session->getUserId())
 				&& !$this->_acl->check( 'comments_manage' )
 			) {
 				throw new Module_NoPermission;

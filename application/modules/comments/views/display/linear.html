@@ -23,13 +23,13 @@
 				$i = 0;
 				foreach( $comments as $comment ) {
 					$prefix = '';
-					if ( $comment['user_id'] == UGManager::_GUEST_ID ) {
+					if ( $comment['user_id'] == Ugmanager::_GUEST_ID ) {
 						$prefix = '<span class="prefix">('.t('Guest').') </span>';
 					}
-					$meta = $this->_date->formatStamp( $comment['date'] );
+					$meta = $this->_date->format( $comment['date'] );
 					if (
 						$this->_acl->check( 'comments_manage' ) ||
-						($comment['user_id'] != UGManager::_GUEST_ID && $comment['user_id'] == $this->_session->getUserId())
+						($comment['user_id'] != Ugmanager::_GUEST_ID && $comment['user_id'] == $this->_session->getUserId())
 					) {
 						$editUrl = $this->_router->makeUrl( 'comments', 'edit', $comment['id'], null, array('inline' => 1) );
 						$meta .= '<span class="comments-manage"><a href="'.$editUrl.'">'.t('Edit').'</a></span>';

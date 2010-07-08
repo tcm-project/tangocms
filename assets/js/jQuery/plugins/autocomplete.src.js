@@ -1,29 +1,26 @@
 /*
-*  Ajax Autocomplete for jQuery, version 1.0.7
+*  Ajax Autocomplete for jQuery, version 1.1
 *  (c) 2009 Tomas Kirda
 *
 *  Ajax Autocomplete for jQuery is freely distributable under the terms of an MIT-style license.
 *  For details, see the web site: http://www.devbridge.com/projects/autocomplete/jquery/
 *
-*  Last Review: 07/27/2009
+*  Last Review: 09/27/2009
 */
+
+/*jslint onevar: true, evil: true, nomen: true, eqeqeq: true, bitwise: true, regexp: true, newcap: true, immed: true */
+/*global window: true, document: true, clearInterval: true, setInterval: true, jQuery: true */
 
 (function($) {
 
-  $.fn.autocomplete = function(options) {
-    return this.each(function() {
-      return new Autocomplete(this, options);
-    });
-  };
-
   var reEscape = new RegExp('(\\' + ['/', '.', '*', '+', '?', '|', '(', ')', '[', ']', '{', '}', '\\'].join('|\\') + ')', 'g');
 
-  var fnFormatResult = function(value, data, currentValue) {
+  function fnFormatResult(value, data, currentValue) {
     var pattern = '(' + currentValue.replace(reEscape, '\\$1') + ')';
     return value.replace(new RegExp(pattern, 'gi'), '<strong>$1<\/strong>');
-  };
+  }
 
-  var Autocomplete = function(el, options) {
+  function Autocomplete(el, options) {
     this.el = $(el);
     this.el.attr('autocomplete', 'off');
     this.suggestions = [];
@@ -46,15 +43,17 @@
       highlight: true,
       params: {},
       fnFormatResult: fnFormatResult,
-      delimiter: null
+      delimiter: null,
+      zIndex: 9999
     };
-    if (options) { $.extend(this.options, options); }
-    if(this.options.lookup){
-      this.isLocal = true;
-      if($.isArray(this.options.lookup)){ this.options.lookup = { suggestions:this.options.lookup, data:[] }; }
-    }
     this.initialize();
+    this.setOptions(options);
+  }
+
+  $.fn.autocomplete = function(options) {
+    return new Autocomplete(this.get(0), options);
   };
+
 
   Autocomplete.prototype = {
 
@@ -62,10 +61,10 @@
 
     initialize: function() {
 
-      var me, zindex;
+      var me, uid, autocompleteElId;
       me = this;
-
-      zindex = Math.max.apply(null, $.map($('body > *'), function(e, n) { var pos = $(e).css('position'); if (pos === 'absolute' || pos === 'relative') { return parseInt($(e).css('z-index'), 10) || 1; } }));
+      uid = new Date().getTime();
+      autocompleteElId = 'Autocomplete_' + uid;
 
       this.killerFn = function(e) {
         if ($(e.target).parents('.autocomplete').size() === 0) {
@@ -74,13 +73,10 @@
         }
       };
 
-      var uid = new Date().getTime();
-      var autocompleteElId = 'Autocomplete_' + uid;
-
-      if (!this.options.width) { this.options.width = this.el.outerWidth(false)-2; }
+      if (!this.options.width) { this.options.width = this.el.outerWidth(true)-2; }
       this.mainContainerId = 'AutocompleteContainter_' + uid;
 
-      $('<div id="' + this.mainContainerId + '" style="position:absolute;z-index:' + zindex + '"><div class="autocomplete-w1"><div class="autocomplete" id="' + autocompleteElId + '" style="display:none; width:' + this.options.width + 'px;"></div></div></div>').appendTo('body');
+      $('<div id="' + this.mainContainerId + '" style="position:absolute;z-index:9999;"><div class="autocomplete-w1"><div class="autocomplete" id="' + autocompleteElId + '" style="display:none; width:300px;"></div></div></div>').appendTo('body');
 
       this.container = $('#' + autocompleteElId);
       this.fixPosition();
@@ -92,8 +88,30 @@
       this.el.keyup(function(e) { me.onKeyUp(e); });
       this.el.blur(function() { me.enableKillerFn(); });
       this.el.focus(function() { me.fixPosition(); });
+    },
 
-      this.container.css({ maxHeight: this.options.maxHeight + 'px' });
+    setOptions: function(options){
+      var o = this.options;
+      $.extend(o, options);
+      if(o.lookup){
+        this.isLocal = true;
+        if($.isArray(o.lookup)){ o.lookup = { suggestions:o.lookup, data:[] }; }
+      }
+      $('#'+this.mainContainerId).css({ zIndex:o.zIndex });
+      this.container.css({ maxHeight: o.maxHeight + 'px', width:o.width });
+    },
+
+    clearCache: function(){
+      this.cachedResponse = [];
+      this.badQueries = [];
+    },
+
+    disable: function(){
+      this.disabled = true;
+    },
+
+    enable: function(){
+      this.disabled = false;
     },
 
     fixPosition: function() {
@@ -122,27 +140,27 @@
     },
 
     onKeyPress: function(e) {
-      if (!this.enabled) { return; }
+      if (this.disabled || !this.enabled) { return; }
       // return will exit the function
-      // and event will not fire
+      // and event will not be prevented
       switch (e.keyCode) {
-        case 27: //Event.KEY_ESC:
+        case 27: //KEY_ESC:
           this.el.val(this.currentValue);
           this.hide();
           break;
-        case 9: //Event.KEY_TAB:
-        case 13: //Event.KEY_RETURN:
+        case 9: //KEY_TAB:
+        case 13: //KEY_RETURN:
           if (this.selectedIndex === -1) {
             this.hide();
             return;
           }
           this.select(this.selectedIndex);
-          if (e.keyCode === 9/* Event.KEY_TAB */) { return; }
+          if (e.keyCode === 9/* KEY_TAB */) { return; }
           break;
-        case 38: //Event.KEY_UP:
+        case 38: //KEY_UP:
           this.moveUp();
           break;
-        case 40: //Event.KEY_DOWN:
+        case 40: //KEY_DOWN:
           this.moveDown();
           break;
         default:
@@ -153,15 +171,16 @@
     },
 
     onKeyUp: function(e) {
+      if(this.disabled){ return; }
       switch (e.keyCode) {
-        case 38: //Event.KEY_UP:
-        case 40: //Event.KEY_DOWN:
-          if ( $(this.container).find('> div').length ) {
-	          return;
-	      }
+        case 38: //KEY_UP:
+        case 40: //KEY_DOWN:
+			if ( $(this.container).find("> div").length == 0 ) {
+				return;
+			}
       }
       clearInterval(this.onChangeInterval);
-      if (this.currentValue !== this.el.val() || e.keyCode == 40 ) {
+      if (this.currentValue !== this.el.val() || e.keyCode == 40) {
         if (this.options.deferRequestBy > 0) {
           // Defer lookup in case when value changes very quickly:
           var me = this;
@@ -197,22 +216,23 @@
     },
 
     getSuggestionsLocal: function(q) {
-      var ret, arr, len, val;
+      var ret, arr, len, val, i;
       arr = this.options.lookup;
       len = arr.suggestions.length;
       ret = { suggestions:[], data:[] };
-      for(var i=0; i< len; i++){
+      q = q.toLowerCase();
+      for(i=0; i< len; i++){
         val = arr.suggestions[i];
-        if(val.toLowerCase().indexOf(q.toLowerCase()) === 0){
+        if(val.toLowerCase().indexOf(q) === 0){
           ret.suggestions.push(val);
           ret.data.push(arr.data[i]);
         }
       }
       return ret;
     },
-    
+
     getSuggestions: function(q) {
-      var cr, me, ls;
+      var cr, me;
       cr = this.isLocal ? this.getSuggestionsLocal(q) : this.cachedResponse[q];
       if (cr && $.isArray(cr.suggestions)) {
         this.suggestions = cr.suggestions;
@@ -237,7 +257,6 @@
       this.enabled = false;
       this.selectedIndex = -1;
       this.container.hide();
-      $(this.container).find('> div').remove();
     },
 
     suggest: function() {
@@ -246,17 +265,19 @@
         return;
       }
 
-      var me, len, div, f;
+      var me, len, div, f, v, i, s, mOver, mClick;
       me = this;
       len = this.suggestions.length;
       f = this.options.fnFormatResult;
       v = this.getQuery(this.currentValue);
+      mOver = function(xi) { return function() { me.activate(xi); }; };
+      mClick = function(xi) { return function() { me.select(xi); }; };
       this.container.hide().empty();
-      for (var i = 0; i < len; i++) {
-        div = $((me.selectedIndex === i ? '<div class="selected"' : '<div') + ' title="' + this.suggestions[i] + '">' + f(this.suggestions[i], this.data[i], v) + '</div>');
-        div.mouseover((function(xi) { return function() { me.activate(xi); }; })(i));
-        div.click((function(xi) { return function() { me.select(xi); }; })(i));
-        //console.log(div);
+      for (i = 0; i < len; i++) {
+        s = this.suggestions[i];
+        div = $((me.selectedIndex === i ? '<div class="selected"' : '<div') + ' title="' + s + '">' + f(s, this.data[i], v) + '</div>');
+        div.mouseover(mOver(i));
+        div.click(mClick(i));
         this.container.append(div);
       }
       this.enabled = true;
@@ -270,20 +291,17 @@
       } catch (err) { return; }
       if (!$.isArray(response.data)) { response.data = []; }
       this.cachedResponse[response.query] = response;
-      if ( typeof response.suggestions === 'undefined' ) {
-      	response.suggestions = [];
-      }
       if (response.suggestions.length === 0) { this.badQueries.push(response.query); }
       if (response.query === this.getQuery(this.currentValue)) {
         this.suggestions = response.suggestions;
         this.data = response.data;
-        this.suggest(); 
+        this.suggest();
       }
     },
 
     activate: function(index) {
-      var divs = this.container.children();
-      var activeItem;
+      var divs, activeItem;
+      divs = this.container.children();
       // Clear previous selection:
       if (this.selectedIndex !== -1 && divs.length > this.selectedIndex) {
         $(divs.get(this.selectedIndex)).attr('class', '');
@@ -302,11 +320,12 @@
     },
 
     select: function(i) {
-      var selectedValue = this.suggestions[i];
+      var selectedValue, f;
+      selectedValue = this.suggestions[i];
       if (selectedValue) {
         this.el.val(selectedValue);
         if (this.options.autoSubmit) {
-          var f = this.el.parents('form');
+          f = this.el.parents('form');
           if (f.length > 0) { f.get(0).submit(); }
         }
         this.ignoreValueChange = true;
@@ -342,7 +361,7 @@
       } else if (offsetTop > lowerBound) {
         this.container.scrollTop(offsetTop - this.options.maxHeight + 25);
       }
-      this.el.val(this.suggestions[i]);
+      //this.el.val(this.suggestions[i]);
     },
 
     onSelect: function(i) {
@@ -350,11 +369,11 @@
       me = this;
       onSelect = me.options.onSelect;
       getValue = function(value) {
-        var del, currVal;
+        var del, currVal, arr;
         del = me.options.delimiter;
-        currVal = me.currentValue;
         if (!del) { return value; }
-        var arr = currVal.split(del);
+        currVal = me.currentValue;
+        arr = currVal.split(del);
         if (arr.length === 1) { return value; }
         return currVal.substr(0, currVal.length - arr[arr.length - 1].length) + value;
       };
@@ -366,4 +385,4 @@
 
   };
 
-})(jQuery);
+}(jQuery));

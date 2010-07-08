@@ -36,7 +36,6 @@
 		 * @return string|bool
 		 */
 		public function indexSection() {
-			$this->_locale->textDomain( $this->textDomain() );
 			$this->setTitle( t('Manage Polls') );
 			$this->setOutputType( self::_OT_CONFIG );
 			if ( $this->_input->checkToken() ) {
@@ -98,7 +97,6 @@
 			if ( !$this->_acl->check( 'poll_add' ) ) {
 				throw new Module_NoPermission;
 			}
-			$this->_locale->textDomain( $this->textDomain() );
 			$this->setTitle( t('Add Poll') );
 			$this->setOutputType( self::_OT_CONFIG );
 			// Get and check if form is valid
@@ -129,7 +127,6 @@
 			if ( !$this->_acl->check( 'poll_edit' ) ) {
 				throw new Module_NoPermission;
 			}
-			$this->_locale->textDomain( $this->textDomain() );
 			$this->setTitle( t('Edit Poll') );
 			$this->setOutputType( self::_OT_CONFIG );
 			try {
@@ -183,7 +180,7 @@
 			$form->addElement( 'poll/duration', $duration, t('Duration'), new Validator_Between(0, 7) );
 			$form->addElement( 'poll/status', $status, t('Status'), new Validator_InArray( array('active', 'closed') ) );
 			if ( $op == 'add' ) {
-				$form->addElement( 'poll/options', $options, t('Options'), new Validator_Between(2, 10) );
+				$form->addElement( 'poll/options', $options, t('Options'), new Validator_Between(2, 100) );
 				try {
 					foreach( $this->_input->post( 'poll/options' ) as $key=>$tmpOpt ) {
 						$form->addElement( 'poll/options/'.$key, $key, sprintf( t('Option %1$d'), $key+1 ), new Validator_Length(1, 255) );
@@ -212,7 +209,6 @@
 			if ( !$this->_acl->check( 'poll_edit' ) ) {
 				throw new Module_NoPermission;
 			}
-			$this->_locale->textDomain( $this->textDomain() );
 			$this->setTitle( t('Add Option') );
 			$this->setOutputType( self::_OT_CONFIG );
 			// Get which poll to add the option to
@@ -250,7 +246,6 @@
 			if ( !$this->_acl->check( 'poll_edit' ) ) {
 				throw new Module_NoPermission;
 			}
-			$this->_locale->textDomain( $this->textDomain() );
 			$this->setTitle( t('Edit Poll Option') );
 			$this->setOutputType( self::_OT_CONFIG );
 			// Get which option we are to edit
@@ -301,7 +296,6 @@
 		 * @return string
 		 */
 		public function delOptSection() {
-			$this->_locale->textDomain( $this->textDomain() );
 			$this->setOutputType( self::_OT_CONFIG );
 			if ( !$this->_acl->check( 'poll_delete' ) ) {
 				throw new Module_NoPermission;

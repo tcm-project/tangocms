@@ -5,7 +5,7 @@
  * @patches submit all patches to patches@tangocms.org
  *
  * @author Alex Cartwright
- * @copyright Copyright (C) 2009, Alex Cartwright
+ * @copyright Copyright (C) 2009 Alex Cartwright
  * @license http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GNU/GPL 2
  * @package TangoCMS_Comments
  */
@@ -19,7 +19,6 @@
 		 * @return bool|string
 		 */
 		public function indexSection() {
-			$this->_locale->textDomain( $this->textDomain() );
 			$this->setTitle( t('Post Comment') );
 			if ( !$this->_acl->check( 'comments_post' ) ) {
 				throw new Module_NoPermission;
@@ -27,9 +26,9 @@
 			// Check request path hash
 			try {
 				$hashPath = $this->_input->post( 'comments/hash' );
-				if ( isset( $_SESSION['comments'][ $hashPath ] ) ) {
-					$requestPath = $_SESSION['comments'][ $hashPath ]['path'];
-					$siteType = $_SESSION['comments'][ $hashPath ]['siteType'];
+				if ( isset( $_SESSION['mod']['comments'][ $hashPath ] ) ) {
+					$requestPath = $_SESSION['mod']['comments'][ $hashPath ]['path'];
+					$siteType = $_SESSION['mod']['comments'][ $hashPath ]['siteType'];
 				} else {
 					throw new Exception;
 				}

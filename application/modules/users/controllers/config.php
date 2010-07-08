@@ -8,7 +8,7 @@
  *
  * @author Alex Cartwright
  * @author Robert Clipsham
- * @copyright Copyright (C) 2007, 2008, 2009 Alex Cartwright
+ * @copyright Copyright (C) 2007, 2008, 2009, 2010 Alex Cartwright
  * @license http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GNU/GPL 2
  * @package TangoCMS_Users
  */
@@ -31,7 +31,6 @@
 			$this->setPageLinks( array(
 										t('Latest Users')		=> $this->_router->makeUrl( 'users', 'config' ),
 										t('Add User')			=> $this->_router->makeUrl( 'users', 'config', 'add' ),
-										t('Manage Validations')	=> $this->_router->makeUrl( 'users', 'config', 'validation' ),
 										));
 		}
 
@@ -41,7 +40,6 @@
 		 * @return string
 		 */
 		public function indexSection() {
-			$this->_locale->textDomain( $this->textDomain() );
 			$this->setTitle( t('User Management') );
 			$this->setOutputType( self::_OT_CONFIG );
 			// Check user has correct permission
@@ -66,7 +64,7 @@
 									'PAGINATION' 	=> $pagination->build(),
 									));
 			// Autocomplete/suggest feature
-			$this->_theme->addJsFile( 'jQuery/plugins/autocomplete.js' );
+			$this->_theme->addJsFile( 'jquery.autocomplete' );
 			$this->_theme->addCssFile( 'jquery.autocomplete.css' );
 			$this->addAsset( 'js/autocomplete.js' );
 			return $view->getOutput();
@@ -78,78 +76,24 @@
 		 * @return false
 		 */
 		public function autocompleteSection() {
-			if ( !_AJAX_REQUEST ) {
-				throw new Module_AjaxOnly;
-			}
-			header( 'Content-Type: text/javascript; charset=utf-8' );
-			$searchTitle = '%'.str_replace( '%', '\%', $this->_input->get('query') ).'%';
-			$pdoSt = $this->_sql->prepare( 'SELECT id, username FROM {SQL_PREFIX}users WHERE username LIKE ?' );
-			$pdoSt->execute( array($searchTitle) );
-			// Setup the object to return
-			$jsonObj = new StdClass;
-			$jsonObj->query = $this->_input->get( 'query' );
-			foreach( $pdoSt->fetchAll( PDO::FETCH_ASSOC ) as $row ) {
-				$jsonObj->suggestions[] = $row['username'];
-				$jsonObj->data[] = $this->_router->makeFullUrl( 'users', 'config', 'edit', 'admin', array('id' => $row['id']) );
-			}
-			echo json_encode( $jsonObj );
-			return false;
-		}
-
-		/**
-		 * Manages a users validation, either to accept or decline. If declined
-		 * the user will be removed so another user can be added with that name.
-		 *
-		 * @return string
-		 */
-		public function validationSection() {
-			$this->_locale->textDomain( $this->textDomain() );
-			$this->setTitle( t('Manage Validations') );
-			$this->setOutputType( self::_OT_CONFIG );
-			if ( !$this->_acl->check( 'users_manage_validations' ) ) {
-				throw new Module_NoPermission;
-			}
-			// Build form validation
-			$form = new View_form( 'config/validation.html', 'users' );
-			$form->addElement( 'users/action', null, t('Action'), new Validator_InArray( array('accept', 'decline') ) );
-			$form->addElement( 'users/uids', null, t('Users'), new Validator_Is('array') );
-			if ( $form->hasInput() && $form->isValid() ) {
-				// Activate or Decline/Remove all selected users
-				foreach( $form->getValues( 'users/uids' ) as $user ) {
-					try {
-						$user = $this->_ugmanager->getUser( $user );
-						if ( $user['activate_code'] ) {
-							if ( $form->getValues( 'users/action' ) == 'accept' ) {
-								$this->_ugmanager->activateUser( $user['activate_code'] );
-								$viewFile = 'config/validation_accepted.txt';
-								$eventMsg = t('Selected users are now active');
-							} else {
-								$this->_ugmanager->deleteUser( $user['id'] );
-								$viewFile = 'config/validation_declined.txt';
-								$eventMsg = t('Selected users have been declined');
-							}
-							$msgView = $this->loadView( $viewFile );
-							$msgView->assign( array('USERNAME' => $user['username']) );
-							// Send off the correct email to the user, to notify them.
-							$message = new Email_Message( t('Account Status'), $msgView->getOutput() );
-							$message->setTo( $user['email'] );
-							$email = new Email;
-							$email->send( $message );
-						}
-					} catch ( UGManager_UserNoExist $e ) {
-						$this->_event->error( t('User does not exist') );
-					} catch ( Email_Exception $e ) {
-						$this->_event->error( t('An error occurred when sending the validation email') );
-						$this->_log->message( 'Unable to send validation email: '.$e->getMessage(), Log::L_WARNING );
-					} catch ( Exception $e ) {
-						$this->_event->error( $e->getMessage() );
-					}
+			try {
+				$query = $this->_input->get( 'query' );
+				$searchTitle = '%'.str_replace( '%', '\%', $query ).'%';
+				$pdoSt = $this->_sql->prepare( 'SELECT id, username FROM {SQL_PREFIX}users WHERE username LIKE ?' );
+				$pdoSt->execute( array($searchTitle) );
+				// Setup the object to return
+				$jsonObj = new StdClass;
+				$jsonObj->query = $query;
+				foreach( $pdoSt->fetchAll( PDO::FETCH_ASSOC ) as $row ) {
+					$jsonObj->suggestions[] = $row['username'];
+					$jsonObj->data[] = $this->_router->makeFullUrl( 'users', 'config', 'edit', 'admin', array('id' => $row['id']) );
 				}
-				$this->_event->success( $eventMsg );
-				return zula_redirect( $this->_router->makeUrl( 'users', 'config', 'validation' ) );
+				header( 'Content-Type: text/javascript; charset=utf-8' );
+				echo json_encode( $jsonObj );
+				return false;
+			} catch ( Input_KeyNoExist $e ) {
+				trigger_error( $e->getMessage(), E_USER_ERROR );
 			}
-			$form->assign( array('VALIDATIONS' => $this->_ugmanager->awaitingValidation()) );
-			return $form->getOutput();
 		}
 
 		/**
@@ -158,7 +102,6 @@
 		 * @return string|bool
 		 */
 		public function addSection() {
-			$this->_locale->textDomain( $this->textDomain() );
 			$this->setTitle( t('Add User') );
 			$this->setOutputType( self::_OT_CONFIG );
 			if ( !$this->_acl->check( 'users_add' ) ) {
@@ -172,9 +115,9 @@
 					$uid = $this->_ugmanager->addUser( $details );
 					$this->_event->success( sprintf( t('Added user "%1$s"'), $details['username'] ) );
 					return zula_redirect( $this->_router->makeUrl( 'users', 'config' ) );
-				} catch ( UGManager_GroupNoExist $e ) {
+				} catch ( Ugmanager_GroupNoExist $e ) {
 					$this->_event->error( t('Selected group does not exist') );
-				} catch ( UGManager_UserExists $e ) {
+				} catch ( Ugmanager_UserExists $e ) {
 					$this->_event->error( t('Username already exists') );
 				}
 			}
@@ -187,7 +130,6 @@
 		 * @return string|bool
 		 */
 		public function editSection() {
-			$this->_locale->textDomain( $this->textDomain() );
 			$this->setTitle( t('Edit User') );
 			$this->setOutputType( self::_OT_CONFIG );
 			if ( !$this->_acl->check( 'users_edit' ) ) {
@@ -196,7 +138,7 @@
 			// Get the UID and details to edit
 			try {
 				$user = $this->_ugmanager->getUser( $this->_router->getArgument('id') );
-				if ( $user['id'] == UGManager::_GUEST_ID ) {
+				if ( $user['id'] == Ugmanager::_GUEST_ID ) {
 					$this->_event->error( t('You can not edit the guest user!') );
 				} else {
 					$this->setTitle( sprintf( t('Edit User "%1$s"'), $user['username'] ), false );
@@ -209,9 +151,9 @@
 							$this->_ugmanager->editUser( $user['id'], $details );
 							$this->_event->success( sprintf( t('Edited user "%s"'), $details['username'] ) );
 							return zula_redirect( $this->_router->makeUrl( 'users', 'config' ) );
-						} catch ( UGmanager_GroupNoExist $e ) {
+						} catch ( Ugmanager_GroupNoExist $e ) {
 							$this->_event->error( t('Selected group does not exist') );
-						} catch ( UGmanager_UserExists $e ) {
+						} catch ( Ugmanager_UserExists $e ) {
 							$this->_event->error( t('Username already exists') );
 						}
 					}
@@ -219,7 +161,7 @@
 				}
 			} catch ( Router_ArgNoExist $e ) {
 				$this->_event->error( t('No user selected') );
-			} catch ( UGmanager_UserNoExist $e ) {
+			} catch ( Ugmanager_UserNoExist $e ) {
 				$this->_event->error( t('User does not exist') );
 			}
 			return zula_redirect( $this->_router->makeUrl( 'users', 'config' ) );
@@ -232,7 +174,6 @@
 		 * @return object
 		 */
 		protected function buildUserForm( array $details=array() ) {
-			$this->_locale->textDomain( $this->textDomain() );
 			$op = empty($details['id']) ? 'add' : 'edit';
 			$details = zula_merge_recursive( array(
 												'id'			=> null,
@@ -297,7 +238,6 @@
 		 * @return string
 		 */
 		public function deleteSection() {
-			$this->_locale->textDomain( $this->textDomain() );
 			$this->setOutputType( self::_OT_CONFIG );
 			if ( !$this->_acl->check( 'users_delete' ) ) {
 				throw new Module_NoPermission;
@@ -310,9 +250,9 @@
 						try {
 							$this->_ugmanager->deleteUser( $uid );
 							++$delCount;
-						} catch ( UGManager_InvalidUser $e ) {
+						} catch ( Ugmanager_InvalidUser $e ) {
 							$this->_event->error( t('You can not delete the root or guest user')  );
-						} catch ( UGManager_UserNoExist $e ) {
+						} catch ( Ugmanager_UserNoExist $e ) {
 						}
 					}
 					if ( $delCount > 0 ) {

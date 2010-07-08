@@ -22,7 +22,6 @@
 		 * @return string
 		 */
 		public function indexSection() {
-			$this->_locale->textDomain( $this->textDomain() );
 			$this->setTitle( t('SQL Details') );
 			/**
 			 * Make sure user is not trying to skip ahead

@@ -22,7 +22,6 @@
 		 * @return string
 		 */
 		public function indexSection() {
-			$this->_locale->textDomain( $this->textDomain() );
 			$this->setTitle( t('First User') );
 			/**
 			 * Make sure user is not skipping a head
@@ -43,7 +42,7 @@
 					$pdoSt = $this->_sql->prepare( 'UPDATE {SQL_PREFIX}users SET
 													username = :username,
 													password = :password,
-													joined = NOW(),
+													joined = UTC_TIMESTAMP(),
 													email = :email WHERE id = 2' );
 					$pdoSt->execute( array(
 											':username'	=> $fd['username'],

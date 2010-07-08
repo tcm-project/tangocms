@@ -26,8 +26,10 @@
 										t('System Information')			=> $this->_router->makeUrl( 'sysinfo' ),
 										t('Writable Files/Directories')	=> $this->_router->makeUrl( 'sysinfo', 'index', 'writable' ),
 										t('Update Checker')				=> $this->_router->makeUrl( 'sysinfo', 'index', 'update' ),
-										t('PHP Info')					=> $this->_router->makeUrl( 'sysinfo', 'index', 'phpinfo' ),
-										));
+									 ));
+			if ( function_exists( 'phpinfo' ) ) {
+				$this->setPageLinks( array(t('PHP Info') => $this->_router->makeUrl('sysinfo', 'index', 'phpinfo')) );
+			}
 		}
 
 		/**
@@ -37,7 +39,6 @@
 		 * @return string
 		 */
 		public function indexSection() {
-			$this->_locale->textDomain( $this->textDomain() );
 			$this->setTitle( t('System Information') );
 			$this->setOutputType( self::_OT_INFORMATIVE );
 			// Build view with all the lovely information
@@ -67,7 +68,6 @@
 		 * @return string
 		 */
 		public function writableSection() {
-			$this->_locale->textDomain( $this->textDomain() );
 			$this->setTitle( t('Writable Files/Directories') );
 			$this->setOutputType( self::_OT_INFORMATIVE );
 			// Generate array of all files/dirs
@@ -105,7 +105,6 @@
 		 */
 		public function updateSection() {
 			$this->setTitle( t('Update Checker') );
-			$this->_locale->textDomain( $this->textDomain() );
 			$this->setOutputType( self::_OT_INFORMATIVE );
 			// Gather the latest stable and unstable versions
 			$versions = array( 'stable' => t('Unknown'), 'unstable' => t('Unknown') );
@@ -141,8 +140,12 @@
 		 * @return bool
 		 */
 		public function phpinfoSection() {
-			phpinfo();
-			return false;
+			if ( function_exists( 'phpinfo' ) ) {
+				phpinfo();
+				return false;
+			} else {
+				throw new Module_ControllerNoExist;
+			}
 		}
 
 	}

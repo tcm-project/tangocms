@@ -7,17 +7,17 @@
  * @patches submit all patches to patches@tangocms.org
  *
  * @author Alex Cartwright
- * @copyright Copyright (C) 2007, 2008, 2009 Alex Cartwright
+ * @copyright Copyright (C) 2007, 2008, 2009, 2010 Alex Cartwright
  * @license http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html GNU/LGPL 2.1
  * @package Zula_View
  */
 
- 	class View_FileNoExist extends Exception {}
+	class View_FileNoExist extends Zula_Exception {}
 
-	class View_TagNotAssigned extends Exception {}
-	class View_InvalidTagValue extends Exception {}
+	class View_TagNotAssigned extends Zula_Exception {}
+	class View_InvalidTagValue extends Zula_Exception {}
 
-	class View_FormValueNoExist extends Exception {}
-	class View_HelperNoExist extends Exception {}
+	class View_FormValueNoExist extends Zula_Exception {}
+	class View_HelperNoExist extends Zula_Exception {}
 
 ?>

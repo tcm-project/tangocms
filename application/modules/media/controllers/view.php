@@ -25,15 +25,12 @@
 		 * @return mixed
 		 */
 		public function __call( $name, $args ) {
-			$this->_locale->textDomain( $this->textDomain() );
 			$this->setTitle( t('View Media Item') );
 			// Which format to display the media item as (mostly for Image types)
 			try {
 				$format = $this->_input->get( 'f' );
 				if ( in_array( $format, array('large', 'medium', 'thumb', 'stream') ) ) {
 					$this->_session->storePrevious( false );
-					$this->_dispatcher->standalone( true )
-									  ->displayErrors( false );
 				} else {
 					$format = null;
 				}
@@ -55,7 +52,8 @@
 				if ( $format == null ) {
 					return $this->buildView( $item, $category );
 				} else {
-					return $this->displayFormat( $item, $format );
+					$this->displayFormat( $item, $format );
+					return false;
 				}
 			} catch ( Media_ItemNoExist $e ) {
 				throw new Module_ControllerNoExist;
@@ -87,11 +85,36 @@
 			if ( $item['type'] == 'video' || $item['type'] == 'audio' ) {
 				$this->_theme->addJsFile( 'flowplayer/flowplayer.js' );
 				$this->addAsset( 'js/player.js' );
+				// Calculate the width/height of the player
+				try {
+					$contentWidth = $this->_theme->getDetail( 'contentWidth' );
+				} catch ( Theme_DetailNoExist $e ) {
+					$contentWidth = 500;
+				}
+				if ( $contentWidth <= 240 ) {
+					$playerWidth = 240;
+				} else if ( $contentWidth <= 320 ) {
+					$playerWidth = 320;
+				} else if ( $contentWidth <= 480 ) {
+					$playerWidth = 480;
+				} else if ( $contentWidth <= 560 ) {
+					$playerWidth = 560;
+				} else if ( $contentWidth <= 640 ) {
+					$playerWidth = 640;
+				} else if ( $contentWidth <= 720 ) {
+					$playerWidth = 720;
+				} else {
+					$playerWidth = 960;
+				}
 			}
 			$view = $this->loadView( 'view/view.html' );
 			$view->assign( array(
 								'ITEM'		=> $item,
 								'CATEGORY'	=> $category,
+								'PLAYER'	=> array(
+													'WIDTH'		=> isset($playerWidth) ? $playerWidth : null,
+													'HEIGHT'	=> isset($playerWidth) ? $playerWidth / 16*9 : null,
+													),
 								));
 			// Check if lightbox effect needs to be used
 			if ( $item['type'] == 'image' && $this->_config->get( 'media/use_lightbox' ) ) {
@@ -101,7 +124,7 @@
 			} else {
 				$view->assign( array('LIGHTBOX' => false) );
 			}
-			return $view->getOutput();			
+			return $view->getOutput();
 		}
 
 		/**
@@ -115,11 +138,40 @@
 			if ( $format == 'thumb' ) {
 				$file = $item['path_fs'].'/'.$item['thumbnail'];
 			} else if ( $item['type'] == 'image' ) {
-				// Get either full size, or medium image
-				if ( $format == 'medium' ) {
-					$file = $item['path_fs'].'/medium_'.$item['filename'];
-				} else if ( $format == 'large' ) {
-					$file = $item['path_fs'].'/'.$item['filename'];
+				/**
+				 * Get either full or medium sized image, however no large than
+				 * the specified max width.
+				 */
+				$imgPath = $item['path_fs'].'/'.$item['filename'];
+				if ( is_file( $imgPath ) ) {
+					list( $imgWidth ) = getimagesize( $imgPath );
+					$maxWidth = $this->_config->get( 'media/max_image_width' );
+					if ( $format == 'medium' ) {
+						// Display the medium size image no wider than the themes content
+						try {
+							$contentWidth = $this->_theme->getDetail( 'contentWidth' );
+						} catch ( Theme_DetailNoExist $e ) {
+							$contentWidth = 500;
+						}
+						if ( $contentWidth < $maxWidth ) {
+							$maxWidth = $contentWidth;
+						}
+					}
+					// Resize and add watermark if needed
+					$wmPath = $this->_zula->getDir( 'uploads' ).'/media/wm.png';
+					if ( $imgWidth <= $maxWidth && !is_file( $wmPath ) ) {
+						$file = $imgPath;
+					} else {
+						$file = $this->_zula->getDir( 'tmp' )."/media/max{$maxWidth}-".pathinfo($item['filename'], PATHINFO_BASENAME);
+						if ( !is_file( $file ) ) {
+							$image = new Image( $imgPath );
+							$image->resize( $maxWidth, null, false );
+							if ( is_file( $wmPath ) ) {
+								$image->watermark( $wmPath, $this->_config->get('media/wm_position') );
+							}
+							$image->save( $file );
+						}
+					}
 				}
 			} else if ( $format == 'stream' && $item['type'] == 'audio' || $item['type'] == 'video' ) {
 				$file = $item['path_fs'].'/'.$item['filename'];
@@ -127,7 +179,7 @@
 			if ( isset( $file ) && is_file( $file ) ) {
 				zula_readfile( $file );
 				return false;
-			} else if ( $format == 'thumb' ) {				
+			} else if ( $format == 'thumb' ) {
 				zula_readfile( zula_get_icon('misc/missing_'.$item['type'], null, false) );
 				return false;
 			} else if ( $item['type'] == 'image' ) {

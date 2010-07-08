@@ -6,6 +6,7 @@
  * @patches submit all patches to patches@tangocms.org
  *
  * @author Alex Cartwright
+ * @author Robert Clipsham
  * @copyright Copyright (C) 2007, 2008, 2009 Alex Cartwright
  * @license http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GNU/GPL 2
  * @package TangoCMS_Settings
@@ -38,10 +39,12 @@
 													'SMTP_PASSWORD'	=> 'mail/smtp_password',
 													'SMTP_ENCRYPTION'=> 'mail/smtp_encryption',
 													),
-								'date'		=> array(
-													'FORMAT'		=> 'date/format',
-													'RELATIVE'		=> 'date/use_relative',
-													'TIMEZONE'		=> 'date/timezone',
+								'locale'	=> array(
+													'DATE_FORMAT'	=> 'date/format',
+													'DATE_RELATIVE'	=> 'date/use_relative',
+													'DATE_TIMEZONE'	=> 'date/timezone',
+													'I18N_LANG'		=> 'locale/default',
+													'I18N_ENGINE'	=> 'locale/engine',
 													),
 								'security'	=> array(
 													'PROTOCOL'		=> 'config/protocol',
@@ -71,7 +74,7 @@
 			$this->setPageLinks( array(
 										t('General')		=> $this->_router->makeUrl( 'settings', 'general' ),
 										t('E-Mail')			=> $this->_router->makeUrl( 'settings', 'email' ),
-										t('Date & Time')	=> $this->_router->makeUrl( 'settings', 'date' ),
+										t('Locale')			=> $this->_router->makeUrl( 'settings', 'locale' ),
 										t('Server & Security') => $this->_router->makeUrl( 'settings', 'security' ),
 										t('Cache & Performance')=> $this->_router->makeUrl( 'settings', 'cache' ),
 										t('Editing')		=> $this->_router->makeUrl( 'settings', 'editing' ),
@@ -87,7 +90,6 @@
 		 * @return strng
 		 */
 		public function __call( $name, $args ) {
-			$this->_locale->textDomain( $this->textDomain() );
 			$this->setTitle( t('Settings') );
 			$this->setOutputType( self::_OT_CONFIG );
 			$name = substr( $name, 0, -7 );
@@ -105,9 +107,33 @@
 					$view = $this->loadView( 'email.html' );
 					break;
 
-				case 'date':
-					$this->setTitle( t('Date & Time Settings') );
-					$view = $this->loadView( 'date.html' );
+				case 'locale':
+					$this->setTitle( t('Locale Settings') );
+					$view = $this->loadView( 'locale.html' );
+					/**
+					 * Get all available layouts that can be installed
+					 */
+					$availableLocales = $this->_i18n->getAvailableLangs();
+					if ( ($installable = $this->_cache->get('settings_installable_i18n')) === false ) {
+						$installable = null;
+						if ( ini_get( 'allow_url_fopen' ) ) {
+							$version = str_replace( '-', '/', zula_version_map(_PROJECT_VERSION) );
+							$json = @file_get_contents( 'http://releases.tangocms.org/'.$version.'/i18n/locales.json' );
+							if ( isset( $http_response_header[0] ) && strpos( $http_response_header[0], 200 ) !== false ) {
+								// Only show langs that are not already 'installed'
+								$installable = array_diff_key( json_decode($json, true), $availableLocales );
+							}
+						}
+						if ( $installable === null ) {
+							$this->_log->message( 'failed to get list of locales, check "allow_url_fopen"', Log::L_WARNING );
+						} else {
+							$this->_cache->add( 'settings_installable_i18n', $installable );
+						}
+					}
+					$view->assign( array(
+										'LOCALES'		=> $availableLocales,
+										'INSTALLABLE'	=> (array) $installable,
+										));
 					break;
 
 				case 'security':
@@ -136,8 +162,8 @@
 					$val = '';
 				}
 			}
-			if ( !trim( $this->config['date']['TIMEZONE'] ) ) {
-				$this->config['date']['TIMEZONE'] = date_default_timezone_get();
+			if ( !trim( $this->config['locale']['DATE_TIMEZONE'] ) ) {
+				$this->config['locale']['DATE_TIMEZONE'] = date_default_timezone_get();
 			}
 			$view->assign( array('CONFIG' => $this->config[ $name ]) );
 			$view->assignHtml( array('CSRF'	=> $this->_input->createToken( true )) );

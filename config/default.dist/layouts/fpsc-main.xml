@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<controllers>
+  <controller id="168" sector="SC" order="0">
+    <mod>page</mod>
+    <con>index</con>
+    <sec>welcome!</sec>
+    <config>
+      <displayTitle>1</displayTitle>
+      <customTitle></customTitle>
+      <htmlWrapClass></htmlWrapClass>
+    </config>
+  </controller>
+</controllers>

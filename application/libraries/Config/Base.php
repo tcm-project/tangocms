@@ -78,12 +78,8 @@
 					$val = stripslashes( $val );
 					if ( !isset( $tmpConfVal ) && isset( $this->configValues[ $val ] ) ) {
 						$tmpConfVal = $this->configValues[ $val ];
-					} else if ( isset( $tmpConfVal ) ) {
-						if ( isset( $tmpConfVal[ $val ] ) ) {
-							$tmpConfVal = $tmpConfVal[ $val ];
-						} else {
-							throw new Config_KeyNoExist( 'configuration value "'.stripslashes($confKey).'" does not exist' );
-						}
+					} else if ( isset( $tmpConfVal ) && is_array( $tmpConfVal ) && isset( $tmpConfVal[ $val ] ) ) {
+						$tmpConfVal = $tmpConfVal[ $val ];
 					} else {
 						throw new Config_KeyNoExist( 'configuration value "'.stripslashes($confKey).'" does not exist' );
 					}
@@ -158,7 +154,7 @@
 		public function delete( $confKey ) {
 			$numDel = 0;
 			foreach( (array) $confKey as $configKey ) {
-				if ( $this->has( $configKey ) ) {					
+				if ( $this->has( $configKey ) ) {
 					if ( isset( $this->cachedConfigValues[ $configKey ] ) ) {
 						unset( $this->cachedConfigValues[ $configKey ] );
 					}

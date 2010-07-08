@@ -7,7 +7,7 @@
  *
  * @author Jamal Fanaian
  * @author Alex Cartwright
- * @copyright Copyright (C) 2007, 2008, 2009 Alex Cartwright
+ * @copyright Copyright (C) 2007, 2008, 2009, 2010 Alex Cartwright
  * @license http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html GNU/LGPL 2.1
  * @package Zula_Acl
  */
@@ -68,11 +68,11 @@
 		 */
 		public function cleanRules() {
 			$this->_cache->delete( 'acl_rules' );
-			return $this->_sql->query( 'DELETE rules
+			return $this->_sql->exec( 'DELETE rules
 										FROM {SQL_PREFIX}acl_rules AS rules
 											LEFT JOIN {SQL_PREFIX}acl_resources AS resources
 											ON rules.resource_id = resources.id
-										WHERE resources.id IS NULL' )->rowCount();
+										WHERE resources.id IS NULL' );
 		}
 
 		/**
@@ -450,7 +450,7 @@
 			if (
 				$allowRoot &&
 				($roleDetails['name'] == 'group_root'
-				 || isset( $groupDetails ) && $groupDetails['id'] == UGManager::_ROOT_GID
+				 || isset( $groupDetails ) && $groupDetails['id'] == Ugmanager::_ROOT_GID
 				)
 			) {
 				// Root user/group has ultimate access to anything and everything
@@ -525,7 +525,7 @@
 			 * Get the role tree for the guest group/role, so that better defaults can be
 			 * set for the checkboxes, each role it inherits will be checked.
 			 */
-			$guestGroup = $this->_ugmanager->getGroup( UGManager::_GUEST_GID );
+			$guestGroup = $this->_ugmanager->getGroup( Ugmanager::_GUEST_GID );
 			$roleHint = array();
 			foreach( $this->getRoleTree( $guestGroup['role_id'], true ) as $tmpRole ) {
 				$roleHint[] = $tmpRole['id'];

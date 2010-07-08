@@ -22,7 +22,6 @@
 		 * @return string
 		 */
 		public function indexSection() {
-			$this->_locale->textDomain( $this->textDomain() );
 			$this->setTitle( t('Article Headlines') );
 			$this->setOutputType( self::_OT_CONTENT_INDEX );
 			/**

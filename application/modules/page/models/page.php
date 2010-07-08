@@ -216,7 +216,7 @@
 				}
 			} while( true );
 			$pdoSt = $this->_sql->prepare( 'INSERT INTO {SQL_PREFIX}mod_page (title, body, author, parent ,date, clean_title)
-											VALUES(?, ?, ?, ?, NOW(), ?)' );
+											VALUES(?, ?, ?, ?, UTC_TIMESTAMP(), ?)' );
 			$pdoSt->execute( array($title, $editor->preParse(), $this->_session->getUserId(), abs($parent), $cleanTitle) );
 			if ( $pdoSt->rowCount() ) {
 				$id = $this->_sql->lastInsertId();

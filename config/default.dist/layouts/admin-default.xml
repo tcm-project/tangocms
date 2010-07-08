@@ -4,7 +4,7 @@
     <mod>menu</mod>
     <con>index</con>
     <sec>index</sec>
-    <config>     
+    <config>
       <displayTitle>true</displayTitle>
       <customTitle/>
       <display_category>2</display_category>
@@ -23,19 +23,10 @@
     <mod>menu</mod>
     <con>index</con>
     <sec>index</sec>
-    <config>      
+    <config>
       <displayTitle>false</displayTitle>
       <customTitle/>
       <display_category>1</display_category>
-    </config>
-  </controller>
-  <controller id="551" sector="SC" order="0">
-    <mod>module_manager</mod>
-    <con>index</con>
-    <sec>index</sec>
-    <config>
-      <displayTitle>true</displayTitle>
-      <customTitle/>      
     </config>
   </controller>
 </controllers>

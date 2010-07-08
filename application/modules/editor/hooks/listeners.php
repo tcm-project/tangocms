@@ -36,7 +36,7 @@
 		 *
 		 * @return array
 		 */
-		public function hookBootstrapLoaded( $ajaxRequest ) {
+		public function hookBootstrapLoaded() {
 			if ( $this->loadEditor === true && Registry::has( 'theme' ) ) {
 				// Content to add in some JavaScript tags.
 				$this->_theme->addHead( 'js', array(),

@@ -7,7 +7,7 @@
  * @patches submit all patches to patches@tangocms.org
  *
  * @author Alex Cartwright
- * @copyright Copyright (C) 2007, 2008, 2009 Alex Cartwright
+ * @copyright Copyright (C) 2007, 2008, 2009, 2010 Alex Cartwright
  * @license http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GNU/GPL 2
  * @package TangoCMS_Menu
  */
@@ -20,7 +20,6 @@
 		 * @return string
 		 */
 		public function indexSection() {
-			$this->_locale->textDomain( $this->textDomain() );
 			try {
 				$cid = $this->_config->get( 'menu/display_category' );
 			} catch ( Config_KeyNoExist $e ) {
@@ -69,33 +68,32 @@
 		 * @return string
 		 */
 		protected function buildItems( array $items ) {
-			$curUrl = $this->_router->getRawRequestPath();
+			$requestPath = $this->_router->getRequestPath();
+			$rawRequestPath = $this->_router->getRawRequestPath();
 			$list = '<ul class="menu-category">'."\n\t";
 			foreach( $items as $item ) {
 				$item['url'] = ltrim( $item['url'], '/' );
-				if ( (strtoupper($item['url']) == '[FRONT_PAGE]' || !trim($item['url'], '/') ) && !$curUrl || $item['url'] == $curUrl ) {
-					$class = 'class="menu-current"';
-				} else {
-					$class = null;
+				$class = 'menu-'.$item['id'];
+				if ( $item['url'] == $rawRequestPath || $item['url'] == $requestPath ) {
+					$class .= ' menu-current';
 				}
 				// Create the correct URL for the menu item to use
 				if ( $item['url'] == 'admin' ) {
 					$item['url'] = $this->_router->makeUrl( '', '', '', 'admin' );
-				} else if ( strtoupper( $item['url'] ) == '[FRONT_PAGE]' || !trim( $item['url'] ) ) {
+				} else if ( $item['url'] == false ) {
 					$item['url'] = $this->_router->makeUrl( '', '', '', 'main' );
 				} else if ( strpos( $item['url'], 'www.' ) === 0 ) {
 					$item['url'] = 'http://'.$item['url'];
 				} else if ( !zula_url_has_scheme( $item['url'] ) ) {
 					if ( $item['url'][0] == '#' ) {
-						$item['url'] = $this->_router->makeUrl( $this->_router->getRawRequestPath() ).$item['url'];
+						$item['url'] = $this->_router->makeUrl( $rawRequestPath ).$item['url'];
 					} else {
 						$item['url'] = $this->_router->makeUrl( $item['url'] );
 					}
 				}
 				// Gather children and append the list item
 				$children = empty($item['children']) ? '' : $this->buildItems( $item['children'] );
-				$list .= sprintf( '<li id="menu-item-%1$s" %2$s><a href="%3$s" title="%4$s">%5$s</a>%6$s</li>'."\n",
-								  $item['id'],
+				$list .= sprintf( '<li class="%1$s"><a href="%2$s" title="%3$s">%4$s</a>%5$s</li>'."\n",
 								  $class,
 								  $item['url'],
 								  zula_htmlspecialchars( ($item['attr_title'] ? $item['attr_title'] : $item['name']) ),
@@ -105,7 +103,7 @@
 			}
 			return $list.'</ul>';
 		}
-		
+
 	}
 
 ?>

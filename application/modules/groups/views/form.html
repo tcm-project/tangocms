@@ -24,7 +24,7 @@
 						<option value="0">{L_[No Inheritance]}</option>
 						<?php
 							foreach( $groups as $tmpGroup ) {
-								if ( $tmpGroup['id'] != UGManager::_ROOT_GID ) {
+								if ( $tmpGroup['id'] != Ugmanager::_ROOT_GID ) {
 									printf( '<option value="%1$d" %2$s>%3$s</option>',
 											 $tmpGroup['id'],
 											 ($tmpGroup['id'] == $group['inherits'] ? 'selected="selected"' : ''),
@@ -34,6 +34,21 @@
 							}
 						 ?>
 					</select>
+				</td>
+			</tr>
+			<tr class="even">
+				<td>
+					<dl>
+						<dt>{L_[Group Status]}</dt>
+						<dd>{L_[If a group status is 'Locked', users within that group will be logged out and no new logins will be allowed.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="radio" id="groups-status-active" name="group[status]" value="active" <?php echo $group['status'] == 'active' ? 'checked="checked"' : ''; ?>>
+					<label for="groups-status-active" class="horizontal">{L_[Active]}</label>
+					<br>
+					<input type="radio" id="groups-status-locked" name="group[status]" value="locked" <?php echo $group['status'] == 'locked' ? 'checked="checked"' : ''; ?>>
+					<label for="groups-status-locked" class="horizontal">{L_[Locked]}</label>
 				</td>
 			</tr>
 		</tbody>

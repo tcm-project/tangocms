@@ -74,7 +74,7 @@
 			}
 			return $title;
 		}
-		
+
 		/**
 		 * Gets all articles from the database, or a subset of the result. ACL
 		 * permissions can be checked on the parent category if needed.
@@ -150,8 +150,8 @@
 						--$this->articleCount;
 					}
 				}
-			} 
-			return $articles;			
+			}
+			return $articles;
 		}
 
 		/**
@@ -297,7 +297,7 @@
 			}
 			return $parts;
 		}
-		
+
 		/**
 		 * Checks if an article part exists by ID
 		 *
@@ -425,10 +425,10 @@
 							'part_body'		=> $partBody,
 							'part_title'	=> $partTitle,
 							'published'		=> (int) $published,
-							'author'			=> $this->_session->getUserId(),
+							'author'		=> $this->_session->getUserId(),
 							);
 			$pdoSt = $this->_sql->prepare( 'INSERT INTO {SQL_PREFIX}mod_articles (cat_id, title, clean_title, `date`, published, author)
-											VALUES(?, ?, ?, NOW(), ?, ?)' );
+											VALUES(?, ?, ?, UTC_TIMESTAMP(), ?, ?)' );
 			$result = $pdoSt->execute( array(
 											$details['cat_id'], $details['title'], $details['clean_title'],
 											$details['published'], $details['author']
@@ -464,7 +464,12 @@
 												'cid'		=> $cid
 												)
 								  );
-			$date = (!$article['published'] && $published) ? date('Y-m-d H:i:s') : $article['date'];
+			if ( !$article['published'] && $published ) {
+				$date = new DateTime( 'now', new DateTimeZone('UTC') );
+				$date = $date->format('Y-m-d H:i:s');
+			} else {
+				$date = $article['date'];
+			}
 			$pdoSt = $this->_sql->prepare( 'UPDATE {SQL_PREFIX}mod_articles SET cat_id = ?, title = ?, published = ?, `date` = ?
 											WHERE id = ?' );
 			if ( $pdoSt->execute( array($details['cid'], $details['title'], $details['published'], $date, $details['id']) ) ) {

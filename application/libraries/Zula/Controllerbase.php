@@ -8,7 +8,7 @@
  *
  * @author Alex Cartwright
  * @author Robert Clipsham
- * @copyright Copyright (C) 2007, 2008, 2009 Alex Cartwright
+ * @copyright Copyright (C) 2007, 2008, 2009, 2010 Alex Cartwright
  * @license http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html GNU/LGPL 2.1
  * @package Zula
  */
@@ -25,8 +25,10 @@
 				_OT_CONTENT_INDEX	= 8,
 				_OT_CONTENT			= 14,
 				_OT_COLLECTIVE		= 16,
-				_OT_CONFIG			= 32,
-				_OT_INFORMATIVE		= 64;
+				_OT_CONFIG_ADD		= 32,
+				_OT_CONFIG_EDIT		= 64,
+				_OT_CONFIG			= 96,
+				_OT_INFORMATIVE		= 128;
 
 		/**
 		 * Details about the parent module this controller belongs to
@@ -96,15 +98,14 @@
 					$this->_config->add( $key, $val );
 				}
 			}
-			if ( _APP_MODE == 'installation' ) {
+			$path = $this->_zula->getDir( 'locale' );
+			if ( $this->_zula->getState() == 'installation' ) {
 				$domain = 'zula-installer';
-				$path = $this->_zula->getDir( 'locale' );
 			} else {
 				$domain = _PROJECT_ID.'-'.$moduleDetails['name'];
-				$path = $this->getPath().'/locale';
 			}
-			$this->_locale->bindTextDomain( $domain, $path );
-			$this->textDomain = $this->_locale->textDomain( $domain );
+			$this->_i18n->bindTextDomain( $domain, $path );
+			$this->textDomain = $this->_i18n->textDomain( $domain );
 			$this->_log->message( 'Cntrlr constructed as "'.$moduleDetails['name'].'/'.$sector.'"', Log::L_DEBUG );
 		}
 
@@ -304,7 +305,7 @@
 				if ( $extension == 'js' ) {
 					$this->_theme->addJsFile( $asset, true, $this->getDetail('name') );
 				} else if ( $extension == 'css' ) {
-					$url = $this->_router->makeUrl( 'assets/v/'.$this->getDetail('name').'/'.$asset );
+					$url = $this->_router->makeUrl( 'assets/v/'.$this->getDetail('name') ).'/'.$asset;
 					if ( $this->_theme->addHead( 'css', array('href' => $url) ) ) {
 						++$assetsAdded;
 					}

@@ -8,24 +8,12 @@
  * @patches submit all patches to patches@tangocms.org
  *
  * @author Alex Cartwright
- * @copyright Copyright (C) 2007, 2008, 2009 Alex Cartwright
+ * @copyright Copyright (C) 2007, 2008, 2009, 2010 Alex Cartwright
  * @license http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html GNU/LGPL 2.1
  * @package Zula_Session
  */
 
 	class Session extends Zula_LibraryBase {
-
-		/**
-		 * Authentication key currently in use when identifying
-		 * @var string
-		 */
-		protected $authKey = null;
-
-		/**
-		 * User ID (hashed) to what the auth key is for
-		 * @var string
-		 */
-		protected $authFor = null;
 
 		/**
 		 * Contains all info about the curernt user
@@ -54,9 +42,8 @@
 
 		/**
 		 * Constructor
-		 * Sets certain configuration details, starts the session and then
-		 * attempts to get which user is currently in use (either from session
-		 * or details within cookies and session table)
+		 * Sets some configuration details and checks if there is any
+		 * authentication details to use.
 		 *
 		 * @return object
 		 */
@@ -69,27 +56,8 @@
 			} catch ( Exception $e ) {
 				$this->timeout = time(); # Set to a timeout that will never happen.
 			}
-			if ( session_id() == false ) {
-				$conf = array(
-							'lifetime'	=> null,
-							'path'		=> _BASE_DIR,
-							'domain'	=> null,
-							'secure'	=> null,
-							'httponly'	=> true,
-							);
-				foreach( $conf as $key=>$val ) {
-					if ( $this->_config->has( 'session/'.$key ) ) {
-						$conf[ $key ] = $this->_config->get( 'session/'.$key );
-					}
-				}
-				session_set_cookie_params( $conf['lifetime'], $conf['path'], $conf['domain'], $conf['secure'], $conf['httponly'] );
-				session_name( 'ZULA_'.md5(_BASE_DIR) );
-				session_start();
-			}
-			if ( _AJAX_REQUEST === true ) {
-				// Set default to not store previous URL when in AJAX request
-				$this->storePrevious = false;
-			}
+			$this->storePrevious = ($this->_zula->getMode() != 'standalone');
+			$this->start();
 			// Get which user (key + for) is being used
 			if ( !isset( $_SESSION['auth'] ) ) {
 				$_SESSION['auth'] = array(
@@ -106,8 +74,8 @@
 					}
 				}
 			}
+			// Check if user has timed out
 			if ( isset( $_SESSION['last_activity'] ) && $_SESSION['last_activity'] + $this->timeout < time() ) {
-				// User has timed out
 				$this->destroy();
 			}
 		}
@@ -122,10 +90,39 @@
 			if ( Registry::has( 'router' ) ) {
 				$this->_zula->resetCwd();
 				if ( $this->storePrevious === true && $this->_dispatcher->getStatusCode() != 404 ) {
-					$_SESSION['previous_url'] = $this->_router->getRawCurrentUrl();
+					$_SESSION['previous_url'] = $this->_router->getCurrentUrl();
 				}
 				$_SESSION['last_activity'] = time();
 			}
+		}
+
+		/**
+		 * Starts or resumes a session
+		 *
+		 * @return int|string
+		 */
+		protected function start() {
+			if ( session_id() == false ) {
+				$conf = array(
+							'lifetime'	=> null,
+							'path'		=> _BASE_DIR,
+							'domain'	=> null,
+							'secure'	=> null,
+							'httponly'	=> true,
+							);
+				foreach( $conf as $key=>$val ) {
+					if ( $this->_config->has( 'session/'.$key ) ) {
+						$conf[ $key ] = $this->_config->get( 'session/'.$key );
+					}
+				}
+				session_set_cookie_params( $conf['lifetime'], $conf['path'], $conf['domain'], $conf['secure'], $conf['httponly'] );
+				session_name( 'ZULA_'.md5(_BASE_DIR) );
+				session_start();
+				if ( !array_key_exists( 'previous_url', $_SESSION ) ) {
+					$_SESSION['previous_url'] = null;
+				}
+			}
+			return session_id();
 		}
 
 		/**
@@ -140,8 +137,8 @@
 		}
 
 		/**
-		 * Checks if a user is 'logged in'. A user 'logged in' is basically
-		 * anyone not a guest.
+		 * Checks if a user is 'logged in'. Returns true if the current user
+		 * identified is not a guest.
 		 *
 		 * @return bool
 		 */
@@ -150,10 +147,12 @@
 		}
 
 		/**
-		 * Takes the authentication details from the cookie and checks if the
-		 * provided session key (not ID) is valid and the uid matches up.
+		 * Takes the provided authKey and checks if it exists and the UID
+		 * matches up against authFor. If no authkey is provided the user
+		 * will be identified as guest.
 		 *
-		 * If no authkey is provided the user will be identified as guest.
+		 * bool false will be returned if the authKey UID does not match
+		 * authFor, or if the user account status is 'locked'.
 		 *
 		 * @param string $authKey
 		 * @param string $authFor
@@ -173,7 +172,7 @@
 			}
 			$user = $this->_ugmanager->getUser( $uid );
 			$group = $this->_ugmanager->getGroup( $user['group'] );
-			if ( $user['id'] != Ugmanager::_ROOT_ID && $user['status'] == 'locked' ) {
+			if ( $group['id'] != Ugmanager::_ROOT_GID && ($group['status'] == 'locked' || $user['status'] == 'locked') ) {
 				return false;
 			} else {
 				// Now store the user/group details since we know no exception was thrown.
@@ -194,13 +193,12 @@
 		public function switchUser( $uid, $remember=true ) {
 			$session = $_SESSION;
 			$this->destroy(); # Destroy the current session/user first
-			session_start();
+			$this->start();
 			$_SESSION = $session;
 			unset( $_SESSION['auth'] );
 			// Create the needed unique keys for this session, if any
 			$uid = abs( $uid );
 			if ( $uid == Ugmanager::_GUEST_ID ) {
-				$this->authKey = $this->authFor = null;
 				return $this->identify();
 			} else {
 				$authKey = zula_hash( uniqid(mt_rand().$uid.microtime(true), true) );
@@ -210,17 +208,15 @@
 				// Attempt to identify the user we are switching to
 				if ( $this->identify($authKey, $authFor) === $uid ) {
 					$this->_sql->query( 'UPDATE {SQL_PREFIX}users SET last_login = UNIX_TIMESTAMP() WHERE id = '.$uid );
-					$this->authKey = $authKey;
-					$this->authFor = $authFor;
 					$_SESSION['auth'] = array(
 											'remember'	=> (bool) $remember,
-											'key'		=> $this->authKey,
-											'for'		=> $this->authFor,
+											'key'		=> $authKey,
+											'for'		=> $authFor,
 											);
 					if ( $_SESSION['auth']['remember'] ) {
 						// Set cookie for 28 days
-						setcookie( 'zulaAuthKey', $this->authKey, time()+2419200, _BASE_DIR, '', '', true );
-						setcookie( 'zulaAuthFor', $this->authFor, time()+2419200, _BASE_DIR, '', '', true );
+						setcookie( 'zulaAuthKey', $authKey, time()+2419200, _BASE_DIR, '', '', true );
+						setcookie( 'zulaAuthFor', $authFor, time()+2419200, _BASE_DIR, '', '', true );
 					}
 					return (int) $uid;
 				} else {
@@ -230,26 +226,50 @@
 		}
 
 		/**
-		 * Completly destroys a session and all user/group info
-		 * a long with it. Also removes the session cookie.
+		 * If no uid is provided, then the complete session will be destroyed
+		 * for the current user - including all authentication/session cookies
+		 * and shall be identified as 'guest' afterwards.
 		 *
-		 * @return bool
+		 * Providing a uid shall clear all stored session authentication data
+		 * within the database, effectively logging that user out from all
+		 * locations. An int representing number of sessions closed is returned.
+		 *
+		 * @param int|array $uid
+		 * @return bool|int
 		 */
-		public function destroy() {
-			$_SESSION = array();
-			foreach( array('zulaAuthKey', 'zulaAuthFor', session_name()) as $cookie ) {
-				setcookie( $cookie, '', time()-42000, _BASE_DIR );
-			}
-			session_regenerate_id( true );
-			session_destroy();
-			if ( $this->authKey ) {
-				$pdoSt = $this->_sql->prepare( 'DELETE FROM {SQL_PREFIX}sessions WHERE session_key = ?' );
-				$pdoSt->execute( array($this->authKey) );
+		public function destroy( $uid=null ) {
+			if ( $uid ) {
+				$pdoSt = $this->_sql->prepare( 'DELETE FROM {SQL_PREFIX}sessions WHERE uid = :uid' );
+				$sessionsClosed = 0;
+				foreach( (array) $uid as $user ) {
+					if ( $user == $this->getUserId() ) {
+						// Destroy this users session more thoroughly
+						$this->destroy();
+						++$sessionsClosed;
+					} else {
+						$pdoSt->bindValue( ':uid', $user, PDO::PARAM_INT );
+						$pdoSt->execute();
+						$sessionsClosed += $pdoSt->rowCount();
+					}
+				}
 				$pdoSt->closeCursor();
+				return $sessionsClosed;
+			} else {
+				if ( isset($_SESSION['auth']['key']) ) {
+					$pdoSt = $this->_sql->prepare( 'DELETE FROM {SQL_PREFIX}sessions WHERE session_key = ?' );
+					$pdoSt->execute( array($_SESSION['auth']['key']) );
+					$pdoSt->closeCursor();
+				}
+				$_SESSION = array();
+				foreach( array('zulaAuthKey', 'zulaAuthFor', session_name()) as $cookie ) {
+					setcookie( $cookie, '', time()-42000, _BASE_DIR );
+				}
+				session_regenerate_id( true );
+				session_destroy();
+				$this->user = $this->group = array();
+				$this->identify();
+				return true;
 			}
-			$this->authKey = $this->authFor = null;
-			$this->identify();
-			return true;
 		}
 
 		/**

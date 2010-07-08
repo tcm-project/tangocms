@@ -21,37 +21,37 @@
 				_TRIM_MAIN		= 2,
 				_TRIM_ADMIN		= 3,
 				_TRIM_ALL		= 4;
-			
+
 		/**
 		 * Type of router that is to be used
 		 * @var string
 		 */
-		protected $type = 'standard';		
-		
+		protected $type = 'standard';
+
 		/**
 		 * Default scheme (HTTP/HTTPS) for the server
 		 * @var string
 		 */
-		protected $scheme = 'http';
+		protected $defaultScheme = 'http';
 
 		/**
 		 * Site types to check against when attempting to find the current site type
 		 * @var array
 		 */
 		protected $siteTypes = array('main', 'admin');
-		
+
 		/**
 		 * Holds the current request path that is being used
 		 * @var string
 		 */
 		protected $requestPath = '';
-		
+
 		/**
 		 * Holds the Router_Url object of the request path value
 		 * @var object
 		 */
 		protected $requestUrl = null;
-		
+
 		/**
 		 * Constructor
 		 * Gathers the current raw request path, and the protocol
@@ -64,9 +64,11 @@
 				$this->type = 'standard';
 			} else {
 				$this->type = $this->_config->get( 'url_router/type' );
-			}			
+			}
 			// Get the raw request path and the scheme of the server
-			if ( $this->_input->has( 'get', 'url' ) ) {
+			if ( $this->_zula->getMode() == 'cli' ) {
+				$this->requestPath = $this->_input->cli( 'requestPath' );
+			} else if ( $this->_input->has( 'get', 'url' ) ) {
 				$this->requestPath = $this->_input->get( 'url' );
 			}
 			try {
@@ -86,18 +88,20 @@
 		}
 
 		/**
-		 * returns the Router_Url instance of the parsed current request path
+		 * Returns a Router_Url instance of the current parsed URL
+		 * which includes the request path and query arguments.
 		 *
-		 * @return array
+		 * @return object
 		 */
-		public function getParsedPath() {
+		public function getParsedUrl() {
 			if ( !($this->requestUrl instanceof Router_Url) ) {
 				// Parse the current raw request path and store it. Call the router_pre_parse hook first, though
-				$this->requestPath = $this->getRawRequestPath();
 				while( ($tmpUrl = Hooks::notify( 'router_pre_parse', trim($this->requestPath, '/'))) !== null ) {
 					$this->requestPath = $tmpUrl;
 				}
-				$this->requestUrl = new Router_url( $this->requestPath );
+				$queryArgs = $this->_input->getAll( 'get' );
+				unset( $queryArgs['url'] );
+				$this->requestUrl = new Router_Url( $this->requestPath.'?'.http_build_query($queryArgs) );
 			}
 			return $this->requestUrl;
 		}
@@ -109,7 +113,7 @@
 		 * @return bool
 		 */
 		public function hasArgument( $name ) {
-			return $this->getParsedPath()->hasArgument( $name );
+			return $this->getParsedUrl()->hasArgument( $name );
 		}
 
 		/**
@@ -119,7 +123,7 @@
 		 * @return string|bool
 		 */
 		public function getArgument( $name ) {
-			return $this->getParsedPath()->getArgument( $name );
+			return $this->getParsedUrl()->getArgument( $name );
 		}
 
 		/**
@@ -128,13 +132,13 @@
 		 * @return array|bool
 		 */
 		public function getAllArguments() {
-			return $this->getParsedPath()->getAllArguments();
+			return $this->getParsedUrl()->getAllArguments();
 		}
 
 		/**
 		 * Returns the current request path
 		 *
-		 * @param int|bool $trim	Trim the site type off, if it is the default
+		 * @param int|bool $trim	Trim the site type off
 		 * @return string
 		 */
 		public function getRequestPath( $trim=Router::_TRIM_DEFAULT ) {
@@ -182,30 +186,13 @@
 		}
 
 		/**
-		 * Returns the current full URL
-		 *
-		 * @return strng
-		 */
-		public function getCurrentUrl() {
-			$rp = $this->getRequestPath();
-			if ( $this->getType() == 'standard' ) {
-				$rp = 'index.php?url='.$rp;
-			}
-			return $this->getBaseUrl().$rp;
-		}
-
-		/**
-		 * Returns the current real full URL, ie the one that
-		 * is in the address bar, not after it has been proccessed
+		 * Returns the current URL, i.e. the one that is in the address bar, not
+		 * after it has been processed.
 		 *
 		 * @return string
 		 */
-		public function getRawCurrentUrl() {
-			$rp = $this->getRawRequestPath();
-			if ( $this->getType() == 'standard' ) {
-				$rp = 'index.php?url='.$rp;
-			}
-			return $this->getBaseUrl().$rp;
+		public function getCurrentUrl() {
+			return $this->getParsedUrl()->makeFull();
 		}
 
 		/**
@@ -222,7 +209,7 @@
 			if ( $siteType == null ) {
 				$siteType = $this->getSiteType();
 			}
-			if ( strpos( $module, '/' ) === false ) {
+			if ( preg_match( '@(?:/|#|\?)@', $module ) == false ) {
 				$url = new Router_Url;
 				$url->siteType( $siteType )
 					->module( $module )
@@ -247,8 +234,9 @@
 		 * @return string
 		 */
 		public function makeFullUrl( $module, $controller=null, $action=null, $siteType=null, $arguments=array(), $useHttps=null ) {
-			return $this->makeUrl( $module, $controller, $action, $siteType, $arguments )->makeFull( '&amp;', null, $useHttps );
-		}		
+			return $this->makeUrl( $module, $controller, $action, $siteType, $arguments )
+						->makeFull( '&amp;', null, $useHttps );
+		}
 
 		/**
 		 * Checks if a site type exists
@@ -291,7 +279,7 @@
 		 * @return string
 		 */
 		public function getSiteType() {
-			return $this->getParsedPath()->siteType;
+			return $this->getParsedUrl()->siteType;
 		}
 
 		/**

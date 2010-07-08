@@ -46,7 +46,6 @@
 		 * @return string
 		 */
 		public function indexSection( $siteType=null ) {
-			$this->_locale->textDomain( $this->textDomain() );
 			$this->setOutputType( self::_OT_CONFIG );
 			// Check if there is a specified site type to manage layout for
 			if ( empty( $siteType ) ) {
@@ -56,16 +55,32 @@
 					$siteType = $this->_router->getDefaultSiteType();
 				}
 			}
+			$siteType = strtolower( $siteType );
 			if ( !$this->_router->siteTypeExists( $siteType ) ) {
 				$this->_event->error( t('Selected site type does not exist') );
 				return zula_redirect( $this->_router->makeUrl( 'content_layout' ) );
 			}
-			$this->setTitle( sprintf( t('"%s" Content Layouts'), ucfirst( strtolower($siteType) ) ), false );
+			$this->setTitle( sprintf( t('"%s" Content Layouts'), ucfirst( $siteType ) ), false );
+
+			// Find out what module is being used in the fpsc layout
+			$fpsc = new Layout( 'fpsc-'.$siteType );
+			$cntrlrs = $fpsc->getControllers( 'SC' );
+			$fpscCntrlr = reset( $cntrlrs );
+
+			// Get all modules for the user to choose from, with title
+			$modules = array();
+			foreach( Module::getModules() as $mod ) {
+				$modObj = new Module( $mod );
+				$modules[ $modObj->name ] = $modObj->title;
+			}
+
 			// Gather all layouts and build view
 			$view = $this->loadView( 'index/main.html' );
 			$view->assign( array(
-								'SITE_TYPE'	=> $siteType,
-								'LAYOUTS'	=> Theme_Layout::getAll( $siteType ),
+								'SITE_TYPE'		=> $siteType,
+								'LAYOUTS'		=> Layout::getAll( $siteType ),
+								'FPSC_MODULE'	=> $fpscCntrlr['mod'],
+								'MODULES'		=> $modules,
 								));
 			$view->assignHtml( array( 'CSRF' => $this->_input->createToken( true ) ) );
 			return $view->getOutput();
@@ -79,13 +94,12 @@
 		 * @return string
 		 */
 		public function addSection() {
-			$this->_locale->textDomain( $this->textDomain() );
 			$this->setTitle( t('Add New Layout') );
 			$this->setOutputType( self::_OT_CONFIG );
 			try {
 				$cloner = $this->_router->getArgument( 'clone' );
-				$cloner = new Theme_Layout( $cloner );
-				if ( ($cloneRegex = $cloner->getUrlRegex()) != false || $cloner->isDefault() ) {
+				$cloner = new Layout( $cloner );
+				if ( $cloner->exists() ) {
 					$cloneName = $cloner->getName();
 					$this->setTitle( sprintf( t('Clone Layout "%1$s"'), $cloneName ) );
 				} else {
@@ -94,7 +108,7 @@
 			} catch ( Exception $e ) {
 				$cloneName = null;
 				$cloneRegex = null;
-			}			
+			}
 			// Build and check form
 			$form = new View_Form( 'index/form_layout.html', 'content_layout' );
 			$form->action( $this->_router->makeUrl( 'content_layout', 'index', 'add' ) );
@@ -108,12 +122,12 @@
 				$fd = $form->getValues( 'content_layout' );
 				// Check if we are cloning a layout
 				if ( $fd['clone'] ) {
-					$layout = new Theme_Layout( $fd['clone'] );
+					$layout = new Layout( $fd['clone'] );
 					$layout->setName( $fd['site_type'].'-'.$fd['name'] );
 				} else {
-					$layout = new Theme_Layout( $fd['site_type'].'-'.$fd['name'] );
+					$layout = new Layout( $fd['site_type'].'-'.$fd['name'] );
 				}
-				$layout->setUrlRegex( $fd['regex'] );
+				$layout->setRegex( $fd['regex'] );
 				$path = $this->_zula->getDir('config').'/layouts/'.$layout->getName().'.xml';
 				if ( $layout->save( $path ) ) {
 					$this->_event->success( t('Added new content layout') );
@@ -130,14 +144,13 @@
 		 * @return bool
 		 */
 		public function deleteSection() {
-			$this->_locale->textDomain( $this->textDomain() );
 			$this->setTitle( t('Delete Layouts') );
 			$this->setOutputType( self::_OT_CONFIG );
 			if ( $this->_input->checkToken() ) {
 				try {
 					$delCount = 0;
 					foreach( $this->_input->post( 'layout_names' ) as $layoutName ) {
-						$layout = new Theme_layout( $layoutName );
+						$layout = new Layout( $layoutName );
 						if ( $layout->delete() ) {
 							$delCount++;
 						} else {

@@ -7,7 +7,7 @@
  * @patches submit all patches to patches@tangocms.org
  *
  * @author Alex Cartwright
- * @copyright Copyright (C) 2009, Alex Cartwright
+ * @copyright Copyright (C) 2009 Alex Cartwright
  * @license http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GNU/GPL 2
  * @package TangoCMS_Shareable
  */
@@ -23,7 +23,6 @@
 			if ( !$this->_acl->check( 'shareable_manage' ) ) {
 				throw new Module_NoPermission;
 			}
-			$this->_locale->textDomain( $this->textDomain() );
 			$this->setTitle( t('Shareable Configuration') );
 			$this->setOutputType( self::_OT_CONFIG );
 			// Get sites

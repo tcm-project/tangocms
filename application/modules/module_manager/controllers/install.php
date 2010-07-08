@@ -47,7 +47,6 @@
 		 * @return string
 		 */
 		public function moduleSection() {
-			$this->_locale->textDomain( $this->textDomain() );
 			$this->setTitle( t('Module Installation') );
 			$this->setOutputType( self::_OT_CONFIG );
 			// Get correct module name to install

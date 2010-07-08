@@ -6,21 +6,21 @@
 	<!-- Database configuration -->
 	<parameter name="dbServer" defaultValue="localhost" tags="MySQL, dbServer">
 		<parameterEntry type="TextFile" scope="tangocms\\config\\default\\config.ini.php" match="(?&lt;=host\s=\s)127\.0\.0\.1" />
-		<parameterEntry type="TextFile" scope="install.sql" match="dbServer" />
+		<parameterEntry type="TextFile" scope="setup.sql" match="dbServer" />
 	</parameter>
 	<parameter name="dbUsername" tags="MySQL, dbUsername">
 		<parameterValidation type="RegularExpression" validationString="^[A-Za-z0-9_\-]{1,16}$" />
 		<parameterEntry type="TextFile" scope="tangocms\\config\\default\\config.ini.php" match="(?&lt;=user\s=\s)dbUser" />
-		<parameterEntry type="TextFile" scope="install.sql" match="dbUser" />
+		<parameterEntry type="TextFile" scope="setup.sql" match="dbUser" />
 	</parameter>
 	<parameter name="dbUserPassword" tags="New, Password, MySQL, dbUserPassword">
 		<parameterEntry type="TextFile" scope="tangocms\\config\\default\\config.ini.php" match="(?&lt;=pass\s=\s)dbPass" />
-		<parameterEntry type="TextFile" scope="install.sql" match="dbPass" />
+		<parameterEntry type="TextFile" scope="setup.sql" match="dbPass" />
 	</parameter>
 	<parameter name="dbName" defaultValue="tangocms" tags="MySQL, dbName">
 		<parameterValidation type="RegularExpression" validationString="^[A-Za-z0-9_]{1,64}$" />
 		<parameterEntry type="TextFile" scope="tangocms\\config\\default\\config.ini.php" match="(?&lt;=database\s=\s)dbName" />
-		<parameterEntry type="TextFile" scope="install.sql" match="dbName" />
+		<parameterEntry type="TextFile" scope="setup.sql" match="dbName" />
 	</parameter>
 	<parameter name="dbTag" friendlyName="Table Prefix" description="Prefix to use for tables, if any." defaultValue="tcm_" tags="MySQL">
 		<parameterValidation type="RegularExpression, AllowEmpty" validationString="^[A-Za-z0-9_]{0,12}$" />
@@ -36,7 +36,7 @@
 		name="ConnectionString"
 		defaultValue="Server={dbServer};Database={dbName};uid={dbAdminUsername};Pwd={dbAdminPassword};"
 		tags="Hidden, MySQLConnectionString, Validate">
-			<parameterEntry type="ProviderPath" scope="dbmysql" match="install.sql" />
+			<parameterEntry type="ProviderPath" scope="dbmysql" match="setup.sql" />
 			<parameterEntry type="ProviderPath" scope="dbmysql" match="tangocms.sql" />
 	</parameter>
 

@@ -21,7 +21,7 @@
 		 */
 		public function __construct() {
 			if ( !extension_loaded( 'apc' ) ) {
-				throw new Exception( 'APC extension is currently not loaded, unable to use APC caching' );
+				throw new Zula_Exception( 'APC extension is currently not loaded, unable to use APC caching' );
 			}
 		}
 

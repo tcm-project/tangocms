@@ -21,7 +21,7 @@
 		 * @return bool|string
 		 */
 		public function validate( $value ) {
-			return (strtotime($value) === false ? t('%1$s must be a valid date', Locale::_DTD) : true);
+			return (strtotime($value) === false ? t('%1$s must be a valid date', I18n::_DTD) : true);
 		}
 
 	}

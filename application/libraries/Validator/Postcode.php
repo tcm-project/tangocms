@@ -38,7 +38,7 @@
 		 */
 		public function validate( $value ) {
 			$pattern = '#^[A-Z]{1,2}[0-9R][0-9A-Z]?( [0-9][ABD-HJLNP-UW-Z]{2})'.($this->allowHalf ? '?' : '').'$#i';
-			return (preg_match($pattern, $value)) ? true : t('%1$s must be a valid postcode', Locale::_DTD);
+			return (preg_match($pattern, $value)) ? true : t('%1$s must be a valid postcode', I18n::_DTD);
 		}
 
 	}

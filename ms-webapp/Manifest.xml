@@ -1,7 +1,7 @@
 <MSDeploy.iisApp>
 	<iisApp path="tangocms" />
 
-	<dbmysql path="install.sql" commandDelimiter="$$" removeCommandDelimiter="true" />
+	<dbmysql path="setup.sql" commandDelimiter="$$" removeCommandDelimiter="true" />
 	<dbmysql path="tangocms.sql" commandDelimiter="$$" removeCommandDelimiter="true" />
 
 	<alias from="web.config" to="tangocms/web.config" />

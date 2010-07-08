@@ -7,7 +7,7 @@
  * @patches submit all patches to patches@tangocms.org
  *
  * @author Alex Cartwright
- * @copyright Copyright (C) 2007, 2008, 2009 Alex Cartwright
+ * @copyright Copyright (C) 2007, 2008, 2009, 2010 Alex Cartwright
  * @license http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GNU/GPL 2
  * @package TangoCMS_Aliases
  */
@@ -42,7 +42,6 @@
 			if ( !$this->_acl->checkMulti( array('aliases_add', 'aliases_edit', 'aliases_delete') ) ) {
 				throw new Module_NoPermission;
 			}
-			$this->_locale->textDomain( $this->textDomain() );
 			$this->setTitle( t('URL Aliases') );
 			$this->setOutputType( self::_OT_CONFIG );
 			// Get all the needed aliases to display
@@ -64,7 +63,7 @@
 									'CSRF'			=> $this->_input->createToken( true ),
 									));
 			// Autocomplete/suggest feature
-			$this->_theme->addJsFile( 'jQuery/plugins/autocomplete.js' );
+			$this->_theme->addJsFile( 'jquery.autocomplete' );
 			$this->_theme->addCssFile( 'jquery.autocomplete.css' );
 			$this->addAsset( 'js/autocomplete.js' );
 			return $view->getOutput();
@@ -76,22 +75,24 @@
 		 * @return false
 		 */
 		public function autocompleteSection() {
-			if ( !_AJAX_REQUEST ) {
-				throw new Module_AjaxOnly;
+			try {
+				$query = $this->_input->get( 'query' );
+				$searchTitle = '%'.str_replace( '%', '\%', $query ).'%';
+				$pdoSt = $this->_sql->prepare( 'SELECT id, alias FROM {SQL_PREFIX}mod_aliases WHERE alias LIKE ?' );
+				$pdoSt->execute( array($searchTitle) );
+				// Setup the object to return
+				$jsonObj = new StdClass;
+				$jsonObj->query = $query;
+				foreach( $pdoSt->fetchAll( PDO::FETCH_ASSOC ) as $row ) {
+					$jsonObj->suggestions[] = $row['alias'];
+					$jsonObj->data[] = $this->_router->makeFullUrl( 'aliases', 'index', 'edit', 'admin', array('id' => $row['id']) );
+				}
+				header( 'Content-Type: text/javascript; charset=utf-8' );
+				echo json_encode( $jsonObj );
+				return false;
+			} catch ( Input_KeyNoExist $e ) {
+				trigger_error( $e->getMessage(), E_USER_ERROR );
 			}
-			header( 'Content-Type: text/javascript; charset=utf-8' );
-			$searchTitle = '%'.str_replace( '%', '\%', $this->_input->get('query') ).'%';
-			$pdoSt = $this->_sql->prepare( 'SELECT id, alias FROM {SQL_PREFIX}mod_aliases WHERE alias LIKE ?' );
-			$pdoSt->execute( array($searchTitle) );
-			// Setup the object to return
-			$jsonObj = new StdClass;
-			$jsonObj->query = $this->_input->get( 'query' );
-			foreach( $pdoSt->fetchAll( PDO::FETCH_ASSOC ) as $row ) {
-				$jsonObj->suggestions[] = $row['alias'];
-				$jsonObj->data[] = $this->_router->makeFullUrl( 'aliases', 'index', 'edit', 'admin', array('id' => $row['id']) );
-			}
-			echo json_encode( $jsonObj );
-			return false;
 		}
 
 		/**
@@ -103,7 +104,6 @@
 			if ( !$this->_acl->check( 'aliases_add' ) ) {
 				throw new Module_NoPermission;
 			}
-			$this->_locale->textDomain( $this->textDomain() );
 			$this->setTitle( t('Add URL Alias') );
 			$this->setOutputType( self::_OT_CONFIG );
 			// Create form
@@ -130,7 +130,6 @@
 			if ( !$this->_acl->check( 'aliases_edit' ) ) {
 				throw new Module_NoPermission;
 			}
-			$this->_locale->textDomain( $this->textDomain() );
 			$this->setOutputType( self::_OT_CONFIG );
 			// Get ID of the alias to edit
 			try {
@@ -149,7 +148,7 @@
 						return zula_redirect( $this->_router->makeUrl( 'aliases' ) );
 					}
 				}
-				return $form->getOutput();				
+				return $form->getOutput();
 			} catch ( Router_ArgNoExist $e ) {
 				$this->_event->error( t('No alias selected') );
 			} catch ( Alias_NoExist $e ) {
@@ -168,7 +167,6 @@
 		 * @return string
 		 */
 		protected function aliasForm( $alias=null, $url=null, $redirect=false, $id=null ) {
-			$this->_locale->textDomain( $this->textDomain() );
 			// Make view form class and set operation
 			$op = is_null($id) ? 'add' : 'edit';
 			$form = new View_form( 'form.html', 'aliases', is_null($id) );
@@ -195,12 +193,11 @@
 			if ( !$this->_acl->check( 'aliases_delete' ) ) {
 				throw new Module_NoPermission;
 			} else if ( $this->_input->checkToken() ) {
-				$this->_locale->textDomain( $this->textDomain() );
 				$this->setOutputType( self::_OT_CONFIG );
 				try {
 					$aliasId = $this->_input->post( 'alias_ids' );
 					$this->_model()->delete( $aliasId );
-					$this->_event->success( t('Deleted selected aliases') );					
+					$this->_event->success( t('Deleted selected aliases') );
 				} catch ( Input_KeyNoExist $e ) {
 					$this->_event->error( t('No URL aliases selected') );
 				}

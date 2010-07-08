@@ -21,7 +21,7 @@
 		 * @return bool|string
 		 */
 		public function validate( $value ) {
-			return filter_var($value, FILTER_VALIDATE_IP) ? true : t('%1$s must be a valid IP', Locale::_DTD);
+			return filter_var($value, FILTER_VALIDATE_IP) ? true : t('%1$s must be a valid IP', I18n::_DTD);
 		}
 
 	}

@@ -18,13 +18,13 @@
 		 * @var string
 		 */
 		protected $requestPath = null;
-		
+
 		/**
 		 * Toggles if the URL argument should be appended to the other queries
 		 * @var bool
 		 */
 		protected $appendQuery = true;
-		
+
 		/**
 		 * URL argument to use when generating the links
 		 * @var strng
@@ -77,7 +77,7 @@
 			$this->perPage = abs( $perPage );
 			$this->urlArgument = trim($urlArgument) ? $urlArgument : 'page';
 		}
-		
+
 		/**
 		 * Sets the request path pagination should use when building links.
 		 * By default, it will use the current raw request path with URL arguments
@@ -89,7 +89,7 @@
 			$this->requestPath = $path;
 			return $this;
 		}
-		
+
 		/**
 		 * Sets if the URL argument value should be appended to other URL
 		 * arguments, or to construct a new URL with 1 URL argument
@@ -132,10 +132,10 @@
 			$pagination = array();
 			// Build next and previus
 			if ( $curPage > $this->numLinks ) {
-				$pagination[] = sprintf( $this->formats['first'], $this->makeUrl(), t('First', Locale::_DTD) );
+				$pagination[] = sprintf( $this->formats['first'], $this->makeUrl(), t('First', I18n::_DTD) );
 			}
 			if ( $curPage - $this->numLinks >= 0 ) {
-				$pagination[] = sprintf( $this->formats['previous'], $this->makeUrl( $curPage-1 ), t('Previous', Locale::_DTD) );
+				$pagination[] = sprintf( $this->formats['previous'], $this->makeUrl( $curPage-1 ), t('Previous', I18n::_DTD) );
 			}
 			// Calculate the start and end numbers for the digit links
 			$digits = array(
@@ -148,15 +148,15 @@
 					$pagination[] = sprintf( $this->formats['current'], $i );
 				} else if ( $i > 0 ) {
 					$page = $i == 0 ? '' : $i;
-					$pagination[] = sprintf( $this->formats['digit'], $this->makeUrl( $page ), $i, t('Page', Locale::_DTD) );
+					$pagination[] = sprintf( $this->formats['digit'], $this->makeUrl( $page ), $i, t('Page', I18n::_DTD) );
 				}
 			}
 			// Build next and last
 			if ( $curPage < $numPages ) {
-				$pagination[] = sprintf( $this->formats['next'], $this->makeUrl( $curPage+1 ), t('Next', Locale::_DTD) );
+				$pagination[] = sprintf( $this->formats['next'], $this->makeUrl( $curPage+1 ), t('Next', I18n::_DTD) );
 			}
 			if ( $curPage + $this->numLinks < $numPages ) {
-				$pagination[] = sprintf( $this->formats['last'], $this->makeUrl( $numPages ), t('Last', Locale::_DTD) );
+				$pagination[] = sprintf( $this->formats['last'], $this->makeUrl( $numPages ), t('Last', I18n::_DTD) );
 			}
 			return sprintf( $this->formats['overall'], implode( ' ', $pagination ) );
 		}
@@ -169,17 +169,20 @@
 		 */
 		protected function makeUrl( $page=1 ) {
 			$page = abs( $page );
-			$path = $this->requestPath ? $this->requestPath : $this->_router->getRawRequestPath();
-			$url = new Router_Url( $path );
-			// Use all existing query string arguments, and add new page argument if needed
-			$queryArgs = $this->appendQuery ? $this->_input->getAll( 'get' ) : array();
-			unset( $queryArgs['url'] );
-			if ( $page > 1 ) {
-				$queryArgs[ $this->urlArgument ] = $page;
+			if ( $this->requestPath ) {
+				$url = new Router_Url( $this->requestPath );
 			} else {
-				unset( $queryArgs[ $this->urlArgument ] );
+				// Use the current parsed URL as a base
+				$url = new Router_Url( $this->_router->getRawRequestPath() );
+				if ( $this->appendQuery ) {
+					$url->queryArgs( $this->_router->getParsedUrl()->getAllQueryArgs() );
+				}
 			}
-			$url->queryArgs( $queryArgs );
+			if ( $page > 1 ) {
+				$url->queryArgs( array($this->urlArgument => $page) );
+			} else {
+				$url->removeQueryArgs( $this->urlArgument );
+			}
 			return $url->make();
 		}
 

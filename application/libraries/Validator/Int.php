@@ -21,7 +21,7 @@
 		 * @return bool|string
 		 */
 		public function validate( $value ) {
-			return (ctype_digit($value) ? true : t('%1$s must be an integer', Locale::_DTD));
+			return (ctype_digit($value) ? true : t('%1$s must be an integer', I18n::_DTD));
 		}
 
 	}

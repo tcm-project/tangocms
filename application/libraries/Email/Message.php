@@ -8,7 +8,7 @@
  * @patches submit all patches to patches@tangocms.org
  *
  * @author Alex Cartwright
- * @copyright Copyright (C) 2009, Alex Cartwright
+ * @copyright Copyright (C) 2009 Alex Cartwright
  * @license http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html GNU/LGPL 2.1
  * @package Zula_Email
  */
@@ -71,7 +71,7 @@
 				return call_user_func_array( array($this->message, $name), $args );
 			}
 		}
-		
+
 		/**
 		 * Adds the signature (value from mail/signature) to the message body
 		 *
@@ -88,7 +88,7 @@
 			if ( $mime == 'text/html' ) {
 				$signature = zula_nls2p( $signature );
 			}
-			return $body."\n\n".$signature;
+			return $body."\n".$signature;
 		}
 
 		/**
@@ -133,7 +133,7 @@
 			}
 			$this->message->setBody( $body, $contentType );
 		}
-		
+
 		/**
 		 * Adds a new part to the message, and can add in signature
 		 *
@@ -147,7 +147,7 @@
 				$body = $this->appendSignature( $body, $contentType );
 			}
 			$this->message->addPart( $body, $contentType );
-		}		
+		}
 
 	}
 

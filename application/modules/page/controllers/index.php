@@ -34,7 +34,6 @@
 		 */
 		protected function displayPage( $cleanTitle, $import=false ) {
 			$this->setOutputType( self::_OT_CONTENT_STATIC );
-			$this->_locale->textDomain( $this->textDomain() );
 			try {
 				$page = $this->_model()->getPage( $cleanTitle, false );
 				if ( $import === false ) {

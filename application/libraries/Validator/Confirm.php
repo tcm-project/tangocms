@@ -62,7 +62,7 @@
 					break;
 
 			}
-			return ($value == $this->confirmer) ? true : t('%1$s value must be the same as the confirm value', Locale::_DTD);
+			return ($value == $this->confirmer) ? true : t('%1$s value must be the same as the confirm value', I18n::_DTD);
 		}
 
 	}

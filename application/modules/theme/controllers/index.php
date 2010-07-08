@@ -34,29 +34,23 @@
 		 * @return strng
 		 */
 		public function indexSection() {
-			$this->setTitle( t('Manage Themes') );
-			$this->_locale->textDomain( $this->textDomain() );
 			$this->setOutputType( self::_OT_CONFIG );
-			/**
-			 * Gather all site types and get which theme it is currently using
-			 */
-			$siteTypes = array();
-			foreach( $this->_router->getSiteTypes() as $siteType ) {
-				try {
-					$theme = $this->_config->get( 'theme/'.$siteType.'_default' );
-				} catch ( Config_KeyNoExist $e ) {
-					$theme = '';
-				}
-				$siteTypes[] = array(
-									'site' 	=> $siteType,
-									'theme' => $theme,
-									'name' 	=> ucfirst( strtolower( $siteType ) )
-									);
+			// Check which site type to change theme for
+			try {
+				$siteType = strtolower( $this->_input->get('type') );
+			} catch ( Input_KeyNoExist $e ) {
+				$siteType = $this->_router->getDefaultSiteType();
 			}
+			if ( !$this->_router->siteTypeExists( $siteType ) ) {
+				$this->_event->error( t('Selected site type does not exist') );
+				$siteType = $this->_router->getDefaultSiteType();
+			}
+			$this->setTitle( sprintf( t('"%s" Theme & Style'), ucfirst($siteType) ), false );
 			$view = $this->loadView( 'overview.html' );
 			$view->assign( array(
-								'THEMES' 			=> Theme::getAll(),
-								'SITE_TYPES'		=> $siteTypes,
+								'THEMES' 	=> Theme::getAll(),
+								'CURRENT'	=> $this->_config->get( 'theme/'.$siteType.'_default' ),
+								'SITE_TYPE'	=> $siteType,
 								));
 			$view->assignHtml( array('CSRF' => $this->_input->createToken(true)) );
 			return $view->getOutput();
@@ -72,62 +66,26 @@
 			if ( !$this->_acl->check( 'theme_update' ) ) {
 				throw new Module_NoPermission;
 			} else if ( $this->_input->checkToken() ) {
-				$this->_locale->textDomain( $this->textDomain() );
-				foreach( $this->_input->post( 'theme' ) as $siteType=>$theme ) {
-					if ( Theme::exists( $theme ) ) {
-						$this->_config_sql->update( 'theme/'.$siteType.'_default', $theme );
-					} else {
-						$this->_log->message( 'site type "'.$siteType.'" does not exist, unable to update', Log::L_WARNING );
-					}
-				}
-				$this->_event->success( t('Updated themes') );
-			} else {
-				$this->_event->error( Input::csrfMsg() );
-			}
-			return zula_redirect( $this->_router->makeUrl( 'theme' ) );
-		}
-
-		/**
-		 * Deletes the specified themes selected
-		 *
-		 * @return string
-		 */
-		public function deleteSection() {
-			$this->setOutputType( self::_OT_CONFIG );
-			if ( !$this->_acl->check( 'theme_delete' ) ) {
-				throw new Module_NoPermission;
-			} else if ( $this->_input->checkToken() ) {
-				$this->_locale->textDomain( $this->textDomain() );
-				$this->setTitle( t('Delete Theme') );
-				$delCount = 0;
 				try {
-					foreach( $this->_input->post( 'themes' ) as $theme ) {
-						try {
-							$themeObj = new Theme( $theme );
-							$themeObj->delete();
-							++$delCount;
-						} catch ( Theme_UnableToDelete $e ) {
-							if ( $e->getCode() === 1 ) {
-								$msg = t('You cannot delete the last remaining theme');
-							} else if ( $e->getCode() === 2 ) {
-								$msg = t('Theme directory could not be deleted, please check permissions');
-							} else {
-								$msg = $e->getMesssage();
-							}
-							$this->_event->error( $msg );
-						} catch ( Theme_NoExist $e ) {
+					$siteType = $this->_input->post( 'theme_site_type' );
+					if ( $this->_router->siteTypeExists( $siteType ) ) {
+						$theme = $this->_input->post( 'theme' );
+						if ( Theme::exists( $theme ) ) {
+							$this->_config_sql->update( 'theme/'.$siteType.'_default', $theme );
+							$this->_event->success( t('Updated default theme') );
 						}
-					}
-					if ( $delCount > 0 ) {
-						$this->_event->success( t('Deleted selected themes') );
+					} else {
+						$this->_event->error( t('Selected site type does not exist') );
+						$siteType = null;
 					}
 				} catch ( Input_KeyNoExist $e ) {
-					$this->_event->error( t('No themes selected') );
+					$this->_event->error( t('Please select a theme to use as the default') );
 				}
 			} else {
 				$this->_event->error( Input::csrfMsg() );
 			}
-			return zula_redirect( $this->_router->makeUrl( 'theme' ) );
+			$siteType = isset($siteType) ? $siteType : $this->_router->getDefaultSiteType();
+			return zula_redirect( $this->_router->makeUrl('theme')->queryArgs( array('type' => $siteType) ) );
 		}
 
 		/**
@@ -136,7 +94,6 @@
 		 * @return string
 		 */
 		public function settingsSection() {
-			$this->_locale->textDomain( $this->textDomain() );
 			$this->setTitle( t('Theme Settings') );
 			$this->setOutputType( self::_OT_CONFIG );
 			// Prepare form validation

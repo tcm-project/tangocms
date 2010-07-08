@@ -24,7 +24,7 @@
 		 * @var int|bool
 		 */
 		protected $itemCount = false;
-		
+
 		/**
 		 * Gets all categories, can also limit the result set and check
 		 * user ACL permissions
@@ -139,10 +139,11 @@
 		 * @return array
 		 */
 		public function getItems( $limit=0, $offset=0, $cid=null, $aclCheck=true ) {
-			$statement = 'SELECT SQL_CALC_FOUND_ROWS * FROM {SQL_PREFIX}mod_media_items';
+			$statement = 'SELECT SQL_CALC_FOUND_ROWS *
+						  FROM {SQL_PREFIX}mod_media_items WHERE outstanding = 0';
 			$params = array();
 			if ( $cid ) {
-				$statement .= ' WHERE cat_id = :cid';
+				$statement .= ' AND cat_id = :cid';
 				$params[':cid'] = $cid;
 			}
 			if ( $limit != 0 || $offset != 0 ) {
@@ -208,18 +209,36 @@
 			$details = $pdoSt->fetch( PDO::FETCH_ASSOC );
 			$pdoSt->closeCursor();
 			if ( $details ) {
-				if ( $details['filename'] ) {
-					$uid = pathinfo( $details['filename'], PATHINFO_FILENAME );
-				} else {
-					$uid = substr( pathinfo($details['thumbnail'], PATHINFO_FILENAME), 6 );
-				}
-				$mediaPath = 'media/'.$details['cat_id'].'/'.$details['type'].'/'.$uid;
 				// Add in the filesystem path
-				$details['path_fs'] = $this->_zula->getDir( 'uploads' ).'/'.$mediaPath;
+				$details['path_fs'] = $this->_zula->getDir( 'uploads' ).'/media/'.$details['cat_id'].'/'.$details['type'];
 				return $details;
 			} else {
 				throw new Media_ItemNoExist( $item );
 			}
+		}
+
+		/**
+		 * Gets all outstanding media items, ordered by date. Can limit to a
+		 * specified category if needed. If set to, ACL permissions will be
+		 * checked on the parent category.
+		 *
+		 * @param int $cid
+		 * @param bool $aclCheck
+		 * @return array
+		 */
+		public function getOutstandingItems( $cid=null, $aclCheck=true ) {
+			$statement = 'SELECT * FROM {SQL_PREFIX}mod_media_items WHERE outstanding = 1';
+			if ( $cid ) {
+				$statement .= ' AND cat_id = '.(int) $cid;
+			}
+			$items = array();
+			foreach( $this->_sql->query( $statement, PDO::FETCH_ASSOC ) as $row ) {
+				$resource = 'media-cat_upload_'.$row['cat_id'];
+				if ( !$aclCheck || ($aclCheck && $this->_acl->resourceExists($resource) && $this->_acl->check($resource)) ) {
+					$items[ $row['id'] ] = $row;
+				}
+			}
+			return $items;
 		}
 
 		/**
@@ -256,7 +275,7 @@
 		 * @return bool
 		 */
 		public function editCategory( $id, $name, $desc ) {
-			$category = $this->getCategory( $id );			
+			$category = $this->getCategory( $id );
 			$pdoSt = $this->_sql->prepare( 'UPDATE {SQL_PREFIX}mod_media_cats
 											SET name = ?, description = ? WHERE id = ?' );
 			$this->_cache->delete( 'media_cats' );
@@ -330,14 +349,14 @@
 			// Insert the new media item
 			$pdoSt = $this->_sql->prepare( 'INSERT INTO {SQL_PREFIX}mod_media_items
 											(cat_id, type, date, name, clean_name, description, filename, thumbnail, external_service, external_id)
-											VALUES(?, ?, NOW(), ?, ?, ?, ?, ?, ?, ?)' );
+											VALUES(?, ?, UTC_TIMESTAMP(), ?, ?, ?, ?, ?, ?, ?)' );
 			$pdoSt->execute( array($category['id'], $type, $name, $cleanName, $desc, $filename, $thumbnail, $externalService, $externalId) );
 			return array(
 						'id'			=> $this->_sql->lastInsertId(),
 						'clean_name'	=> $cleanName,
 						);
 		}
-														
+
 		/**
 		 * Edits a media item
 		 *
@@ -348,7 +367,7 @@
 		 */
 		public function editItem( $id, $name, $desc ) {
 			$item = $this->getItem( $id );
-			$pdoSt = $this->_sql->prepare( 'UPDATE {SQL_PREFIX}mod_media_items SET name = ?, description = ? WHERE id = ?' );
+			$pdoSt = $this->_sql->prepare( 'UPDATE {SQL_PREFIX}mod_media_items SET name = ?, description = ?, outstanding = 0 WHERE id = ?' );
 			return $pdoSt->execute( array($name, $desc, $id) );
 		}
 

@@ -21,17 +21,6 @@
 		const _CSRF_INAME = 'zula-csrf-token';
 
 		/**
-		 * Holds which input data should be allowed
-		 * IE, you can block Post, Get and Cooies
-		 * @var array
-		 */
-		protected $allow = array(
-								'POST'		=> true,
-								'GET'		=> true,
-								'COOKIE'	=> false,
-								);
-
-		/**
 		 * Every input we are using - pretty much like $_REQUEST
 		 * @var array
 		 */
@@ -39,6 +28,7 @@
 								'POST'		=> null,
 								'GET'		=> null,
 								'COOKIE'	=> null,
+								'CLI'		=> null,
 								);
 
 		/**
@@ -47,7 +37,7 @@
 		 * @return string
 		 */
 		static public function csrfMsg() {
-			return t('Suspected malicious CSRF attack, unable to proceed', Locale::_DTD);
+			return t('Suspected malicious CSRF attack, unable to proceed', I18n::_DTD);
 		}
 
 		/**
@@ -57,12 +47,6 @@
 		 * @return object
 		 */
 		public function __construct() {
-			$inputConf = $this->_config->get( 'input' );
-			$this->allow = array(
-								'POST'		=> (bool) $inputConf['allow_post'],
-								'GET'		=> (bool) $inputConf['allow_get'],
-								'COOKIE'	=> (bool) $inputConf['allow_cookies'],
-								);
 			if ( function_exists( 'set_magic_quotes_runtime' ) ) {
 				// Yes yes I know it is deprecated, that is why we shut it up.
 				@set_magic_quotes_runtime( false );
@@ -88,16 +72,16 @@
 		 */
 		protected function cleanInputData( $data ) {
 			static $hasMQ = null;
+			if ( $hasMQ === null ) {
+				$hasMQ = function_exists( 'get_magic_quotes_gpc' ) && get_magic_quotes_gpc();
+			}
 			if ( is_array( $data ) ) {
 				foreach( $data as $key=>$val ) {
 					$data[ $this->cleanInputKey( $key ) ] = $this->cleanInputData( $val );
 				}
 				return $data;
-			} else if ( $hasMQ || function_exists( 'get_magic_quotes_gpc' ) && get_magic_quotes_gpc() ) {
+			} else if ( $hasMQ ) {
 				$data = stripslashes( $data );
-				$hasMQ = true;
-			} else {
-				$hasMQ = false;
 			}
 			// Standadize newlines
 			return preg_replace( "/\015\012|\015|\012/", "\n", str_replace("\0", '', $data) );
@@ -156,40 +140,44 @@
 		 * @return bool
 		 */
 		protected function fetchInput( $type ) {
-			if ( $this->allow[ $type ] === true ) {
-				if ( $this->inputs[ $type ] === null ) {
-					switch( $type ) {
-						case 'POST':
-							$inputData = $_POST;
-							if ( isset( $_SESSION['post-restore'] ) ) {
-								$inputData = zula_merge_recursive( $inputData, $_SESSION['post-restore'] );
-								unset( $_SESSION['post-restore'] );
-							}
-							$_POST = array();
-							break;
-
-						case 'GET':
-							$inputData = $_GET;
-							$_GET = array();
-							break;
-
-						case 'COOKIE':
-							$inputData = $_COOKIE;
-							$_COOKIE = array();
-							break;
-					}
-					foreach( $inputData as $key=>$val ) {
-						if ( ($newKey = $this->cleanInputKey($key)) != $key ) {
-							unset( $inputData[ $key ] );
-						}
-						$inputData[ $newKey ] = $this->cleanInputData( $val );
-					}
-					$this->inputs[ $type ] = $inputData;
-				}
-				return true;
-			} else {
-				return false;
+			if ( !array_key_exists( $type, $this->inputs ) ) {
+				throw new Input_Exception( 'unknown input type "'.$type.'"' );
 			}
+			if ( $this->inputs[ $type ] === null ) {
+				switch( $type ) {
+					case 'POST':
+						$inputData = $_POST;
+						if ( isset( $_SESSION['post-restore'] ) ) {
+							$inputData = zula_merge_recursive( $inputData, $_SESSION['post-restore'] );
+							unset( $_SESSION['post-restore'] );
+						}
+						$_POST = array();
+						break;
+
+					case 'GET':
+						$inputData = $_GET;
+						$_GET = array();
+						break;
+
+					case 'COOKIE':
+						$inputData = $_COOKIE;
+						$_COOKIE = array();
+						break;
+
+					case 'CLI':
+						$keys = array('scriptName', 'config', 'requestPath');
+						$inputData = array_combine( $keys, array_values($_SERVER['argv']) );
+						break;
+				}
+			}
+			foreach( $inputData as $key=>$val ) {
+				if ( ($newKey = $this->cleanInputKey($key)) != $key ) {
+					unset( $inputData[ $key ] );
+				}
+				$inputData[ $newKey ] = $this->cleanInputData( $val );
+			}
+			$this->inputs[ $type ] = $inputData;
+			return true;
 		}
 
 		/**
@@ -252,7 +240,7 @@
 				$val = stripslashes( $val );
 				if ( !isset( $tmpVal ) && isset( $this->inputs[ $type ][ $val ] ) ) {
 					$tmpVal = $this->inputs[ $type ][ $val ];
-				} else if ( isset( $tmpVal[ $val ] ) ) {
+				} else if ( isset( $tmpVal ) && is_array( $tmpVal ) && isset( $tmpVal[ $val ] ) ) {
 					$tmpVal = $tmpVal[ $val ];
 				} else {
 					throw new Input_KeyNoExist( 'input key "'.stripslashes( implode('/', $key) ).'" for data type "'.$type.'" does not exist' );
@@ -265,7 +253,7 @@
 		}
 
 		/**
-		 * Quick alias function to get( 'post ... )
+		 * Another quick alias to get( $key, 'post', ... )
 		 *
 		 * @param string $key
 		 * @param bool $trim
@@ -277,7 +265,7 @@
 		}
 
 		/**
-		 * Another quick alias to get( 'cookie' ... )
+		 * Another quick alias to get( $key, 'cookie', ... )
 		 *
 		 * @param string $key
 		 * @param bool $trim
@@ -286,6 +274,18 @@
 		 */
 		public function cookie( $key, $trim=true ) {
 			return $this->get( $key, 'cookie', $trim );
+		}
+
+		/**
+		* Another quick alias to get( $key, 'cli', ... )
+		 *
+		 * @param string $key
+		 * @param bool $trim
+		 * @return string
+		 * @see Input::get
+		 */
+		public function cli( $key, $trim=true ) {
+			return $this->get( $key, 'cli', $trim );
 		}
 
 		/**

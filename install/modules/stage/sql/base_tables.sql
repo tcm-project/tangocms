@@ -75,6 +75,7 @@ DROP TABLE IF EXISTS {SQL_PREFIX}groups;
 CREATE TABLE {SQL_PREFIX}groups (
   id smallint(4) NOT NULL AUTO_INCREMENT,
   `name` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
+  `status` enum('active','locked') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'active',
   role_id smallint(4) NOT NULL,
   UNIQUE KEY id (id),
   UNIQUE KEY `name` (`name`)
@@ -127,14 +128,15 @@ CREATE TABLE {SQL_PREFIX}users (
   first_name varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   last_name varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   theme varchar(20) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  activate_code char(48) COLLATE utf8_unicode_ci NOT NULL,
-  reset_code char(48) COLLATE utf8_unicode_ci NOT NULL,
+  activate_code char(48) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  reset_code char(48) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   last_login int(11) NOT NULL DEFAULT '0',
+  last_pw_change datetime NOT NULL,
   UNIQUE KEY id (id),
   UNIQUE KEY username (username),
   INDEX `password` (`password`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 INSERT INTO {SQL_PREFIX}users (username, `password`, email, `group`, joined) VALUES
-('guest', 'guest', '', 3, NOW() ),
-('rootUser', 'rootPass', 'rootEmail', 1, NOW() );
+('guest', 'guest', '', 3, UTC_TIMESTAMP() ),
+('rootUser', 'rootPass', 'rootEmail', 1, UTC_TIMESTAMP() );

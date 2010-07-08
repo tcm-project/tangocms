@@ -12,6 +12,6 @@
  * @package Zula_Hooks
  */
 
-	class Hooks_InvalidCallback extends Exception {}
+	class Hooks_InvalidCallback extends Zula_Exception {}
 
 ?>

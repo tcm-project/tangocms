@@ -2,5 +2,6 @@
 application/logs/*.log
 assets/uploads/*
 /config/*
+!/config/default.dist/*
 tmp/*
 

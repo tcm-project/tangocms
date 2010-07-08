@@ -7,13 +7,13 @@
  *
  * @author Alex Cartwright
  * @author Robert Clipsham
- * @copyright Copyright (C) 2007, 2008, 2009 Alex Cartwright
+ * @copyright Copyright (C) 2007, 2008, 2009, 2010 Alex Cartwright
  * @license http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html GNU/LGPL 2.1
  * @package Zula
  */
 
 	try {
-		$rawRequestPath = Registry::get('input')->get('url');
+		$rawRequestPath = $input->get('url');
 		if ( strpos( $rawRequestPath, 'assets/v/' ) === 0 ) {
 			// Hard coded 'assets' URL route for simple file pass-thru
 			return require 'assets.php';
@@ -22,12 +22,11 @@
 	}
 
 	/**
-	 * Check if SQL is enable, if so attempt to connect to the server provided
-	 * in the main configuration files. Extra configuration values will be loaded
-	 * as well from the correct table, and merged into the main configuration
-	 * object
+	 * Check if SQL is enabled, if so attempt to connect to the server provided in the main
+	 * configuration files. Extra configuration values will be loaded as well from the correct
+	 * table, and merged into the main configuration object
 	 */
-	if ( $config->has( 'sql/enable' ) && $config->get( 'sql/enable' ) ) {
+	if ( $config->get( 'sql/enable' ) ) {
 		if ( !extension_loaded( 'pdo' ) ) {
 			throw new Exception( 'PDO extension is currently not loaded' );
 		}
@@ -63,18 +62,14 @@
 					break;
 
 				case 'timezone':
-					$date->changeTimezone( $val );
+					$date->setTimezone( $val );
 					break;
-
-				default:
-					Registry::get( 'log' )->message( 'unknown date configuration key "'.$key.'"', Log::L_WARNING );
 			}
 		}
 	} catch ( Config_KeyNoExist $e ) {}
 
 	$session = $zula->loadLib( 'session' );
-	$dispatcher = Registry::get( 'dispatcher' );
-	if ( _APP_MODE == 'installation' ) {
+	if ( $zula->getState() == 'installation' ) {
 		/**
 		 * Load some installation specific files as there may be things that need
 		 * changing/adding upon installation/upgrading of Zula/TCM versions
@@ -91,7 +86,7 @@
 			$uid = $session->identify(); # Identify as guest for fail safe
 		}
 	}
-	define( '_ACL_ENABLED', ($config->has( 'acl/enable' ) && $config->get( 'acl/enable' )) );
+	define( '_ACL_ENABLED', (bool) $config->get( 'acl/enable' ) );
 	if ( Registry::has( 'sql' ) ) {
 		$acl = $zula->loadLib( 'acl' );
 	}
@@ -106,16 +101,40 @@
 	}
 
 	/**
-	 * Main loading of the correct theme and requested controller
+	 * Configure the dispatcher, then get data from the parsed URL to load; if there is
+	 * not enough data simply use the frontpage sc layout for the current site type
 	 */
-	Hooks::notifyAll( 'bootstrap_pre_request', _AJAX_REQUEST );
-	if ( _AJAX_REQUEST === false && $config->has( 'theme/use_global' ) && $config->get( 'theme/use_global' ) ) {
-		if ( _APP_MODE == 'installation' ) {
+	Hooks::notifyAll( 'bootstrap_pre_request' );
+	$dispatcher = new Dispatcher;
+	$dispatcher->setDisplayErrors( ($zula->getMode() == 'normal') ) # Display dispatchers own error msgs
+			   ->setStatusHeader( ($zula->getMode() != 'cli') );
+	Registry::register( 'dispatcher', $dispatcher ); # For compatibility, not sure if we should still have this
+
+	$requestedUrl = $router->getParsedUrl();
+	if ( $requestedUrl->module == null ) {
+		// Load data fron the fpsc (Front Page Sector Content) layout
+		if ( $zula->getState() == 'installation' ) {
+			$fpsc = new Layout( $zula->getDir( 'install' ).'/layout-fpsc.xml' );
+		} else {
+			$fpsc = new Layout( 'fpsc-'.$requestedUrl->siteType );
+		}
+		$fpscCntrlr = $fpsc->getControllers( 'SC' );
+		$fpscCntrlr = array_shift( $fpscCntrlr );
+		$requestedUrl->module( $fpscCntrlr['mod'] )
+					 ->controller( $fpscCntrlr['con'] )
+					 ->section( $fpscCntrlr['sec'] );
+		$dispatchConfig = (array) $fpscCntrlr['config'];
+	} else {
+		$dispatchConfig = array();
+	}
+
+	if ( $zula->getMode() == 'normal' && $config->get( 'theme/use_global' ) ) {
+		if ( $zula->getState() == 'installation' ) {
 			$themeName = 'carbon';
 		} else {
-			$themeName = Theme::getSiteTypeTheme();
+			$themeName = $config->get( 'theme/'.$router->getSiteType().'_default' );
 			if ( $config->get( 'theme/allow_user_override' ) ) {
-				$userTheme = Registry::get( 'session' )->getUser( 'theme' );
+				$userTheme = $session->getUser( 'theme' );
 				if ( $userTheme != 'default' && Theme::exists( $userTheme ) ) {
 					$themeName = $userTheme;
 				}
@@ -124,48 +143,70 @@
 		define( '_THEME_NAME', $themeName );
 		try {
 			$theme = new Theme( $themeName );
+			try {
+				$theme->setJsAggregation( $config->get('cache/js_aggregate') )
+					  ->setGoogleCdn( $config->get('cache/google_cdn') );
+			} catch ( Config_KeyNoExist $e ) {
+			}
 			Registry::register( 'theme', $theme );
-			$dispatchContent = $dispatcher->dispatch();
-			if ( $dispatchContent !== false ) {
-				header( 'Content-Type: text/html; charset=utf-8' );
-				if ( $dispatcher->isStandalone() ) {
-					// Load stand alone module with no other theme, modules etc
-					echo $dispatchContent;
-				} else {
-					// Include a themes init file, to allow a theme to configure some things
-					$initFile = $zula->getDir( 'themes' ).'/'.$themeName.'/init.php';
-					if ( is_readable( $initFile ) ) {
-						include $initFile;
-					}
-					/**
-					 * Load the requested controller into the SC tag, then load all other
-					 * controllers for the sectors. Once done then output the complete theme
-					 */
-					$theme->loadIntoSector( 'SC', $dispatchContent );
-					$theme->loadSectorControllers();
-					$output = $theme;
-				}
+			$dispatchContent = $dispatcher->dispatch( $requestedUrl, $dispatchConfig );
+			if ( $dispatcher->getStatusCode() === 403 && $session->isLoggedIn() === false ) {
+				// User did not have permission, fallback to 'session' module
+				$dispatchContent = $dispatcher->dispatch( new Router_Url('session') );
+			}
+			if ( is_bool( $dispatchContent ) ) {
+				$output = $dispatchContent;
 			} else {
-				$output = false;
+				header( 'Content-Type: text/html; charset=utf-8' );
+				// Include a themes init file, to allow a theme to configure some things
+				$initFile = $zula->getDir( 'themes' ).'/'.$themeName.'/init.php';
+				if ( is_readable( $initFile ) ) {
+					include $initFile;
+				}
+				/**
+				 * Work out which layout to use with the theme, load all cntrlrs from that
+				 * and then load the main dispatchers content
+				 */
+				if ( $zula->getState() == 'installation' ) {
+					$layout = new Layout( $zula->getDir( 'install' ).'/layout.xml' );
+				} else {
+					$layout = new Layout( Layout::find($requestedUrl->siteType, $router->getRawRequestPath()) );
+				}
+				$theme->loadDispatcher( $dispatchContent, $dispatcher );
+				$theme->loadLayout( $layout );
+				$output = $theme;
 			}
 		} catch ( Theme_NoExist $e ) {
 			Registry::get( 'log' )->message( $e->getMessage(), Log::L_WARNING );
-			trigger_error( 'Required theme "'.$themeName.'" does not exist', E_USER_WARNING );
-			$output = $dispatcher->dispatch();
+			trigger_error( 'required theme "'.$themeName.'" does not exist', E_USER_WARNING );
+			$output = $dispatcher->dispatch( $requestedUrl, $dispatchConfig );
 		}
 	} else {
-		Registry::get( 'log' )->message( 'loading cntrlr without global theme, possibly due to AJAX request', Log::L_DEBUG );
-		$output = $dispatcher->dispatch( _AJAX_REQUEST );
-	}
+		$output = $dispatcher->dispatch( $requestedUrl, $dispatchConfig );
+		if ( $zula->getMode() == 'cli' ) {
+			// Display a friendly message to stdout
+			switch( $dispatcher->getStatusCode() ) {
+				case 200:
+					if ( !is_bool( $output ) ) {
+						$output .= "\n";
+					}
+					break;
 
-	Hooks::notifyAll( 'bootstrap_loaded', _AJAX_REQUEST, (isset($output) && $output instanceof Theme) );
-	if ( isset( $output ) ) {
-		if ( $output instanceof Theme ) {
-			echo $output->output();
-		} else if ( $output !== false ) {
-			echo $output;
+				case 403:
+					$output = sprintf( t('---- Permission denied to "%s"', I18n::_DTD), $input->cli('requestPath') )."\n";
+					$zula->setExitCode( 5 );
+					break;
+
+				case 404:
+					$output = sprintf( t('---- The request path "%s" does not exist', I18n::_DTD), $input->cli('requestPath') )."\n";
+					$zula->setExitCode( 4 );
+					break;
+			}
 		}
 	}
-	return true;
+	Hooks::notifyAll( 'bootstrap_loaded', (isset($output) && $output instanceof Theme),
+										  $dispatcher->getStatusCode(),
+										  $dispatcher->getDispatchData() );
+	return is_bool($output) ? true : print $output;
 
 ?>

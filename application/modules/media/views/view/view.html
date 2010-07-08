@@ -11,9 +11,9 @@
 			<img src="<?php echo $this->_router->makeUrl( 'media', 'view', $item['clean_name'] )->queryArgs( array('f' => 'medium') ); ?>" alt="{ITEM.NAME}">
 		</a>
 	<?php } else { ?>
-		<a class="media_player"
-			style="display: inline-block; width: 470px; height: <?php echo $item['type'] == 'audio' ? 28 : 355; ?>px;"
-			href="<?php echo $this->_router->makeUrl( 'media', 'view', $item['clean_name'] )->queryArgs( array('f' => 'stream') ); ?>"></a>
+		<a class="mediaPlayer <?php echo $item['type'] == 'audio' ? 'audio' : 'video'; ?>"
+			style="display: inline-block; width: {PLAYER.WIDTH}px; height: <?php echo $item['type'] == 'audio' ? 22 : $player['height']; ?>px;"
+			href="<?php echo $this->_router->makeUrl( 'media', 'view', $item['clean_name'] )->queryArgs( array('f' => 'stream') )->makeFull(); ?>"></a>
 	<?php } ?>
 </div>
 
@@ -23,7 +23,7 @@
 		<strong>{L_[Category]}:</strong> <a href="<?php echo $this->_router->makeUrl( 'media', 'cat', $category['clean_name'] ); ?>">{CATEGORY.NAME}</a>
 	</p>
 
-	<?php if ( trim($item['description']) ) { ?>
+	<?php if ( $item['description'] ) { ?>
 		<dl>
 			<dt>{L_[Description]}</dt>
 			<dd>

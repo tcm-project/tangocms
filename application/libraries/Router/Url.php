@@ -30,26 +30,44 @@
 		 * URL query string arguments to use
 		 * @var array
 		 */
-		protected $queryStringArgs = array( 'url' => null );
+		protected $queryStringArgs = array();
 
 		/**
 		 * URL fragment
 		 * @var string
 		 */
 		protected $fragment = null;
-								
+
 		/**
 		 * Constructor
-		 * Can load a given request path and parses it into the parts
+		 * Can take a URL and parse it into the various parts (mod/con/sec). All parts
+		 * of a URL including query arguments and fragment can be provided.
 		 *
-		 * @param string $requestPath
+		 * @param string $url
 		 * @return object
 		 */
-		public function __construct( $requestPath=null ) {
-			if ( $requestPath = trim($requestPath, '/') ) {
+		public function __construct( $url=null ) {
+			if ( $url = trim($url, '/') ) {
+				$parsedUrl = array_merge( array('host' => null, 'path' => null, 'query' => null, 'fragment' => null),
+										  parse_url($url)
+										);
+				// Get any query arguments or fragments from the URL
+				$this->fragment = $parsedUrl['fragment'];
+				if ( !empty( $parsedUrl['query'] ) ) {
+					parse_str( $parsedUrl['query'], $this->queryStringArgs );
+				}
 				/**
 				 * Begin the actual parsing of the URL to find out what data is given
 				 */
+				if (
+					isset($_SERVER['SERVER_NAME']) && $parsedUrl['host'] == $_SERVER['SERVER_NAME']
+					&& strpos('/'.$parsedUrl['path'], _BASE_DIR) === 0
+				) {
+					// We're given a URL of this Zula install, remove base dir from path
+					$requestPath = substr( $parsedUrl['path'], strlen(_BASE_DIR) );
+				} else {
+					$requestPath = $parsedUrl['path'];
+				}
 				$splitPath = explode( '/', $requestPath );
 				// Check for a provided site type
 				if ( in_array( $splitPath[0], $this->_router->getSiteTypes() ) ) {
@@ -62,10 +80,11 @@
 						// Parse the URL Arguments provided
 						$arguments = array_slice( $splitPath, 3 );
 						$argLen = $splitCount - 4;
-						for( $i = 0; $i <= $argLen; $i = $i+2 ) {
+						for( $i = 0; $i <= $argLen; $i += 2 ) {
 							$key = urldecode( $arguments[ $i ] );
-							$val = isset($arguments[ $i+1 ]) ? urldecode( $arguments[ $i+1 ] ) : null;
-							$this->parsed['arguments'][ $key ] = $val;
+							if ( !empty($key) && !empty($arguments[ $i+1 ]) ) {
+								$this->parsed['arguments'][ $key ] = urldecode( $arguments[ $i+1 ] );
+							}
 						}
 
 					case $splitCount == 3:
@@ -79,7 +98,7 @@
 				}
 			}
 		}
-		
+
 		/**
 		 * Allows quick acccess to the parsed request path details
 		 *
@@ -98,7 +117,7 @@
 		public function __toString() {
 			return $this->make();
 		}
-		
+
 		/**
 		 * Gets all of the parsed details as an array. This will only be useful when
 		 * the constructor was given a URL to parse.
@@ -140,6 +159,73 @@
 		 */
 		public function getAllArguments() {
 			return (array) $this->parsed['arguments'];
+		}
+
+		/**
+		 * Checks if a query argument exists
+		 *
+		 * @param string $name
+		 * @return bool
+		 */
+		public function hasQueryArg( $name ) {
+			return isset( $this->queryStringArgs[ $name ] );
+		}
+
+		/**
+		 * Gets a single query argument
+		 *
+		 * @param string $name
+		 * @return string
+		 */
+		public function getQueryArg( $name ) {
+			if ( isset( $this->queryStringArgs[ $name ] ) ) {
+				return $this->queryStringArgs[ $name ];
+			} else {
+				throw new Router_ArgNoExist( $name );
+			}
+		}
+
+		/**
+		 * Gets all of the query arguments
+		 *
+		 * @return array
+		 */
+		public function getAllQueryArgs() {
+			return (array) $this->queryStringArgs;
+		}
+
+		/**
+		 * Removes 1 or all request path arguments
+		 *
+		 * @param string $arg,...
+		 * @return object
+		 */
+		public function removeArguments( $arg=null ) {
+			if ( func_num_args() > 0 ) {
+				foreach( func_get_args() as $arg ) {
+					unset( $this->parsed['arguments'][ $arg ] );
+				}
+			} else {
+				$this->parsed['arguments'] = array();
+			}
+			return $this;
+		}
+
+		/**
+		 * Removes 1 or all url query arguments
+		 *
+		 * @param string $arg,...
+		 * @return object
+		 */
+		public function removeQueryArgs( $arg=null ) {
+			if ( func_num_args() > 0 ) {
+				foreach( func_get_args() as $arg ) {
+					unset( $this->queryStringArgs[ $arg ] );
+				}
+			} else {
+				$this->queryStringArgs = array();
+			}
+			return $this;
 		}
 
 		/**
@@ -190,10 +276,16 @@
 		 * Sets the URL arguments to use
 		 *
 		 * @param array $arguments
+		 * @param bool $overwrite
 		 * @return object
 		 */
-		public function arguments( array $arguments ) {
-			$this->parsed['arguments'] = array_merge( $this->parsed['arguments'], $arguments );
+		public function arguments( array $arguments, $overwrite=false ) {
+			$arguments = array_filter( $arguments );
+			if ( $overwrite ) {
+				$this->parsed['arguments'] = $arguments;
+			} else {
+				$this->parsed['arguments'] = array_merge( $this->parsed['arguments'], $arguments );
+			}
 			return $this;
 		}
 
@@ -201,10 +293,15 @@
 		 * Sets URL query string arguments to use
 		 *
 		 * @param array $queryArgs
+		 * @param bool $overwrite
 		 * @return object
 		 */
-		public function queryArgs( array $queryArgs ) {
-			$this->queryStringArgs = array_merge( $this->queryStringArgs, $queryArgs );
+		public function queryArgs( array $queryArgs, $overwrite=false ) {
+			if ( $overwrite ) {
+				$this->queryStringArgs = $queryArgs;
+			} else {
+				$this->queryStringArgs = array_merge( $this->queryStringArgs, $queryArgs );
+			}
 			return $this;
 		}
 
@@ -224,9 +321,10 @@
 		 *
 		 * @param string $separator
 		 * @param string $type
+		 * @param bool $noBase
 		 * @return string
 		 */
-		public function make( $separator='&amp;', $type=null ) {
+		public function make( $separator='&amp;', $type=null, $noBase=false ) {
 			$data = array();
 			foreach( $this->parsed as $key=>$val ) {
 				if ( $key == 'arguments' || $key == 'siteType' && $val == $this->_router->getDefaultSiteType() ) {
@@ -258,20 +356,20 @@
 			if ( !$type ) {
 				$type = $this->_router->getType();
 			}
+			unset( $this->queryStringArgs['url'] );
 			if ( $type == 'standard' ) {
-				// Add in the 'url' query string needed
-				if ( $requestPath ) { 
-					$this->queryStringArgs['url'] = $requestPath;
-				} else {
-					unset( $this->queryStringArgs['url'] );
+				// Add in the 'url' query string needed, force it to be first index
+				if ( $requestPath ) {
+					$this->queryStringArgs = array_merge( array('url' => $requestPath),
+														  $this->queryStringArgs
+														 );
 				}
 				if ( $this->_input->has( 'get', 'ns' ) ) {
 					$this->queryStringArgs['ns'] = '';
 				}
-				$url = _BASE_DIR.'index.php';
+				$url = $noBase ? 'index.php' : _BASE_DIR.'index.php';
 			} else {
-				unset( $this->queryStringArgs['url'] );
-				$url = _BASE_DIR.$requestPath;
+				$url = $noBase ? $requestPath : _BASE_DIR.$requestPath;
 			}
 			if ( !empty( $this->queryStringArgs ) ) {
 				$url .= '?'.str_replace( '%2F', '/', http_build_query($this->queryStringArgs, null, $separator) );
@@ -289,13 +387,17 @@
 		 * @return string
 		 */
 		public function makeFull( $separator='&amp;', $type=null, $useHttps=null ) {
-			$host = $_SERVER['HTTP_HOST'];
-			if ( is_bool( $useHttps ) ) {
-				$host = preg_replace( '#^(https?://)?#i', ($useHttps ? 'https://' : 'http://'), $host );
+			if ( empty( $_SERVER['HTTP_HOST'] ) ) {
+				return $this->make( $separator, $type );
 			} else {
-				$host = zula_url_add_scheme( $host, $this->_router->getDefaultScheme() );
+				$host = $_SERVER['HTTP_HOST'];
+				if ( is_bool( $useHttps ) ) {
+					$host = preg_replace( '#^(https?://)?#i', ($useHttps ? 'https://' : 'http://'), $host );
+				} else {
+					$host = zula_url_add_scheme( $host, $this->_router->getDefaultScheme() );
+				}
+				return trim( $host, '/' ).$this->make( $separator, $type );
 			}
-			return trim( $host, '/' ).$this->make( $separator, $type );
 		}
 
 	}

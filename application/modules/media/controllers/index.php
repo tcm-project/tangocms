@@ -21,7 +21,6 @@
 		 * @return string
 		 */
 		public function indexSection() {
-			$this->_locale->textDomain( $this->textDomain() );
 			$this->setTitle( t('Media') );
 			// Build main view and output with the latest media
 			$view = $this->loadView( 'index/cat_selector.html' );
@@ -35,7 +34,6 @@
 		 * @return string
 		 */
 		public function latestSection() {
-			$this->_locale->textDomain( $this->textDomain() );
 			$this->setTitle( t('Latest Media') );
 			return $this->buildLatest();
 		}
@@ -46,7 +44,6 @@
 		 * @return mixed
 		 */
 		public function catSection() {
-			$this->_locale->textDomain( $this->textDomain() );
 			if ( $this->inSector( 'SC' ) && $this->_router->hasArgument( 'name' ) ) {
 				$category = $this->_router->getArgument( 'name' );
 			} else if ( $this->_config->has( 'media/display_cat' ) ) {
@@ -81,10 +78,10 @@
 					$uploadAcl = $this->_acl->check( 'media-cat_upload_'.$cid );
 					if ( $moderateAcl || $uploadAcl ) {
 						$this->setPageLinks( array(
-													t('Upload Media Item')		=> $this->_router->makeUrl( 'media', 'add', 'upload', null, array('id' => $cid) ),
-													t('Add External Media Item')=> $this->_router->makeUrl( 'media', 'add', 'external', null, array('id' => $cid) ),
+													t('Upload Media Item')		=> $this->_router->makeUrl('media', 'add', 'upload')->queryArgs(array('cid' => $cid)),
+													t('Add External Media Item')=> $this->_router->makeUrl('media', 'add', 'external')->queryArgs(array('cid' => $cid)),
 													));
-					}					
+					}
 				} catch ( Media_CategoryNoExist $e ) {
 					throw new Module_ControllerNoExist;
 				}

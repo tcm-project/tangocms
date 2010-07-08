@@ -47,7 +47,7 @@
 		public function validate( $value ) {
 			$valueLen = is_array($value) ? count($value) : strlen($value);
 			if ( $valueLen < $this->min || ($this->max && $valueLen > $this->max) ) {
-				return sprintf( t('%%1$s must be between %1$s and %2$s characters long', Locale::_DTD),
+				return sprintf( t('%%1$s must be between %1$s and %2$s characters long', I18n::_DTD),
 							    number_format($this->min),
 							    number_format($this->max)
 							  );

@@ -7,7 +7,7 @@
  * @patches submit all patches to patches@tangocms.org
  *
  * @author Alex Cartwright
- * @copyright Copyright (C) 2009, Alex Cartwright
+ * @copyright Copyright (C) 2009 Alex Cartwright
  * @license http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GNU/GPL 2
  * @package TangoCMS_Comments
  */
@@ -35,7 +35,7 @@
 		 * @return mixed
 		 */
 		public function hookModuleOutputBottom( array $mcs, $contentType, $sector, $title ) {
-			if ( 
+			if (
 				$sector == 'SC' && $contentType & Zula_ControllerBase::_OT_CONTENT_DYNAMIC &&
 				!($contentType & Zula_ControllerBase::_OT_CONFIG)
 			) {
@@ -51,10 +51,10 @@
 					 * form view and output both views
 					 */
 					$hashPath = zula_hash( $requestPath );
-					$_SESSION['comments'][ $hashPath ] = array(
-																			'path'		=> $requestPath,
-																			'siteType'	=> $this->_router->getSiteType(),
-																			);
+					$_SESSION['mod']['comments'][ $hashPath ] = array(
+																	'path'		=> $requestPath,
+																	'siteType'	=> $this->_router->getSiteType(),
+																	);
 					$form = new View( 'form.html', 'comments' );
 					$form->assign( array(
 										'comments' => array( # Add dummy values

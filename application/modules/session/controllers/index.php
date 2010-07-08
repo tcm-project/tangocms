@@ -11,7 +11,7 @@
  * @patches submit all patches to patches@tangocms.org
  *
  * @author Alex Cartwright
- * @copyright Copyright (C) 2007, 2008, 2009 Alex Cartwright
+ * @copyright Copyright (C) 2007, 2008, 2009, 2010 Alex Cartwright
  * @license http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GNU/GPL 2
  * @package TangoCMS_Session
  */
@@ -62,7 +62,6 @@
 				// The session module is already loaded into another sector (not 'SC'), do not display it
 				return false;
 			}
-			$this->_locale->textDomain( $this->textDomain() );
 			if ( $this->_session->isLoggedIn() ) {
 				$this->setTitle( t('Simple Profile') );
 				// Display a very simple profile
@@ -102,7 +101,7 @@
 				$view = $this->loadView( 'index/login.html' );
 				$view->assign( array(
 									'FORM_URL' 		=> $formUrl,
-									'FORGOT_URL' 	=> $this->_router->makeUrl( 'session', 'reset' ),
+									'FORGOT_URL' 	=> $this->_router->makeUrl( 'session', 'pwd', 'reset' ),
 									'REGISTER_URL'	=> $registerUrl,
 									'LOGIN_BY'		=> $this->loginMethod,
 									));
@@ -116,7 +115,6 @@
 		 * @return string
 		 */
 		public function loginSection() {
-			$this->_locale->textDomain( $this->textDomain() );
 			$this->_session->storePrevious( false );
 			$loggedIn = false;
 			if ( $this->maxLoginAttempts > 0 && $this->_model()->getLoginAttempts() >= $this->maxLoginAttempts ) {
@@ -138,6 +136,13 @@
 							$this->_event->error( t('Sorry, this user account is currently locked') );
 						} else {
 							$loggedIn = true;
+							// Check if the users password has expired
+							$expiresAfter = $this->_config->get( 'session/expire_pw' );
+							$expiresOn = $this->_date->getDateTime( $this->_session->getUser('last_pw_change') )
+													 ->modify( '+ '.$expiresAfter.' seconds' );
+							if ( $expiresAfter > 0 && $expiresOn < new DateTime ) {
+								$_SESSION['mod']['session']['changePw'] = true;
+							}
 						}
 					} catch ( Session_UserNotActivated $e ) {
 						$this->_event->error( t('This user account has not yet been activated') );

@@ -27,10 +27,10 @@
 		<sql>
 			<conf key="media/per_page">6</conf>
 			<conf key="media/use_lightbox">true</conf>
-			<conf key="media/medium_size_x">600</conf>
-			<conf key="media/medium_size_y"></conf>
-			<conf key="media/thumb_size_x">80</conf>
-			<conf key="media/thumb_size_y">80</conf>
+			<conf key="media/max_fs">12582912</conf>
+			<conf key="media/max_image_width">9000</conf>
+			<conf key="media/max_thumb_width">80</conf>
+			<conf key="media/wm_position">bl</conf>
 		</sql>
 	</config>
 </install>

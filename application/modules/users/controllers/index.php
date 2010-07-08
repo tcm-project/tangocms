@@ -26,7 +26,6 @@
 		 * @return string
 		 */
 		public function indexSection() {
-			$this->_locale->textDomain( $this->textDomain() );
 			$this->setTitle( t('User List') );
 			// Get correct page/offset
 			if ( $this->inSector('SC') && $this->_input->has( 'get', 'page' ) ) {
@@ -36,8 +35,8 @@
 			}
 			// Gather all of the users and attach the group name onto the array
 			$users = array();
-			foreach( $this->_ugmanager->getAllUsers( '', self::_PER_PAGE, ($curPage*self::_PER_PAGE), UGManager::_SORT_ALPHA ) as $user ) {
-				if ( $user['id'] != UGManager::_GUEST_ID || $user['activate_code'] ) {
+			foreach( $this->_ugmanager->getAllUsers( '', self::_PER_PAGE, ($curPage*self::_PER_PAGE), Ugmanager::_SORT_ALPHA ) as $user ) {
+				if ( $user['id'] != Ugmanager::_GUEST_ID || $user['activate_code'] ) {
 					$user['group_name'] = $this->_ugmanager->gidName( $user['group'] );
 					if ( (!empty( $user['hide_email'] ) && $user['id'] != $this->_session->getUserId()) && !$this->_acl->check( 'users_edit' ) ) {
 						$user['email'] = t('Hidden');

@@ -7,7 +7,7 @@
  * @patches submit all patches to patches@tangocms.org
  *
  * @author Alex Cartwright
- * @copyright Copyright (C) 2007, 2008, 2009 Alex Cartwright
+ * @copyright Copyright (C) 2007, 2008, 2009, 2010 Alex Cartwright
  * @license http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GNU/GPL 2
  * @package TangoCMS_Article
  */
@@ -40,7 +40,6 @@
 		 * @return string|bool
 		 */
 		public function indexSection() {
-			$this->_locale->textDomain( $this->textDomain() );
 			$this->setTitle( t('Manage Articles') );
 			$this->setOutputType( self::_OT_CONFIG );
 			if ( $this->_input->checkToken() ) {
@@ -113,7 +112,7 @@
 										'PAGINATION'	=> isset($pagination) ? $pagination->build() : '',
 										'CSRF'			=> $this->_input->createToken(true),
 										));
-				$this->_theme->addJsFile( 'jQuery/plugins/autocomplete.js' );
+				$this->_theme->addJsFile( 'jquery.autocomplete' );
 				$this->_theme->addCssFile( 'jquery.autocomplete.css' );
 				$this->addAsset( 'js/autocomplete.js' );
 				return $view->getOutput();
@@ -128,29 +127,31 @@
 		 * @return false
 		 */
 		public function autocompleteSection() {
-			if ( !_AJAX_REQUEST ) {
-				throw new Module_AjaxOnly;
-			}
-			header( 'Content-Type: text/javascript; charset=utf-8' );
-			$searchTitle = '%'.str_replace( '%', '\%', $this->_input->get('query') ).'%';
-			$query = 'SELECT id, cat_id, title FROM {SQL_PREFIX}mod_articles WHERE title LIKE ?';
-			if ( $this->_router->hasArgument('catId') ) {
-				$query .= ' AND cat_id = '.(int) $this->_router->getArgument('catId');
-			}
-			$pdoSt = $this->_sql->prepare( $query );
-			$pdoSt->execute( array($searchTitle) );
-			// Setup the object to return
-			$jsonObj = new StdClass;
-			$jsonObj->query = $this->_input->get( 'query' );
-			foreach( $pdoSt->fetchAll( PDO::FETCH_ASSOC ) as $row ) {
-				$resource = 'article-cat-'.$row['cat_id'];
-				if ( $this->_acl->resourceExists( $resource ) && $this->_acl->check( $resource ) ) {
-					$jsonObj->suggestions[] = $row['title'];
-					$jsonObj->data[] = $this->_router->makeFullUrl( 'article', 'config', 'edit', 'admin', array('id' => $row['id']) );
+			try {
+				$query = $this->_input->get( 'query' );
+				$searchTitle = '%'.str_replace( '%', '\%', $query ).'%';
+				$query = 'SELECT id, cat_id, title FROM {SQL_PREFIX}mod_articles WHERE title LIKE ?';
+				if ( $this->_router->hasArgument('catId') ) {
+					$query .= ' AND cat_id = '.(int) $this->_router->getArgument('catId');
 				}
+				$pdoSt = $this->_sql->prepare( $query );
+				$pdoSt->execute( array($searchTitle) );
+				// Setup the object to return
+				$jsonObj = new StdClass;
+				$jsonObj->query = $query;
+				foreach( $pdoSt->fetchAll( PDO::FETCH_ASSOC ) as $row ) {
+					$resource = 'article-cat-'.$row['cat_id'];
+					if ( $this->_acl->resourceExists( $resource ) && $this->_acl->check( $resource ) ) {
+						$jsonObj->suggestions[] = $row['title'];
+						$jsonObj->data[] = $this->_router->makeFullUrl( 'article', 'config', 'edit', 'admin', array('id' => $row['id']) );
+					}
+				}
+				header( 'Content-Type: text/javascript; charset=utf-8' );
+				echo json_encode( $jsonObj );
+				return false;
+			} catch ( Input_KeyNoExist $e ) {
+				trigger_error( $e->getMessage(), E_USER_ERROR );
 			}
-			echo json_encode( $jsonObj );
-			return false;
 		}
 
 		/**
@@ -163,7 +164,6 @@
 			if ( !$this->_acl->checkMulti( array('article_edit_cat', 'article_delete_cat', 'article_add_cat') ) ) {
 				throw new Module_NoPermission;
 			}
-			$this->_locale->textDomain( $this->textDomain() );
 			$this->setTitle( t('Manage Categories') );
 			$this->setOutputType( self::_OT_CONFIG );
 			if ( $this->_input->checkToken() ) {
@@ -182,9 +182,9 @@
 							++$count;
 						}
 					}
-					if ( $count ) { 
+					if ( $count ) {
 						$this->_event->success( t('Deleted selected categories') );
-					}					
+					}
 				} catch ( Input_KeyNoExist $e ) {
 					$this->_event->error( t('No categories selected') );
 				}
@@ -213,7 +213,6 @@
 		 * @return string|bool
 		 */
 		public function addCatSection() {
-			$this->_locale->textDomain( $this->textDomain() );
 			$this->setTitle( t('Add Article Category') );
 			$this->setOutputType( self::_OT_CONFIG );
 			if ( !$this->_acl->check( 'article_add_cat' ) ) {
@@ -248,7 +247,6 @@
 		 */
 		public function editCatSection() {
 			$this->setTitle( t('Edit Article Category') );
-			$this->_locale->textDomain( $this->textDomain() );
 			$this->setOutputType( self::_OT_CONFIG );
 			if ( !$this->_acl->check( 'article_edit_cat' ) ) {
 				throw new Module_NoPermission;
@@ -316,7 +314,6 @@
 		 */
 		public function addSection() {
 			$this->setTitle( t('Add Article') );
-			$this->_locale->textDomain( $this->textDomain() );
 			$this->setOutputType( self::_OT_CONFIG );
 			if ( !$this->_acl->check( 'article_add_article' ) ) {
 				throw new Module_NoPermission;
@@ -366,7 +363,6 @@
 		 * @return string|bool
 		 */
 		public function editSection() {
-			$this->_locale->textDomain( $this->textDomain() );
 			$this->setOutputType( self::_OT_CONFIG );
 			if ( !$this->_acl->check( 'article_edit_article' ) ) {
 				throw new Module_NoPermission;
@@ -419,9 +415,8 @@
 		 *
 		 * @return string
 		 */
-		public function addPartSection() {			
+		public function addPartSection() {
 			$this->setTitle( t('Add Article Part') );
-			$this->_locale->textDomain( $this->textDomain() );
 			$this->setOutputType( self::_OT_CONFIG );
 			if ( !$this->_acl->check( 'article_edit_article' ) ) {
 				throw new Module_NoPermission;
@@ -452,7 +447,7 @@
 			}
 			return zula_redirect( $this->_router->makeUrl( 'article', 'config' ) );
 		}
-		
+
 		/**
 		 * Edit an article part, only if the article exists and user has
 		 * permission to the parent category
@@ -460,7 +455,6 @@
 		 * @return string|bool
 		 */
 		public function editPartSection() {
-			$this->_locale->textDomain( $this->textDomain() );
 			$this->setOutputType( self::_OT_CONFIG );
 			$this->setTitle( t('Edit Article Part') );
 			if ( !$this->_acl->check( 'article_edit_article' ) ) {
@@ -495,7 +489,7 @@
 			}
 			return zula_redirect( $this->_router->makeUrl( 'article', 'config' ) );
 		}
-		
+
 		/**
 		 * Builds the form that allos users to add or edit an article part.
 		 *
@@ -530,7 +524,6 @@
 		 * @return bool
 		 */
 		public function deletePartSection() {
-			$this->_locale->textDomain( $this->textDomain() );
 			$this->setOutputType( self::_OT_CONFIG );
 			if ( !$this->_acl->check( 'article_edit_article' ) ) {
 				throw new Module_NoPermission;
@@ -579,7 +572,6 @@
 		 */
 		public function settingsSection() {
 			$this->setTitle( t('Article Settings') );
-			$this->_locale->textDomain( $this->textDomain() );
 			$this->setOutputType( self::_OT_CONFIG );
 			if ( !$this->_acl->check( 'article_manage_settings' ) ) {
 				throw new Module_NoPermission;

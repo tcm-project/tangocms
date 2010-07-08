@@ -8,7 +8,7 @@
  *
  * @author Alex Cartwright
  * @author Robert Clipsham
- * @copyright Copyright (C) 2008, 2009 Alex Cartwright
+ * @copyright Copyright (C) 2008, 2009, 2010 Alex Cartwright
  * @license http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html GNU/LGPL 2.1
  * @package Zula_Module
  */
@@ -78,7 +78,7 @@
 		 * Details about the module
 		 * @var array
 		 */
-		protected $details = array();
+		protected $details = null;
 
 		/**
 		 * Constructor
@@ -172,7 +172,7 @@
 			} else if ( $type == self::_INSTALLABLE ) {
 				$typeKey = 'installable';
 			}
-			if ( self::$sqlModules === null && Registry::has( 'sql' ) && _APP_MODE != 'installation' ) {
+			if ( self::$sqlModules === null && Registry::has( 'sql' ) && Registry::get('zula')->getState() != 'installation' ) {
 				$query = 'SELECT * FROM {SQL_PREFIX}modules ORDER BY `order`, name';
 				foreach( Registry::get('sql')->query( $query, PDO::FETCH_ASSOC ) as $row ) {
 					self::$sqlModules[ $row['name'] ] = $row;
@@ -276,18 +276,21 @@
 		 * @return array|bool
 		 */
 		public function getDetails() {
-			$this->details = $this->_cache->get( 'mod_details_'.$this->modName );
-			if ( empty( $this->details ) ) {
-				$xmlPath = $this->path.'/details.xml';
-				if ( is_readable( $xmlPath ) ) {
-					$sXml = simplexml_load_file( $xmlPath, 'SimpleXMLElement', LIBXML_NOCDATA );
-					foreach( $sXml->detail->children() as $detail ) {
-						$this->details[ $detail->getName() ] = (string) $detail;
+			if ( $this->details === null ) {
+				$cacheKey = 'mod_details_'.$this->modName;
+				if ( ($this->details = $this->_cache->get($cacheKey)) == false ) {
+					// Gather details from the details.xml file
+					if ( is_readable( $this->path.'/details.xml' ) ) {
+						$dom = new DomDocument;
+						$dom->load( $this->path.'/details.xml' );
+						foreach( $dom->getElementsByTagName('detail')->item(0)->getElementsByTagName('*') as $item ) {
+							$this->details[ $item->nodeName ] = $item->nodeValue;
+						}
+						$this->details['disabled'] = self::isDisabled( $this->details['name'] );
+						$this->_cache->add( $cacheKey, $this->details );
+					} else {
+						return false;
 					}
-					$this->details['disabled'] = self::isDisabled( $this->details['name'] );
-					$this->_cache->add( 'mod_details_'.$this->modName, $this->details );
-				} else {
-					return false;
 				}
 			}
 			return $this->details;
@@ -405,10 +408,10 @@
 									 ON DUPLICATE KEY UPDATE name=name' )
 						   ->closeCursor();
 				// Add all of the new ACL resources and run the install.sql file
-				$guestGroup = $this->_ugmanager->getGroup( UGManager::_GUEST_GID );
+				$guestGroup = $this->_ugmanager->getGroup( Ugmanager::_GUEST_GID );
 				foreach( $details['aclResources'] as $resource=>$roleHint ) {
 					$roles = array('group_root');
-					if ( $roleHint !== null ) {
+					if ( $roleHint ) {
 						if ( $roleHint == 'guest' ) {
 							$roleHint = $guestGroup['role_id'];
 						}
@@ -450,7 +453,8 @@
 			if ( !file_exists( $file ) || !is_readable( $file ) ) {
 				throw new Module_NotInstallable( 'installation file "'.$file.'" does not exist' );
 			}
-			// Default detail array
+			// Default detail array and allowed version operators
+			$allowedOperators = array('<', 'lt', '<=', 'le', '>', 'gt', '>=', 'ge', '==', '=', 'eq', '!=', '<>', 'ne');
 			$details = array(
 							'file'	=> $file,
 							'dependencies'	=> array(
@@ -475,38 +479,35 @@
 							'config'		=> array('sql' => array(), 'ini' => array()),
 							);
 			// Parse the install.xml file
-			$xml = simplexml_load_file( $file );
-			$allowedOperators = array('<', 'lt', '<=', 'le', '>', 'gt', '>=', 'ge', '==', '=', 'eq', '!=', '<>', 'ne');
-			foreach( $xml->dependencies->children() as $pkg ) {
-				if ( isset( $details['dependencies'][ $pkg->getName() ] ) ) {
-					$details['dependencies'][ $pkg->getName() ]['version'] = (string) $pkg->version;
-					$operator = $pkg->version['operator'];
-					if ( in_array( $operator, $allowedOperators ) ) {
-						$details['dependencies'][ $pkg->getName() ]['operator'] = (string) $pkg->version['operator'];
-					}
-					// Check if we have the needed PHP extensions
-					if ( isset( $pkg->extensions ) ) {
-						foreach( $pkg->extensions->children() as $phpExt ) {
-							$details['dependencies'][ $pkg->getName() ]['extensions'][] = (string) $phpExt;
+			$dom = new DomDocument;
+			$dom->load( $file );
+			$xPath = new DomXpath( $dom );
+			foreach( $xPath->query('//dependencies/*') as $node ) {
+				if ( isset( $details['dependencies'][ $node->nodeName ] ) ) {
+					// Get which version of the dependency is required
+					$version = $xPath->query( 'version', $node )->item(0);
+					if ( $version instanceof DomElement ) {
+						$operator = $version->getAttribute( 'operator' );
+						if ( in_array( $operator, $allowedOperators ) ) {
+							$details['dependencies'][ $node->nodeName ]['operator'] = $operator;
 						}
+						$details['dependencies'][ $node->nodeName ]['version'] = $version->nodeValue;
+					}
+					// Required dependency extensions
+					foreach( $xPath->query('extensions/extension', $node) as $extension ) {
+						$details['dependencies'][ $node->nodeName ]['extensions'][] = $extension->nodeValue;
 					}
 				}
 			}
-			if ( !empty( $xml->aclResources ) ) {
-				foreach( $xml->aclResources->children() as $resource ) {
-					$roleHint = null;
-					if ( isset( $resource['roleHint'] ) ) {
-						$roleHint = (string) $resource['roleHint'];
-					}
-					$details['aclResources'][ (string) $resource ] = $roleHint;
-				}
+			// Additional ACL Resources
+			foreach( $xPath->query('//aclResources/resource') as $node ) {
+				$details['aclResources'][ $node->nodeValue ] = $node->getAttribute( 'roleHint' );
 			}
-			// Gather all config settings for both SQL and INI
-			foreach( array('sql', 'ini') as $confType ) {
-				if ( !empty( $xml->config->$confType ) ) {
-					foreach( $xml->config->$confType->children() as $config ) {
-						$details['config'][ $confType ][ (string) $config['key'] ] = (string) $config;
-					}
+			// Configuration settings for both SQL and INI
+			foreach( $xPath->query('//config/sql/* | //config/ini/*') as $node ) {
+				$type = $xPath->query( '..', $node )->item(0)->nodeName;
+				if ( ($confKey = $node->getAttribute('key')) ) {
+					$details['config'][ $type ][ $confKey ] = $node->nodeValue;
 				}
 			}
 			return $details;
@@ -519,8 +520,7 @@
 		 * @return bool
 		 */
 		public function controllerExists( $cntrlr ) {
-			$cntrlrFile = $this->path.'/controllers/'.$cntrlr.'.php';
-			return is_readable( $cntrlrFile );
+			return is_readable( $this->path.'/controllers/'.$cntrlr.'.php' );
 		}
 
 		/**
@@ -587,7 +587,7 @@
 					 * Trigger output hooks. Listeners should return a string with the
 					 * html they want to add to the controllers output.
 					 */
-					if ( $details['output'] !== false ) {
+					if ( !is_bool( $details['output'] ) ) {
 						$ota = Hooks::notifyAll( 'module_output_top', self::getLoading(), $details['outputType'], $sector, $details['title'] );
 						$outputTop = count($ota) > 0 ? implode( "\n", $ota ) : '';
 						$oba = Hooks::notifyAll( 'module_output_bottom', self::getLoading(), $details['outputType'], $sector, $details['title'] );
@@ -595,17 +595,17 @@
 						$details['output'] = $outputTop.$details['output'].$outputBottom;
 					}
 					Hooks::notifyAll( 'module_controller_loaded', self::getLoading(), $details['outputType'], $sector, $details['title'] );
-					// Reset MCS details and restore Locale domain
+					// Reset MCS details and restore i18n domain
 					self::$currentMcs = false;
 					self::$currentCntrlrObj = false;
-					$this->_locale->textDomain( Locale::_DTD );
+					$this->_i18n->textDomain( I18n::_DTD );
 					return $details;
 				} else {
 					throw new Module_ControllerNoExist( 'controller "'.$class.'" must extend Zula_ControllerBase' );
 				}
 			} catch ( Exception $e ) {
 				// Catch any exceptions throw to reset the MCS details, then re-throw
-				$this->_locale->textDomain( Locale::_DTD );
+				$this->_i18n->textDomain( I18n::_DTD );
 				self::$currentMcs = false;
 				self::$currentCntrlrObj = false;
 				throw $e;

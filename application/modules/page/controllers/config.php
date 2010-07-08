@@ -10,7 +10,7 @@
  *
  * @author Alex Cartwright
  * @author Robert Clipsham
- * @copyright Copyright (C) 2007, 2008, 2009 Alex Cartwright
+ * @copyright Copyright (C) 2007, 2008, 2009, 2010 Alex Cartwright
  * @license http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GNU/GPL 2
  * @package TangoCMS_Page
  */
@@ -42,7 +42,6 @@
 		 * @return string
 		 */
 		public function indexSection() {
-			$this->_locale->textDomain( $this->textDomain() );
 			$this->setTitle( t('Manage Pages') );
 			$this->setOutputType( self::_OT_CONFIG );
 			if ( !$this->_acl->checkMulti( array('page_add', 'page_edit', 'page_delete') ) ) {
@@ -67,7 +66,7 @@
 									'CSRF'			=> $this->_input->createToken( true ),
 									));
 			// Autocomplete/suggest feature
-			$this->_theme->addJsFile( 'jQuery/plugins/autocomplete.js' );
+			$this->_theme->addJsFile( 'jquery.autocomplete' );
 			$this->_theme->addCssFile( 'jquery.autocomplete.css' );
 			$this->addAsset( 'js/autocomplete.js' );
 			return $view->getOutput();
@@ -79,25 +78,27 @@
 		 * @return false
 		 */
 		public function autocompleteSection() {
-			if ( !_AJAX_REQUEST ) {
-				throw new Module_AjaxOnly;
-			}
-			header( 'Content-Type: text/javascript; charset=utf-8' );
-			$searchTitle = '%'.str_replace( '%', '\%', $this->_input->get('query') ).'%';
-			$pdoSt = $this->_sql->prepare( 'SELECT id, title FROM {SQL_PREFIX}mod_page WHERE title LIKE ?' );
-			$pdoSt->execute( array($searchTitle) );
-			// Setup the object to return
-			$jsonObj = new StdClass;
-			$jsonObj->query = $this->_input->get( 'query' );
-			foreach( $pdoSt->fetchAll( PDO::FETCH_ASSOC ) as $row ) {
-				$resource = 'page-'.$row['id'];
-				if ( $this->_acl->resourceExists( $resource ) && $this->_acl->check( $resource ) ) {
-					$jsonObj->suggestions[] = $row['title'];
-					$jsonObj->data[] = $this->_router->makeFullUrl( 'page', 'config', 'edit', 'admin', array('id' => $row['id']) );
+			try {
+				$query = $this->_input->get( 'query' );
+				$searchTitle = '%'.str_replace( '%', '\%', $query ).'%';
+				$pdoSt = $this->_sql->prepare( 'SELECT id, title FROM {SQL_PREFIX}mod_page WHERE title LIKE ?' );
+				$pdoSt->execute( array($searchTitle) );
+				// Setup the object to return
+				$jsonObj = new StdClass;
+				$jsonObj->query = $query;
+				foreach( $pdoSt->fetchAll( PDO::FETCH_ASSOC ) as $row ) {
+					$resource = 'page-'.$row['id'];
+					if ( $this->_acl->resourceExists( $resource ) && $this->_acl->check( $resource ) ) {
+						$jsonObj->suggestions[] = $row['title'];
+						$jsonObj->data[] = $this->_router->makeFullUrl( 'page', 'config', 'edit', 'admin', array('id' => $row['id']) );
+					}
 				}
+				header( 'Content-Type: text/javascript; charset=utf-8' );
+				echo json_encode( $jsonObj );
+				return false;
+			} catch ( Input_KeyNoExist $e ) {
+				trigger_error( $e->getMessage(), E_USER_ERROR );
 			}
-			echo json_encode( $jsonObj );
-			return false;
 		}
 
 		/**
@@ -106,7 +107,6 @@
 		 * @return string
 		 */
 		public function addSection() {
-			$this->_locale->textDomain( $this->textDomain() );
 			$this->setTitle( t('Add Page') );
 			$this->setOutputType( self::_OT_CONFIG | self::_OT_CONTENT_STATIC );
 			if ( !$this->_acl->check( 'page_add' ) ) {
@@ -170,7 +170,6 @@
 		 * @return string
 		 */
 		public function editSection() {
-			$this->_locale->textDomain( $this->textDomain() );
 			$this->setTitle( t('Edit Page') );
 			$this->setOutputType( self::_OT_CONFIG | self::_OT_CONTENT_STATIC );
 			if ( !$this->_acl->check( 'page_edit' ) ) {
@@ -277,7 +276,7 @@
 			$form->addElement( 'page/id', $id, 'ID', new Validator_Int, ($op == 'edit') );
 			$form->addElement( 'page/title', $title, t('Title'), new Validator_Length(2, 255) );
 			$form->addElement( 'page/parent', $parent, t('Parent'), new Validator_InArray($validParents), !empty($parent) );
-			$form->addElement( 'page/body', $body, t('Body'), new Validator_Length(1, 65535) );
+			$form->addElement( 'page/body', $body, t('Body'), new Validator_Length(1, 50000) );
 			$form->assign( array(
 								'OP'		=> $op,
 								'PARENTS'	=> isset($possibleParents) ? $possibleParents : null,
@@ -361,7 +360,6 @@
 		 * @return mixed
 		 */
 		public function bridgeSection() {
-			$this->_locale->textDomain( $this->textDomain() );
 			$this->setOutputType( self::_OT_CONFIG );
 			if ( !$this->_input->checkToken() ) {
 				$this->_event->error( Input::csrfMsg() );

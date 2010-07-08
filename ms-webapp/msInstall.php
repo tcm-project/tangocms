@@ -15,11 +15,14 @@
  * @package TangoCMS
  */
 
-	// Create a new random salt, and hash the plaintext password from the installer.
+	// Update some configuration values in the ini file, such as unique salt
 	try {
 		$salt = zula_make_salt();
 		$configIni = Registry::get( 'config_ini' );
 		$configIni->update( 'hashing/salt', $salt );
+		if ( strpos( strtolower($_SERVER['SERVER_SOFTWARE']), 'microsoft-iis/6' ) === 0 ) {
+			$configIni->update( 'url_router/type', 'standard' );
+		}
 		$configIni->writeIni();
 		$config->update( 'hashing/salt', $salt );
 	} catch ( Exception $e ) {

@@ -8,7 +8,7 @@
  *
  * @author Alex Cartwright
  * @author Robert Clipsham
- * @copyright Copyright (C) 2007, 2008, 2009, Alex Cartwright
+ * @copyright Copyright (C) 2007, 2008, 2009 Alex Cartwright
  * @license http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html GNU/LGPL 2.1
  * @package Zula_Error
  */
@@ -57,7 +57,6 @@
 								'php_error_level'		=> 'highest', # Special meta-value
 								'php_display_errors'	=> 0,
 								'zula_detailed_error'	=> 1,
-								'zula_log_level'		=> 126,
 								'zula_log_daily'		=> 1,
 								'zula_show_errors'		=> 1,
 								'zula_log_errors'		=> 1,
@@ -194,8 +193,13 @@
 		 */
 		protected function warning( $message, $file, $line ) {
 			if ( $this->displayErrors ) {
-				$format = '<p><strong>Zula Warning:</strong> %1$s - in <strong>%2$s</strong> on line <strong>%3$d</strong>';
-				printf( $format, $message, $file, $line );
+				if ( $this->_zula->getMode() == 'cli' ) {
+					fwrite( STDERR, sprintf("Zula Warning: %1\$s in %2\$s on line %3\$d\n",
+											$message, $file, $line) );
+				} else {
+					printf( '<p><strong>Zula Warning:</strong> %1$s - in <strong>%2$s</strong> on line <strong>%3$d</strong>',
+							$message, $file, $line );
+				}
 				return true;
 			} else {
 				return false;
@@ -212,8 +216,13 @@
 		 */
 		protected function notice( $message, $file, $line ) {
 			if ( $this->displayErrors ) {
-				$format = '<p><strong>Zula Notice:</strong> %1$s - in <strong>%2$s</strong> on line <strong>%3$d</strong>';
-				printf( $format, $message, $file, $line );
+				if ( $this->_zula->getMode() == 'cli' ) {
+					fwrite( STDERR, sprintf("Zula Notice: %1\$s in %2\$s on line %3\$d\n",
+											$message, $file, $line) );
+				} else {
+					printf( '<p><strong>Zula Notice:</strong> %1$s - in <strong>%2$s</strong> on line <strong>%3$d</strong>',
+							$message, $file, $line );
+				}
 				return true;
 			} else {
 				return false;
@@ -230,8 +239,13 @@
 		 */
 		protected function strict( $message, $file, $line ) {
 			if ( $this->displayErrors ) {
-				$format = '<p><strong>Zula Strict:</strong> %1$s - in <strong>%2$s</strong> on line <strong>%3$d</strong>';
-				printf( $format, $message, $file, $line );
+				if ( $this->_zula->getMode() == 'cli' ) {
+					fwrite( STDERR, sprintf("Zula Strict: %1\$s in %2\$s on line %3\$d\n",
+											$message, $file, $line) );
+				} else {
+					printf( '<p><strong>Zula Strict:</strong> %1$s - in <strong>%2$s</strong> on line <strong>%3$d</strong>',
+							$message, $file, $line );
+				}
 				return true;
 			} else {
 				return false;
@@ -248,20 +262,28 @@
 		 * @param string $title
 		 */
 		protected function fatal( $message, $file, $line, $title='' ) {
-			$msg = '<h1>Internal Error</h1><p>An internal error has occured and caused the page to halt.</p>';
-			if ( $this->displayErrors ) {
-				if ( trim( $title ) ) {
-					$msg .= '<p>'.$title.'</p>';
-				}
+			if ( $this->_zula->getMode() == 'cli' ) {
+				// Display a more CLI friendly fatal message
+				$msg = '**** An internal error has occured and caused the request to halt ****';
 				if ( $this->detailedErrors ) {
-					$msg .= '<textarea cols="90" rows="10" readonly="readonly" name="error">'.
-							$message."\n\nFile: ".$file."\nLine: ".$line.'</textarea>';
+					$msg .= "\n\n".wordwrap($message)."\n\nFile: $file\nLine: $line";
 				}
+			} else {
+				$msg = '<h1>Internal Error</h1><p>An internal error has occured and caused the request to halt.</p>';
+				if ( $this->displayErrors ) {
+					if ( trim( $title ) ) {
+						$msg .= '<p>'.$title.'</p>';
+					}
+					if ( $this->detailedErrors ) {
+						$msg .= '<textarea cols="90" rows="10" readonly="readonly" name="error">'.
+								$message."\n\nFile: ".$file."\nLine: ".$line.'</textarea>';
+					}
+				}
+				$msg .= '<p>Please refresh the page to try again.</p><hr>
+						<p>For details of this error, please check your log files. View the debug manual page for more information:<br>
+							<a href="http://manual.tangocms.org/troubleshooting/debug">Troubleshooting/Debug Manual Page</a>
+						</p>';
 			}
-			$msg .= '<p>Please refresh the page to try again.</p><hr>
-					 <p>For details of this error, please check your log files. View the debug manual page for more information:<br>
-						<a href="http://manual.tangocms.org/troubleshooting/debug">Troubleshooting/Debug Manual Page</a>
-					 </p>';
 			zula_fatal_error( 'Internal Error', $msg );
 		}
 

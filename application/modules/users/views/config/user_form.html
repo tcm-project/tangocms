@@ -40,13 +40,13 @@
 					</dl>
 				</td>
 				<td class="confcol">
-					<select name="users[group]" <?php echo ($id == UGManager::_ROOT_ID || $id == UGManager::_GUEST_ID) ? 'disabled="disabled"' : ''; ?>>
+					<select name="users[group]" <?php echo ($id == Ugmanager::_ROOT_ID || $id == Ugmanager::_GUEST_ID) ? 'disabled="disabled"' : ''; ?>>
 						<?php
 							$format = '<option value="%d" %s>%s</option>';
 							foreach( $this->_ugmanager->getAllGroups() as $group ) {
 								if (
-									$id == UGManager::_GUEST_ID || $id == UGManager::_ROOT_ID ||
-									$id != UGManager::_GUEST_ID && !in_array( $group['id'], array(UGmanager::_GUEST_GID, UGManager::_ROOT_GID) )
+									$id == Ugmanager::_GUEST_ID || $id == Ugmanager::_ROOT_ID ||
+									$id != Ugmanager::_GUEST_ID && !in_array( $group['id'], array(Ugmanager::_GUEST_GID, Ugmanager::_ROOT_GID) )
 								) {
 									$selected = $users['group'] == $group['id'] ? 'selected="selected"' : '';
 									printf( $format, $group['id'], $selected, $group['name'] );
@@ -138,7 +138,7 @@
 					</dl>
 				</td>
 				<td class="confcol">
-					<input type="text" name="users[email]" value="{USERS.EMAIL}">
+					<input type="email" name="users[email]" value="{USERS.EMAIL}">
 				</td>
 			</tr>
 			<tr class="odd">
@@ -151,7 +151,7 @@
 					</dl>
 				</td>
 				<td class="confcol">
-					<input type="text" name="users_email_confirm">
+					<input type="email" name="users_email_confirm">
 				</td>
 			</tr>
 			<tr class="even">

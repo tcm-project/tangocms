@@ -6,7 +6,7 @@
  * @patches submit all patches to patches@tangocms.org
  *
  * @author Alex Cartwright
- * @copyright Copyright (C) 2009, Alex Cartwright
+ * @copyright Copyright (C) 2009 Alex Cartwright
  * @license http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html GNU/LGPL 2.1
  * @package Zula_Validator
  */
@@ -51,7 +51,7 @@
 			if ( $count >= $this->min && $count <= $this->max ) {
 				return true;
 			}
-			$langStr = t('%%1$s must be between %1$d and %2$d words, currently %3$d', Locale::_DTD);
+			$langStr = t('%%1$s must be between %1$d and %2$d words, currently %3$d', I18n::_DTD);
 			return sprintf( $langStr, $this->min, $this->max, $count );
 		}
 

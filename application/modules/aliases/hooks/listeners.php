@@ -51,13 +51,13 @@
 		 * hook: 'cntrlr_error_output'
 		 * Provides 'Wiki like' functionaility for the Page module
 		 *
-		 * @param int $errCode
+		 * @param int $statusCode
 		 * @param string $output
 		 * @return string
 		 */
-		public function hookCntrlrErrorOutput( $errCode, $output ) {
+		public function hookCntrlrErrorOutput( $statusCode, $output ) {
 			if (
-				$errCode == Dispatcher::_404 && Module::exists( 'page' ) && !Module::isDisabled( 'page' ) &&
+				$statusCode == 404 && Module::exists( 'page' ) && !Module::isDisabled( 'page' ) &&
 				$this->_acl->checkMulti( array('page_add', 'aliases_add'), ACL::_MULTI_ALL )
 			) {
 				$alias = $this->_router->getRequestPath();
