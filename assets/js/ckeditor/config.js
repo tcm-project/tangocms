@@ -11,6 +11,7 @@ CKEDITOR.editorConfig = function(c)
 	c.baseHref = $("head > base").attr("href");
 	c.docType = "<!DOCTYPE HTML>";
 	c.height = 170;
+	c.language = "en";
 	c.resize_dir = "vertical";
 	c.toolbarCanCollapse = false;
 	c.toolbar = "tangocms";
