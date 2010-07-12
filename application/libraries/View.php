@@ -498,8 +498,9 @@
 			$tags['META_DESCRIPTION'] = $this->_config->get( 'meta/description' );
 			$tags['META_KEYWORDS'] = $this->_config->get( 'meta/keywords' );
 			if ( Registry::has( 'theme' ) ) {
-				$curTheme = Registry::get( 'theme' )->getDetail( 'name' );
-				$tags['DIR_CUR_THEME'] = $tags['DIR_THEME'].'/'.$curTheme;
+				$theme = Registry::get( 'theme' );
+				$tags['DIR_CUR_THEME'] = $tags['DIR_THEME'].'/'.$theme->getDetail( 'name' );
+				$tags['THEME_STYLE'] = $theme->getDetail( 'style' );
 			}
 			return $tags;
 		}

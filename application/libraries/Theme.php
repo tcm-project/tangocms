@@ -59,16 +59,25 @@
 		protected $loadedGoogleLibs = array();
 
 		/**
-		 * Check if the theme exists
+		 * Constructs the main theme object. If the provided name contains a
+		 * forward slash, the left side will be used as the 'name', and
+		 * the right side will be used as the 'style'.
 		 *
 		 * @param string $name
+		 * @param string $style
 		 * @return object
 		 */
-		public function __construct( $name ) {
-			if ( !self::exists( $name ) ) {
-				throw new Theme_NoExist( 'unable to construct theme "'.$name.'" as it does not exist' );
+		public function __construct( $name, $style=null ) {
+			if ( $style ) {
+				list( $name ) = explode( '/', $name );
+			} else {
+				list( $name, $style ) = explode( '/', $name.'/' );
 			}
-			$this->details = array('path' => $this->_zula->getDir('themes').'/'.$name);
+			if ( !self::exists( $name, $style ) ) {
+				throw new Theme_NoExist( "unable to construct theme '$name/$style' as it does not exist" );
+			}
+			$this->details = array(	'path'	=> $this->_zula->getDir('themes').'/'.$name,
+									'style'	=> $style );
 			// Load all details for the theme
 			$dom = new DomDocument;
 			$dom->load( $this->details['path'].'/details.xml' );
@@ -76,7 +85,15 @@
 				$this->details[ $item->nodeName ] = $item->nodeValue;
 			}
 			// Construct parent view and register cache_purge hook
-			parent::__construct( $this->details['path'].'/main_template.html' );
+			if ( $style ) {
+				try {
+					parent::__construct( $this->details['path'].'/styles/'.$style.'/main_template.html' );
+				} catch ( View_FileNoExist $e ) {
+					parent::__construct( $this->details['path'].'/main_template.html' );
+				}
+			} else {
+				parent::__construct( $this->details['path'].'/main_template.html' );
+			}
 			Hooks::register( 'cache_purge', array('Theme', 'clearJsTmp') );
 		}
 
@@ -99,19 +116,28 @@
 		}
 
 		/**
-		 * Returns true if a themes main_template.html and details.xml exists
+		 * Returns true if the provided theme/style exists. A theme exists
+		 * if the main 'details.xml', 'sectors.xml' and 'main_template.html'
+		 * ('base.html' for styles) exists.
 		 *
-		 * @param string $themeName
+		 * @param string $name
+		 * @param string $style
 		 * @return bool
 		 */
-		static public function exists( $themeName ) {
-			$themeDir = Registry::get( 'zula' )->getDir( 'themes' ).'/'.$themeName;
-			foreach( array($themeDir.'/main_template.html', $themeDir.'/details.xml', $themeDir.'/sectors.xml') as $path ) {
-				if ( !file_exists( $path ) || !is_readable( $path ) ) {
-					return false;
-				}
+		static public function exists( $name, $style=null ) {
+			if ( $style ) {
+				list( $name ) = explode( '/', $name );
+			} else {
+				list( $name, $style ) = explode( '/', $name.'/' );
 			}
-			return true;
+			$themeDir = Registry::get( 'zula' )->getDir( 'themes' ).'/'.$name;
+			if ( !file_exists( $themeDir.'/details.xml' ) || !file_exists( $themeDir.'/sectors.xml' ) ) {
+				return false;
+			} else if ( $style ) {
+				return is_dir( $themeDir ).'/styles/'.$style;
+			} else {
+				return file_exists( $themeDir ).'/main_template.html';
+			}
 		}
 
 		/**
@@ -123,7 +149,13 @@
 			$themes = array();
 			foreach( new DirectoryIterator( Registry::get('zula')->getDir('themes') ) as $file ) {
 				if ( !$file->isDot() && $file->isDir() && self::exists( $file->getFilename() ) ) {
-					$themes[] = $file->getFileName();
+					$name = $file->getFileName();
+					$themes[] = $name;
+					if ( is_dir( $file->getPathName().'/styles' ) ) {
+						foreach( glob($file->getPathName().'/styles/*', GLOB_ONLYDIR) as $style ) {
+							$themes[] = $name.'/'.pathinfo( $style, PATHINFO_FILENAME );
+						}
+					}
 				}
 			}
 			sort( $themes );
@@ -180,11 +212,15 @@
 		 * @return array
 		 */
 		public function getAllCss() {
+			$themePath = $this->getDetail( 'path' );
+			if ( ($style = $this->getDetail('style')) != false ) {
+				$themePath .= '/styles/'.$style;
+			}
 			$cssFiles = array();
-			foreach( glob( $this->getDetail('path').'/*.css' ) as $file ) {
+			foreach( glob( $themePath.'/*.css' ) as $file ) {
 				$name = pathinfo( $file, PATHINFO_FILENAME );
 				$cssFiles[ $name ] = array(
-											'path' 	=> $this->getDetail('path').'/'.pathinfo( $file, PATHINFO_BASENAME ),
+											'path' 	=> $themePath.'/'.pathinfo( $file, PATHINFO_BASENAME ),
 											'name'	=> $name,
 											);
 			}
@@ -335,6 +371,15 @@
 		 * @return int
 		 */
 		public function loadLayout( Layout $layout ) {
+			// Work out what file the modules output will be wrapped in
+			$moduleWrapFile = $this->getDetail( 'path' ).'/module_wrap.html';
+			if ( ($style = $this->getDetail('style')) != false ) {
+				$tmpFile = $this->getDetail( 'path' ).'/styles/'.$style.'/module_wrap.html';
+				if ( file_exists( $tmpFile ) ) {
+					$moduleWrapFile = $tmpFile;
+				}
+			}
+			// Load all of the controllers into the correct sector
 			$cntrlrCount = 0;
 			foreach( $this->getSectors() as $sector ) {
 				foreach( $layout->getControllers( $sector['id'] ) as $cntrlr ) {
@@ -359,7 +404,7 @@
 							} else {
 								$title = isset($tmpCntrlr['title']) ? $tmpCntrlr['title'] : t('Oops!', I18n::_DTD);
 							}
-							$wrap = new View( $this->getDetail('path').'/module_wrap.html' );
+							$wrap = new View( $moduleWrapFile );
 							$wrap->assign( array(
 												'ID'			=> $cntrlr['id'],
 												'TITLE'			=> $title,
@@ -596,7 +641,8 @@
 								 var zula_dir_assets = "'.$this->_zula->getDir( 'assets', true ).'";
 								 var zula_dir_js = "'.$this->_zula->getDir( 'js', true ).'";
 								 var zula_dir_cur_theme = "'.$this->_zula->getDir( 'themes', true ).'/'.$this->getDetail('name').'";
-								 var zula_dir_icon = zula_dir_cur_theme+"/icons";',
+								 var zula_dir_icon = zula_dir_cur_theme+"/icons";
+								 var zula_theme_style = "'.$this->getDetail('style').'";',
 								true
 							   );
 			}
