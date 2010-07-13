@@ -35,6 +35,11 @@
 					} else {
 						$isDefault = false;
 					}
+					// Title to display
+					$title = $themeObj->getDetail( 'title' );
+					if ( ($style = $themeObj->getDetail('style')) !== '' ) {
+						$title .= " ($style)";
+					}
 				?>
 				<tr class="<?php echo $classes ?>">
 					<td class="checkcol">
@@ -42,7 +47,7 @@
 					</td>
 					<td>
 						<dl>
-							<dt><?php echo $themeObj->getDetail( 'title' ); ?></dt>
+							<dt><?php echo $title; ?></dt>
 							<dd><?php echo $themeObj->getDetail( 'description' ); ?></dd>
 						</dl>
 					<td><?php echo $themeObj->getDetail( 'author' );  ?></td>
