@@ -1,8 +1,7 @@
-
 /**
- * TangoCMS "carbon" theme
+ * "carbon"
  *
- * @copyright Copyright (C) 2009 Alex Cartwright
+ * @copyright Copyright (C) 2009, 2010 Alex Cartwright
  * @license X11/MIT (see COPYING file)
  * @package TangoCMS_Themes
 */
@@ -25,12 +24,12 @@ html, body {
 #stickyWrap {
 	background: #fff url(images/background.png) repeat-x bottom;
 	min-height: 100%;
-	margin: 0 auto -35px;
+	margin: 0 auto -45px;
 	min-width: 900px;
 }
 
 #stickyPush {
-	height: 35px; /* .push must be the same height as .footer */
+	height: 45px; /* this must be the same height as the footer, inc. padding & margin */
 }
 /** End Sticky Footer */
 
@@ -156,7 +155,7 @@ html, body {
 	font-family: "Lucida Grande","Lucida Sans Unicode",Arial,Verdana,sans-serif;
 	font-size: 1.1em;
 	height: 20px;
-	margin: 5px auto 0;
+	margin: 15px auto 0;
 	min-width: 900px;
 	padding: 8px 0 2px;
 	text-align: center;
