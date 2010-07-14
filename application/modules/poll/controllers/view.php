@@ -12,7 +12,7 @@
  */
 
 	require_once 'base.php';
-	
+
 	class Poll_controller_view extends PollBase {
 
 		/**
@@ -111,7 +111,7 @@
 				return $view->getOutput();
 			} catch ( Poll_NoExist $e ) {
 				throw new Module_ControllerNoExist;
-			}			
+			}
 		}
 
 	}

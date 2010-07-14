@@ -128,7 +128,7 @@
 		 * @return bool
 		 */
 		public function addUrl( $url, $tagId ) {
-			if ( !$this->urlHasTag( $url, $tagId ) ) {				
+			if ( !$this->urlHasTag( $url, $tagId ) ) {
 				$pdoSt = $this->_sql->prepare( 'INSERT INTO {SQL_PREFIX}mod_tags_xref (url, tag) VALUES(?, ?)' );
 				$pdoSt->execute( array($url, $tagId) );
 				if ( $pdoSt->rowCount() ) {

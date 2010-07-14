@@ -141,7 +141,7 @@
 			try {
 				$uid = $this->_ugmanager->activateUser( $this->_router->getArgument('code') );
 				$user = $this->_ugmanager->getUser( $uid );
-				$this->_event->success( sprintf( t('The account "%s" has now been activated'), $user['username'] ) );				
+				$this->_event->success( sprintf( t('The account "%s" has now been activated'), $user['username'] ) );
 			} catch ( Router_ArgNoExist $e ) {
 				$this->_event->error( t('No activation code provided') );
 			} catch ( Ugmanager_InvalidActivationCode $e ) {
@@ -151,7 +151,7 @@
 			}
 			return zula_redirect( $this->_router->makeUrl( 'session' ) );
 		}
-		
+
 	}
 
 ?>

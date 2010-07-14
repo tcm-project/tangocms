@@ -212,7 +212,7 @@
 			}
 			return $parsed;
 		}
-		
+
 		/**
 		 * Callback to convert given SEF urls to standard, stops URLs breaking
 		 * which fixes Bug #167

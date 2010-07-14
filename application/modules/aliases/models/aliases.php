@@ -53,7 +53,7 @@
  			if ( $limit == 0 ) {
  				$limit = null;
  			}
- 			return array_slice( $aliases, $offset, $limit, true ); 			
+			return array_slice( $aliases, $offset, $limit, true );
  		}
 
  		/**
@@ -109,7 +109,7 @@
 				) {
 					return $tmpAlias;
 				}
-			}			
+			}
  			throw new Alias_NoExist( $alias );
  		}
 

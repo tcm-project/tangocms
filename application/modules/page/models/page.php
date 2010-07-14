@@ -21,7 +21,7 @@
  		protected $pageCount = null;
 
 		/**
-		 * Gets details for page that exists, and can return a 
+		 * Gets details for page that exists, and can return a
 		 * subset of the results. Can also check if user has
 		 * access to the form.
 		 *
@@ -127,7 +127,7 @@
 				throw new Page_NoExist( $page );
 			}
 		}
-		
+
 		/**
 		 * Gets all of the children IDs (if any) for a page recursively. Note, this only
 		 * gets the ID of the pages!

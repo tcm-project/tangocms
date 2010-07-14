@@ -53,7 +53,7 @@
 		public function delete( $key ) {
 			return true;
 		}
-		
+
 		/**
 		 * Purges all cached items
 		 *

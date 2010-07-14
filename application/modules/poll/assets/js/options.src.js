@@ -18,7 +18,7 @@
 					$(newLi).find('input[type=text]').val(''); // Reset the value to nothing
 					$(newLi).insertAfter('#poll-option-list li:last');
 				}
-			);	
+			);
 			$('#poll-option-list li input[type=button]').click(
 				function() {
 					$(this).parent('li').remove();

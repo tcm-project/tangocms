@@ -57,7 +57,7 @@
 						$selectedCss = $this->_router->getArgument( 'file' );
 					} catch ( Router_ArgNoExist $e ) {
 						$cssDetails = reset( $themeCssFiles );
-						$selectedCss = $cssDetails['name'];						
+						$selectedCss = $cssDetails['name'];
 					}
 					if ( isset( $themeCssFiles[ $selectedCss ] ) ) {
 						$cssDetails = $themeCssFiles[ $selectedCss ];

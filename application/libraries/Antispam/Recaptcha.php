@@ -11,7 +11,7 @@
  * @license http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html GNU/LGPL 2.1
  * @package Zula_Antispam
  */
-	
+
 	class Antispam_Recaptcha extends Zula_LibraryBase implements Antispam_Interface {
 
 		/**
@@ -54,7 +54,7 @@
 						<input type="hidden" name="recaptcha_response_field" value="manual_challenge"/>
 					</noscript>';
 		}
-		
+
 		/**
 		 * Check if the Antispam method has passed
 		 *

@@ -49,7 +49,7 @@
 				// Prepare and execute query
 				$pdoSt = $this->_sql->prepare( $statement );
 				foreach( $params as $ident=>$val ) {
-					$pdoSt->bindValue( $ident, (int) $val, PDO::PARAM_INT );					
+					$pdoSt->bindValue( $ident, (int) $val, PDO::PARAM_INT );
 				}
 				$pdoSt->execute();
 			} else {
@@ -154,7 +154,7 @@
 				return true;
 			} catch ( Exeception $e ) {
 				return false;
-			}			
+			}
 		}
 
 		/**
@@ -309,7 +309,7 @@
 			$query->closeCursor();
 			return $query->rowCount();
 		}
-		
+
 		/**
 		 * Adds a new vote to a poll option
 		 *

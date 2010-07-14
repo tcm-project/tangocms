@@ -61,7 +61,7 @@
 			$form = $this->buildCategoryForm();
 			if ( $form->hasInput() && $form->isValid() ) {
 				// Add the the new menu category ald ACL resource
-				$fd = $form->getValues( 'menu' );				
+				$fd = $form->getValues( 'menu' );
 				$cid = $this->_model()->addCategory( $fd['name'] );
 				try {
 					$roles = $this->_input->post( 'acl_resources/menu-cat' );
@@ -70,7 +70,7 @@
 				}
 				$this->_acl->allowOnly( 'menu-cat-'.$cid, $roles );
 				$this->_event->success( t('Added menu category') );
-				return zula_redirect( $this->_router->makeUrl( 'menu', 'config', 'editcat', null, array('id' => $cid) ) );				
+				return zula_redirect( $this->_router->makeUrl( 'menu', 'config', 'editcat', null, array('id' => $cid) ) );
 			}
 			return $form->getOutput();
 		}
@@ -273,7 +273,7 @@
 												  $item['url'], $item['attr_title'], $item['id'] );
 					if ( $form->hasInput() && $form->isValid() ) {
 						// Edit the menu item and ACL resource
-						$fd = $form->getValues( 'menu' );						
+						$fd = $form->getValues( 'menu' );
 						$this->_model()->editItem( $item['id'], $fd['name'], $fd['parent'], $fd['url'], $fd['attr_title'] );
 						$this->_event->success( sprintf( t('Edited menu item "%s"'), $fd['name'] ) );
 						try {
@@ -367,7 +367,7 @@
 					}
 				} catch ( Input_KeyNoExist $e ) {
 					$this->_event->error( t('No menu items selected') );
-				}								
+				}
 			} else if ( $this->_input->has( 'post', 'menu_updateorder' ) ) {
 				// Update order of all of the menu items
 				if ( !$this->_acl->check( 'menu_edit_item' ) ) {
@@ -391,7 +391,7 @@
 				}
 				if ( $sqlMiddle !== null ) {
 					$pdoSt = $this->_sql->prepare( 'UPDATE {SQL_PREFIX}mod_menu SET `order` = CASE '.$sqlMiddle.'ELSE `order` END' );
-					$pdoSt->execute( $execData );					
+					$pdoSt->execute( $execData );
 				}
 				$this->_event->success( t('Menu order updated') );
 			}
@@ -402,7 +402,7 @@
 			}
 			return zula_redirect( $url );
 		}
-		
+
 	}
 
 ?>

@@ -70,7 +70,7 @@
 			if ( !$this->_session->isLoggedIn() ) {
 				throw new Module_NoPermission;
 			}
-			$this->setTitle( t('Edit Profile') );			
+			$this->setTitle( t('Edit Profile') );
 			// Gather user details and set page links
 			$user = $this->_session->getUser();
 			$this->displayPageLinks();

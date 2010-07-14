@@ -37,7 +37,7 @@
 			}
 			return $types;
 		}
-		
+
 		/**
 		 * Constructor
 		 * Selects which Antispam backend to use

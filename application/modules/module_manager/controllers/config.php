@@ -93,7 +93,7 @@
 			}
 			return zula_redirect( $this->_router->makeUrl( 'module_manager', 'config' ) );
 		}
-		
+
 		/**
 		 * Displays all of the modules so that a user can disable or
 		 * enable any of them.

@@ -163,7 +163,7 @@
 				}
 			}
 		}
-		
+
 		/**
 		 * Hook: router_pre_parse
 		 * Rewrites the URL to the index controller, instead of cat
@@ -177,7 +177,7 @@
 				return $url;
 			}
 		}
-		
+
 		/**
 		 * Hook: article_display_modes
 		 * Gets all display modes that this module has

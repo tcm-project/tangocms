@@ -402,7 +402,7 @@
 			}
 			return zula_redirect( $url );
 		}
-		
+
 	}
 
 ?>
