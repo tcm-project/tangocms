@@ -23,7 +23,12 @@
 		</dl>
 		<?php
 			if ( count( $articles ) < $article_count ) {
-				$url = $this->_router->makeUrl( 'article', 'cat', (empty($category) ? 'index' : $category['clean_title']) ); ?>
-				<a href="<?php echo $url; ?>">{L_[View More Articles]} &raquo;</a>
-		<?php } ?>
+				$url = $this->_router->makeUrl( 'article' );
+				if ( isset( $category['clean_title'] ) ) {
+					$url->controller( 'cat' )
+						->section( $category['clean_title'] );
+				}
+				printf( '<a href="%1$s">%2$s &raquo;</a>', $url, t('View more articles') );
+			}
+		?>
 <?php } ?>
