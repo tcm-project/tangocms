@@ -57,6 +57,12 @@
 		private $mode = 'normal';
 
 		/**
+		 * Name of the configuration profile loaded
+		 * @var string
+		 */
+		private $configProfile = null;
+
+		/**
 		 * Path to the main configuration file that got loaded
 		 * @var string
 		 */
@@ -248,6 +254,15 @@
 		}
 
 		/**
+		 * Gets the name of the configuration profile being used
+		 *
+		 * @return string
+		 */
+		public function getConfigProfile() {
+			return $this->configProfile;
+		}
+
+		/**
 		 * Gets the path to the main configuration file
 		 *
 		 * @return string
@@ -349,27 +364,29 @@
 		}
 
 		/**
-		 * Loads the main configuration file and adds it to the library
+		 * Loads the main configuration ini file and adds it to the registry.
+		 * The 'config' directory will be updated to have the provided profile
+		 * appended to it, e.g. './config' becomes './config/default'
 		 *
-		 * @param string $configPath
+		 * @param string $profile
 		 * @return object
 		 */
-		public function loadMainConfig( $configPath=null ) {
+		public function loadConfig( $profile ) {
 			if ( Registry::has( 'config' ) && Registry::has( 'config_ini' ) ) {
 				return Registry::get( 'config' );
-			} else if ( empty( $configPath ) || !is_readable( $configPath ) ) {
-				$this->configPath = $this->getDir( 'config' ).'/config.ini.php';
-			} else {
-				$this->configPath = $configPath;
 			}
+			$configDir = $this->getDir( 'config' ).'/'.$profile;
 			try {
 				$configIni = new Config_ini;
-				$configIni->load( $this->configPath );
+				$configIni->load( $configDir.'/config.ini.php' );
 				Registry::register( 'config_ini', $configIni );
 				// Merge the ini configuration in to the main config library
 				$config = new Config;
 				$config->load( $configIni );
 				Registry::register( 'config', $config );
+				// Store the profile name and update the 'config' dir value
+				$this->setDir( 'config', $configDir );
+				$this->configProfile = $profile;
 				return $config;
 			} catch ( Config_Ini_FileNoExist $e ) {
 				throw new Zula_Exception( 'Zula configuration file "'.$this->configPath.'" does not exist or is not readable', 8);
