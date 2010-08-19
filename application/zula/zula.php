@@ -387,9 +387,10 @@
 				// Store the profile name and update the 'config' dir value
 				$this->setDir( 'config', $configDir );
 				$this->configProfile = $profile;
+				$this->configPath = $configDir.'/config.ini.php';
 				return $config;
 			} catch ( Config_Ini_FileNoExist $e ) {
-				throw new Zula_Exception( 'Zula configuration file "'.$this->configPath.'" does not exist or is not readable', 8);
+				throw new Zula_Exception( 'Zula configuration file "'.$configDir.'/config.ini.php" does not exist or is not readable', 8);
 			}
 		}
 
