@@ -91,7 +91,14 @@
 		$acl = $zula->loadLib( 'acl' );
 	}
 	Hooks::load();
-	$router = $zula->loadLib( 'router' );
+
+	// Load the main router of the correct type
+	if ( $input->has( 'get', 'ns' ) || (function_exists( 'apache_get_modules' ) && !in_array('mod_rewrite', apache_get_modules())) ) {
+		$router = new Router;
+	} else {
+		$router = new Router( $config->get('url_router/type') );
+	}
+	Registry::register( 'router', $router );
 
 	/**
 	 * Microsoft Web App Gallery (Feature #221) support.
