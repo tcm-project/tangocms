@@ -73,7 +73,7 @@
 			parent::__construct( $moduleDetails, $config, $sector );
 			$this->setPageLinks( array(
 										t('General')		=> $this->_router->makeUrl( 'settings', 'general' ),
-										t('E-Mail')			=> $this->_router->makeUrl( 'settings', 'email' ),
+										t('Email')			=> $this->_router->makeUrl( 'settings', 'email' ),
 										t('Locale')			=> $this->_router->makeUrl( 'settings', 'locale' ),
 										t('Server & security') => $this->_router->makeUrl( 'settings', 'security' ),
 										t('Cache & performance')=> $this->_router->makeUrl( 'settings', 'cache' ),
@@ -103,7 +103,7 @@
 					break;
 
 				case 'email':
-					$this->setTitle( t('E-Mail settings') );
+					$this->setTitle( t('Email settings') );
 					$view = $this->loadView( 'email.html' );
 					break;
 

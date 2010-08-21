@@ -16,7 +16,7 @@
 				<td class="confcol">
 					<select name="session[login_by]">
 						<?php
-							foreach( array(t('Username') => 'username', t('E-Mail address') => 'email') as $name=>$tmp_method ) {
+							foreach( array(t('Username') => 'username', t('Email address') => 'email') as $name=>$tmp_method ) {
 								printf( '<option value="%s" %s>%s</option>',
 										$tmp_method,
 										($tmp_method == $login_by ? 'selected="selected"' : ''),
@@ -182,7 +182,7 @@
 					<select name="session[validation_method]">
 						<?php
 							$methods = array(
-											'user'	=> t('E-Mail confirmation'),
+											'user'	=> t('Email confirmation'),
 											'admin'	=> t('Admin validation'),
 											'none'	=> t('No validation'),
 											);
