@@ -352,6 +352,7 @@
 			if ( is_array( $tmpRp ) ) {
 				$requestPath = trim( end($tmpRp), '/' );
 			}
+			$requestPath = zula_htmlspecialchars( $requestPath );
 			// Create the correct URL based upon router type
 			if ( !$type ) {
 				$type = $this->_router->getType();
