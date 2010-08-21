@@ -29,7 +29,7 @@
 						</td>
 						<td class="managecol">
 							<a href="<?php echo $this->_router->makeUrl( 'poll', 'config', 'edit', null, array('id' => $poll['id']) ); ?>">{L_[Edit]}</a> |
-							<a href="<?php echo $this->_router->makeUrl( 'poll', 'config', 'addopt', null, array('id' => $poll['id']) ); ?>">{L_[Add Option]}</a>
+							<a href="<?php echo $this->_router->makeUrl( 'poll', 'config', 'addopt', null, array('id' => $poll['id']) ); ?>">{L_[Add option]}</a>
 						</td>
 					</tr>
 			<?php $i++; } } ?>
@@ -38,7 +38,7 @@
 
 	<?php if ( $count ) { ?>
 		{PAGINATION}
-		<div class="actions"><input type="submit" value="{L_[Delete Selected]}"></div>
+		<div class="actions"><input type="submit" value="{L_[Delete selected]}"></div>
 		{CSRF}
 	<?php } ?>
 </form>

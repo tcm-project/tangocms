@@ -101,8 +101,8 @@
 								'onSuccess'	=> array($this, $formType.'Alias'),
 								'inputs'	=> array(
 													array(
-														'name'			=> t('URL Alias', _PROJECT_ID.'-aliases'),
-														'desc'			=> t('URL Alias to be created for this page', _PROJECT_ID.'-aliases'),
+														'name'			=> t('URL alias', _PROJECT_ID.'-aliases'),
+														'desc'			=> t('URL alias to be created for this page', _PROJECT_ID.'-aliases'),
 														'type'			=> 'input',
 														'args'			=> array('aliases_name', $defaultVal),
 														'validators'	=> array(
@@ -132,7 +132,7 @@
 					$this->_model( 'aliases', 'aliases' )->add( $alias, $contentUrl );
 				} catch ( Alias_AlreadyExists $e ) {
 					$this->_event->error( sprintf(
-												t('URL Alias "%1$s" already exists', _PROJECT_ID.'-aliases'),
+												t('URL alias "%1$s" already exists', _PROJECT_ID.'-aliases'),
 												$alias
 												)
 										);

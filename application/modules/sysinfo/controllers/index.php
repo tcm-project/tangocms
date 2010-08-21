@@ -23,12 +23,12 @@
 		public function __construct( $moduleDetails, $config, $sector ) {
 			parent::__construct( $moduleDetails, $config, $sector );
 			$this->setPageLinks( array(
-										t('System Information')			=> $this->_router->makeUrl( 'sysinfo' ),
-										t('Writable Files/Directories')	=> $this->_router->makeUrl( 'sysinfo', 'index', 'writable' ),
-										t('Update Checker')				=> $this->_router->makeUrl( 'sysinfo', 'index', 'update' ),
+										t('System information')			=> $this->_router->makeUrl( 'sysinfo' ),
+										t('Writable files/directories')	=> $this->_router->makeUrl( 'sysinfo', 'index', 'writable' ),
+										t('Update checker')				=> $this->_router->makeUrl( 'sysinfo', 'index', 'update' ),
 									 ));
 			if ( function_exists( 'phpinfo' ) ) {
-				$this->setPageLinks( array(t('PHP Info') => $this->_router->makeUrl('sysinfo', 'index', 'phpinfo')) );
+				$this->setPageLinks( array(t('PHP info') => $this->_router->makeUrl('sysinfo', 'index', 'phpinfo')) );
 			}
 		}
 
@@ -39,7 +39,7 @@
 		 * @return string
 		 */
 		public function indexSection() {
-			$this->setTitle( t('System Information') );
+			$this->setTitle( t('System information') );
 			$this->setOutputType( self::_OT_INFORMATIVE );
 			// Build view with all the lovely information
 			$pdoVersion = $this->_sql->getAttribute( PDO::ATTR_DRIVER_NAME ).' '.$this->_sql->getAttribute( PDO::ATTR_SERVER_VERSION );
@@ -68,7 +68,7 @@
 		 * @return string
 		 */
 		public function writableSection() {
-			$this->setTitle( t('Writable Files/Directories') );
+			$this->setTitle( t('Writable files/directories') );
 			$this->setOutputType( self::_OT_INFORMATIVE );
 			// Generate array of all files/dirs
 			$items = array();
@@ -104,7 +104,7 @@
 		 * @return string
 		 */
 		public function updateSection() {
-			$this->setTitle( t('Update Checker') );
+			$this->setTitle( t('Update checker') );
 			$this->setOutputType( self::_OT_INFORMATIVE );
 			// Gather the latest stable and unstable versions
 			$versions = array( 'stable' => t('Unknown'), 'unstable' => t('Unknown') );

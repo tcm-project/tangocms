@@ -26,7 +26,7 @@
 		public function __construct( $moduleDetails, $config, $sector ) {
 			parent::__construct( $moduleDetails, $config, $sector );
 			$this->setPageLinks( array(
-									t('Manage Comments')	=> $this->_router->makeUrl( 'comments', 'config' ),
+									t('Manage comments')	=> $this->_router->makeUrl( 'comments', 'config' ),
 									t('Settings')			=> $this->_router->makeUrl( 'comments', 'config', 'settings' ),
 									));
 		}
@@ -38,7 +38,7 @@
 		 * @return string
 		 */
 		public function indexSection() {
-			$this->setTitle( t('Manage Comments') );
+			$this->setTitle( t('Manage comments') );
 			$this->setOutputType( self::_OT_CONFIG );
 			if ( !$this->_acl->check( 'comments_manage' ) ) {
 				throw new Module_NoPermission;
@@ -97,7 +97,7 @@
 		 * @return string|bool
 		 */
 		public function settingsSection() {
-			$this->setTitle( t('Comments Settings') );
+			$this->setTitle( t('Comments settings') );
 			$this->setOutputType( self::_OT_CONFIG );
 			if ( !$this->_acl->check( 'comments_manage' ) ) {
 				throw new Module_NoPermission;
@@ -107,14 +107,14 @@
 			$form->action( $this->_router->makeUrl( 'comments', 'config', 'settings' ) );
 			$form->addElement( 'comments/moderate',
 							   $this->_config->get( 'comments/moderate' ),
-							   t('Moderate Comments'),
+							   t('Moderate comments'),
 							   new Validator_Bool
 							  );
 			if ( $form->hasInput() && $form->isValid() ) {
 				foreach( $form->getValues( 'comments' ) as $key=>$val ) {
 					$this->_config_sql->update( 'comments/'.$key, $val );
 				}
-				$this->_event->success( t('Updated Comment Settings') );
+				$this->_event->success( t('Updated comment settings') );
 				return zula_redirect( $this->_router->makeUrl( 'comments', 'config', 'settings' ) );
 			}
 			return $form->getOutput();

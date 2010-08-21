@@ -5,7 +5,7 @@
 		<dl class="article-headlines">
 			<?php foreach( $articles as $article ) { ?>
 				<dt>
-					<a href="<?php echo $this->_router->makeUrl( 'article', 'view', $article['clean_title'] ); ?>" title="{L_[View Article]}">
+					<a href="<?php echo $this->_router->makeUrl( 'article', 'view', $article['clean_title'] ); ?>" title="{L_[View article]}">
 						<?php echo zula_snippet( $article['title'], 35, true ); ?>
 					</a>
 				</dt>

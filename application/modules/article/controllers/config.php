@@ -25,10 +25,10 @@
 		public function __construct( $moduleDetails, $config, $sector ) {
 			parent::__construct( $moduleDetails, $config, $sector );
 			$this->setPageLinks( array(
-										t('Manage Articles')	=> $this->_router->makeUrl( 'article', 'config' ),
-										t('Manage Categories')	=> $this->_router->makeUrl( 'article', 'config', 'cats' ),
-										t('Add Category')		=> $this->_router->makeUrl( 'article', 'config', 'addcat'),
-										t('Add Article')		=> $this->_router->makeUrl( 'article', 'config', 'add'),
+										t('Manage articles')	=> $this->_router->makeUrl( 'article', 'config' ),
+										t('Manage categories')	=> $this->_router->makeUrl( 'article', 'config', 'cats' ),
+										t('Add category')		=> $this->_router->makeUrl( 'article', 'config', 'addcat'),
+										t('Add article')		=> $this->_router->makeUrl( 'article', 'config', 'add'),
 										t('Settings')			=> $this->_router->makeUrl( 'article', 'config', 'settings' ),
 										));
 		}
@@ -40,7 +40,7 @@
 		 * @return string|bool
 		 */
 		public function indexSection() {
-			$this->setTitle( t('Manage Articles') );
+			$this->setTitle( t('Manage articles') );
 			$this->setOutputType( self::_OT_CONFIG );
 			if ( $this->_input->checkToken() ) {
 				// Delete all selected articles
@@ -79,7 +79,7 @@
 						// Check user has permission to this category
 						$resource = 'article-cat-'.$category['id'];
 						if ( $this->_acl->resourceExists( $resource ) && $this->_acl->check( $resource ) ) {
-							$this->setTitle( sprintf( t('Manage "%s" Articles'), $category['title'] ) );
+							$this->setTitle( sprintf( t('Manage "%s" articles'), $category['title'] ) );
 						} else {
 							throw new Module_NoPermission;
 						}
@@ -164,7 +164,7 @@
 			if ( !$this->_acl->checkMulti( array('article_edit_cat', 'article_delete_cat', 'article_add_cat') ) ) {
 				throw new Module_NoPermission;
 			}
-			$this->setTitle( t('Manage Categories') );
+			$this->setTitle( t('Manage categories') );
 			$this->setOutputType( self::_OT_CONFIG );
 			if ( $this->_input->checkToken() ) {
 				/**
@@ -213,7 +213,7 @@
 		 * @return string|bool
 		 */
 		public function addCatSection() {
-			$this->setTitle( t('Add Article Category') );
+			$this->setTitle( t('Add article category') );
 			$this->setOutputType( self::_OT_CONFIG );
 			if ( !$this->_acl->check( 'article_add_cat' ) ) {
 				throw new Module_NoPermission;
@@ -246,7 +246,7 @@
 		 * @return string|bool
 		 */
 		public function editCatSection() {
-			$this->setTitle( t('Edit Article Category') );
+			$this->setTitle( t('Edit article category') );
 			$this->setOutputType( self::_OT_CONFIG );
 			if ( !$this->_acl->check( 'article_edit_cat' ) ) {
 				throw new Module_NoPermission;
@@ -313,7 +313,7 @@
 		 * @return string|bool
 		 */
 		public function addSection() {
-			$this->setTitle( t('Add Article') );
+			$this->setTitle( t('Add article') );
 			$this->setOutputType( self::_OT_CONFIG );
 			if ( !$this->_acl->check( 'article_add_article' ) ) {
 				throw new Module_NoPermission;
@@ -377,9 +377,9 @@
 					throw new Module_NoPermission;
 				}
 				if ( $article['published'] ) {
-					$this->setTitle( sprintf( t('Edit Article "%1$s"'), $article['title'] ) );
+					$this->setTitle( sprintf( t('Edit article "%1$s"'), $article['title'] ) );
 				} else {
-					$this->setTitle( sprintf( t('Edit Unpublished Article "%1$s"'), $article['title'] ) );
+					$this->setTitle( sprintf( t('Edit unpublished article "%1$s"'), $article['title'] ) );
 				}
 				// Prepare form validation
 				$form = new View_form( 'config/form_article_edit.html', 'article' );
@@ -416,7 +416,7 @@
 		 * @return string
 		 */
 		public function addPartSection() {
-			$this->setTitle( t('Add Article Part') );
+			$this->setTitle( t('Add article part') );
 			$this->setOutputType( self::_OT_CONFIG );
 			if ( !$this->_acl->check( 'article_edit_article' ) ) {
 				throw new Module_NoPermission;
@@ -435,7 +435,7 @@
 				if ( $form->hasInput() && $form->isValid() ) {
 					$fd = $form->getValues( 'article' );
 					$this->_model()->addPart( $article['id'], $fd['body'], $fd['title'], $fd['order'] );
-					$this->_event->success( t('Added Article Part') );
+					$this->_event->success( t('Added article part') );
 					return zula_redirect( $this->_router->makeUrl( 'article', 'config', 'edit', null, array('id' => $article['id']) ) );
 				} else {
 					return $form->getOutput();
@@ -456,7 +456,7 @@
 		 */
 		public function editPartSection() {
 			$this->setOutputType( self::_OT_CONFIG );
-			$this->setTitle( t('Edit Article Part') );
+			$this->setTitle( t('Edit article part') );
 			if ( !$this->_acl->check( 'article_edit_article' ) ) {
 				throw new Module_NoPermission;
 			}
@@ -571,7 +571,7 @@
 		 * @return string|bool
 		 */
 		public function settingsSection() {
-			$this->setTitle( t('Article Settings') );
+			$this->setTitle( t('Article settings') );
 			$this->setOutputType( self::_OT_CONFIG );
 			if ( !$this->_acl->check( 'article_manage_settings' ) ) {
 				throw new Module_NoPermission;
@@ -586,7 +586,7 @@
 							$this->_event->error( $e->getMessage() );
 						}
 					}
-					$this->_event->success( t('Updated Article Settings') );
+					$this->_event->success( t('Updated article settings') );
 				} else {
 					$this->_event->error( Input::csrfMsg() );
 				}

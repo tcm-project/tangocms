@@ -49,7 +49,7 @@
 		 * @return string
 		 */
 		public function indexSection( $name=null ) {
-			$this->setTitle( t('Manage Permissions') );
+			$this->setTitle( t('Manage permissions') );
 			$this->setOutputType( self::_OT_CONFIG );
 			if ( !trim( $name ) ) {
 				$this->_event->error( t('No module provided, could not get permissions') );
@@ -69,7 +69,7 @@
 					$this->_event->error( sprintf( t('Sorry, you do not have global permission to module "%1$s"'), $module->name ) );
 					return zula_redirect( $this->_router->makeUrl( 'module_manager' ) );
 				}
-				$this->setTitle( sprintf( t('"%1$s" Permissions'), $module->title ), false );
+				$this->setTitle( sprintf( t('"%1$s" permissions'), $module->title ), false );
 			} catch ( Module_NoExist $e ) {
 				$this->_event->error( sprintf( t('Module "%1$s" does not exist, could not get details'), $name ) );
 				return zula_redirect( $this->_router->makeUrl( 'module_manager' ) );
@@ -118,7 +118,7 @@
 		 * @return bool
 		 */
 		public function updateSection() {
-			$this->setTitle( t('Update Module Permissions') );
+			$this->setTitle( t('Update module permissions') );
 			$this->setOutputType( self::_OT_CONFIG );
 			if ( !$this->_acl->check( 'module_manager_edit_permissions' ) ) {
 				throw new Module_NoPermission;
@@ -154,7 +154,7 @@
 					} catch ( Input_KeyNoExist $e ) {
 						$roles = array( 'group_root' => 1 );
 					} catch ( Acl_InvalidName $e ) {
-						$this->_event->error( sprintf( t('Invalid resource name of "%1$s". Could not update ACL Rules'), $resource['name'] ) );
+						$this->_event->error( sprintf( t('Invalid resource name of "%1$s". Could not update ACL rules'), $resource['name'] ) );
 					}
 				}
 				$this->_event->success( sprintf( t('Updated permissions for module "%1$s"'), $module->title  ) );

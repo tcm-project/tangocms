@@ -30,14 +30,14 @@
 		 * @return bool|string
 		 */
 		public function indexSection( $commentId=null ) {
-			$this->setTitle( t('Edit Comment') );
+			$this->setTitle( t('Edit comment') );
 			// Check if we are editing 'inline' or via the main config cntrlr
 			if ( $this->_router->hasArgument( 'inline' ) || $this->_input->has( 'post', 'comments_inline' ) ) {
 				$editInline = true;
 			} else {
 				$editInline = false;
 				$this->setPageLinks( array(
-											t('Manage Comments')	=> $this->_router->makeUrl( 'comments', 'config' ),
+											t('Manage comments')	=> $this->_router->makeUrl( 'comments', 'config' ),
 											t('Settings')			=> $this->_router->makeUrl( 'comments', 'config', 'settings' ),
 										));
 			}
@@ -67,7 +67,7 @@
 				unset( $fd['id'] );
 				try {
 					$commentId = $this->_model()->edit( $comment['id'], $fd );
-					$this->_event->success( sprintf( t('Edited Comment #%1$d'), $comment['id'] ) );
+					$this->_event->success( sprintf( t('Edited comment #%1$d'), $comment['id'] ) );
 					if ( $editInline === false ) {
 						return zula_redirect( $this->_router->makeUrl( 'comments', 'config' ) );
 					} else {

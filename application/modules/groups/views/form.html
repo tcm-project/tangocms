@@ -15,13 +15,13 @@
 			<tr class="odd">
 				<td>
 					<dl>
-						<dt>{L_[Inherit Permissions From]}</dt>
+						<dt>{L_[Inherit permissions from]}</dt>
 						<dd>{L_[Select the group that permissions will be inherited from. You almost always want to inherit from at least a guest group.]}</dd>
 					</dl>
 				</td>
 				<td class="confcol">
 					<select name="group[inherits]">
-						<option value="0">{L_[No Inheritance]}</option>
+						<option value="0">{L_[No inheritance]}</option>
 						<?php
 							foreach( $groups as $tmpGroup ) {
 								if ( $tmpGroup['id'] != Ugmanager::_ROOT_GID ) {
@@ -39,7 +39,7 @@
 			<tr class="even">
 				<td>
 					<dl>
-						<dt>{L_[Group Status]}</dt>
+						<dt>{L_[Group status]}</dt>
 						<dd>{L_[If a group status is 'Locked', users within that group will be logged out and no new logins will be allowed.]}</dd>
 					</dl>
 				</td>
@@ -57,6 +57,6 @@
 	{AMC.TABLE}
 
 	<div class="actions">
-		<input type="submit" value="<?php echo $op == 'add' ? t('Add Group') : t('Edit Group'); ?>">
+		<input type="submit" value="<?php echo $op == 'add' ? t('Add group') : t('Edit group'); ?>">
 	</div>
 </form>

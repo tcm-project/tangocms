@@ -30,8 +30,8 @@
 		public function __construct( $moduleDetails, $config, $sector ) {
 			parent::__construct( $moduleDetails, $config, $sector );
 			$this->setPageLinks( array(
-										t('Manage Pages') 	=> $this->_router->makeUrl( 'page', 'config' ),
-										t('Add Page')		=> $this->_router->makeUrl( 'page', 'config', 'add' ),
+										t('Manage pages') 	=> $this->_router->makeUrl( 'page', 'config' ),
+										t('Add page')		=> $this->_router->makeUrl( 'page', 'config', 'add' ),
 										));
 		}
 
@@ -42,7 +42,7 @@
 		 * @return string
 		 */
 		public function indexSection() {
-			$this->setTitle( t('Manage Pages') );
+			$this->setTitle( t('Manage pages') );
 			$this->setOutputType( self::_OT_CONFIG );
 			if ( !$this->_acl->checkMulti( array('page_add', 'page_edit', 'page_delete') ) ) {
 				throw new Module_NoPermission;
@@ -107,7 +107,7 @@
 		 * @return string
 		 */
 		public function addSection() {
-			$this->setTitle( t('Add Page') );
+			$this->setTitle( t('Add page') );
 			$this->setOutputType( self::_OT_CONFIG | self::_OT_CONTENT_STATIC );
 			if ( !$this->_acl->check( 'page_add' ) ) {
 				throw new Module_NoPermission;
@@ -170,7 +170,7 @@
 		 * @return string
 		 */
 		public function editSection() {
-			$this->setTitle( t('Edit Page') );
+			$this->setTitle( t('Edit page') );
 			$this->setOutputType( self::_OT_CONFIG | self::_OT_CONTENT_STATIC );
 			if ( !$this->_acl->check( 'page_edit' ) ) {
 				throw new Module_NoPermission;
@@ -185,9 +185,9 @@
 				}
 				$quickEdit = $this->_router->hasArgument( 'qe' );
 				if ( $quickEdit ) {
-					$this->setTitle( sprintf( t('Quick Edit Page "%s"'), $page['title'] ) );
+					$this->setTitle( sprintf( t('Quick edit page "%s"'), $page['title'] ) );
 					$this->setPageLinks( array(
-											t('Switch to Full Edit')	=> $this->_router->makeUrl( 'page', 'config', 'edit', 'admin', array('id' => $page['id']) ),
+											t('Switch to full edit')	=> $this->_router->makeUrl( 'page', 'config', 'edit', 'admin', array('id' => $page['id']) ),
 											));
 				} else {
 					$this->setTitle( sprintf( t('Edit Page "%s"'), $page['title'] ) );
@@ -283,7 +283,7 @@
 								'QUICK_EDIT'=> $isQuickEdit,
 								));
 			$form->assignHtml( array(
-									'ACL_FORM'	=> $this->_acl->buildForm( array(t('View Page') => 'page-'.$id) ),
+									'ACL_FORM'	=> $this->_acl->buildForm( array(t('View page') => 'page-'.$id) ),
 									'CHILDREN'	=> empty($children) ? null : $this->createChildRows( $children ),
 									));
 			return $form;

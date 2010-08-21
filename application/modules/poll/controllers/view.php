@@ -72,7 +72,7 @@
 					throw new Module_NoPermission;
 				}
 				$pollClosed = $this->isClosed( $poll );
-				$this->setTitle( sprintf( ($pollClosed ? t('%s (Closed)') : '%s'), $poll['title'] ) );
+				$this->setTitle( sprintf( ($pollClosed ? t('%s (closed)') : '%s'), $poll['title'] ) );
 				// Get all options, votes and see if user has already voted on this poll
 				$options = $this->_model()->getPollOptions( $poll['id'] );
 				$votes = $this->_model()->getPollVotes( $poll['id'] );

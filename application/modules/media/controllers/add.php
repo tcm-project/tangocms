@@ -56,8 +56,8 @@
 				$form->addElement( 'media/cid', $category['id'], 'CID', new Validator_Confirm($category['id']) );
 				if ( $type == 'external' ) {
 					// Specific for external media/YouTube
-					$form->addElement( 'media/external_id', null, t('External Media ID'), new Validator_Length(6, 128) );
-					$form->addElement( 'media/external_service', null, t('External Service'), new Validator_Length(2, 32) );
+					$form->addElement( 'media/external_id', null, t('External media ID'), new Validator_Length(6, 128) );
+					$form->addElement( 'media/external_service', null, t('External service'), new Validator_Length(2, 32) );
 				}
 				if ( $form->hasInput() && $form->isValid() ) {
 					// Handle the provided form data to correctly add the item

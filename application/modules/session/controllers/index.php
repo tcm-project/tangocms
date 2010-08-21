@@ -63,7 +63,7 @@
 				return false;
 			}
 			if ( $this->_session->isLoggedIn() ) {
-				$this->setTitle( t('Simple Profile') );
+				$this->setTitle( t('Simple profile') );
 				// Display a very simple profile
 				$view = $this->loadView( 'index/simple_profile.html' );
 				$view->assign( array('USER' => $this->_session->getUser()) );

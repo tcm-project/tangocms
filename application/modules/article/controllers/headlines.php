@@ -22,7 +22,7 @@
 		 * @return string
 		 */
 		public function indexSection() {
-			$this->setTitle( t('Article Headlines') );
+			$this->setTitle( t('Article headlines') );
 			$this->setOutputType( self::_OT_CONTENT_INDEX );
 			/**
 			 * Get which category to display, if any

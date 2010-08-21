@@ -30,7 +30,7 @@
 				if ( $uid == Ugmanager::_GUEST_ID ) {
 					throw new Ugmanager_UserNoExist;
 				}
-				$this->setTitle( sprintf( t('View Profile "%s"'), $user['username'] ) );
+				$this->setTitle( sprintf( t('View profile "%s"'), $user['username'] ) );
 				if ( $uid == $this->_session->getUserId() ) {
 					// Profile is the current users, display pagelinks to manage own profile
 					$this->displayPageLinks();
@@ -55,9 +55,9 @@
 		 */
 		protected function displayPageLinks() {
 			return $this->setPageLinks( array(
-											t('View Profile')			=> $this->_router->makeUrl( 'users', 'profile' ),
-											t('Edit Profile')			=> $this->_router->makeUrl( 'users', 'profile', 'edit' ),
-											t('Edit Account Settings')	=> $this->_router->makeUrl( 'users', 'profile', 'settings' ),
+											t('View profile')			=> $this->_router->makeUrl( 'users', 'profile' ),
+											t('Edit profile')			=> $this->_router->makeUrl( 'users', 'profile', 'edit' ),
+											t('Edit account settings')	=> $this->_router->makeUrl( 'users', 'profile', 'settings' ),
 											));
 		}
 
@@ -70,17 +70,17 @@
 			if ( !$this->_session->isLoggedIn() ) {
 				throw new Module_NoPermission;
 			}
-			$this->setTitle( t('Edit Profile') );
+			$this->setTitle( t('Edit profile') );
 			// Gather user details and set page links
 			$user = $this->_session->getUser();
 			$this->displayPageLinks();
 			$form = new View_Form( 'profile/edit.html', 'users' );
-			$form->addElement( 'users/first_name', $user['first_name'], t('First Name'), new Validator_Length(0, 255) );
-			$form->addElement( 'users/last_name', $user['last_name'], t('Last Name'), new Validator_Length(0, 255) );
+			$form->addElement( 'users/first_name', $user['first_name'], t('First name'), new Validator_Length(0, 255) );
+			$form->addElement( 'users/last_name', $user['last_name'], t('Last name'), new Validator_Length(0, 255) );
 			if ( $form->hasInput() && $form->isValid() ) {
 				try {
 					$this->_ugmanager->editUser( $this->_session->getUserId(), $form->getValues('users') );
-					$this->_event->success( t('Updated Profile') );
+					$this->_event->success( t('Updated profile') );
 				} catch ( Exception $e ) {
 					$this->_event->error( $e->getMessage() );
 				}
@@ -97,7 +97,7 @@
 			if ( !$this->_session->isLoggedIn() ) {
 				throw new Module_NoPermission;
 			}
-			$this->setTitle( t('Edit Account Settings') );
+			$this->setTitle( t('Edit account settings') );
 			// Gather user details
 			$this->displayPageLinks();
 			$user = $this->_session->getUser();
@@ -109,8 +109,8 @@
 								array(new Validator_Length(4,32), new Validator_Confirm('users/password_confirm', Validator_Confirm::_POST)),
 								false
 							 );
-			$form->addElement( 'users/hide_email', $user['hide_email'], t('Hide Email'), new Validator_Bool );
-			$form->addElement( 'users/theme', $user['theme'], t('Theme Name'), new Validator_InArray( Theme::getAll() ), false );
+			$form->addElement( 'users/hide_email', $user['hide_email'], t('Hide email'), new Validator_Bool );
+			$form->addElement( 'users/theme', $user['theme'], t('Theme name'), new Validator_InArray( Theme::getAll() ), false );
 			try {
 				// Add Email validation if needed
 				$emailConf = $this->_input->post( 'users/email_confirm' );

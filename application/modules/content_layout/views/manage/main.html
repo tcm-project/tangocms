@@ -18,11 +18,11 @@
 		<input type="submit" value="{L_[Edit Layout]}">
 	</form>
 
-	<h3>{L_[Attached Modules]}</h3>
+	<h3>{L_[Attached modules]}</h3>
 <?php } ?>
 
 <ul>
-	<li>{L_[Drag and Drop the table rows to adjust the order of the attached modules.]}</li>
+	<li>{L_[Drag and drop the table rows to adjust the order of the attached modules.]}</li>
 </ul>
 
 <form action="<?php echo $this->_router->makeUrl( 'content_layout', 'manage', 'bridge' ); ?>" method="post" >
@@ -31,7 +31,7 @@
 			<tr class="nodrag nodrop">
 				<th class="checkcol"></th>
 				<th>{L_[Sector/Module]}</th>
-				<th class="order">{L_[Order & Placement]}</th>
+				<th class="order">{L_[Order & placement]}</th>
 				<th>{L_[Description]}</th>
 				<th>{L_[Manage]}</th>
 			</tr>
@@ -83,7 +83,7 @@
 						</td>
 						<td><?php echo empty($cntrlr['config']['clDescription']) ? '' : $cntrlr['config']['clDescription']; ?></td>
 						<td class="managecol">
-							<a href="<?php echo $this->_router->makeUrl( 'content_layout', 'edit', $layoutName, null, array('id' => $cntrlr['id']) ); ?>" title="{L_[Configure Module Details]}">{L_[Configure]}</a>
+							<a href="<?php echo $this->_router->makeUrl( 'content_layout', 'edit', $layoutName, null, array('id' => $cntrlr['id']) ); ?>" title="{L_[Configure module details]}">{L_[Configure]}</a>
 						</td>
 					</tr>
 				<?php $i++; } ?>
@@ -93,8 +93,8 @@
 
 	<div class="actions">
 		<input type="hidden" name="content_layout_name" value="{layoutName}">
-		<a href="<?php echo $this->_router->makeUrl( 'content_layout', 'attach', $layoutName ); ?>" class="general-button">{L_[Attach New Module]}</a>
-		<input type="submit" name="content_layout_detach" value="{L_[Detach Selected]}">
-		<input type="submit" name="content_layout_order" value="{L_[Update Order & Placement]}">
+		<a href="<?php echo $this->_router->makeUrl( 'content_layout', 'attach', $layoutName ); ?>" class="general-button">{L_[Attach new module]}</a>
+		<input type="submit" name="content_layout_detach" value="{L_[Detach selected]}">
+		<input type="submit" name="content_layout_order" value="{L_[Update Order & placement]}">
 	</div>
 </form>

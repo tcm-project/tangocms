@@ -22,7 +22,7 @@
 		public function __construct( $moduleDetails, $config, $sector ) {
 			parent::__construct( $moduleDetails, $config, $sector );
 			$this->setPageLinks( array(
-										t('Manage Themes')	=> $this->_router->makeUrl( 'theme' ),
+										t('Manage themes')	=> $this->_router->makeUrl( 'theme' ),
 										t('Settings')		=> $this->_router->makeUrl( 'theme', 'index', 'settings' ),
 										));
 		}
@@ -45,7 +45,7 @@
 				$this->_event->error( t('Selected site type does not exist') );
 				$siteType = $this->_router->getDefaultSiteType();
 			}
-			$this->setTitle( sprintf( t('"%s" Theme & Style'), ucfirst($siteType) ), false );
+			$this->setTitle( sprintf( t('"%s" theme & style'), ucfirst($siteType) ), false );
 			$view = $this->loadView( 'overview.html' );
 			$view->assign( array(
 								'THEMES' 	=> Theme::getAll(),
@@ -94,11 +94,11 @@
 		 * @return string
 		 */
 		public function settingsSection() {
-			$this->setTitle( t('Theme Settings') );
+			$this->setTitle( t('Theme settings') );
 			$this->setOutputType( self::_OT_CONFIG );
 			// Prepare form validation
 			$form = new View_Form( 'settings.html', 'theme' );
-			$form->addElement( 'theme/allow_user_override', $this->_config->get('theme/allow_user_override'), t('Allow User Override'), new Validator_Bool );
+			$form->addElement( 'theme/allow_user_override', $this->_config->get('theme/allow_user_override'), t('Allow user override'), new Validator_Bool );
 			if ( $form->hasInput() && $form->isValid() ) {
 				$allowOverride = $form->getValues( 'theme/allow_user_override' );
 				try {
@@ -106,7 +106,7 @@
 				} catch ( Config_KeyNoExist $e ) {
 					$this->_config_sql->add( 'theme/allow_user_override', $allowOverride );
 				}
-				$this->_event->success( t('Updated Theme Settings') );
+				$this->_event->success( t('Updated theme settings') );
 				return zula_redirect( $this->_router->makeUrl( 'theme', 'index', 'settings' ) );
 			}
 			return $form->getOutput();

@@ -75,8 +75,8 @@
 										t('General')		=> $this->_router->makeUrl( 'settings', 'general' ),
 										t('E-Mail')			=> $this->_router->makeUrl( 'settings', 'email' ),
 										t('Locale')			=> $this->_router->makeUrl( 'settings', 'locale' ),
-										t('Server & Security') => $this->_router->makeUrl( 'settings', 'security' ),
-										t('Cache & Performance')=> $this->_router->makeUrl( 'settings', 'cache' ),
+										t('Server & security') => $this->_router->makeUrl( 'settings', 'security' ),
+										t('Cache & performance')=> $this->_router->makeUrl( 'settings', 'cache' ),
 										t('Editing')		=> $this->_router->makeUrl( 'settings', 'editing' ),
 										));
 		}
@@ -98,17 +98,17 @@
 				case 'index':
 					$name = 'general';
 				case 'general':
-					$this->setTitle( t('General Settings') );
+					$this->setTitle( t('General settings') );
 					$view = $this->loadView( 'general.html' );
 					break;
 
 				case 'email':
-					$this->setTitle( t('E-Mail Settings') );
+					$this->setTitle( t('E-Mail settings') );
 					$view = $this->loadView( 'email.html' );
 					break;
 
 				case 'locale':
-					$this->setTitle( t('Locale Settings') );
+					$this->setTitle( t('Locale settings') );
 					$view = $this->loadView( 'locale.html' );
 					/**
 					 * Get all available layouts that can be installed
@@ -137,17 +137,17 @@
 					break;
 
 				case 'security':
-					$this->setTitle( t('Server & Security Settings') );
+					$this->setTitle( t('Server & security settings') );
 					$view = $this->loadView( 'security.html' );
 					break;
 
 				case 'cache':
-					$this->setTitle( t('Cache & Performance Settings') );
+					$this->setTitle( t('Cache & performance settings') );
 					$view = $this->loadView( 'cache.html' );
 					break;
 
 				case 'editing':
-					$this->setTitle( t('Editing Settings') );
+					$this->setTitle( t('Editing settings') );
 					$view = $this->loadView( 'editing.html' );
 					break;
 

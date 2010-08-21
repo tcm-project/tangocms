@@ -23,7 +23,7 @@
 			if ( !$this->_acl->check( 'shareable_manage' ) ) {
 				throw new Module_NoPermission;
 			}
-			$this->setTitle( t('Shareable Configuration') );
+			$this->setTitle( t('Shareable configuration') );
 			$this->setOutputType( self::_OT_CONFIG );
 			// Get sites
 			$sites = $this->_model()->getSites();
@@ -47,7 +47,7 @@
 											);
 				}
 				$this->_model()->edit( $editData );
-				$this->_event->success( t('Updated Config') );
+				$this->_event->success( t('Updated config') );
 				return zula_redirect( $this->_router->makeUrl( 'shareable', 'config' ) );
 			}
 			$this->_theme->addJsFile( 'jQuery/plugins/dnd.js' );

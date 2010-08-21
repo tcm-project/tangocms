@@ -23,7 +23,7 @@
 		 * @return string|bool
 		 */
 		public function resetSection() {
-			$this->setTitle( t('Reset Password') );
+			$this->setTitle( t('Reset password') );
 			// Build form
 			$form = new View_form( 'pwd/username.html', 'session' );
 			$form->addElement( 'session/username', null, t('Username'), new Validator_Length(0, 255) );
@@ -47,7 +47,7 @@
 											'RESET_CODE'	=> $resetCode,
 											'USER'			=> $user,
 											));
-					$message = new Email_Message( t('Reset Password'), $msgView->getOutput() );
+					$message = new Email_Message( t('Reset password'), $msgView->getOutput() );
 					$message->setTo( $user['email'] );
 					$email = new Email;
 					$email->send( $message );
@@ -68,7 +68,7 @@
 		 * @return string|bool
 		 */
 		public function codeSection() {
-			$this->setTitle( t('Enter Reset Code') );
+			$this->setTitle( t('Enter reset code') );
 			// Prepare validation of the form
 			$form = new View_form( 'pwd/reset.html', 'session' );
 			$form->addElement( 'session/code', null, 'Reset Code', new Validator_Length( 48, 48 ) );

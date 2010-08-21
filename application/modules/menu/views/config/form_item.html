@@ -21,7 +21,7 @@
 				</td>
 				<td class="confcol">
 					<select name="menu[parent]">
-						<option value="0">No Parent</option>
+						<option value="0">{L_[No parent]}</option>
 						<?php
 							foreach( $headings as $heading ) {
 								if ( $heading['id'] != $menu['id'] ) {
@@ -67,7 +67,7 @@
 	<div class="actions">
 		<input type="hidden" name="menu[id]" value="{MENU.ID}">
 		<input type="hidden" name="menu[cat_id]" value="{MENU.CAT_ID}">
-		<input type="submit" value="<?php echo $op == 'add' ? t('Add Menu Item') : t('Edit Menu Item'); ?>">
+		<input type="submit" value="<?php echo $op == 'add' ? t('Add menu item') : t('Edit menu item'); ?>">
 	</div>
 
 </form>

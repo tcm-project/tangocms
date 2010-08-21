@@ -20,7 +20,7 @@
 		 * @return string
 		 */
 		public function indexSection() {
-			$this->setTitle( t('Register an Account') );
+			$this->setTitle( t('Register an account') );
 			// Check that registrations are actually available
 			if ( $this->_config->get( 'session/allow_register' ) == false ) {
 				throw new Module_ControllerNoExist;
@@ -121,7 +121,7 @@
 		 */
 		public function validateEmail( $value ) {
 			if ( !$this->_config->get( 'session/duplicate_email' ) && $this->_ugmanager->emailTaken( $value ) ) {
-				return t('Email Address is already taken by another user');
+				return t('Email address is already taken by another user');
 			} else {
 				return true;
 			}
@@ -134,7 +134,7 @@
 		 * @return string
 		 */
 		public function activateSection() {
-			$this->setTitle( t('Activate Account') );
+			$this->setTitle( t('Activate account') );
 			/**
 			 * Use the provided activation code
 			 */

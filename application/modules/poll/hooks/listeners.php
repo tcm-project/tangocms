@@ -33,7 +33,7 @@
 		public function hookPollDisplayModes() {
 			return array(
 						'latest'	=> t('Latest', _PROJECT_ID.'-poll'),
-						'single'	=> t('Single Poll', _PROJECT_ID.'-poll'),
+						'single'	=> t('Single poll', _PROJECT_ID.'-poll'),
 						'random'	=> t('Random', _PROJECT_ID.'-poll'),
 						);
 		}

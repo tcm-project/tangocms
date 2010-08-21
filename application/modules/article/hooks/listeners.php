@@ -58,13 +58,13 @@
 			return array(
 						'feeds'	=> array(
 										'article-latest' => array(
-																'title' => t('Latest Articles', 'tangocms-article'),
-																'desc'	=> sprintf( t('%s Latest Articles'), $this->_config->get( 'config/title' ) ),
+																'title' => t('Latest articles', 'tangocms-article'),
+																'desc'	=> sprintf( t('%s Latest articles'), $this->_config->get( 'config/title' ) ),
 																'url'	=> $this->_router->makeFullUrl( '/article' ),
 															),
 										'article-'.$cat['clean_title']	=> array(
 																				'title'	=> sprintf( t('Articles - %s', 'tangocms-article'), $cat['title'] ),
-																				'desc'	=> sprintf( t('Latest %s Articles', 'tangocms-article'), $cat['title'] ),
+																				'desc'	=> sprintf( t('Latest %s articles', 'tangocms-article'), $cat['title'] ),
 																				'url'	=> $this->_router->makeFullUrl( 'article/cat/'.$cat['clean_title'] ),
 																		),
 									),
@@ -186,10 +186,10 @@
 		 */
 		public function hookArticleDisplayModes() {
 			return array(
-						'singlecategory'	=> t('Single Category', _PROJECT_ID.'-article'),
+						'singlecategory'	=> t('Single category', _PROJECT_ID.'-article'),
 						'headlines'			=> t('Headlines', _PROJECT_ID.'-article'),
-						'categories'		=> t('Category List', _PROJECT_ID.'-article'),
-						'allarticles'		=> t('All Articles', _PROJECT_ID.'-article')
+						'categories'		=> t('Category list', _PROJECT_ID.'-article'),
+						'allarticles'		=> t('All articles', _PROJECT_ID.'-article')
 						);
 		}
 

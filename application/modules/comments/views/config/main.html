@@ -25,7 +25,7 @@
 				<?php if ( $type == 'all' ) { ?>
 					<th>{L_[Status]}</th>
 				<?php } ?>
-				<th>{L_[Comment Preview]}</th>
+				<th>{L_[Comment preview]}</th>
 				<th>{L_[Manage]}</th>
 			</tr>
 		</thead>
@@ -60,7 +60,7 @@
 					</td>
 					<td class="managecol">
 						<?php if ( $comment['status'] != 'moderation' ) { ?>
-							<a href="<?php echo $this->_router->makeUrl( $comment['url'] )->fragment( 'comment-'.$comment['id'] ); ?>">View Comment</a> |
+							<a href="<?php echo $this->_router->makeUrl( $comment['url'] )->fragment( 'comment-'.$comment['id'] ); ?>">View comment</a> |
 						<?php } ?>
 						<a href="<?php echo $this->_router->makeUrl( 'comments', 'edit', $comment['id'] ); ?>">Edit</a>
 					</td>

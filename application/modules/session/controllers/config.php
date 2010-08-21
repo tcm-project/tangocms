@@ -23,7 +23,7 @@
 			parent::__construct( $moduleDetails, $config, $sector );
 			$this->setPageLinks( array(
 										t('Configuration')		=> $this->_router->makeUrl( 'session', 'config' ),
-										t('Manage Validations')	=> $this->_router->makeUrl( 'session', 'config', 'validations' ),
+										t('Manage validations')	=> $this->_router->makeUrl( 'session', 'config', 'validations' ),
 										));
 		}
 
@@ -36,7 +36,7 @@
 			if ( !$this->_acl->check( 'session_manage' ) ) {
 				throw new Module_NoPermission;
 			}
-			$this->setTitle( t('Session Configuration') );
+			$this->setTitle( t('Session configuration') );
 			$this->setOutputType( self::_OT_CONFIG );
 			// Check for input data or display the view file
 			if ( $this->_input->has( 'post', 'session' ) ) {
@@ -69,7 +69,7 @@
 		 * @return string
 		 */
 		public function validationsSection() {
-			$this->setTitle( t('Manage Validations') );
+			$this->setTitle( t('Manage validations') );
 			$this->setOutputType( self::_OT_CONFIG );
 			if ( !$this->_acl->check( 'session_manage' ) ) {
 				throw new Module_NoPermission;

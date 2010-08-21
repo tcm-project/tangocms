@@ -32,7 +32,7 @@
 		 */
 		public function hookPageDisplayModes() {
 			return array(
-						'displaypage'	=> t('Display Page', _PROJECT_ID.'-page'),
+						'displaypage'	=> t('Display page', _PROJECT_ID.'-page'),
 						);
 		}
 

@@ -22,8 +22,8 @@
 		public function __construct( $moduleDetails, $config, $sector ) {
 			parent::__construct( $moduleDetails, $config, $sector );
 			$this->setPageLinks( array(
-										t('Manage Layouts')	=> $this->_router->makeUrl( 'content_layout' ),
-										t('Add Layout')		=> $this->_router->makeUrl( 'content_layout', 'index', 'add' ),
+										t('Manage layouts')	=> $this->_router->makeUrl( 'content_layout' ),
+										t('Add layout')		=> $this->_router->makeUrl( 'content_layout', 'index', 'add' ),
 										));
 		}
 
@@ -45,7 +45,7 @@
 		 * @return string
 		 */
 		public function indexSection( $layoutName=null ) {
-			$this->setTitle( t('Edit Module') );
+			$this->setTitle( t('Edit module') );
 			$this->setOutputType( self::_OT_CONFIG );
 			// Check permission and if a layout has been provided
 			if ( !$this->_acl->check( 'content_layout_config_module' ) ) {
@@ -70,7 +70,7 @@
 			try {
 				$cntrlr = $layout->getControllerDetails( $cntrlrId );
 				$module = new Module( $cntrlr['mod'] );
-				$this->setTitle( sprintf( t('Configure Attached Module "%1$s"'), $module->title ) );
+				$this->setTitle( sprintf( t('Configure attached module "%1$s"'), $module->title ) );
 				if ( !isset( $cntrlr['config']['clDescription'] ) ) {
 					$cntrlr['config']['clDescription'] = '';
 				}
@@ -90,8 +90,8 @@
 							   t('Display Title'),
 							   new Validator_InArray( array('true', 'false', 'custom') ) # Yes, that is a quoted bool.
 							);
-			$form->addElement( 'content_layout/config/customTitle', $cntrlr['config']['customTitle'], t('Custom Title'), new Validator_Length(0, 255) );
-			$form->addElement( 'content_layout/config/htmlWrapClass', $cntrlr['config']['htmlWrapClass'], t('HTML Class'), new Validator_Length(0, 500) );
+			$form->addElement( 'content_layout/config/customTitle', $cntrlr['config']['customTitle'], t('Custom title'), new Validator_Length(0, 255) );
+			$form->addElement( 'content_layout/config/htmlWrapClass', $cntrlr['config']['htmlWrapClass'], t('HTML class'), new Validator_Length(0, 500) );
 			$form->addElement( 'content_layout/config/clDescription', $cntrlr['config']['clDescription'], t('Description'), new Validator_Length(0, 255) );
 			$form->addElement( 'content_layout/cntrlr', null, t('Controller'), new Validator_Alphanumeric('_-.!+') );
 			$form->addElement( 'content_layout/section', null, t('Section'), new Validator_Alphanumeric('_-.!+') );

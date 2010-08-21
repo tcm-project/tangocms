@@ -45,7 +45,7 @@
 		 */
 		public function hookContactDisplayModes() {
 			return array(
-						'contactform'	=> t('Contact Form', _PROJECT_ID.'-contact'),
+						'contactform'	=> t('Contact form', _PROJECT_ID.'-contact'),
 						);
 		}
 

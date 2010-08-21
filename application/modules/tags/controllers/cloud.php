@@ -20,7 +20,7 @@
 		 * @return string
 		 */
 		public function indexSection() {
-			$this->setTitle( t('Tag Cloud') );
+			$this->setTitle( t('Tag cloud') );
 			$view = $this->loadView( 'cloud.html' );
 			$view->assign( array('CLOUD' => $this->createCloud()) );
 			return $view->getOutput();

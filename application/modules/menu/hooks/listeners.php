@@ -32,7 +32,7 @@
 		 */
 		public function hookMenuDisplayModes() {
 			return array(
-						'displaymenu'	=> t('Display Menu', _PROJECT_ID.'-menu'),
+						'displaymenu'	=> t('Display menu', _PROJECT_ID.'-menu'),
 						);
 		}
 

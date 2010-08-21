@@ -19,7 +19,7 @@
 		 * @return bool|string
 		 */
 		public function indexSection() {
-			$this->setTitle( t('Post Comment') );
+			$this->setTitle( t('Post comment') );
 			if ( !$this->_acl->check( 'comments_post' ) ) {
 				throw new Module_NoPermission;
 			}

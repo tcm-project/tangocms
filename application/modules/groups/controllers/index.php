@@ -23,8 +23,8 @@
 		public function __construct( $moduleDetails, $config, $sector ) {
 			parent::__construct( $moduleDetails, $config, $sector );
 			$this->setPageLinks( array(
-										t('Manage Groups')	=> $this->_router->makeUrl( 'groups' ),
-										t('Add Group')		=> $this->_router->makeUrl( 'groups', 'index', 'add' ),
+										t('Manage groups')	=> $this->_router->makeUrl( 'groups' ),
+										t('Add group')		=> $this->_router->makeUrl( 'groups', 'index', 'add' ),
 										));
 		}
 
@@ -35,7 +35,7 @@
 		 * @return string
 		 */
 		public function indexSection() {
-			$this->setTitle( t('Manage Groups') );
+			$this->setTitle( t('Manage groups') );
 			$this->setOutputType( self::_OT_CONFIG );
 			if ( !$this->_acl->checkMulti( array('groups_add', 'groups_edit', 'groups_delete') ) ) {
 				throw new Module_NoPermission;
@@ -133,7 +133,7 @@
 		 * @return string
 		 */
 		public function addSection() {
-			$this->setTitle( t('Add Group') );
+			$this->setTitle( t('Add group') );
 			$this->setOutputType( self::_OT_CONFIG );
 			if ( !$this->_acl->check( 'groups_add' ) ) {
 				throw new Module_NoPermission;
@@ -161,7 +161,7 @@
 		 * @return string
 		 */
 		public function editSection() {
-			$this->setTitle( t('Edit Group') );
+			$this->setTitle( t('Edit group') );
 			$this->setOutputType( self::_OT_CONFIG );
 			if ( !$this->_acl->check( 'groups_edit' ) ) {
 				throw new Module_NoPermission;
@@ -195,7 +195,7 @@
 			} catch ( Ugmanager_GroupNoExist $e ) {
 				$this->_event->error( t('Group does not exist') );
 			} catch ( ACL_RoleNoExist $e ) {
-				$this->_event->error( sprintf( t('ACL Resource role "%s" does not exist'), $group['role_id'] ) );
+				$this->_event->error( sprintf( t('ACL resource role "%s" does not exist'), $group['role_id'] ) );
 			}
 			return zula_redirect( $this->_router->makeUrl( 'groups' ) );
 		}
@@ -230,8 +230,8 @@
 				}
 			}
 			$form = new View_Form( 'form.html', 'groups', is_null($id) );
-			$form->addElement( 'group/name', $name, t('Group Name'), array(new Validator_Alphanumeric, new Validator_Length(1, 32)) );
-			$form->addElement( 'group/inherits', $inherits, t('Inheritance Group'), new Validator_Numeric );
+			$form->addElement( 'group/name', $name, t('Group name'), array(new Validator_Alphanumeric, new Validator_Length(1, 32)) );
+			$form->addElement( 'group/inherits', $inherits, t('Inheritance group'), new Validator_Numeric );
 			$form->addElement( 'group/status', $status, t('Status'), new Validator_InArray(array('active', 'locked')) );
 			// Additional config data
 			$form->assign( array(

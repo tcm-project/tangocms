@@ -29,7 +29,7 @@
 					<td><?php echo $this->_helper('user')->link( $page['author'] ); ?></td>
 					<td class="managecol">
 						<a href="<?php echo $this->_router->makeUrl( 'page', 'config', 'edit', null, array('id' => $page['id']) ); ?>">{L_[Edit]}</a> |
-						<a href="<?php echo $this->_router->makeUrl( 'page', 'config', 'add', null, array('pid' => $page['id']) ); ?>">{L_[Add Child]}</a>
+						<a href="<?php echo $this->_router->makeUrl( 'page', 'config', 'add', null, array('pid' => $page['id']) ); ?>">{L_[Add child]}</a>
 					</td>
 				</tr>
 			<?php ++$i; } } ?>
@@ -38,7 +38,7 @@
 
 	<?php if ( !empty( $pages ) ) { ?>
 		{PAGINATION}
-		<div class="actions"><input name="page_delete" type="submit" value="{L_[Delete Selected]}"></div>
+		<div class="actions"><input name="page_delete" type="submit" value="{L_[Delete selected]}"></div>
 		{CSRF}
 	<?php } ?>
 

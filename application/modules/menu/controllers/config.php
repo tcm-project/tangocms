@@ -20,8 +20,8 @@
 		public function __construct( $moduleDetails, $config, $sector ) {
 			parent::__construct( $moduleDetails, $config, $sector );
 			$this->setPageLinks( array(
-										t('Manage Categories') 	=> $this->_router->makeUrl( 'menu', 'config' ),
-										t('Add Category')		=> $this->_router->makeUrl( 'menu', 'config', 'addcat'),
+										t('Manage categories') 	=> $this->_router->makeUrl( 'menu', 'config' ),
+										t('Add category')		=> $this->_router->makeUrl( 'menu', 'config', 'addcat'),
 										));
 		}
 
@@ -37,7 +37,7 @@
 			if ( !$this->_acl->checkMulti( $aclRules ) ) {
 				throw new Module_NoPermission;
 			}
-			$this->setTitle( t('Manage Menu Categories') );
+			$this->setTitle( t('Manage menu categories') );
 			$this->setOutputType( self::_OT_CONFIG );
 			// Build and output main view
 			$view = $this->loadView( 'config/main.html' );
@@ -55,7 +55,7 @@
 			if ( !$this->_acl->check( 'menu_add_cat' ) ) {
 				throw new Module_NoPermission;
 			}
-			$this->setTitle( t('Add Menu Category') );
+			$this->setTitle( t('Add menu category') );
 			$this->setOutputType( self::_OT_CONFIG );
 			// Prepare form validation
 			$form = $this->buildCategoryForm();
@@ -84,13 +84,13 @@
 			if ( !$this->_acl->check( 'menu_edit_cat' ) ) {
 				throw new Module_NoPermission;
 			}
-			$this->setTitle( t('Edit Menu Category') );
+			$this->setTitle( t('Edit menu category') );
 			$this->setOutputType( self::_OT_CONFIG );
 			// Attempt to get category details and check permission
 			try {
 				$category = $this->_model()->getCategory( $this->_router->getArgument('id') );
 				// Set page title
-				$this->setTitle( sprintf( t('Edit Menu Category "%s"'), $category['name'] ), false );
+				$this->setTitle( sprintf( t('Edit menu category "%s"'), $category['name'] ), false );
 				$aclResource = 'menu-cat-'.$category['id'];
 				if ( !$this->_acl->resourceExists( $aclResource ) || !$this->_acl->check( $aclResource ) ) {
 					throw new Module_NoPermission;
@@ -139,7 +139,7 @@
 				$items = $this->_model()->getAllItems( $cid, true );
 			}
 			$form = new View_Form( 'config/form_category.html', 'menu', is_null($cid) );
-			$form->addElement( 'menu/name', $catName, t('Category Name'), array(new Validator_Alphanumeric, new Validator_Length(1, 32)) );
+			$form->addElement( 'menu/name', $catName, t('Category name'), array(new Validator_Alphanumeric, new Validator_Length(1, 32)) );
 			// Add additional data
 			$form->assign( array(
 								'CAT_ID'	=> $cid,
@@ -161,7 +161,7 @@
 			if ( !$this->_acl->check( 'menu_delete_cat' ) ) {
 				throw new Module_NoPermission;
 			} else if ( $this->_input->checkToken() ) {
-				$this->setTitle( t('Delete Menu Category') );
+				$this->setTitle( t('Delete menu category') );
 				$this->setOutputType( self::_OT_CONFIG );
 				try {
 					// Remove all categories
@@ -254,7 +254,7 @@
 				// No permission to edit an item
 				throw new Module_NoPermission;
 			}
-			$this->setTitle( t('Edit Menu Item') );
+			$this->setTitle( t('Edit menu item') );
 			$this->setOutputType( self::_OT_CONFIG );
 			// Attempt to get details for the menu item and category, checking permission
 			try {

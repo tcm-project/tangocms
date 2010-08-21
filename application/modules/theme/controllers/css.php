@@ -22,7 +22,7 @@
 		public function __construct( $moduleDetails, $config, $sector ) {
 			parent::__construct( $moduleDetails, $config, $sector );
 			$this->setPageLinks( array(
-										t('Manage Themes')	=> $this->_router->makeUrl( 'theme' ),
+										t('Manage themes')	=> $this->_router->makeUrl( 'theme' ),
 										t('Settings')		=> $this->_router->makeUrl( 'theme', 'index', 'settings' ),
 										));
 		}
@@ -39,14 +39,14 @@
 			if ( !$this->_acl->check( 'theme_view_css' ) ) {
 				throw new Module_NoPermission;
 			}
-			$this->setTitle( t('Edit CSS Files') );
+			$this->setTitle( t('Edit CSS files') );
 			$this->setOutputType( self::_OT_CONFIG );
 			/**
 			 * Gather details of the theme and check if the CSS file exists
 			 */
 			try {
 				$theme = new Theme( substr($name, 0, -7) );
-				$this->setTitle( sprintf( t('"%s" Stylesheets'), $theme->getDetail( 'title' ) ) );
+				$this->setTitle( sprintf( t('"%s" stylesheets'), $theme->getDetail( 'title' ) ) );
 				// All CSS files for this theme
 				$themeCssFiles = $theme->getAllCss();
 				if ( empty( $themeCssFiles ) ) {

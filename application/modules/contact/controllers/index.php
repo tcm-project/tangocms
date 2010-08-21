@@ -63,7 +63,7 @@
 			$form->caseSensitive();
 			$form->action( $this->_router->makeUrl( 'contact', 'index', $details['id'] ) )
 				 ->antispam( true );
-			$form->addElement( 'contact/email', $this->_session->getUser('email'), t('Email Address'), new Validator_Email );
+			$form->addElement( 'contact/email', $this->_session->getUser('email'), t('Email address'), new Validator_Email );
 			$fields = array();
 			foreach( $this->_model()->getFormFields( $details['id'] ) as $tmpField ) {
 				$tmpField['options'] = zula_split_config( $tmpField['options'] );
@@ -107,7 +107,7 @@
 										));
 				$mailBody->assignHtml( array('contact' => $form->getValues('contact')) );
 				try {
-					$message = new Email_message( sprintf( t('Contact Form "%s"'), $details['name'] ), $mailBody->getOutput(), 'text/plain' );
+					$message = new Email_message( sprintf( t('Contact form "%s"'), $details['name'] ), $mailBody->getOutput(), 'text/plain' );
 					$message->setTo( $details['email'] );
 					$message->setReplyTo( $form->getValues( 'contact/email' ) );
 					$email = new Email;

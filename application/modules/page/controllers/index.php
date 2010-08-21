@@ -64,12 +64,12 @@
 				if ( $this->inSector( 'SC' ) && $import === false ) {
 					$args = array('id' => $page['id'], 'qe' => 'true');
 					if ( $this->_acl->check( 'page_edit' ) ) {
-						$this->setPageLinks( array(t('Edit Page') => $this->_router->makeUrl( 'page', 'config', 'edit', null, $args )) );
+						$this->setPageLinks( array(t('Edit page') => $this->_router->makeUrl( 'page', 'config', 'edit', null, $args )) );
 					}
 					if ( $this->_acl->check( 'page_delete' ) ) {
 						$url = $this->_router->makeUrl( 'page', 'config', 'delete', null, $args )
 											 ->queryArgs( array('zct' => $this->_input->createToken()) );
-						$this->setPageLinks( array(t('Delete Page') => $url) );
+						$this->setPageLinks( array(t('Delete page') => $url) );
 					}
 				}
 				/**
@@ -158,7 +158,7 @@
 		protected function makePageIndex( $pid ) {
 			$children = $this->_model()->getChildren( $pid, true );
 			if ( !empty( $children ) ) {
-				$wikiPage = "#!mediawiki\n===".t('Table of Contents')."===\n";
+				$wikiPage = "#!mediawiki\n===".t('Table of contents')."===\n";
 				foreach( $children as $child ) {
 					$pageLink = $this->_router->makeUrl( 'page', 'index', $child['clean_title'] );
 					$wikiPage .= str_repeat( '#', $child['depth']+1 ).'[['.$pageLink.'|'.$child['title'].']]'."\n";

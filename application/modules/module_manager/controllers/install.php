@@ -32,7 +32,7 @@
 		 * @return string
 		 */
 		public function indexSection() {
-			$this->setTitle( t('Install Module') );
+			$this->setTitle( t('Install module') );
 			$this->setOutputType( self::_OT_CONFIG );
 			$view = $this->loadView( 'install/list.html' );
 			$view->assign( array(
@@ -47,7 +47,7 @@
 		 * @return string
 		 */
 		public function moduleSection() {
-			$this->setTitle( t('Module Installation') );
+			$this->setTitle( t('Module installation') );
 			$this->setOutputType( self::_OT_CONFIG );
 			// Get correct module name to install
 			try {
@@ -68,7 +68,7 @@
 				$this->_event->error( sprintf( 'Module "%s" is not installable', $module->name ) );
 			} else {
 				// Some dependency checks failed
-				$this->setTitle( t('Module Dependencies Not Satisfied') );
+				$this->setTitle( t('Module dependencies not satisfied') );
 				$view = $this->loadView( 'install/failed.html' );
 				$result['module_name'] = $module->name;
 				$view->assign( $result );

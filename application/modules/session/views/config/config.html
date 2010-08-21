@@ -2,21 +2,21 @@
 	<table>
 		<thead>
 			<tr>
-				<th colspan="2">{L_[Login Method & Security]}</th>
+				<th colspan="2">{L_[Login method & security]}</th>
 			</tr>
 		</thead>
 		<tbody>
 			<tr class="even">
 				<td>
 					<dl>
-						<dt>{L_[Users Login By]}</dt>
+						<dt>{L_[Users login by]}</dt>
 						<dd>{L_[Select if users should login via email address, or username]}</dd>
 					</dl>
 				</td>
 				<td class="confcol">
 					<select name="session[login_by]">
 						<?php
-							foreach( array(t('Username') => 'username', t('E-Mail Address') => 'email') as $name=>$tmp_method ) {
+							foreach( array(t('Username') => 'username', t('E-Mail address') => 'email') as $name=>$tmp_method ) {
 								printf( '<option value="%s" %s>%s</option>',
 										$tmp_method,
 										($tmp_method == $login_by ? 'selected="selected"' : ''),
@@ -56,7 +56,7 @@
 			<tr class="odd">
 				<td>
 					<dl>
-						<dt>{L_[Login Destination]}</dt>
+						<dt>{L_[Login destination]}</dt>
 						<dd>{L_[Select where users should be redirect to once they have logged in.]}</dd>
 					</dl>
 				</td>
@@ -65,7 +65,7 @@
 						<?php
 							$opts = array(
 										t('Previous URL')	=> 'previous',
-										t('Home Page')		=> 'home',
+										t('Home hage')		=> 'home',
 										t('Custom...')		=> 'custom',
 										);
 							foreach( $opts as $key=>$val ) {
@@ -114,14 +114,14 @@
 	<table>
 		<thead>
 			<tr>
-				<th colspan="2">{L_[User Registration]}</th>
+				<th colspan="2">{L_[User registration]}</th>
 			</tr>
 		</thead>
 		<tbody>
 			<tr class="even">
 				<td>
 					<dl>
-						<dt>{L_[Allow New Registrations?]}</dt>
+						<dt>{L_[Allow new registrations?]}</dt>
 						<dd>{L_[Should new users be able to register an account?]}</dd>
 					</dl>
 				</td>
@@ -136,7 +136,7 @@
 			<tr class="odd">
 				<td>
 					<dl>
-						<dt>{L_[Registration Group]}</dt>
+						<dt>{L_[Registration group]}</dt>
 						<dd>{L_[Select the group that new registered users should be moved to.]}</dd>
 					</dl>
 				</td>
@@ -174,7 +174,7 @@
 			<tr class="odd">
 				<td>
 					<dl>
-						<dt>{L_[Validation Method]}</dt>
+						<dt>{L_[Validation method]}</dt>
 						<dd>{L_[How should users be validated once they have registered?]}</dd>
 					</dl>
 				</td>
@@ -182,9 +182,9 @@
 					<select name="session[validation_method]">
 						<?php
 							$methods = array(
-											'user'	=> t('E-Mail Confirmation'),
-											'admin'	=> t('Admin Validation'),
-											'none'	=> t('No Validation'),
+											'user'	=> t('E-Mail confirmation'),
+											'admin'	=> t('Admin validation'),
+											'none'	=> t('No validation'),
 											);
 							foreach( $methods as $key=>$tmp_method ) {
 								printf( '<option value="%s" %s>%s</option>',
@@ -200,7 +200,7 @@
 			<tr class="even">
 				<td>
 					<dl>
-						<dt>{L_[Terms and Conditions]}</dt>
+						<dt>{L_[Terms and conditions]}</dt>
 						<dd>{L_[If set, the terms and conditions will be displayed which a user has to agree to.]}</dd>
 					</dl>
 				</td>

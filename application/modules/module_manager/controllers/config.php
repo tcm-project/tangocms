@@ -123,7 +123,7 @@
 		 * @return string|bool
 		 */
 		public function loadorderSection() {
-			$this->setTitle( t('Module Load Order') );
+			$this->setTitle( t('Module load order') );
 			$this->setOutputType( self::_OT_CONFIG );
 			// Build form validation
 			$form = new View_form( 'config/loadorder.html', 'module_manager' );

@@ -25,7 +25,7 @@
 		 * @return mixed
 		 */
 		public function __call( $name, $args ) {
-			$this->setTitle( t('View Media Item') );
+			$this->setTitle( t('View media item') );
 			// Which format to display the media item as (mostly for Image types)
 			try {
 				$format = $this->_input->get( 'f' );
@@ -77,8 +77,8 @@
 				$delUrl = $this->_router->makeUrl( 'media', 'manage', 'delete', null, array('id' => $item['id']) )
 										->queryArgs( array('zct' => $this->_input->createToken()) );
 				$this->setPageLinks( array(
-										t('Edit Item')	=> $this->_router->makeUrl( 'media', 'manage', 'edit', null, array('id' => $item['id']) ),
-										t('Delete Item')=> $delUrl,
+										t('Edit item')	=> $this->_router->makeUrl( 'media', 'manage', 'edit', null, array('id' => $item['id']) ),
+										t('Delete item')=> $delUrl,
 										));
 			}
 			// Build up the view and add in any JavaScript files needed

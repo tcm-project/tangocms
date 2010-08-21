@@ -27,8 +27,8 @@
 		public function __construct( $moduleDetails, $config, $sector ) {
 			parent::__construct( $moduleDetails, $config, $sector );
 			$this->setPageLinks( array(
-										t('Manage Aliases')	=> $this->_router->makeUrl( 'aliases' ),
-										t('Add Alias')		=> $this->_router->makeUrl( 'aliases', 'index', 'add' ),
+										t('Manage aliases')	=> $this->_router->makeUrl( 'aliases' ),
+										t('Add alias')		=> $this->_router->makeUrl( 'aliases', 'index', 'add' ),
 										));
 		}
 
@@ -42,7 +42,7 @@
 			if ( !$this->_acl->checkMulti( array('aliases_add', 'aliases_edit', 'aliases_delete') ) ) {
 				throw new Module_NoPermission;
 			}
-			$this->setTitle( t('URL Aliases') );
+			$this->setTitle( t('URL aliases') );
 			$this->setOutputType( self::_OT_CONFIG );
 			// Get all the needed aliases to display
 			if ( $this->inSector( 'SC' ) && $this->_input->has( 'get', 'page' ) ) {
@@ -104,7 +104,7 @@
 			if ( !$this->_acl->check( 'aliases_add' ) ) {
 				throw new Module_NoPermission;
 			}
-			$this->setTitle( t('Add URL Alias') );
+			$this->setTitle( t('Add URL alias') );
 			$this->setOutputType( self::_OT_CONFIG );
 			// Create form
 			$form = $this->aliasForm();
@@ -112,10 +112,10 @@
 				$fd = $form->getValues( 'alias' );
 				try {
 					$this->_model()->add( $fd['alias'], $fd['url'], $fd['redirect'] );
-					$this->_event->success( t('Added URL Alias') );
+					$this->_event->success( t('Added URL alias') );
 					return zula_redirect( $this->_router->makeUrl( 'aliases' ) );
 				} catch ( Alias_AlreadyExists $e ) {
-					$this->_event->error( sprintf( t('URL Alias "%1$s" already exists'), $fd['alias'] ) );
+					$this->_event->error( sprintf( t('URL alias "%1$s" already exists'), $fd['alias'] ) );
 				}
 			}
 			return $form->getOutput();
@@ -135,13 +135,13 @@
 			try {
 				$id = $this->_router->getArgument( 'id' );
 				$details = $this->_model()->getDetails( $id );
-				$this->setTitle( t('Edit URL Alias') );
+				$this->setTitle( t('Edit URL alias') );
 				// Setup the form with validation
 				$form = $this->aliasForm( $details['alias'], $details['url'], $details['redirect'], $details['id'] );
 				if ( $form->hasInput() && $form->isValid() ) {
 					$fd = $form->getValues( 'alias' );
 					if ( $fd['alias'] != $details['alias'] && $this->_model()->aliasExists( $fd['alias'], Aliases_Model::_NAME ) ) {
-						$this->_event->error( sprintf( t('URL Alias "%1$s" already exists'), $fd['alias'] ) );
+						$this->_event->error( sprintf( t('URL alias "%1$s" already exists'), $fd['alias'] ) );
 					} else {
 						$this->_model()->edit( $details['id'], $fd['alias'], $fd['url'], $fd['redirect'] );
 						$this->_event->success( t('Edited URL alias') );
