@@ -104,6 +104,7 @@
 				$mailBody->assign( array(
 										'form'		=> $details,
 										'fields'	=> $fields,
+										'email'		=> $form->getValues( 'contact/email' ),
 										));
 				$mailBody->assignHtml( array('contact' => $form->getValues('contact')) );
 				try {
