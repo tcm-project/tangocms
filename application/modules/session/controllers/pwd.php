@@ -113,7 +113,7 @@
 											);
 				$this->_event->success( t('Your password has been successfully changed') );
 				unset( $_SESSION['mod']['session']['changePw'] );
-				return zula_redirect( $this->_router->makeUrl($this->_router->getRawRequestPath()) );
+				return zula_redirect( $this->_router->getCurrentUrl() );
 			}
 			return $form->getOutput();
 		}

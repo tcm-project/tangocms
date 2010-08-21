@@ -86,7 +86,7 @@
 					$item['url'] = 'http://'.$item['url'];
 				} else if ( !zula_url_has_scheme( $item['url'] ) ) {
 					if ( $item['url'][0] == '#' ) {
-						$item['url'] = $this->_router->makeUrl( $rawRequestPath ).$item['url'];
+						$item['url'] = $this->_router->getCurrentUrl().$item['url'];
 					} else {
 						$item['url'] = $this->_router->makeUrl( $item['url'] );
 					}
