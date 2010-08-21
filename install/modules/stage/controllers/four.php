@@ -22,7 +22,7 @@
 		 * @return string
 		 */
 		public function indexSection() {
-			$this->setTitle( t('First User') );
+			$this->setTitle( t('First user') );
 			/**
 			 * Make sure user is not skipping a head
 			 */

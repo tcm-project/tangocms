@@ -22,7 +22,7 @@
 		 * @return string
 		 */
 		public function indexSection() {
-			$this->setTitle( t('SQL Details') );
+			$this->setTitle( t('SQL details') );
 			/**
 			 * Make sure user is not trying to skip ahead
 			 */
@@ -35,8 +35,8 @@
 			$form->addElement( 'user', null, t('Username'), new Validator_Length(1, 16) );
 			$form->addElement( 'pass', null, t('Password'), new Validator_Length(0, 64) );
 			$form->addElement( 'port', 3306, t('SQL Port'), new Validator_Int );
-			$form->addElement( 'host', 'localhost', t('SQL Host'), new Validator_Length(1, 80) );
-			$form->addElement( 'prefix', 'tcm_', t('Table Prefix'), array(new Validator_Length(0, 32), new Validator_Alphanumeric('_-')) );
+			$form->addElement( 'host', 'localhost', t('SQL host'), new Validator_Length(1, 80) );
+			$form->addElement( 'prefix', 'tcm_', t('Table prefix'), array(new Validator_Length(0, 32), new Validator_Alphanumeric('_-')) );
 			// Check input
 			if ( $form->hasInput() && $form->isValid() ) {
 				$fd = $form->getValues();

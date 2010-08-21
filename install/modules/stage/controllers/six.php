@@ -21,7 +21,7 @@
 		 * @return string
 		 */
 		public function indexSection() {
-			$this->setTitle( t('Install Complete!') );
+			$this->setTitle( t('Install complete!') );
 			/**
 			 * Check user is not skipping ahead
 			 */

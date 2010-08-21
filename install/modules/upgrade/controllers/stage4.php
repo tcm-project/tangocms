@@ -109,7 +109,7 @@
 					$this->_event->error( sprintf( $langStr, _PROJECT_VERSION ) );
 					exit( 3 );
 				} else {
-					$this->setTitle( t('Current Version Unsupported') );
+					$this->setTitle( t('Current version unsupported') );
 					$view = $this->loadView( 'stage1/not_supported.html' );
 					$view->assign( array (
 										'CURRENT_VERSION'	=> _PROJECT_VERSION,

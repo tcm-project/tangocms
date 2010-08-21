@@ -25,27 +25,27 @@
 			$reqCntrl = $this->_dispatcher->getDispatchData();
 			switch( $reqCntrl['module'] ) {
 				case 'stage':
-					$this->setTitle( t('Installation Stages') );
+					$this->setTitle( t('Installation stages') );
 					$view = $this->loadView( 'index/installation.html' );
 					$stages = array(
-									'one'	=> t('Security Check'),
-									'two'	=> t('Pre-Installation Checks'),
-									'three'	=> t('SQL Details'),
-									'four'	=> t('First User'),
-									'five'	=> t('Basic Configuration'),
-									'six'	=> t('Install Complete!'),
+									'one'	=> t('Security check'),
+									'two'	=> t('Pre-installation checks'),
+									'three'	=> t('SQL details'),
+									'four'	=> t('First user'),
+									'five'	=> t('Basic configuration'),
+									'six'	=> t('Install complete!'),
 									);
 					break;
 
 				case 'upgrade':
-					$this->setTitle( t('Upgrade Stages') );
+					$this->setTitle( t('Upgrade stages') );
 					$view = $this->loadView( 'index/upgrade.html' );
 					$stages = array(
-									t( 'Version Check' ),
-									t( 'Security Check' ),
-									t( 'Pre-Upgrade Checks' ),
-									t( 'Perform Upgrades' ),
-									t( 'Upgrade Complete!' ),
+									t( 'Version check' ),
+									t( 'Security check' ),
+									t( 'Pre-Upgrade checks' ),
+									t( 'Perform upgrades' ),
+									t( 'Upgrade complete!' ),
 									);
 					break;
 
