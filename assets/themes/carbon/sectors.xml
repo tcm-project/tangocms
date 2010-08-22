@@ -6,4 +6,7 @@
 	<sector id="S2">
 		<description>Right Sidebar</description>
 	</sector>
+	<sector id="S3">
+		<description>Left Sidebar</description>
+	</sector>
 </sectors>

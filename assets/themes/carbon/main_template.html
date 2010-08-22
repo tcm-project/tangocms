@@ -21,7 +21,7 @@
 				<div id="header">
 					<h2 class="logo"><a href="<?php echo $this->_router->makeFullUrl( '/' ); ?>">{SITE_TITLE}</a></h2>
 
-					<?php if ( trim( $site_slogan ) ) { ?>
+					<?php if ( $site_slogan ) { ?>
 						<h2 class="slogan">{SITE_SLOGAN}</h2>
 					<?php } ?>
 				</div>
@@ -30,18 +30,21 @@
 			<?php echo empty($s1) ? '' : '<div id="navbar">'.$s1.'</div>'; ?>
 
 			<div id="container">
-				<div id="wrap">
-					<div id="content" <?php echo empty($s2) ? 'class="fullwidth"' : ''; ?>>
+				<?php if ( !empty($s3) ) { ?>
+					<div id="column1" class="column sidebar">{S3}</div>
+				<?php } ?>
+
+				<div id="column2" class="column <?php echo 'numCols', 1+!empty($s3)+!empty($s2); ?>">
+					<div>
 						<?php echo $controller_title ? '<h1>'.$controller_title.'</h1>' : ''; ?>
 						{EVENT_FEEDBACK}
 						{PAGE_LINKS}
 						{SC}
 					</div>
 				</div>
+
 				<?php if ( !empty($s2) ) { ?>
-					<div id="sidebar">
-						{S2}
-					</div>
+					<div id="column3" class="column sidebar">{S2}</div>
 				<?php } ?>
 			</div>
 			<div id="stickyPush"></div>
