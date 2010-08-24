@@ -68,7 +68,7 @@
 			$query->closeCursor();
 			if ( $aclCheck ) {
 				foreach( $pages as $tmpPage ) {
-					$resource = 'page-'.$tmpPage['id'];
+					$resource = 'page-view_'.$tmpPage['id'];
 					if ( !$this->_acl->resourceExists( $resource ) || !$this->_acl->check( $resource ) ) {
 						unset( $pages[ $tmpPage['id'] ] );
 						--$this->pageCount;
@@ -153,7 +153,7 @@
 				$query = $this->_sql->query( 'SELECT '.$cols.' FROM {SQL_PREFIX}mod_page
 											  WHERE parent = '.(int) $pid.' ORDER BY `order`, title ASC' );
 				foreach( $query->fetchAll( PDO::FETCH_ASSOC ) as $row ) {
-					$resource = 'page-'.$row['id'];
+					$resource = 'page-view_'.$row['id'];
 					if ( $aclCheck && (!$this->_acl->resourceExists( $resource ) || !$this->_acl->check( $resource )) ) {
 						continue;
 					} else {
@@ -266,7 +266,9 @@
 			foreach( $pageIds as $id ) {
 				$pdoSt->execute( array($id) );
 				if ( $pdoSt->rowCount() ) {
-					$aclResources[] = 'page-'.$id;
+					$aclResources[] = 'page-view_'.$id;
+					$aclResources[] = 'page-edit_'.$id;
+					$aclResources[] = 'page-manage_'.$id;
 					++$delCount;
 				}
 			}

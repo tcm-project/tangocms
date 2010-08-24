@@ -29,10 +29,12 @@
 		 */
 		public function __construct( $moduleDetails, $config, $sector ) {
 			parent::__construct( $moduleDetails, $config, $sector );
-			$this->setPageLinks( array(
-										t('Manage pages') 	=> $this->_router->makeUrl( 'page', 'config' ),
-										t('Add page')		=> $this->_router->makeUrl( 'page', 'config', 'add' ),
-										));
+			if ( $this->_acl->check( 'page_manage' ) ) {
+				$this->setPageLinks( array(
+											t('Manage pages') 	=> $this->_router->makeUrl( 'page', 'config' ),
+											t('Add page')		=> $this->_router->makeUrl( 'page', 'config', 'add' ),
+											));
+			}
 		}
 
 		/**
@@ -44,7 +46,7 @@
 		public function indexSection() {
 			$this->setTitle( t('Manage pages') );
 			$this->setOutputType( self::_OT_CONFIG );
-			if ( !$this->_acl->checkMulti( array('page_add', 'page_edit', 'page_delete') ) ) {
+			if ( !$this->_acl->check( 'page_manage' ) ) {
 				throw new Module_NoPermission;
 			}
 			// Check what pagination page we are on, and get all pages
@@ -102,16 +104,13 @@
 		}
 
 		/**
-		 * Shows form and handles adding of a new paeg
+		 * Shows form and handles adding of a new page
 		 *
 		 * @return string
 		 */
 		public function addSection() {
 			$this->setTitle( t('Add page') );
 			$this->setOutputType( self::_OT_CONFIG | self::_OT_CONTENT_STATIC );
-			if ( !$this->_acl->check( 'page_add' ) ) {
-				throw new Module_NoPermission;
-			}
 			// Check if there is a parent ID for the page to be attached to
 			try {
 				$pid = abs( $this->_router->getArgument( 'pid' ) );
@@ -126,7 +125,7 @@
 				try {
 					$parent = $this->_model()->getPage( $pid );
 					// Check permission
-					$resource = 'page-'.$parent['id'];
+					$resource = 'page-manage_'.$parent['id'];
 					if ( !$this->_acl->resourceExists( $resource ) || !$this->_acl->check( $resource ) ) {
 						throw new Module_NoPermission;
 					}
@@ -135,6 +134,8 @@
 					$this->_event->error( t('Parent page does not exist') );
 					return zula_redirect( $this->_router->makeUrl( 'page', 'config' ) );
 				}
+			} else if ( !$this->_acl->check( 'page_manage' ) ) {
+				throw new Module_NoPermission;
 			}
 			// Build form and check it is all valid
 			$form = $this->buildForm( $pid );
@@ -144,13 +145,16 @@
 					$fd['parent'] = 0;
 				}
 				$page = $this->_model()->add( $fd['title'], $fd['body'], $fd['parent'] );
-				// Update ACL resource
-				try {
-					$roles = $this->_input->post( 'acl_resources/page-' );
-				} catch ( Input_KeyNoExist $e ) {
-					$roles = array();
+				// Update ACL resources
+				foreach( array('page-view_', 'page-edit_', 'page-manage_') as $resource ) {
+					try {
+						$roles = $this->_input->post( 'acl_resources/'.$resource );
+					} catch ( Input_KeyNoExist $e ) {
+						$roles = array();
+					}
+					$this->_acl->allowOnly( $resource.$page['id'], $roles );
 				}
-				$this->_acl->allowOnly( 'page-'.$page['id'], $roles );
+				// Redirect back to correct location
 				$form->success( 'page/index/'.$page['clean_title'] );
 				$this->_event->success( t('Added new page') );
 				if ( empty( $parent ) ) {
@@ -172,25 +176,19 @@
 		public function editSection() {
 			$this->setTitle( t('Edit page') );
 			$this->setOutputType( self::_OT_CONFIG | self::_OT_CONTENT_STATIC );
-			if ( !$this->_acl->check( 'page_edit' ) ) {
-				throw new Module_NoPermission;
-			}
 			// Get details of the page to edit
 			try {
 				$page = $this->_model()->getPage( $this->_router->getArgument('id') );
 				// Check permission
-				$resource = 'page-'.$page['id'];
+				$resource = 'page-edit_'.$page['id'];
 				if ( !$this->_acl->resourceExists( $resource ) || !$this->_acl->check( $resource ) ) {
 					throw new Module_NoPermission;
 				}
 				$quickEdit = $this->_router->hasArgument( 'qe' );
 				if ( $quickEdit ) {
 					$this->setTitle( sprintf( t('Quick edit page "%s"'), $page['title'] ) );
-					$this->setPageLinks( array(
-											t('Switch to full edit')	=> $this->_router->makeUrl( 'page', 'config', 'edit', 'admin', array('id' => $page['id']) ),
-											));
 				} else {
-					$this->setTitle( sprintf( t('Edit Page "%s"'), $page['title'] ) );
+					$this->setTitle( sprintf( t('Edit page "%s"'), $page['title'] ) );
 				}
 				// Build the form and check it is all valid
 				$form = $this->buildForm( $page['parent'], $page['id'], $page['title'], $page['body'], $quickEdit );
@@ -201,13 +199,18 @@
 						$fd['parent'] = 0; # Default to no parent
 					}
 					$this->_model()->edit( $page['id'], $fd['title'], $fd['body'], $fd['parent'] );
-					// Update ACL resource
-					try {
-						$roles = $this->_input->post( 'acl_resources/page-'.$page['id'] );
-					} catch ( Input_KeyNoExist $e ) {
-						$roles = array();
+					if ( $this->_acl->check( 'page-manage_'.$page['id'] ) ) {
+						// Update ACL resources
+						foreach( array('page-view_', 'page-edit_', 'page-manage_') as $resource ) {
+							try {
+								$roles = $this->_input->post( 'acl_resources/'.$resource.$page['id'] );
+							} catch ( Input_KeyNoExist $e ) {
+								$roles = array();
+							}
+							$this->_acl->allowOnly( $resource.$page['id'], $roles );
+						}
 					}
-					$this->_acl->allowOnly( 'page-'.$page['id'], $roles );
+					// Redirect back to correct URL
 					$form->success( 'page/index/'.$page['clean_title'] );
 					$this->_event->success( t('Edited page') );
 					if ( $quickEdit ) {
@@ -250,26 +253,34 @@
 				 * Gather all children and find out all possible parents that this page
 				 * can be part of, not including sub-children of its self.
 				 */
-				if ( $isQuickEdit == false ) {
-					$children = $this->_model()->getChildren( $id );
-					if ( $parent ) {
-						$treePath = $this->_model()->findPath( $id );
-						$possibleParents = $this->_model()->getChildren( $treePath[0]['id'], true, array($id) );
-						array_unshift( $possibleParents, $treePath[0] );
-					} else {
-						$possibleParents = $this->_model()->getAllPages( 0, 0, $parent );
-					}
-					foreach( $possibleParents as $key=>$tmpParent ) {
-						if ( $tmpParent['id'] != $id ) {
-							if ( !isset( $tmpParent['depth'] ) ) {
-								$possibleParents[ $key ]['depth'] = 0;
-							}
-							$validParents[] = $tmpParent['id'];
-						} else {
-							unset( $possibleParents[ $key ] );
+				$children = $this->_model()->getChildren( $id );
+				if ( $parent ) {
+					$treePath = $this->_model()->findPath( $id );
+					$possibleParents = $this->_model()->getChildren( $treePath[0]['id'], true, array($id) );
+					array_unshift( $possibleParents, $treePath[0] );
+				} else {
+					$possibleParents = $this->_model()->getAllPages( 0, 0, $parent );
+				}
+				foreach( $possibleParents as $key=>$tmpParent ) {
+					if ( $this->_acl->check( 'page-manage_'.$tmpParent['id'] ) && $tmpParent['id'] != $id ) {
+						if ( !isset( $tmpParent['depth'] ) ) {
+							$possibleParents[ $key ]['depth'] = 0;
 						}
+						$validParents[] = $tmpParent['id'];
+					} else {
+						unset( $possibleParents[ $key ] );
 					}
 				}
+			}
+			// Setup the correct ACL resources
+			if ( $id === null || $this->_acl->check( 'page-manage_'.$id ) ) {
+				$aclForm = $this->_acl->buildForm( array(
+														t('View page')	=> 'page-view_'.$id,
+														t('Edit page')	=> array('page-edit_'.$id, 'group_admin'),
+														t('Delete, edit, add subpages & manage permissions') => array('page-manage_'.$id, 'group_admin')
+														));
+			} else {
+				$aclForm = null;
 			}
 			// Build up the form
 			$form = new View_Form( 'config/form_page.html', 'page', ($op == 'add') );
@@ -283,7 +294,7 @@
 								'QUICK_EDIT'=> $isQuickEdit,
 								));
 			$form->assignHtml( array(
-									'ACL_FORM'	=> $this->_acl->buildForm( array(t('View page') => 'page-'.$id) ),
+									'ACL_FORM'	=> $aclForm,
 									'CHILDREN'	=> empty($children) ? null : $this->createChildRows( $children ),
 									));
 			return $form;
@@ -345,7 +356,20 @@
 				}
 			}
 			if ( $this->_input->checkToken( $method ) ) {
-				$this->delete( (array) $pids );
+				$count = count( $pids );
+				foreach( (array) $pids as $pid ) {
+					if ( $this->_acl->check( 'page-manage_'.$pid ) ) {
+						try {
+							$this->_model()->delete( $pid );
+						} catch ( Page_NoExist $e ) {
+							if ( $count == 1 ) {
+								throw new Module_ControllerNoExist;
+							}
+						}
+					} else if ( $count == 1 ) {
+						throw new Module_NoPermission;
+					}
+				}
 				$this->_event->success( t('Deleted selected pages') );
 			} else {
 				$this->_event->error( Input::csrfMsg() );
@@ -366,7 +390,14 @@
 			} else if ( $this->_input->has( 'post', 'page_delete' ) ) {
 				$this->setTitle( t('Delete Page') );
 				try {
-					$this->delete( $this->_input->post('page_ids') );
+					foreach( $this->_input->post('page_ids') as $pid ) {
+						if ( $this->_acl->check( 'page-manage_'.$pid ) ) {
+							try {
+								$this->_model()->delete( $pid );
+							} catch ( Page_NoExist $e ) {
+							}
+						}
+					}
 					$this->_event->success( t('Deleted selected pages') );
 				} catch ( Input_KeyNoExist $e ) {
 					$this->_event->error( t('No pages selected') );
@@ -382,7 +413,7 @@
 				foreach( $this->_input->post( 'page_order' ) as $pid=>$order ) {
 					try {
 						$page = $this->_model()->getPage( $pid );
-						$resource = 'page-'.$page['id'];
+						$resource = 'page-manage_'.$page['id'];
 						if ( $this->_acl->resourceExists( $resource ) && $this->_acl->check( $resource ) ) {
 							$execData[] = $page['id'];
 							$execData[] = abs( $order );
@@ -404,29 +435,6 @@
 				$url = $this->_router->makeUrl( 'page', 'config' );
 			}
 			return zula_redirect( $url );
-		}
-
-		/**
-		 * Attempts to delete one or more pages, returns number of pages deleted
-		 *
-		 * @param array $pid
-		 * @return int
-		 */
-		protected function delete( array $pid ) {
-			if ( !$this->_acl->check( 'page_delete' ) ) {
-				throw new Module_NoPermission;
-			}
-			$delCount = 0;
-			foreach( $pid as $id ) {
-				$resource = 'page-'.$id;
-				if ( $this->_acl->resourceExists( $resource ) && $this->_acl->check( $resource ) ) {
-					try {
-						$delCount += $this->_model()->delete( $id );
-					} catch ( Page_NoExist $e ) {
-					}
-				}
-			}
-			return $delCount;
 		}
 
 	}

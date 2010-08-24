@@ -39,7 +39,7 @@
 				if ( $import === false ) {
 					$this->setTitle( $page['title'] );
 				}
-				$resource = 'page-'.$page['id'];
+				$resource = 'page-view_'.$page['id'];
 				if ( !$this->_acl->resourceExists( $resource ) || !$this->_acl->check( $resource ) ) {
 					if ( $import === false ) {
 						throw new Module_NoPermission;
@@ -59,14 +59,14 @@
 				return $page['body'];
 			} else {
 				/**
-				* Check if the Quick Links need to be added
-				*/
+				 * Check if the Quick Links need to be added
+				 */
 				if ( $this->inSector( 'SC' ) && $import === false ) {
 					$args = array('id' => $page['id'], 'qe' => 'true');
-					if ( $this->_acl->check( 'page_edit' ) ) {
+					if ( $this->_acl->checkMulti( array('page-edit_'.$page['id'], 'page-manage_'.$page['id']) ) ) {
 						$this->setPageLinks( array(t('Edit page') => $this->_router->makeUrl( 'page', 'config', 'edit', null, $args )) );
 					}
-					if ( $this->_acl->check( 'page_delete' ) ) {
+					if ( $this->_acl->check( 'page-manage_'.$page['id'] ) ) {
 						$url = $this->_router->makeUrl( 'page', 'config', 'delete', null, $args )
 											 ->queryArgs( array('zct' => $this->_input->createToken()) );
 						$this->setPageLinks( array(t('Delete page') => $url) );

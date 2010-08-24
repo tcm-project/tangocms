@@ -58,7 +58,7 @@
 		public function hookCntrlrErrorOutput( $statusCode, $output ) {
 			if (
 				$statusCode == 404 && Module::exists( 'page' ) && !Module::isDisabled( 'page' ) &&
-				$this->_acl->checkMulti( array('page_add', 'aliases_add'), ACL::_MULTI_ALL )
+				$this->_acl->checkMulti( array('page_manage', 'aliases_add'), ACL::_MULTI_ALL )
 			) {
 				$alias = $this->_router->getRequestPath();
 				if ( trim( $alias ) ) {
