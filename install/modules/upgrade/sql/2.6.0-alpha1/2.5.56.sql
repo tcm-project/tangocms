@@ -1,0 +1,1 @@
+UPDATE {SQL_PREFIX}config SET name = 'media/thumb_dimension' WHERE name = 'media/max_thumb_width';
