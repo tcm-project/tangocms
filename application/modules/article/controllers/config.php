@@ -577,9 +577,9 @@
 				throw new Module_NoPermission;
 			}
 			// Check for needed post data
-			if ( $this->_input->has( 'post', 'article/settings' ) ) {
+			if ( $this->_input->has( 'post', 'article' ) ) {
 				if ( $this->_input->checkToken() ) {
-					foreach( $this->_input->post( 'article/settings' ) as $key=>$val ) {
+					foreach( $this->_input->post( 'article' ) as $key=>$val ) {
 						try {
 							$this->_config_sql->update( 'article/'.$key, $val );
 						} catch ( Config_KeyNoExist $e ) {
@@ -590,24 +590,16 @@
 				} else {
 					$this->_event->error( Input::csrfMsg() );
 				}
-				return zula_redirect( $this->_router->makeUrl( 'article', 'config', 'settings' ) );
-			} else {
-				// Build up the form
-				$html = new Html( 'article[settings][%s]' );
-				$view = $this->loadView( 'config/settings.html' );
-				$view->assignHtml( array(
-										'S_PERPAGE'		=> $html->input( 'per_page', $this->_config->get('article/per_page') ),
-										'S_HEADLINE'	=> $html->input( 'headline_limit', $this->_config->get('article/headline_limit') ),
-										'S_JUMP_POS'	=> $html->select( 'jump_box_position', $this->_config->get('article/jump_box_position'),
-																		  array( t('Top') => 'top', t('Bottom') => 'bottom' )
-																		 ),
-										'S_CAT_DESC'	=> $html->radio( 'show_cat_desc', $this->_config->get('article/show_cat_desc'),
-																		 array( t('Yes') => true, t('No') => false )
-																		),
-										'CSRF'			=> $this->_input->createToken( true ),
-										));
-				return $view->getOutput();
+				return zula_redirect( $this->_router->getParsedUrl() );
 			}
+			$view = $this->loadView( 'config/settings.html' );
+			$view->assign( array(
+								'per_page'	=> $this->_config->get( 'article/per_page' ),
+								'jump_box_position'	=> $this->_config->get( 'article/jump_box_position' ),
+								'show_cat_desc'		=> $this->_config->get( 'article/show_cat_desc' ),
+								));
+			$view->assignHtml( array('csrf' => $this->_input->createToken(true)) );
+			return $view->getOutput();
 		}
 
 	}
