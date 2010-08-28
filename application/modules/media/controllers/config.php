@@ -202,7 +202,7 @@
 			$form->addElement( 'media/per_page', $mediaConf['per_page'], t('Per page'), new Validator_Int )
 				 ->addElement( 'media/use_lightbox', $mediaConf['use_lightbox'], t('Use lightbox'), new Validator_Bool )
 				 ->addElement( 'media/max_fs', $mediaConf['max_fs'], t('Maximum file size'), new Validator_Int )
-				 ->addElement( 'media/max_thumb_width', $mediaConf['max_thumb_width'], t('Thumbnail width'), new Validator_Between(20, 200) )
+				 ->addElement( 'media/thumb_dimension', $mediaConf['thumb_dimension'], t('Thumbnail width/height'), new Validator_Between(20, 200) )
 				 ->addElement( 'media/max_image_width', $mediaConf['max_image_width'], t('Maximum image width'), new Validator_Between(200, 90000) )
 				 ->addElement( 'media/wm_position', $mediaConf['wm_position'], t('Watermark position'),
 								new Validator_InArray( array('t', 'tr', 'r', 'br', 'b', 'bl', 'l', 'tl') ),

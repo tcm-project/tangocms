@@ -1,5 +1,5 @@
 <?php if ( !empty( $disabled ) ) { ?>
-	<h3>{L_[Disabled Modules]}</h3>
+	<h3>{L_[Disabled modules]}</h3>
 
 	<form action="<?php echo $this->_router->makeUrl( 'module_manager', 'config', 'enmod' ); ?>" method="post">
 		<table class="contentdata">
@@ -30,12 +30,12 @@
 			</tbody>
 		</table>
 
-		<div class="actions"><input type="submit" value="{L_[Enable Selected Modules]}"></div>
+		<div class="actions"><input type="submit" value="{L_[Enable selected modules]}"></div>
 		{CSRF.DISABLE}
 	</form>
 
 <?php } if ( !empty( $enabled ) ) { ?>
-	<h3>{L_[Enabled Modules]}</h3>
+	<h3>{L_[Enabled modules]}</h3>
 
 	<form action="<?php echo $this->_router->makeUrl( 'module_manager', 'config', 'dismod' ); ?>" method="post">
 		<table class="contentdata">
@@ -70,7 +70,7 @@
 			</tbody>
 		</table>
 
-		<div class="actions"><input type="submit" value="{L_[Disable Selected Modules]}"></div>
+		<div class="actions"><input type="submit" value="{L_[Disable selected modules]}"></div>
 		{CSRF.ENABLE}
 	</form>
 <?php } ?>

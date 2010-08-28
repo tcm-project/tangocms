@@ -20,7 +20,7 @@
 		 * @var array
 		 */
 		protected $cached = array();
-		
+
 		/**
 		 * Adds a new item that is to be cached
 		 *
@@ -68,7 +68,7 @@
 			}
 			return $delCount;
 		}
-		
+
 		/**
 		 * Purges all cached items
 		 *

@@ -36,7 +36,7 @@
 		 * @return mixed
 		 */
 		public function hookModuleOutputBottom( array $mcs, $contentType, $sector, $title ) {
-			if ( 
+			if (
 				$contentType & Zula_ControllerBase::_OT_CONTENT_DYNAMIC &&
 				!($contentType & Zula_ControllerBase::_OT_CONFIG)
 			) {

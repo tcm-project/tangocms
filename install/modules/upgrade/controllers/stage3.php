@@ -31,7 +31,7 @@
 		 * @return string
 		 */
 		public function indexSection() {
-			$this->setTitle( t('Pre Upgrade Checks') );
+			$this->setTitle( t('Pre upgrade checks') );
 			if (
 				$this->_zula->getMode() != 'cli' &&
 				(!isset( $_SESSION['upgrade_stage'] ) || $_SESSION['upgrade_stage'] !== 3)

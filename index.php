@@ -92,9 +92,8 @@
 			}
 		}
 	}
-	$zula->setDir( 'config', $zula->getDir('config').'/'.$configName );
 	// Load the main configuration file for the project and define version
-	$config = $zula->loadMainConfig( $zula->getDir( 'config' ).'/config.ini.php' );
+	$config = $zula->loadConfig( $configName );
 	define( '_PROJECT_VERSION', $config->get( 'config/version' ) );
 
 	// Load the default libraries that are most commonly needed

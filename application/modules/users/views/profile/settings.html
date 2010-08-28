@@ -9,7 +9,7 @@
 			<tr class="even">
 				<td>
 					<dl>
-						<dt>{L_[New Password]}</dt>
+						<dt>{L_[New password]}</dt>
 						<dd>{L_[Enter the new password you would like for this account.]}</dd>
 					</d>
 				</td>
@@ -20,7 +20,7 @@
 			<tr class="odd">
 				<td>
 					<dl>
-						<dt>{L_[Repeat Password]}</dt>
+						<dt>{L_[Repeat password]}</dt>
 						<dd>{L_[Please repeat the password.]}</dd>
 					</dl>
 				</td>
@@ -41,7 +41,7 @@
 			<tr class="even">
 				<td>
 					<dl>
-						<dt>{L_[Email Address]}</dt>
+						<dt>{L_[Email address]}</dt>
 						<dd>{L_[Enter the email address you would like to use for this account.]}</dd>
 					</dl>
 				</td>
@@ -52,7 +52,7 @@
 			<tr class="odd">
 				<td>
 					<dl>
-						<dt>{L_[Repeat Email]}</dt>
+						<dt>{L_[Repeat email]}</dt>
 						<dd>{L_[If you are changing your email address, please repeat it.]}</dd>
 					</dl>
 				</td>
@@ -63,7 +63,7 @@
 			<tr class="even">
 				<td>
 					<dl>
-						<dt>{L_[Hide Email Address]}</dt>
+						<dt>{L_[Hide email address]}</dt>
 						<dd>{L_[If set to 'Yes', only users with permission to view your email address will be able to see it.]}</dd>
 					</dl>
 				</td>
@@ -89,7 +89,7 @@
 			<tr class="even">
 				<td>
 					<dl>
-						<dt>{L_[Theme Preference]}</dt>
+						<dt>{L_[Theme preference]}</dt>
 						<dd>{L_[This setting chooses the theme that is displayed to you while you're logged into the site. This overrides the site owner's default theme setting.]}</dd>
 					</dl>
 				</td>
@@ -97,7 +97,7 @@
 					<select name="users[theme]">
 						<?php
 							$format = '<option value="%s" %s>%s</option>';
-							printf( $format, '', empty($users['theme']) ? 'selected="selected"' : '', t('Site Default') );
+							printf( $format, '', empty($users['theme']) ? 'selected="selected"' : '', t('Site default') );
 							foreach( Theme::getAll() as $themeOption ) {
 								$theme = new theme( $themeOption );
 								$selected = $themeOption == $users['theme'] ? 'selected="selected"' : '';

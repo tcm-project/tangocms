@@ -4,7 +4,7 @@
 			<tr class="even">
 				<td>
 					<dl>
-						<dt>{L_[Article Title]}</dt>
+						<dt>{L_[Article title]}</dt>
 						<dd>{L_[Title of the article that will be displayed.]}</dd>
 					</dl>
 				</td>
@@ -36,8 +36,8 @@
 			<tr class="even">
 				<td>
 					<dl>
-						<dt>{L_[Publish Article?]}</dt>
-						<dd>{L_[If set to 'yes' users will be able to view the article. When set to 'no', you will only be able to edit it from the Article Configuration.]}</dd>
+						<dt>{L_[Publish article?]}</dt>
+						<dd>{L_[If set to 'no', this article will not be displayed on your website.]}</dd>
 					</dl>
 				</td>
 				<td class="confcol">
@@ -56,7 +56,7 @@
 	<div class="actions"><input type="submit" value="{L_[Update]}"></div>
 </form>
 
-<h3>{L_[Article Parts]}</h3>
+<h3>{L_[Article parts]}</h3>
 
 <form action="<?php echo $this->_router->makeUrl( 'article', 'config', 'deletepart'); ?>" method="post">
 	<table class="contentdata">
@@ -93,7 +93,7 @@
 
 	<div class="actions">
 		<input type="hidden" name="article_id" value="{ARTICLE_ID}">
-		<a class="general-button" href="<?php echo $this->_router->makeUrl( 'article', 'config', 'addpart', null, array('id' => $article_id) ); ?>">{L_[Add Article Part]}</a>
-		<input type="submit" value="{L_[Delete Selected]}">
+		<a class="general-button" href="<?php echo $this->_router->makeUrl( 'article', 'config', 'addpart', null, array('id' => $article_id) ); ?>">{L_[Add article part]}</a>
+		<input type="submit" value="{L_[Delete selected]}">
 	</div>
 </form>

@@ -37,7 +37,7 @@
 				$this->_event->error( Input::csrfMsg() );
 				return zula_redirect( $this->_router->makeUrl( 'settings', $name ) );
 			}
-			$this->setTitle( t('Update Settings') );
+			$this->setTitle( t('Update settings') );
 			// Update all of the provided settings, or insert if they don't exist
 			foreach( $this->_input->post( 'setting' ) as $key=>$val ) {
 				if ( strpos( $key, 'cache' ) !== 0 ) {
@@ -115,7 +115,7 @@
 					}
 					break;
 			}
-			$this->_event->success( t('Updated Settings') );
+			$this->_event->success( t('Updated settings') );
 			return zula_redirect( $this->_router->makeUrl( 'settings', $name ) );
 
 		}

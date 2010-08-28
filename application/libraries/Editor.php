@@ -202,17 +202,17 @@
 				}
 			}
 			// Fix for bug #275, replace #foobar with {URL}#foobar (needed due to <base>)
-			$parsed = preg_replace( '/\shref="#([^"]*?)"/i', ' href="' . $this->_router->getRequestPath() . '#$1"', $parsed );
+			$parsed = preg_replace( '/\shref="#([^"]*?)"/i', ' href="'.$this->_router->getRequestPath().'#$1"', $parsed );
 			if ( $this->_router->getType() == 'standard' ) {
 				// Fix for Bug #167, rewrite URLs to include 'index.php?url='
 				$parsed = preg_replace_callback( '#\shref="(?!(/|[A-Z][A-Z0-9+.\-]+://))(.*?)"#i', array($this, 'cbFixSefUrl'), $parsed );
 			}
 			if ( $break && $this->contentUrl != null ) {
-				$parsed .= sprintf( '<p><a href="%s">%s</a></p>', $this->contentUrl, t('Read more...') );
+				$parsed .= sprintf( '<p class="readmore"><a href="%s">%s</a></p>', $this->contentUrl, t('Read more', I18n::_DTD) );
 			}
 			return $parsed;
 		}
-		
+
 		/**
 		 * Callback to convert given SEF urls to standard, stops URLs breaking
 		 * which fixes Bug #167

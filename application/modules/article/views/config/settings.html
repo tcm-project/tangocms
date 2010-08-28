@@ -1,4 +1,4 @@
-<form action="<?php echo $this->_router->makeUrl( 'article', 'config', 'settings' ); ?>" method="post">
+<form action="" method="post">
 	<table>
 		<thead>
 			<tr>
@@ -10,11 +10,11 @@
 				<td>
 					<dl>
 						<dt>{L_[Articles per page]}</dt>
-						<dd>{L_[How many articles should be displayed per page.]}</dd>
+						<dd>{L_[The number of articles to be displayed per page.]}</dd>
 					</dl>
 				</td>
 				<td class="confcol">
-					{S_PERPAGE}
+					<input type="number" min="1" max="100" step="1" name="article[per_page]" value="{per_page}">
 				</td>
 			</tr>
 			<tr class="odd">
@@ -25,29 +25,25 @@
 					</dl>
 				</td>
 				<td class="confcol">
-					{S_JUMP_POS}
+					<select name="article[jump_box_position]">
+						<option value="top" <?php echo $jump_box_position == 'top' ? 'selected="selected"' : ''; ?>>{L_[Top]}</option>
+						<option value="bottom" <?php echo $jump_box_position == 'bottom' ? 'selected="selected"' : ''; ?>>{L_[Bottom]}</option>
+					</select>
 				</td>
 			</tr>
 			<tr class="even">
 				<td>
 					<dl>
-						<dt>{L_[Limit Headlines]}</dt>
-						<dd>{L_[Enter how many headlines should be displayed.]}</dd>
-					</dl>
-				</td>
-				<td class="confcol">
-					{S_HEADLINE}
-				</td>
-			</tr>
-			<tr class="odd">
-				<td>
-					<dl>
-						<dt>{L_[Show Category Description?]}</dt>
+						<dt>{L_[Show category description?]}</dt>
 						<dd>{L_[Toggles whether the article category description should be displayed.]}</dd>
 					</dl>
 				</td>
 				<td class="confcol">
-					{S_CAT_DESC}
+					<input type="radio" id="articleCatDescYes" name="article[show_cat_desc]" value="1" <?php echo $show_cat_desc ? 'checked="checked"' : ''; ?>>
+					<label class="horizontal" for="articleCatDescYes">{L_[Yes]}</label>
+					<br>
+					<input type="radio" id="articleCatDescNo" name="media[show_cat_desc]" value="0" <?php echo $show_cat_desc ? '' : 'checked="checked"'; ?>>
+					<label class="horizontal" for="articleCatDescNo">{L_[No]}</label>
 				</td>
 			</tr>
 		</tbody>

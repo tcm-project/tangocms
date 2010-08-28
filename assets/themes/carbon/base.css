@@ -1,6 +1,5 @@
-
 /**
- * TangoCMS "carbon" theme
+ * "carbon"
  *
  * @copyright Copyright (C) 2009, 2010 Alex Cartwright
  * @license X11/MIT (see COPYING file)
@@ -154,7 +153,7 @@ input {
 	color: #000;
 	font-size: 1.05em;
 	padding: 1px 2px;
-	width: 190px;
+	width: 180px;
 }
 
 input.error {

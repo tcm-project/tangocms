@@ -20,7 +20,7 @@
 		 * @return string
 		 */
 		public function create();
-		
+
 		/**
 		 * Check if the Antispam method has passed
 		 *

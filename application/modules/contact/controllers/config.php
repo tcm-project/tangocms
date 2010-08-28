@@ -27,8 +27,8 @@
 		public function __construct( $moduleDetails, $config, $sector ) {
 			parent::__construct( $moduleDetails, $config, $sector );
 			$this->setPageLinks( array(
-										t('Manage Contact Forms')	=> $this->_router->makeUrl( 'contact', 'config' ),
-										t('Add Contact Form')		=> $this->_router->makeUrl( 'contact', 'config', 'add' ),
+										t('Manage contact forms')	=> $this->_router->makeUrl( 'contact', 'config' ),
+										t('Add contact form')		=> $this->_router->makeUrl( 'contact', 'config', 'add' ),
 										));
 		}
 
@@ -39,7 +39,7 @@
 		 * @return string|bool
 		 */
 		public function indexSection() {
-			$this->setTitle( t('Manage Contact Forms') );
+			$this->setTitle( t('Manage contact forms') );
 			$this->setOutputType( self::_OT_CONFIG );
 			if ( $this->_input->checkToken() ) {
 				if ( !$this->_acl->check( 'contact_delete' ) ) {
@@ -102,7 +102,7 @@
 			if ( !$this->_acl->check( 'contact_add' ) ) {
 				throw new Module_NoPermission;
 			}
-			$this->setTitle( t('Add Contact Form') );
+			$this->setTitle( t('Add contact form') );
 			$this->setOutputType( self::_OT_CONFIG );
 			// Build and check form
 			$form = $this->buildFormView();
@@ -140,7 +140,7 @@
 				if ( !$this->_acl->resourceExists( $resource ) || !$this->_acl->check( $resource ) ) {
 					throw new Module_NoPermission;
 				}
-				$this->setTitle( sprintf( t('Edit Contact Form "%s"'), $details['name'] ) );
+				$this->setTitle( sprintf( t('Edit contact form "%s"'), $details['name'] ) );
 				// Prepare form and attempt to update the form
 				$form = $this->buildFormView( $details['name'], $details['email'], $details['id'] );
 				if ( $form->hasInput() && $form->isValid() ) {
@@ -209,7 +209,7 @@
 			if ( !$this->_acl->check( 'contact_add' ) ) {
 				throw new Module_NoPermission;
 			}
-			$this->setTitle( t('Add Contact Form Field') );
+			$this->setTitle( t('Add contact form field') );
 			$this->setOutputType( self::_OT_CONFIG );
 			// Get details of the form this field will attach to
 			try {
@@ -246,7 +246,7 @@
 			if ( !$this->_acl->check( 'contact_edit' ) ) {
 				throw new Module_NoPermission;
 			}
-			$this->setTitle( t('Edit Contact Form Field') );
+			$this->setTitle( t('Edit contact form field') );
 			$this->setOutputType( self::_OT_CONFIG );
 			// Get details of the form field
 			try {
@@ -311,7 +311,7 @@
 													'radio'    	=> t('Radio options'),
 													'checkbox'	=> t('Checkbox'),
 													'select'   	=> t('Drop down Menu'),
-													'password'	=> t('Password Textbox'),
+													'password'	=> t('Password textbox'),
 													),
 								));
 			return $form;
@@ -402,7 +402,7 @@
 			}
 			return zula_redirect( $url );
 		}
-		
+
 	}
 
 ?>

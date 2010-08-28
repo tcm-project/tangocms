@@ -4,7 +4,7 @@
 			<tr class="even">
 				<td>
 					<dl>
-						<dt>{L_[Category Name]}</dt>
+						<dt>{L_[Category name]}</dt>
 						<dd>{L_[The name of the category to identify the menu.]}</dd>
 					</dl>
 				<td class="confcol">
@@ -18,7 +18,7 @@
 	{ACL_FORM}
 
 	<div class="actions">
-		<input type="submit" value="<?php echo $op == 'add' ? t('Add Category') : t('Edit Category'); ?>">
+		<input type="submit" value="<?php echo $op == 'add' ? t('Add category') : t('Edit category'); ?>">
 	</div>
 </form>
 
@@ -62,7 +62,7 @@
 						<td><?php echo $item['url']; ?></td>
 						<td class="managecol">
 							<a href="<?php echo $this->_router->makeUrl( 'menu', 'config', 'edititem', null, array('id' => $item['id']) ); ?>">{L_[Edit]}</a> |
-							<a href="<?php echo $this->_router->makeUrl( 'menu', 'config', 'additem', null, array('id' => $cat_id, 'parent' => $item['id']) );?>">{L_[Add Item]}</a>
+							<a href="<?php echo $this->_router->makeUrl( 'menu', 'config', 'additem', null, array('id' => $cat_id, 'parent' => $item['id']) );?>">{L_[Add item]}</a>
 						</td>
 					</tr>
 				<?php $i++; } } ?>
@@ -70,11 +70,11 @@
 		</table>
 
 		<div class="actions">
-			<a class="general-button" href="<?php echo $this->_router->makeUrl( 'menu', 'config', 'additem', null, array('id' => $cat_id) ); ?>">{L_[Add New Item]}</a>
+			<a class="general-button" href="<?php echo $this->_router->makeUrl( 'menu', 'config', 'additem', null, array('id' => $cat_id) ); ?>">{L_[Add new item]}</a>
 			<?php if ( !empty( $items ) ) { ?>
 				<input type="hidden" name="menu[cid]" value="{CAT_ID}">
-				<input type="submit" name="menu_delete" value="{L_[Delete Selected]}">
-				<input type="submit" name="menu_updateorder" value="{L_[Update Order]}">
+				<input type="submit" name="menu_delete" value="{L_[Delete selected]}">
+				<input type="submit" name="menu_updateorder" value="{L_[Update order]}">
 			<?php } ?>
 		</div>
 	</form>

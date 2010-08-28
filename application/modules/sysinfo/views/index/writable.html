@@ -7,7 +7,7 @@
 	</thead>
 	<tbody>
 		<tr class="subheading">
-			<td colspan="2">{L_[Writable Files]}</td>
+			<td colspan="2">{L_[Writable files]}</td>
 		</tr>
 		<?php $i=0; foreach( $files as $file ) { ?>
 		<tr class="<?php echo zula_odd_even( $i ); ?>">
@@ -16,14 +16,14 @@
 				<?php if ( $file['result'] ) { ?>
 					<span style="color: green;">{L_[Writable]}</span>
 				<?php } else { ?>
-					<strong style="color: red;">{L_[Not Writable]}</strong>
+					<strong style="color: red;">{L_[Not writable]}</strong>
 				<?php } ?>
 			</td>
 		</tr>
 		<?php $i++; } ?>
 
 		<tr class="subheading">
-			<td colspan="2">{L_[Writable Directories]}</td>
+			<td colspan="2">{L_[Writable directories]}</td>
 		</tr>
 		<?php $i=0; foreach( $dirs as $dir ) { ?>
 		<tr class="<?php echo zula_odd_even( $i ); ?>">
@@ -32,7 +32,7 @@
 				<?php if ( $dir['result'] ) { ?>
 					<span style="color: green;">{L_[Writable]}</span>
 				<?php } else { ?>
-					<strong style="color: red;">{L_[Not Writable]}</strong>
+					<strong style="color: red;">{L_[Not writable]}</strong>
 				<?php } ?>
 			</td>
 		</tr>

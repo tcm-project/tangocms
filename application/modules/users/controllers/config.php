@@ -29,8 +29,8 @@
 		public function __construct( $moduleDetails, $config, $sector ) {
 			parent::__construct( $moduleDetails, $config, $sector );
 			$this->setPageLinks( array(
-										t('Latest Users')		=> $this->_router->makeUrl( 'users', 'config' ),
-										t('Add User')			=> $this->_router->makeUrl( 'users', 'config', 'add' ),
+										t('Latest users')		=> $this->_router->makeUrl( 'users', 'config' ),
+										t('Add user')			=> $this->_router->makeUrl( 'users', 'config', 'add' ),
 										));
 		}
 
@@ -40,7 +40,7 @@
 		 * @return string
 		 */
 		public function indexSection() {
-			$this->setTitle( t('User Management') );
+			$this->setTitle( t('User management') );
 			$this->setOutputType( self::_OT_CONFIG );
 			// Check user has correct permission
 			if ( !$this->_acl->checkMulti( array('users_add', 'users_edit', 'users_delete') ) ) {
@@ -102,7 +102,7 @@
 		 * @return string|bool
 		 */
 		public function addSection() {
-			$this->setTitle( t('Add User') );
+			$this->setTitle( t('Add user') );
 			$this->setOutputType( self::_OT_CONFIG );
 			if ( !$this->_acl->check( 'users_add' ) ) {
 				throw new Module_NoPermission;
@@ -130,7 +130,7 @@
 		 * @return string|bool
 		 */
 		public function editSection() {
-			$this->setTitle( t('Edit User') );
+			$this->setTitle( t('Edit user') );
 			$this->setOutputType( self::_OT_CONFIG );
 			if ( !$this->_acl->check( 'users_edit' ) ) {
 				throw new Module_NoPermission;
@@ -141,7 +141,7 @@
 				if ( $user['id'] == Ugmanager::_GUEST_ID ) {
 					$this->_event->error( t('You can not edit the guest user!') );
 				} else {
-					$this->setTitle( sprintf( t('Edit User "%1$s"'), $user['username'] ), false );
+					$this->setTitle( sprintf( t('Edit user "%1$s"'), $user['username'] ), false );
 					// Get form and check validation
 					$form = $this->buildUserForm( $user );
 					if ( $form->hasInput() && $form->isValid() ) {
@@ -192,14 +192,14 @@
 							 );
 			$form->addElement( 'users/status', $details['status'], t('Status'), new Validator_InArray(array('active', 'locked')) );
 			$form->addElement( 'users/group', $details['group'], t('Group'), new Validator_Int, false );
-			$form->addElement( 'users/first_name', $details['first_name'], t('First Name'), new Validator_Length(0, 255) );
-			$form->addElement( 'users/last_name', $details['last_name'], t('Last Name'), new Validator_Length(0, 255) );
+			$form->addElement( 'users/first_name', $details['first_name'], t('First name'), new Validator_Length(0, 255) );
+			$form->addElement( 'users/last_name', $details['last_name'], t('Last name'), new Validator_Length(0, 255) );
 			$form->addElement( 'users/password', null, t('Password'),
 								array(new Validator_Length(4, 32),
 									  new Validator_Confirm( 'users_password_confirm', Validator_Confirm::_POST )),
 								empty($details['id'])
 							 );
-			$form->addElement( 'users/hide_email', $details['hide_email'], t('Hide Email'), new Validator_Bool );
+			$form->addElement( 'users/hide_email', $details['hide_email'], t('Hide email'), new Validator_Bool );
 			// Email validation, we still want to display email when editing remember
 			$emailValidation = array(new Validator_Email);
 			if ( $op == 'add' || $this->_input->has( 'post', 'users_email_confirm' ) && $this->_input->post( 'users_email_confirm' ) ) {

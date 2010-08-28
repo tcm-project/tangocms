@@ -25,8 +25,8 @@
 		public function __construct( $moduleDetails, $config, $sector ) {
 			parent::__construct( $moduleDetails, $config, $sector );
 			$this->setPageLinks( array(
-										t('Manage Polls') 	=> $this->_router->makeUrl( 'poll', 'config' ),
-										t('Add Poll')		=> $this->_router->makeUrl( 'poll', 'config', 'add'),
+										t('Manage polls') 	=> $this->_router->makeUrl( 'poll', 'config' ),
+										t('Add poll')		=> $this->_router->makeUrl( 'poll', 'config', 'add'),
 										));
 		}
 
@@ -36,7 +36,7 @@
 		 * @return string|bool
 		 */
 		public function indexSection() {
-			$this->setTitle( t('Manage Polls') );
+			$this->setTitle( t('Manage polls') );
 			$this->setOutputType( self::_OT_CONFIG );
 			if ( $this->_input->checkToken() ) {
 				// Attempt to delete all selected polls
@@ -97,7 +97,7 @@
 			if ( !$this->_acl->check( 'poll_add' ) ) {
 				throw new Module_NoPermission;
 			}
-			$this->setTitle( t('Add Poll') );
+			$this->setTitle( t('Add poll') );
 			$this->setOutputType( self::_OT_CONFIG );
 			// Get and check if form is valid
 			$form = $this->buildPollForm();
@@ -127,7 +127,7 @@
 			if ( !$this->_acl->check( 'poll_edit' ) ) {
 				throw new Module_NoPermission;
 			}
-			$this->setTitle( t('Edit Poll') );
+			$this->setTitle( t('Edit poll') );
 			$this->setOutputType( self::_OT_CONFIG );
 			try {
 				$pid = $this->_router->getArgument( 'id' );
@@ -137,7 +137,7 @@
 				if ( !$this->_acl->resourceExists( $aclResource ) || !$this->_acl->check( $aclResource ) ) {
 					throw new Module_NoPermission;
 				}
-				$this->setTitle( sprintf( t('Edit Poll "%s"'), $poll['title'] ) );
+				$this->setTitle( sprintf( t('Edit poll "%s"'), $poll['title'] ) );
 				// Get and check if form is valid
 				$form = $this->buildPollForm( $pid, $poll['title'], $poll['duration'],
 											  $poll['status'], $this->_model()->getPollOptions($pid)
@@ -209,7 +209,7 @@
 			if ( !$this->_acl->check( 'poll_edit' ) ) {
 				throw new Module_NoPermission;
 			}
-			$this->setTitle( t('Add Option') );
+			$this->setTitle( t('Add option') );
 			$this->setOutputType( self::_OT_CONFIG );
 			// Get which poll to add the option to
 			try {
@@ -246,7 +246,7 @@
 			if ( !$this->_acl->check( 'poll_edit' ) ) {
 				throw new Module_NoPermission;
 			}
-			$this->setTitle( t('Edit Poll Option') );
+			$this->setTitle( t('Edit poll option') );
 			$this->setOutputType( self::_OT_CONFIG );
 			// Get which option we are to edit
 			try {

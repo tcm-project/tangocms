@@ -7,10 +7,10 @@
 	</dependencies>
 	<aclResources>
 		<resource roleHint="guest">page_global</resource>
-		<resource roleHint="group_admin">page_add</resource>
-		<resource roleHint="group_admin">page_edit</resource>
-		<resource roleHint="group_admin">page_delete</resource>
+		<resource roleHint="group_admin">page_manage</resource>
 
-		<resource roleHint="guest">page-1</resource>
+		<resource roleHint="guest">page-view_1</resource>
+		<resource roleHint="group_admin">page-edit_1</resource>
+		<resource roleHint="group_admin">page-manage_1</resource>
 	</aclResources>
 </install>

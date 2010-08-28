@@ -22,7 +22,7 @@
 		 * @return strng
 		 */
 		public function indexSection() {
-			$this->setTitle( t('Security Check') );
+			$this->setTitle( t('Security check') );
 			// Set default install stage and attempt to check for code file
 			$_SESSION['install_stage'] = 1;
 			if ( !empty( $_SESSION['security_code'] ) ) {

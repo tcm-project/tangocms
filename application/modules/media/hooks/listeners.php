@@ -59,9 +59,9 @@
 		 */
 		public function hookMediaDisplayModes() {
 			return array(
-						'categorylist'	=> t('Category List & Latest Media', _PROJECT_ID.'-media'),
-						'category'		=> t('Media Category', _PROJECT_ID.'-media'),
-						'item'			=> t('Media Item', _PROJECT_ID.'-media'),
+						'categorylist'	=> t('Category list & latest media', _PROJECT_ID.'-media'),
+						'category'		=> t('Media category', _PROJECT_ID.'-media'),
+						'item'			=> t('Media item', _PROJECT_ID.'-media'),
 						);
 		}
 

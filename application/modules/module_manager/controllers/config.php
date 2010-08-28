@@ -93,7 +93,7 @@
 			}
 			return zula_redirect( $this->_router->makeUrl( 'module_manager', 'config' ) );
 		}
-		
+
 		/**
 		 * Displays all of the modules so that a user can disable or
 		 * enable any of them.
@@ -123,7 +123,7 @@
 		 * @return string|bool
 		 */
 		public function loadorderSection() {
-			$this->setTitle( t('Module Load Order') );
+			$this->setTitle( t('Module load order') );
 			$this->setOutputType( self::_OT_CONFIG );
 			// Build form validation
 			$form = new View_form( 'config/loadorder.html', 'module_manager' );

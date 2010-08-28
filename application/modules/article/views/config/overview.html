@@ -11,7 +11,7 @@
 			<?php } ?>
 			<label class="horizontal" for="article-filter">{L_[Show from category:]}</label>
 			<select id="article-filter" name="cid">
-				<option value="">{L_[All Categories]}</option>
+				<option value="">{L_[All categories]}</option>
 				<?php
 					foreach( $categories as $cat ) {
 						printf( '<option value="%1$d" %2$s>%3$s</option>',
@@ -58,8 +58,8 @@
 					<td><?php echo isset($categories[ $article['cat_id'] ]) ? $categories[ $article['cat_id'] ]['title'] : t('Unknown'); ?></td>
 					<td><?php echo $article['published'] ? $this->_date->format( $article['date'] ) : '<strong>'.t('Unpublished').'</strong>'; ?></td>
 					<td class="managecol">
-						<a href="<?php echo $this->_router->makeUrl( 'article', 'config', 'edit', null, array('id' => $article['id']) ); ?>" title="{L_[Edit Article]}">{L_[Edit]}</a> |
-						<a href="<?php echo $this->_router->makeUrl( 'article', 'config', 'addpart', null, array('id' => $article['id']) ); ?>">{L_[Add Part]}</a>
+						<a href="<?php echo $this->_router->makeUrl( 'article', 'config', 'edit', null, array('id' => $article['id']) ); ?>" title="{L_[Edit article]}">{L_[Edit]}</a> |
+						<a href="<?php echo $this->_router->makeUrl( 'article', 'config', 'addpart', null, array('id' => $article['id']) ); ?>">{L_[Add part]}</a>
 					</td>
 				</tr>
 			<?php $i++; } } ?>
@@ -69,7 +69,7 @@
 
 	<?php if ( $count ) { ?>
 		{PAGINATION}
-		<div class="actions"><input type="submit" value="{L_[Delete Selected]}"></div>
+		<div class="actions"><input type="submit" value="{L_[Delete selected]}"></div>
 		{CSRF}
 	<?php } ?>
 </form>

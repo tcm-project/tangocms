@@ -29,7 +29,7 @@
 		 * @return string
 		 */
 		public function indexSection() {
-			$this->setTitle( t('Security Check') );
+			$this->setTitle( t('Security check') );
 			if ( $this->_zula->getMode() == 'cli' ) {
 				return zula_redirect( $this->_router->makeUrl( 'upgrade', 'stage3' ) );
 			} else if ( !isset( $_SESSION['upgrade_stage'] ) || $_SESSION['upgrade_stage'] !== 2 ) {

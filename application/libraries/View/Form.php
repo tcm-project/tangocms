@@ -228,7 +228,7 @@
 			$amcTable = '<table>
 							<thead>
 								<tr>
-									<th colspan="2">'.t('Additional Content', I18n::_DTD).'</th>
+									<th colspan="2">'.t('Additional content', I18n::_DTD).'</th>
 								</tr>
 							</thead>
 							<tbody>';

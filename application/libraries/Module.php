@@ -547,12 +547,8 @@
 				throw new Module_Disabled( $lMsg );
 			} else if ( _ACL_ENABLED ) {
 				$resource = $this->name.'_global';
-				try {
-					if ( !$this->_acl->check( $resource ) ) {
-						throw new Module_NoPermission( $resource );
-					}
-				} catch ( ACL_ResourceNoExist $e ) {
-					throw new Module_NoExist( 'missing ACL resource "'.$resource.'"' );
+				if ( !$this->_acl->check( $resource ) ) {
+					throw new Module_NoPermission( $resource );
 				}
 			}
 			if ( !$this->controllerExists( $cntrlr ) ) {

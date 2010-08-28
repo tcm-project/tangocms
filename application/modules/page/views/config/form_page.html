@@ -22,7 +22,7 @@
 					</td>
 					<td class="confcol">
 						<select name="page[parent]">
-							<option value="0">{L_[No Parent]}</option>
+							<option value="0">{L_[No parent]}</option>
 							<?php
 								foreach( $parents as $key=>$parent ) {
 									printf( '<option value="%1$d" %2$s>%4$s%3$s</option>',
@@ -52,7 +52,7 @@
 			<input type="hidden" value="{PAGE.PARENT}" name="page[parent]">
 		<?php } ?>
 		<input type="hidden" value="{PAGE.ID}" name="page[id]">
-		<input type="submit" value="<?php echo $op == 'add' ? t('Add Page') : t('Edit Page'); ?>">
+		<input type="submit" value="<?php echo $op == 'add' ? t('Add page') : t('Edit page'); ?>">
 	</div>
 </form>
 
@@ -65,7 +65,7 @@
 				<tr>
 					<th class="checkcol"></th>
 					<th>{L_[Order]}</th>
-					<th>{L_[Page Title]}</th>
+					<th>{L_[Page title]}</th>
 					<th>{L_[Manage]}</th>
 				</tr>
 			</thead>
@@ -76,9 +76,9 @@
 
 		<div class="actions">
 			<input type="hidden" name="page_parent" value="{PAGE.ID}">
-			<a class="general-button" href="<?php echo $this->_router->makeUrl( 'page', 'config', 'add', null, array('pid' => $page['id']) ); ?>">{L_[Add Child]}</a>
-			<input name="page_delete" type="submit" value="{L_[Delete Selected]}">
-			<input name="page_update_order" type="submit" value="{L_[Update Order]}">
+			<a class="general-button" href="<?php echo $this->_router->makeUrl( 'page', 'config', 'add', null, array('pid' => $page['id']) ); ?>">{L_[Add child]}</a>
+			<input name="page_delete" type="submit" value="{L_[Delete selected]}">
+			<input name="page_update_order" type="submit" value="{L_[Update order]}">
 		</div>
 	</form>
 <?php } ?>

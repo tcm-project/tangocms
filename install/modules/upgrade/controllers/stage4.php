@@ -35,6 +35,8 @@
 								'2.3.0'			=> '2.3.1',
 
 								# Dev Releases
+								'2.5.55'		=> '2.6.0-alpha1',
+								'2.5.54'		=> '2.6.0-alpha1',
 								'2.5.53'		=> '2.6.0-alpha1',
 								'2.5.52'		=> '2.6.0-alpha1',
 								'2.5.51'		=> '2.6.0-alpha1',
@@ -109,7 +111,7 @@
 					$this->_event->error( sprintf( $langStr, _PROJECT_VERSION ) );
 					exit( 3 );
 				} else {
-					$this->setTitle( t('Current Version Unsupported') );
+					$this->setTitle( t('Current version unsupported') );
 					$view = $this->loadView( 'stage1/not_supported.html' );
 					$view->assign( array (
 										'CURRENT_VERSION'	=> _PROJECT_VERSION,
@@ -438,7 +440,35 @@
 					$this->sqlFile( '2.6.0-alpha1/2.5.53.sql' );
 				case '2.5.53':
 					$this->_config_sql->add( 'media/wm_position', 'bl' );
-					return '2.5.54';
+				case '2.5.54':
+					/**
+					 * Update the ACL resources for the page changes (#247)
+					 */
+					$this->sqlFile( '2.6.0-alpha1/2.5.55.sql' );
+					$addRoles = $editRoles = $manageRoles = array();
+					foreach( $this->_acl->getAllRoles() as $role ) {
+						if ( $this->_acl->check( 'page_delete', $role['id'] ) ) {
+							$editRoles[] = $role['name'];
+							$manageRoles[] = $role['name'];
+						} else if ( $this->_acl->check( 'page_edit', $role['id'] ) ) {
+							$editRoles[] = $role['name'];
+						}
+						if ( $this->_acl->check( 'page_add', $role['id'] ) ) {
+							$addRoles[] = $role['name'];
+						}
+					}
+					// Add in the new resources
+					$query = $this->_sql->query( 'SELECT SUBSTRING(name, 11) AS pid FROM {SQL_PREFIX}acl_resources
+													WHERE name LIKE "page-view_%"' );
+					foreach( $query->fetchAll( PDO::FETCH_COLUMN ) as $pid ) {
+						$this->_acl->allowOnly( 'page-edit_'.$pid, $editRoles );
+						$this->_acl->allowOnly( 'page-manage_'.$pid, $manageRoles );
+					}
+					$this->_acl->deleteResource( array('page_add', 'page_edit', 'page_delete') );
+					$this->_acl->allowOnly( 'page_manage', $addRoles );
+				case '2.5.55':
+					$this->sqlFile( '2.6.0-alpha1/2.5.56.sql' );
+					return '2.5.56';
 				default:
 					return '2.5.60';
 			}

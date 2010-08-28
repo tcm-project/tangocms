@@ -29,7 +29,7 @@
 			<conf key="media/use_lightbox">true</conf>
 			<conf key="media/max_fs">12582912</conf>
 			<conf key="media/max_image_width">9000</conf>
-			<conf key="media/max_thumb_width">80</conf>
+			<conf key="media/thumb_dimension">80</conf>
 			<conf key="media/wm_position">bl</conf>
 		</sql>
 	</config>

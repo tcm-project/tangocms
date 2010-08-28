@@ -35,7 +35,7 @@
 			<tr class="even">
 				<td>
 					<dl>
-						<dt>{L_[Poll Status]}</dt>
+						<dt>{L_[Poll status]}</dt>
 						<dd>{L_[Close or open the poll. If set to 'close' then users will no longer be able to vote.]}</dd>
 					</dl>
 				</td>
@@ -55,7 +55,7 @@
 
 <?php if ( $op == 'add' ) { ?>
 
-	<h3>{L_[Poll Options]}</h3>
+	<h3>{L_[Poll options]}</h3>
 	<p>{L_[Enter the poll options that users can vote on. More options can be added after the poll has been created.]}</p>
 
 	<ol id="poll-option-list">
@@ -74,21 +74,21 @@
 	</ol>
 
 	<div class="actions">
-		<input type="button" id="poll-add-option" value="{L_[Add Option]}">
-		<input type="submit" value="{L_[Add Poll]}">
+		<input type="button" id="poll-add-option" value="{L_[Add option]}">
+		<input type="submit" value="{L_[Add poll]}">
 	</div>
 </form>
 
 <?php } else { ?>
 
 	<div class="actions">
-		<input type="submit" value="{L_[Edit Poll]}">
+		<input type="submit" value="{L_[Edit poll]}">
 	</div>
 
 </form>
 
 <form action="<?php echo $this->_router->makeUrl( 'poll', 'config', 'delopt', null, array('id' => $id) ); ?>" method="post">
-	<h3>{L_[Poll Options]}</h3>
+	<h3>{L_[Poll options]}</h3>
 	<table class="contentdata">
 		<thead>
 			<tr>
@@ -117,9 +117,9 @@
 	</table>
 
 	<div class="actions">
-		<a class="general-button" href="<?php echo $this->_router->makeUrl( 'poll', 'config', 'addopt', null, array('id' => $id) ); ?>">{L_[Add Option]}</a>
+		<a class="general-button" href="<?php echo $this->_router->makeUrl( 'poll', 'config', 'addopt', null, array('id' => $id) ); ?>">{L_[Add option]}</a>
 		<?php if ( !empty( $poll['options'] ) ) { ?>
-			<input type="submit" value="{L_[Delete Selected]}">
+			<input type="submit" value="{L_[Delete selected]}">
 		<?php } ?>
 	</div>
 </form>

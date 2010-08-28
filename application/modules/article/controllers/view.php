@@ -86,7 +86,7 @@
 			} catch ( Article_NoExist $e ) {
 				throw new Module_ControllerNoExist;
 			}
-				
+
 			try {
 				$part = $this->_input->get( 'part' );
 			} catch ( Input_KeyNoExist $e ) {

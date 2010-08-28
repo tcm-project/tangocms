@@ -23,8 +23,8 @@
 		public function __construct( $moduleDetails, $config, $sector ) {
 			parent::__construct( $moduleDetails, $config, $sector );
 			$this->setPageLinks( array(
-										t('Manage Layouts')	=> $this->_router->makeUrl( 'content_layout' ),
-										t('Add Layout')		=> $this->_router->makeUrl( 'content_layout', 'index', 'add' ),
+										t('Manage layouts')	=> $this->_router->makeUrl( 'content_layout' ),
+										t('Add layout')		=> $this->_router->makeUrl( 'content_layout', 'index', 'add' ),
 										));
 		}
 
@@ -47,7 +47,7 @@
 				$this->_event->error( t('Unable to manage content layout, invalid name given') );
 				return zula_redirect( $this->_router->makeUrl( 'content_layout' ) );
 			}
-			$this->setTitle( sprintf( t('"%s" Content Layout'), $layoutName ) );
+			$this->setTitle( sprintf( t('"%s" content layout'), $layoutName ) );
 			$this->setOutputType( self::_OT_CONFIG );
 			// Create the new content layout object
 			$layout = new Layout( $layoutName );
@@ -169,7 +169,7 @@
 				}
 				if ( $layout->save() ) {
 					if ( $updated > 0 ) {
-						$this->_event->success( sprintf( t('Updated Order and Placement for layout "%s"'), $layout->getName() ) );
+						$this->_event->success( sprintf( t('Updated order and placement for layout "%s"'), $layout->getName() ) );
 					}
 				} else {
 					$this->_event->error( t('Unable to save layout, ensure file is writable') );
@@ -208,7 +208,7 @@
 							try {
 								$this->_acl->deleteResource( $tmpResource );
 							} catch ( Acl_ResourceNoExist $e ) {
-								$this->_log->message( 'Content Layout unable to remove ACL Resource "'.$tmpResource.'"', Log::L_INFO );
+								$this->_log->message( 'Content layout unable to remove ACL Resource "'.$tmpResource.'"', Log::L_INFO );
 							}
 						}
 					}

@@ -1,8 +1,7 @@
-
 /**
- * TangoCMS "innocent" theme
+ * "innocent"
  *
- * @copyright Copyright (C) 2008, 2009 Alex Cartwright
+ * @copyright Copyright (C) 2008, 2009, 2010 Alex Cartwright
  * @license X11/MIT (see COPYING file)
  * @package TangoCMS_Themes
 */
@@ -91,7 +90,7 @@ body {
 	-khtml-border-top-right-radius: 8px;
 	-moz-border-radius: 8px 8px 0 0;
 	-webkit-border-top-left-radius: 8px;
-	-webkit-border-top-right-radius: 8px;	
+	-webkit-border-top-right-radius: 8px;
 	margin: 0 0 0 223px;
 	padding: 10px;
 }
@@ -197,7 +196,7 @@ body {
 	-khtml-border-top-right-radius: 4px;
 	-moz-border-radius: 4px 4px 0 0;
 	-webkit-border-top-left-radius: 4px;
-	-webkit-border-top-right-radius: 4px;	
+	-webkit-border-top-right-radius: 4px;
 	border-width: 0;
 	color: #fff;
 	font-size: 0.95em;

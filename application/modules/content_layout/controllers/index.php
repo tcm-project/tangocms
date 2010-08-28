@@ -23,8 +23,8 @@
 		public function __construct( $moduleDetails, $config, $sector ) {
 			parent::__construct( $moduleDetails, $config, $sector );
 			$this->setPageLinks( array(
-										t('Manage Layouts')	=> $this->_router->makeUrl( 'content_layout' ),
-										t('Add Layout')		=> $this->_router->makeUrl( 'content_layout', 'index', 'add' ),
+										t('Manage layouts')	=> $this->_router->makeUrl( 'content_layout' ),
+										t('Add layout')		=> $this->_router->makeUrl( 'content_layout', 'index', 'add' ),
 										));
 		}
 
@@ -60,7 +60,7 @@
 				$this->_event->error( t('Selected site type does not exist') );
 				return zula_redirect( $this->_router->makeUrl( 'content_layout' ) );
 			}
-			$this->setTitle( sprintf( t('"%s" Content Layouts'), ucfirst( $siteType ) ), false );
+			$this->setTitle( sprintf( t('"%s" content layouts'), ucfirst( $siteType ) ), false );
 
 			// Find out what module is being used in the fpsc layout
 			$fpsc = new Layout( 'fpsc-'.$siteType );
@@ -94,14 +94,14 @@
 		 * @return string
 		 */
 		public function addSection() {
-			$this->setTitle( t('Add New Layout') );
+			$this->setTitle( t('Add new layout') );
 			$this->setOutputType( self::_OT_CONFIG );
 			try {
 				$cloner = $this->_router->getArgument( 'clone' );
 				$cloner = new Layout( $cloner );
 				if ( $cloner->exists() ) {
 					$cloneName = $cloner->getName();
-					$this->setTitle( sprintf( t('Clone Layout "%1$s"'), $cloneName ) );
+					$this->setTitle( sprintf( t('Clone layout "%1$s"'), $cloneName ) );
 				} else {
 					throw new Exception;
 				}
@@ -114,7 +114,7 @@
 			$form->action( $this->_router->makeUrl( 'content_layout', 'index', 'add' ) );
 			$form->addElement( 'content_layout/name', null, t('Name'), array(new Validator_Alphanumeric('-'), new Validator_Length(2, 225)) );
 			$form->addElement( 'content_layout/regex', $cloneRegex, t('URL/Regex'), new Validator_Length(2, 255) );
-			$form->addElement( 'content_layout/site_type', $this->_router->getDefaultSiteType(), t('Site Type'),
+			$form->addElement( 'content_layout/site_type', $this->_router->getDefaultSiteType(), t('Site type'),
 								new Validator_InArray( $this->_router->getSiteTypes() )
 							 );
 			$form->addElement( 'content_layout/clone', $cloneName, t('Clone'), array(new Validator_Alphanumeric('-'), new Validator_Length(0, 225)) );
@@ -144,7 +144,7 @@
 		 * @return bool
 		 */
 		public function deleteSection() {
-			$this->setTitle( t('Delete Layouts') );
+			$this->setTitle( t('Delete layouts') );
 			$this->setOutputType( self::_OT_CONFIG );
 			if ( $this->_input->checkToken() ) {
 				try {

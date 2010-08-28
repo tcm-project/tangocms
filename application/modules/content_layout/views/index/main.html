@@ -13,8 +13,8 @@
 </form>
 
 <form action="<?php echo $this->_router->makeUrl( 'content_layout', 'manage', 'fpsc' ); ?>" method="post">
-	<h3>{L_[Homepage Content]}</h3>
-	<p>{L_[Select the module you wish to display on your homepage, then configure this further by selecting 'Update & Configure'.]}</p>
+	<h3>{L_[Homepage content]}</h3>
+	<p>{L_[Select the module you wish to display on your homepage, then configure this further by selecting 'Update & configure'.]}</p>
 
 	<select name="content_layout[module]">
 		<?php
@@ -27,7 +27,7 @@
 		?>
 	</select>
 	<input type="hidden" name="content_layout[siteType]" value="{SITE_TYPE}">
-	<input type="submit" value="{L_[Update & Configure]}">
+	<input type="submit" value="{L_[Update & configure]}">
 </form>
 
 <form action="<?php echo $this->_router->makeUrl( 'content_layout', 'index', 'delete' ); ?>" method="post">
@@ -37,7 +37,7 @@
 		<thead>
 			<tr>
 				<th class="checkcol"></th>
-				<th>{L_[Layout Name]}</th>
+				<th>{L_[Layout name]}</th>
 				<th>{L_[URL/Regex]}</th>
 				<th>{L_[Manage]}</th>
 			</tr>
@@ -63,8 +63,8 @@
 					</td>
 					<td><?php echo $layout['regex']; ?></td>
 					<td class="managecol">
-						<a href="<?php echo $this->_router->makeUrl( 'content_layout', 'manage', $layout['name'] ); ?>" title="{L_[Edit Layout]}">{L_[Edit]}</a> |
-						<a href="<?php echo $this->_router->makeUrl( 'content_layout', 'index', 'add', null, array('clone' => $layout['name']) ); ?>">{L_[Clone Layout]}</a>
+						<a href="<?php echo $this->_router->makeUrl( 'content_layout', 'manage', $layout['name'] ); ?>" title="{L_[Edit layout]}">{L_[Edit]}</a> |
+						<a href="<?php echo $this->_router->makeUrl( 'content_layout', 'index', 'add', null, array('clone' => $layout['name']) ); ?>">{L_[Clone layout]}</a>
 					</td>
 				</tr>
 				<?php $i++; } ?>
@@ -73,7 +73,7 @@
 	<?php if ( count( $layouts ) > 1 ) { ?>
 		{CSRF}
 		<div class="actions">
-			<input type="submit" value="{L_[Delete Selected]}">
+			<input type="submit" value="{L_[Delete selected]}">
 		</div>
 	<?php } ?>
 </form>

@@ -31,7 +31,7 @@
 		 * @var int
 		 */
 		protected $source = 0;
-		
+
 		/**
 		 * Constructor
 		 *

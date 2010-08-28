@@ -22,7 +22,7 @@
 		 * @return string
 		 */
 		public function indexSection() {
-			$this->setTitle( t('Basic Configuration') );
+			$this->setTitle( t('Basic configuration') );
 			/**
 			 * Make sure user is not skipping ahead
 			 */
@@ -32,11 +32,11 @@
 			$form = new View_form( 'stage5/settings.html', 'stage' );
 			$form->action( $this->_router->makeUrl( 'stage', 'five' ) );
 			// Add validation
-			$form->addElement( 'settings/config/title', null, t('Site Title'), new Validator_Length(0, 255) );
-			$form->addElement( 'settings/meta/description', null, t('Meta Description'), new Validator_Length(0, 255) );
-			$form->addElement( 'settings/mail/outgoing', null, t('Outgoing Email'), new Validator_Email );
-			$form->addElement( 'settings/mail/incoming', null, t('Incoming Email'), new Validator_Email );
-			$form->addElement( 'settings/mail/subject_prefix', true, t('Email Prefix'), new Validator_Bool );
+			$form->addElement( 'settings/config/title', null, t('Site title'), new Validator_Length(0, 255) );
+			$form->addElement( 'settings/meta/description', null, t('Meta description'), new Validator_Length(0, 255) );
+			$form->addElement( 'settings/mail/outgoing', null, t('Outgoing email'), new Validator_Email );
+			$form->addElement( 'settings/mail/incoming', null, t('Incoming email'), new Validator_Email );
+			$form->addElement( 'settings/mail/subject_prefix', true, t('Email prefix'), new Validator_Bool );
 			if ( $form->hasInput() && $form->isValid() ) {
 				$fd = $form->getValues();
 				foreach( $fd['settings'] as $confCat=>$val ) {

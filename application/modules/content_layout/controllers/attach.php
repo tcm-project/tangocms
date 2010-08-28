@@ -23,8 +23,8 @@
 		public function __construct( $moduleDetails, $config, $sector ) {
 			parent::__construct( $moduleDetails, $config, $sector );
 			$this->setPageLinks( array(
-										t('Manage Layouts')	=> $this->_router->makeUrl( 'content_layout' ),
-										t('Add Layout')		=> $this->_router->makeUrl( 'content_layout', 'index', 'add' ),
+										t('Manage layouts')	=> $this->_router->makeUrl( 'content_layout' ),
+										t('Add layout')		=> $this->_router->makeUrl( 'content_layout', 'index', 'add' ),
 										));
 		}
 
@@ -37,7 +37,7 @@
 		 * @return mixed
 		 */
 		public function __call( $name, $args ) {
-			$this->setTitle( t('Attach New Module') );
+			$this->setTitle( t('Attach new module') );
 			$this->setOutputType( self::_OT_CONFIG );
 			if ( !$this->_acl->check( 'content_layout_attach_module' ) ) {
 				throw new Module_NoPermission;

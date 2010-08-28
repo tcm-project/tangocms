@@ -47,15 +47,15 @@
 			if ( !$this->_acl->check( 'rss_edit' ) ) {
 				throw new Module_NoPermission();
 			}
-			$this->setTitle( t('RSS Configuration') );
+			$this->setTitle( t('RSS configuration') );
 			$this->setOutputType( self::_OT_CONFIG );
 			/**
 			 * Prepare form validation
 			 */
 			$form = new View_Form( 'config/main.html', 'rss' );
-			$form->addElement( 'rss/global', (bool) $this->_config->get('rss/global_agg_enable'), t('Global Aggregation'), new Validator_Bool );
-			$form->addElement( 'rss/default', $this->_config->get('rss/default_feed'), t('Default Feed'), new Validator_Alphanumeric('_-') );
-			$form->addElement( 'rss/items', $this->_config->get('rss/items_per_feed'), t('Number of Items'), new Validator_Numeric );
+			$form->addElement( 'rss/global', (bool) $this->_config->get('rss/global_agg_enable'), t('Global aggregation'), new Validator_Bool );
+			$form->addElement( 'rss/default', $this->_config->get('rss/default_feed'), t('Default feed'), new Validator_Alphanumeric('_-') );
+			$form->addElement( 'rss/items', $this->_config->get('rss/items_per_feed'), t('Number of items'), new Validator_Numeric );
 			if ( $form->hasInput() && $form->isValid() ) {
 				$fd = $form->getValues( 'rss' );
 				// Check default feed given is valid

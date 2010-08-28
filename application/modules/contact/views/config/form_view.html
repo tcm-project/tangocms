@@ -16,7 +16,7 @@
 			<tr class="odd">
 				<td>
 					<dl>
-						<dt>{L_[Email Address]}</dt>
+						<dt>{L_[Email address]}</dt>
 						<dd>{L_[Enter the email address that this form will get emailed to.]}</dd>
 					</dl>
 				</td>
@@ -32,14 +32,14 @@
 
 	<div class="actions">
 		<input type="hidden" name="id" value="{ID}">
-		<input type="submit" value="<?php echo $op == 'add' ? t('Add Contact Form') : t('Edit Contact Form'); ?>">
+		<input type="submit" value="<?php echo $op == 'add' ? t('Add contact form') : t('Edit contact form'); ?>">
 	</div>
 </form>
 
 <?php if ( !is_null( $fields ) ) { ?>
-	<h3>{L_[Form Fields]}</h3>
+	<h3>{L_[Form fields]}</h3>
 	<ul>
-		<li>{L_[Drag and Drop the table rows to adjust the order of the fields.]}</li>
+		<li>{L_[Drag and drop the table rows to adjust the order of the fields.]}</li>
 	</ul>
 
 	<form action="<?php echo $this->_router->makeUrl( 'contact', 'config', 'bridge', null, array('fid' => $id) ); ?>" method="post">
@@ -91,11 +91,11 @@
 		</table>
 
 		<div class="actions">
-			<a class="general-button" href="<?php echo $this->_router->makeUrl( 'contact', 'config', 'addfield', null, array('id' => $id) ); ?>">{L_[Add New Field]}</a>
+			<a class="general-button" href="<?php echo $this->_router->makeUrl( 'contact', 'config', 'addfield', null, array('id' => $id) ); ?>">{L_[Add new field]}</a>
 			<?php if ( !empty( $fields ) ) { ?>
-				<input type="submit" name="contact_del_selected" value="{L_[Delete Selected]}">
+				<input type="submit" name="contact_del_selected" value="{L_[Delete selected]}">
 			<?php } ?>
-			<input type="submit" name="contact_update_order" value="{L_[Update Order]}">
+			<input type="submit" name="contact_update_order" value="{L_[Update order]}">
 		</div>
 
 	</form>

@@ -132,7 +132,7 @@
 				throw new Email_Exception( '0 emails sent successfully, possible error' );
 			}
 		}
-		
+
 		/**
 		 * Batch sends emails to many recipients
 		 *

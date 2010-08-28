@@ -12,7 +12,7 @@
 		</a>
 	<?php } else { ?>
 		<a class="mediaPlayer <?php echo $item['type'] == 'audio' ? 'audio' : 'video'; ?>"
-			style="display: inline-block; width: {PLAYER.WIDTH}px; height: <?php echo $item['type'] == 'audio' ? 22 : $player['height']; ?>px;"
+			style="display: inline-block; width: {PLAYER.WIDTH}px; height: <?php echo $item['type'] == 'audio' ? 80 : $player['height']; ?>px;"
 			href="<?php echo $this->_router->makeUrl( 'media', 'view', $item['clean_name'] )->queryArgs( array('f' => 'stream') )->makeFull(); ?>"></a>
 	<?php } ?>
 </div>

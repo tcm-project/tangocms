@@ -18,13 +18,13 @@
 		 * @var int
 		 */
 		protected $min = 0;
-		
+
 		/**
 		 * Maximum number of words
 		 * @var int
 		 */
 		protected $max = 0;
-		
+
 		/**
 		 * Constructor
 		 * Sets the min and max number of words
@@ -37,7 +37,7 @@
 			$this->min = abs( $min );
 			$this->max = abs( $max );
 		}
-		
+
 		/**
 		 * Runs the needed checks to see if the value is valid. A non
 		 * true value will be returned if it failed.

@@ -60,12 +60,12 @@
 			<tr class="odd">
 				<td>
 					<dl>
-						<dt>{L_[Thumbnail width]}</dt>
-						<dd>{L_[Thumbnails generated will not exceed the width set here.]}</dd>
+						<dt>{L_[Thumbnail width/height]}</dt>
+						<dd>{L_[Thumbnails generated will be resized proportionally to the size set here.]}</dd>
 					</dl>
 				</td>
 				<td class="confcol">
-					<input type="number" min="20" max="200" step="5" name="media[max_thumb_width]" value="{media.max_thumb_width}"> px
+					<input type="number" min="20" max="200" step="5" name="media[thumb_dimension]" value="{media.thumb_dimension}"> px
 				</td>
 			</tr>
 			<tr class="even">
@@ -126,7 +126,7 @@
 											'tl'	=> t('Top Left'),
 											);
 								foreach( $opts as $key=>$val ) {
-									printf( '<option value="%1$s" %2$s>%3$s</option',
+									printf( '<option value="%1$s" %2$s>%3$s</option>',
 											 $key,
 											 ($key == $media['wm_position'] ? 'selected="selected"' : ''),
 											 $val

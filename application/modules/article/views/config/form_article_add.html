@@ -4,7 +4,7 @@
 			<tr class="even">
 				<td>
 					<dl>
-						<dt>{L_[Article Title]}</dt>
+						<dt>{L_[Article title]}</dt>
 						<dd>{L_[Title of the article that will be displayed.]}</dd>
 					</dl>
 				</td>
@@ -36,8 +36,8 @@
 			<tr class="even">
 				<td>
 					<dl>
-						<dt>{L_[Publish Article?]}</dt>
-						<dd>{L_[If set to 'yes' users will be able to view the article. When set to 'no', you will only be able to edit it from the Article Configuration.]}</dd>
+						<dt>{L_[Publish article?]}</dt>
+						<dd>{L_[If set to 'no', this article will not be displayed on your website.]}</dd>
 					</dl>
 				</td>
 				<td class="confcol">
@@ -53,13 +53,13 @@
 
 	{AMC.TABLE}
 
-	<h3>{L_[Article Part]}</h3>
+	<h3>{L_[Article part]}</h3>
 	<div>
 		<p>
 			{L_[Enter the first part of this article, you will be able to create others afterwards.]}
 		</p>
 		<p>
-			<label for="article-part-title">{L_[Part Title]}</label>
+			<label for="article-part-title">{L_[Part title]}</label>
 			<input type="text" name="article[part_title]" id="article-part-title" value="{ARTICLE.PART_TITLE}">
 		</p>
 		<p>
@@ -68,5 +68,5 @@
 		<textarea name="article[part_body]" class="richTextEditor" id="article-part-body">{ARTICLE.PART_BODY}</textarea>
 	</div>
 
-	<div class="actions"><input type="submit" value="{L_[Add Article]}"></div>
+	<div class="actions"><input type="submit" value="{L_[Add article]}"></div>
 </form>

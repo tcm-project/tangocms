@@ -51,7 +51,7 @@
 		protected function displayArticles( $category=false, $catSelector=true ) {
 			$this->setOutputType( self::_OT_CONTENT_INDEX );
 			if ( empty( $category ) ) {
-				$this->setTitle( t('Latest Articles') );
+				$this->setTitle( t('Latest articles') );
 				$categories = $this->_model()->getAllCategories();
 				$cid = null;
 			} else {

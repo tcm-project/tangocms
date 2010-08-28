@@ -56,8 +56,8 @@
 				$form->addElement( 'media/cid', $category['id'], 'CID', new Validator_Confirm($category['id']) );
 				if ( $type == 'external' ) {
 					// Specific for external media/YouTube
-					$form->addElement( 'media/external_id', null, t('External Media ID'), new Validator_Length(6, 128) );
-					$form->addElement( 'media/external_service', null, t('External Service'), new Validator_Length(2, 32) );
+					$form->addElement( 'media/external_id', null, t('External media ID'), new Validator_Length(6, 128) );
+					$form->addElement( 'media/external_service', null, t('External service'), new Validator_Length(2, 32) );
 				}
 				if ( $form->hasInput() && $form->isValid() ) {
 					// Handle the provided form data to correctly add the item
@@ -118,6 +118,7 @@
 					throw new Media_Exception( t('Please select a file to upload') );
 				}
 				// Upload the thumbail image if one has been provided and resize it
+				$thumbnailWH = $this->_config->get( 'media/thumb_dimension' );
 				$thumbUploader = new Uploader( 'media_thumb', $file->dirname );
 				$thumbUploader->subDirectories(false)
 							  ->allowImages();
@@ -125,7 +126,7 @@
 				if ( $thumbnail->upload() !== false ) {
 					$thumbImage = new Image( $thumbnail->path );
 					$thumbImage->mime = 'image/png';
-					$thumbImage->resize( $this->_config->get('media/max_thumb_width'), null, false );
+					$thumbImage->thumbnail( $thumbnailWH, $thumbnailWH );
 					// Remove the original uploaded file
 					unlink( $thumbnail->path );
 				}
@@ -147,7 +148,7 @@
 						} else if ( $details['category'] == 'image' ) {
 							$tmpThumb = new Image( $details['path'] );
 							$tmpThumb->mime = 'image/png';
-							$tmpThumb->resize( $this->_config->get('media/max_thumb_width'), null, false )
+							$tmpThumb->thumbnail( $thumbnailWH, $thumbnailWH )
 									 ->save( $details['dirname'].'/'.$thumbname );
 						} else {
 							unset( $thumbname );

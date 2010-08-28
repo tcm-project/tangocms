@@ -96,7 +96,7 @@
 					$tmpItems[ $i ]['order_range'] = $count;
 					$items[ $tmpItems[$i]['id'] ] = $tmpItems[ $i ];
 				}
-				$this->_cache->add( 'menu_items_'.$category['id'], $items );				
+				$this->_cache->add( 'menu_items_'.$category['id'], $items );
 			}
 			// Gather all subitems/children for this menu item
 			foreach( $items as &$item ) {
@@ -170,7 +170,7 @@
 			$item = $query->fetch( PDO::FETCH_ASSOC );
 			$query->closeCursor();
 			if ( $item ) {
-				return $item; 
+				return $item;
 			} else {
 				throw new Menu_ItemNoExist( $itemId );
 			}
@@ -236,7 +236,7 @@
 				$cacheKeys = array('menu_categories', 'menu_items_'.$category['id']);
 				foreach( $itemIds as $id ) {
 					$aclResources[] = 'menu-item-'.$id;
-					$cacheKeys[] = 'menu_child_items_'.$id;					
+					$cacheKeys[] = 'menu_child_items_'.$id;
 				}
 				$this->_acl->deleteResource( $aclResources );
 				$this->_cache->delete( $cacheKeys );
@@ -269,7 +269,7 @@
 											VALUES(?, ?, ?, ?, ?, ?)' );
 			$pdoSt->execute( array(
 								$category['id'], $name, $heading,
-								$url, $attrTitle, (empty($order) ? 1 : $order) 
+								$url, $attrTitle, (empty($order) ? 1 : $order)
 								));
 			$pdoSt->closeCursor();
 			if ( $pdoSt->rowCount() ) {
@@ -306,7 +306,7 @@
 							'attr_title'=> $attrTitle,
 							'order'		=> $order,
 							);
-			$stmt = 'UPDATE {SQL_PREFIX}mod_menu SET name = :name, heading_id = :heading, url = :url, attr_title = :attr_title';			
+			$stmt = 'UPDATE {SQL_PREFIX}mod_menu SET name = :name, heading_id = :heading, url = :url, attr_title = :attr_title';
 			if ( is_null( $details['order'] ) ) {
 				unset( $details['order'] );
 			} else {

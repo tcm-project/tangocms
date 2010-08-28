@@ -41,8 +41,8 @@
 				$rss = new Rss( 'global' );
 				if ( !$rss->hasFeedInfo() ) {
 					$st = $this->_config->get( 'config/title' );
-					$rss->setFeedInfo( sprintf( t('%s - Global RSS Feed', _PROJECT_ID.'-rss' ), $st ),
-										 sprintf( t('Global RSS Feed for %s', _PROJECT_ID.'-rss'), $st ),
+					$rss->setFeedInfo( sprintf( t('%s - Global RSS feed', _PROJECT_ID.'-rss' ), $st ),
+										 sprintf( t('Global RSS feed for %s', _PROJECT_ID.'-rss'), $st ),
 										 $this->_router->makeFullUrl( '', '', '', 'main' )
 										);
 				}

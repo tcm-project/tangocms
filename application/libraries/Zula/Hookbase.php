@@ -18,7 +18,7 @@
 		 * @var string
 		 */
 		protected $module = null;
-		
+
 		/**
 		 * Construtor
 		 *
@@ -39,7 +39,7 @@
 				}
 			}
 		}
-		
+
 		/**
 		 * Loads a model for the current module, or for a specified module.
 		 *

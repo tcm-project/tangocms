@@ -66,10 +66,10 @@
 		 * @param string|array $key
 		 * @return int
 		 */
-		public function delete( $key ) {			
+		public function delete( $key ) {
 			return eaccelerator_rm( $key );
 		}
-		
+
 		/**
 		 * Purges all cached items
 		 *

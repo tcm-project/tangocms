@@ -5,7 +5,7 @@
 		<dl class="article-headlines">
 			<?php foreach( $articles as $article ) { ?>
 				<dt>
-					<a href="<?php echo $this->_router->makeUrl( 'article', 'view', $article['clean_title'] ); ?>" title="{L_[View Article]}">
+					<a href="<?php echo $this->_router->makeUrl( 'article', 'view', $article['clean_title'] ); ?>" title="{L_[View article]}">
 						<?php echo zula_snippet( $article['title'], 35, true ); ?>
 					</a>
 				</dt>
@@ -23,7 +23,12 @@
 		</dl>
 		<?php
 			if ( count( $articles ) < $article_count ) {
-				$url = $this->_router->makeUrl( 'article', 'cat', (empty($category) ? 'index' : $category['clean_title']) ); ?>
-				<a href="<?php echo $url; ?>">{L_[View More Articles]} &raquo;</a>
-		<?php } ?>
+				$url = $this->_router->makeUrl( 'article' );
+				if ( isset( $category['clean_title'] ) ) {
+					$url->controller( 'cat' )
+						->section( $category['clean_title'] );
+				}
+				printf( '<a href="%1$s">%2$s &raquo;</a>', $url, t('View more articles') );
+			}
+		?>
 <?php } ?>

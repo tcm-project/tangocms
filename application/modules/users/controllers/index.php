@@ -26,7 +26,7 @@
 		 * @return string
 		 */
 		public function indexSection() {
-			$this->setTitle( t('User List') );
+			$this->setTitle( t('User list') );
 			// Get correct page/offset
 			if ( $this->inSector('SC') && $this->_input->has( 'get', 'page' ) ) {
 				$curPage = abs( $this->_input->get( 'page' )-1 );

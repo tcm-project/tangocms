@@ -3,8 +3,8 @@
 		<thead>
 			<tr>
 				<th class="checkcol"></th>
-				<th>{L_[Form Name]}</th>
-				<th>{L_[Email Address]}</th>
+				<th>{L_[Form name]}</th>
+				<th>{L_[Email address]}</th>
 				<th>{L_[Manage]}</th>
 			</tr>
 		</thead>
@@ -26,7 +26,7 @@
 					<td><?php echo $form['email']; ?></td>
 					<td class="managecol">
 						<a href="<?php echo $this->_router->makeUrl( 'contact', 'config', 'edit', null, array('id' => $form['id']) ); ?>">{L_[Edit]}</a> |
-						<a href="<?php echo $this->_router->makeUrl( 'contact', 'config', 'addfield', null, array('id' => $form['id']) ); ?>">{L_[Add Field]}</a>
+						<a href="<?php echo $this->_router->makeUrl( 'contact', 'config', 'addfield', null, array('id' => $form['id']) ); ?>">{L_[Add field]}</a>
 					</td>
 				</tr>
 			<?php ++$i; } } ?>
@@ -35,7 +35,7 @@
 
 	<?php if ( $count ) { ?>
 		{PAGINATION}
-		<div class="actions"><input type="submit" value="{L_[Delete Selected]}"></div>
+		<div class="actions"><input type="submit" value="{L_[Delete selected]}"></div>
 		{CSRF}
 	<?php } ?>
 </form>
