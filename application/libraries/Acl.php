@@ -427,10 +427,11 @@
     	}
 
 		/**
-		 * Checks if a specified role is allowed to access resource
+		 * Checks if a specified role is allowed to access resource. If the
+		 * resource does not exist, bool false will be returned.
 		 *
 		 * The role is checked starting at the specified role and for every
-		 * parent of that role. IF any of the roles parents have access
+		 * parent of that role. If any of the roles parents have access
 		 * to the resource, the role will to.
 		 *
 		 * @param string|int $resource
@@ -439,7 +440,11 @@
 		 * @return bool
 		 */
 		public function check( $resource, $role='', $allowRoot=true ) {
-			$resource = $this->getResource( $resource );
+			try {
+				$resource = $this->getResource( $resource );
+			} catch ( Acl_ResourceNoExist $e ) {
+				return false;
+			}
       		if ( empty( $resource ) ) {
       			return false;
       		} else if ( !trim( $role ) ) {
@@ -561,9 +566,9 @@
 					try {
 						$role['access'] = (bool) $this->_input->post( 'acl_resources/'.$tmpResource.'/'.$role['name'] );
 					} catch ( Input_KeyNoExist $e ) {
-						try {
-							$role['access'] = $this->check( $tmpResource, $role['name'], false );
-						} catch ( Acl_ResourceNoExist $e ) {
+						if ( $this->check( $tmpResource, $role['name'], false ) ) {
+							$role['access'] = true;
+						} else {
 							$role['access'] = in_array( $role['id'], (isset($tmpRoleHint) ? $tmpRoleHint : $roleHint) );
 						}
 					}
