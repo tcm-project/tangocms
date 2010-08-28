@@ -1,1 +1,1 @@
-$(document).ready(function(){$("div.jsSearchBox").show();var b=zula_dir_base+"article/config/autocomplete",a=$("#article-filter").val();if(a!==undefined&&a!=0)b+="/catId/"+a;$("#article-title").focus().autocomplete({serviceUrl:b,onSelect:function(d,c){window.location=c}})});
+$(document).ready(function(){$("div.jsSearchBox").show();var b=zula_dir_base+"index.php?url=article/config/autocomplete",a=$("#article-filter").val();if(a!==undefined&&a!=0)b+="/catId/"+a;$("#article-title").focus().autocomplete({serviceUrl:b,onSelect:function(d,c){window.location=c}})});

@@ -33,7 +33,7 @@
 			$form = new View_Form( 'stage3/sql_form.html', 'stage' );
 			$form->addElement( 'database', null, t('SQL Database'), new Validator_Length(1, 64) );
 			$form->addElement( 'user', null, t('Username'), new Validator_Length(1, 16) );
-			$form->addElement( 'pass', null, t('Password'), new Validator_Length(0, 64) );
+			$form->addElement( 'pass', null, t('Password'), array(new Validator_Length(0, 64), new Validator_Regex('#^[^"]*$#')) );
 			$form->addElement( 'port', 3306, t('SQL Port'), new Validator_Int );
 			$form->addElement( 'host', 'localhost', t('SQL host'), new Validator_Length(1, 80) );
 			$form->addElement( 'prefix', 'tcm_', t('Table prefix'), array(new Validator_Length(0, 32), new Validator_Alphanumeric('_-')) );

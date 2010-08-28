@@ -14,6 +14,8 @@
 		<parameterEntry type="TextFile" scope="setup.sql" match="dbUser" />
 	</parameter>
 	<parameter name="dbUserPassword" tags="New, Password, MySQL, dbUserPassword">
+		<!--  Password must not contain the double quote character. -->
+		<parameterValidation type="RegularExpression" validationString="^[^&quot;]*$" />
 		<parameterEntry type="TextFile" scope="tangocms\\config\\default\\config.ini.php" match="(?&lt;=pass\s=\s)dbPass" />
 		<parameterEntry type="TextFile" scope="setup.sql" match="dbPass" />
 	</parameter>

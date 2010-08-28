@@ -5,6 +5,18 @@ TangoCMS NEWS (Basic ChangeLog for Users)
 A complete ChangeLog can be found at http://tangocms.org/changelog
 
 
+2.5.5 (2010-06-15)
+========================
+
+-- Bug Fixes
+
+	* Bug #275: Page anchors don't function as expected
+	* Bug #293: Arbitrary limit for poll options not obeyed
+	* Bug #295: JS autocomplete doesn't work without SEF URLs
+	* Bug #301: WYSIWYG editor page break causes random HTML 'p' elements
+	* Bug #304: SQL password that contains double quote results in internal error
+
+
 2.5.4 (2010-05-18)
 ========================
 
