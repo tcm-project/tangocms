@@ -13,7 +13,7 @@
  * @package Zula_Installer
  */
 
-	define( '_PROJECT_LATEST_VERSION', '2.5.56' );
+	define( '_PROJECT_LATEST_VERSION', '2.5.60' );
 
 	$state = 'installation';
 	require '../index.php';

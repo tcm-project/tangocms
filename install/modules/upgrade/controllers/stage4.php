@@ -36,6 +36,7 @@
 								'2.3.0'			=> '2.3.1',
 
 								# Dev Releases
+								'2.5.56'		=> '2.6.0-alpha1',
 								'2.5.55'		=> '2.6.0-alpha1',
 								'2.5.54'		=> '2.6.0-alpha1',
 								'2.5.53'		=> '2.6.0-alpha1',
@@ -470,7 +471,7 @@
 					$this->_acl->allowOnly( 'page_manage', $addRoles );
 				case '2.5.55':
 					$this->sqlFile( '2.6.0-alpha1/2.5.56.sql' );
-					return '2.5.56';
+				case '2.5.56':
 				default:
 					return '2.5.60';
 			}
