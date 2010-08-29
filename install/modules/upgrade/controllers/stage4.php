@@ -36,6 +36,8 @@
 								'2.3.0'			=> '2.3.1',
 
 								# Dev Releases
+								'2.5.60'		=> '2.6.0-beta1',
+
 								'2.5.56'		=> '2.6.0-alpha1',
 								'2.5.55'		=> '2.6.0-alpha1',
 								'2.5.54'		=> '2.6.0-alpha1',
@@ -474,6 +476,21 @@
 				case '2.5.56':
 				default:
 					return '2.5.60';
+			}
+		}
+
+		/**
+		 * Upgrades to 2.6.0-beta1 (2.5.80)
+		 *
+		 * @return bool|string
+		 */
+		protected function upgradeTo_260_beta1() {
+			switch( $this->version ) {
+				case '2.5.60':
+					$this->_config_sql->add( 'article/meta_format', 0 );
+					return '2.5.61';
+				default:
+					return '2.5.80';
 			}
 		}
 
