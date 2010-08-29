@@ -19,6 +19,10 @@ p.article-links a:after {
 	content: ' »';
 }
 
+.article-meta {
+	font-style: italic;
+}
+
 /** Media */
 div.media-wrap {
 	overflow: hidden;
