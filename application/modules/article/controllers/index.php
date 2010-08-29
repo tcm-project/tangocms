@@ -12,7 +12,9 @@
  * @package TangoCMS_Article
  */
 
-	class Article_controller_index extends Zula_ControllerBase {
+	require_once 'base.php';
+
+	class Article_controller_index extends ArticleBase {
 
 		/**
 		 * Magic call function allows for shorter URLs, it will be in the format
@@ -105,6 +107,7 @@
 			// Build up the view
 			$view = $this->loadView( 'index/latest.html' );
 			$view->assign( array(
+								'META_FORMAT'	=> $this->getMetaFormat( $this->_config->get('article/meta_format') ),
 								'CAT_DETAILS'	=> $cid ? $category : null,
 								));
 			$view->assignHtml( array(

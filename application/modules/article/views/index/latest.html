@@ -19,18 +19,18 @@
 						<?php echo zula_htmlspecialchars( $article['title'] ); ?>
 					</a>
 				</h4>
-				<p>
-					<em>
+				<?php if ( $meta_format ) { ?>
+					<p class="article-meta">
 						<?php
 							$catLink = $this->_router->makeUrl( 'article', 'cat', $article['category_clean_title'] );
-						 	printf( t('Published %1$s by, %2$s in %3$s'),
+							printf( $meta_format,
 									$this->_date->format( $article['date'] ),
 									$this->_helper('user')->link( $article['author'] ),
 									'<a href="'.$catLink.'">'.$article['category_title'].'</a>'
-								  );
+									);
 						?>
-					</em>
-				</p>
+					</p>
+				<?php } ?>
 				<div class="article-body">
 					<?php echo $article['body']; ?>
 				</div>

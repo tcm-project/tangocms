@@ -9,15 +9,17 @@
 						<?php echo zula_snippet( $article['title'], 35, true ); ?>
 					</a>
 				</dt>
-				<dd>
-					<em>
-						<?php
-							printf( t('Published by %1$s, %2$s'),
+				<dd class="article-meta">
+					<?php
+						if ( $meta_format ) {
+							$catLink = $this->_router->makeUrl( 'article', 'cat', $categories[ $article['cat_id'] ]['clean_title'] );
+							printf( $meta_format,
+									$this->_date->format( $article['date'] ),
 									$this->_helper('user')->link( $article['author'] ),
-									$this->_date->format( $article['date'] )
-								   );
-						?>
-					</em>
+									'<a href="'.$catLink.'">'.$categories[ $article['cat_id'] ]['clean_title'].'</a>'
+									);
+						}
+					?>
 				</dd>
 			<?php } ?>
 		</dl>

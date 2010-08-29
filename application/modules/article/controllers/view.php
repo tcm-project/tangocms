@@ -12,7 +12,9 @@
  * @package TangoCMS_Article
  */
 
-	class Article_controller_view extends Zula_ControllerBase {
+	require_once 'base.php';
+
+	class Article_controller_view extends ArticleBase {
 
 		/**
 		 * Magic method - allows for shorter URL's eg:
@@ -73,6 +75,7 @@
 				}
 				$view = $this->loadView( 'view/article.html' );
 				$view->assign( array(
+									'META_FORMAT'	=> $this->getMetaFormat( $this->_config->get('article/meta_format') ),
 									'ARTICLE'		=> $article,
 									'REQUESTED_PART'=> $requestedPart,
 									'ARTICLE_PARTS'	=> $articleParts,

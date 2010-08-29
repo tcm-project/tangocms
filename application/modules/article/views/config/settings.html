@@ -46,6 +46,36 @@
 					<label class="horizontal" for="articleCatDescNo">{L_[No]}</label>
 				</td>
 			</tr>
+			<tr class="odd">
+				<td>
+					<dl>
+						<dt>{L_[Publisher information format]}</dt>
+						<dd>{L_[Select how you want the date, author and category displayed underneath an article.]}
+					</dl>
+				</td>
+				<td class="confcol">
+					<select name="article[meta_format]">
+						<?php
+							$date = $this->_date->format( '28th December 2009, 21:00' );
+							$user = $this->_session->getUser('username');
+							$opts = array(
+										sprintf( t('Published %1$s by %2$s in %3$s'), $date, $user, 'foobar' ),
+										sprintf( t('Published by %2$s, %1$s'), $date, $user ),
+										sprintf( t('Posted %1$s by %2$s'), $date, $user ),
+										sprintf( t('%1$s by %2$s'), $date, $user ),
+										sprintf( $date ),
+										t('Do not display this information'),
+										);
+							foreach( $opts as $key=>$text ) {
+								printf( '<option value="%1$d" %2$s>%3$s</option>',
+										$key,
+										($key == $meta_format ? 'selected="selected"' : ''),
+										$text );
+							}
+						?>
+					</select>
+				</td>
+			</tr>
 		</tbody>
 	</table>
 	<div class="actions">

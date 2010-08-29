@@ -13,7 +13,9 @@
  * @package TangoCMS_Article
  */
 
-	class Article_controller_headlines extends Zula_ControllerBase {
+	require_once 'base.php';
+
+	class Article_controller_headlines extends ArticleBase {
 
 		/**
 		 * Displays the latest headlines/titles of articles for a certain
@@ -62,9 +64,11 @@
 			$articleCount = $this->_model()->getCount();
 			$view = $this->loadView( 'headline/headline.html' );
 			$view->assign( array(
+								'META_FORMAT'	=> $this->getMetaFormat( $this->_config->get('article/meta_format') ),
 								'ARTICLES'		=> $articles,
 								'ARTICLE_COUNT'	=> $articleCount,
 								'CATEGORY'		=> isset($category) ? $category : null,
+								'CATEGORIES'	=> $this->_model()->getAllCategories(),
 								));
 			return $view->getOutput();
 		}
