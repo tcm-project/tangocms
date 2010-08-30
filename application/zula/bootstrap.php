@@ -14,11 +14,17 @@
 
 	try {
 		$rawRequestPath = $input->get('url');
-		if ( strpos( $rawRequestPath, 'assets/v/' ) === 0 ) {
-			// Hard coded 'assets' URL route for simple file pass-thru
-			return require 'assets.php';
-		}
 	} catch ( Input_KeyNoExist $e ) {
+		$rawRequestPath = null;
+	}
+	if ( strpos( $rawRequestPath, 'assets/v/' ) === 0 ) {
+		// Hard coded 'assets' URL route for simple file pass-thru
+		return require 'assets.php';
+	}
+	$session = $zula->loadLib( 'session' );
+	if ( strpos( $rawRequestPath, 'antispam/captcha/' ) === 0 ) {
+		// Hard coded 'antispam/captcha/{id}' route to display captcha image
+		return require 'antispamCaptcha.php';
 	}
 
 	/**
@@ -68,7 +74,6 @@
 		}
 	} catch ( Config_KeyNoExist $e ) {}
 
-	$session = $zula->loadLib( 'session' );
 	if ( $zula->getState() == 'installation' ) {
 		/**
 		 * Load some installation specific files as there may be things that need
