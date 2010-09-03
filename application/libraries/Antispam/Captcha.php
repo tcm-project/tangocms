@@ -47,7 +47,7 @@
 		public function __construct() {
 			$this->fonts = glob( $this->_zula->getDir( 'fonts' ).'/captcha/*.ttf' );
 			$this->font = $this->fonts[ array_rand( $this->fonts ) ];
-			if ( count( $_SESSION['antispam']['captcha'] ) > 10 ) {
+			if ( isset( $_SESSION['antispam']['captcha'] ) && count( $_SESSION['antispam']['captcha'] ) > 10 ) {
 				// Limit the amount of stored captcha IDs to the last 10
 				$_SESSION['antispam']['captcha'] = array_slice( $_SESSION['antispam']['captcha'], -10 );
 			}
