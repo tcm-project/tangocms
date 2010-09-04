@@ -60,7 +60,8 @@
 				}
 			}
 			// Gather all articles required
-			$articles = $this->_model()->getAllArticles( $limit, 0, $displayCat );
+			$maxDisplayAge = $this->_config->get( 'article/max_display_age' );
+			$articles = $this->_model()->getAllArticles( $limit, 0, $displayCat, false, $maxDisplayAge );
 			$articleCount = $this->_model()->getCount();
 			$view = $this->loadView( 'headline/headline.html' );
 			$view->assign( array(

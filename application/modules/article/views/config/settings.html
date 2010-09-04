@@ -50,6 +50,42 @@
 			<tr class="even">
 				<td>
 					<dl>
+						<dt>{L_[Article display cut off date]}</dt>
+						<dd>{L_[Do not display articles to users that are older than the value chosen here.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<select name="article[max_display_age]">
+						<?php
+							$opts = array(
+										86400		=> t('1 Day'),
+										172800		=> t('2 Days'),
+										259200		=> t('3 Days'),
+										604800		=> t('1 Week'),
+										1209600		=> t('2 Weeks'),
+										1814400		=> t('3 Weeks'),
+										2419200		=> t('1 Month'),
+										7257600		=> t('3 Months'),
+										14515200	=> t('6 Months'),
+										29030400	=> t('1 Year'),
+										58060800	=> t('2 Years'),
+										145152000	=> t('5 Years'),
+										290304000	=> t('10 Years'),
+										);
+							foreach( $opts as $secs=>$title ) {
+								printf( '<option value="%1$d" %2$s>%3$s</option>',
+										$secs,
+										($secs == $max_display_age ? 'selected="selected"' : ''),
+										$title
+										);
+							}
+						?>
+					</select>
+				</td>
+			</tr>
+			<tr class="odd">
+				<td>
+					<dl>
 						<dt>{L_[Show category description?]}</dt>
 						<dd>{L_[Toggles whether the article category description should be displayed.]}</dd>
 					</dl>
@@ -62,7 +98,7 @@
 					<label class="horizontal" for="articleCatDescNo">{L_[No]}</label>
 				</td>
 			</tr>
-			<tr class="odd">
+			<tr class="even">
 				<td>
 					<dl>
 						<dt>{L_[Part selector position]}</dt>

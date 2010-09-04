@@ -87,8 +87,9 @@
 				$curPage = 0;
 			}
 			// Get the required articles and parse their first article part body
+			$maxDisplayAge = $this->_config->get( 'article/max_display_age' );
 			$articles = array();
-			foreach( $this->_model()->getAllArticles( $perPage, $curPage*$perPage, $cid ) as $tmpArticle ) {
+			foreach( $this->_model()->getAllArticles( $perPage, $curPage*$perPage, $cid, false, $maxDisplayAge ) as $tmpArticle ) {
 				if ( isset( $categories[ $tmpArticle['cat_id'] ] ) ) {
 					$parts = $this->_model()->getArticleParts( $tmpArticle['id'] );
 					$firstPart = current( $parts );

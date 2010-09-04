@@ -29,8 +29,9 @@
 			if ( empty( $categories ) ) {
 				return '<p>'.t('No article categories to display.').'</p>';
 			} else {
+				$maxDisplayAge = $this->_config->get( 'article/max_display_age' );
 				foreach( $categories as &$category ) {
-					$category['count'] = $this->_model()->countArticles( $category['id'] );
+					$category['count'] = $this->_model()->countArticles( $category['id'], false, $maxDisplayAge );
 				}
 				$view = $this->loadView( 'categories/list.html' );
 				$view->assign( array('CATEGORIES' => $categories) );

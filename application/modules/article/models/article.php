@@ -15,8 +15,8 @@
 
 		const
 				/**
-					* Constants used when cleaning a title
-					*/
+				 * Constants used when cleaning a title
+				 */
 				_TYPE_ARTICLE	= 1,
 				_TYPE_CATEGORY	= 2;
 
@@ -83,10 +83,11 @@
 		 * @param int $offset
 		 * @param int|bool $cid
 		 * @param bool $unpublished
+		 * @param int $maxDisplayAge
 		 * @param bool $aclCheck
 		 * @return array
 		 */
-		public function getAllArticles( $limit=0, $offset=0, $cid=false, $unpublished=false, $aclCheck=true ) {
+		public function getAllArticles( $limit=0, $offset=0, $cid=false, $unpublished=false, $maxDisplayAge=null, $aclCheck=true ) {
 			$statement = 'SELECT SQL_CALC_FOUND_ROWS * FROM {SQL_PREFIX}mod_articles';
 			$params = array();
 			if ( $cid ) {
@@ -96,8 +97,17 @@
 			if ( $unpublished == false ) {
 				$statement .= ($cid ? ' AND' : ' WHERE').' published = 1';
 			}
+			if ( $maxDisplayAge != null ) {
+				if ( $cid || $unpublished == false ) {
+					$statement .= ' AND';
+				} else {
+					$statement .= ' WHERE';
+				}
+				$statement .= ' TIMESTAMPADD(SECOND, :mda, `date`) >= NOW()';
+				$params[':mda'] = $maxDisplayAge;
+			}
 			$statement .= ' ORDER BY published ASC, `date` DESC';
-			if ( $limit != 0 || $offset != 0 ) {
+			if ( $limit != 0 || $offset != 0 || $maxDisplayAge != null) {
 				// Limit the result set.
 				if ( $limit > 0 ) {
 					$statement .= ' LIMIT :limit';
@@ -171,12 +181,16 @@
 		 *
 		 * @param int $cid
 		 * @param bool $unpublished
+		 * @param int $maxDisplayAge
 		 * @return int
 		 */
-		public function countArticles( $cid, $unpublished=false ) {
+		public function countArticles( $cid, $unpublished=false, $maxDisplayAge=null ) {
 			$query = 'SELECT COUNT(id) FROM {SQL_PREFIX}mod_articles WHERE cat_id = '.(int) $cid;
 			if ( $unpublished == false ) {
 				$query .= ' AND published = 1';
+			}
+			if ( $maxDisplayAge ) {
+				$query .= ' AND TIMESTAMPADD(SECOND, '.(int) $maxDisplayAge.', `date`) >= NOW()';
 			}
 			return $this->_sql->query( $query )->fetch( PDO::FETCH_COLUMN );
 		}

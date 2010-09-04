@@ -598,6 +598,7 @@
 								'jump_box_position'	=> $this->_config->get( 'article/jump_box_position' ),
 								'show_cat_desc'		=> $this->_config->get( 'article/show_cat_desc' ),
 								'meta_format'		=> $this->_config->get( 'article/meta_format' ),
+								'max_display_age'	=> $this->_config->get( 'article/max_display_age' ),
 								));
 			$view->assignHtml( array('csrf' => $this->_input->createToken(true)) );
 			return $view->getOutput();
