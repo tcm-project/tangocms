@@ -329,13 +329,13 @@
 			$cntrlrTitle = t('Oops!', I18n::_DTD);
 			if ( $dispatcher->isDispatched() ) {
 				$reqCntrlr = $dispatcher->getReqCntrlr();
-				$dispatchData = $dispatcher->getDispatchData();
+				$dData = $dispatcher->getDispatchData();
 				// Decide on what title to display
 				$cntrlrTitle = $reqCntrlr->getDetail( 'title' );
-				if ( isset( $dispatchData['config']['displayTitle'], $dispatchData['config']['customTitle'] ) ) {
-					if ( $dispatchData['config']['displayTitle'] === 'custom' && !empty( $dispatchData['config']['customTitle'] ) ) {
-						$cntrlrTitle = $dispatchData['config']['customTitle'];
-					} else if ( !$dispatchData['config']['displayTitle'] ) {
+				if ( isset( $dData['config']['displayTitle'], $dData['config']['customTitle'] ) ) {
+					if ( $dData['config']['displayTitle'] === 'custom' && !empty( $dData['config']['customTitle'] ) ) {
+						$cntrlrTitle = $dData['config']['customTitle'];
+					} else if ( !$dData['config']['displayTitle'] ) {
 						$cntrlrTitle = null;
 					}
 				}
@@ -346,6 +346,12 @@
 											zula_htmlspecialchars( $title ) );
 				}
 				$pageLinks = $pageLinks ? '<ul id="pagelinks">'.$pageLinks.'</ul>' : null;
+				// Create the (mostly) unique page id
+				if ( $this->_router->getRawRequestPath() ) {
+					$pageId = 'pid_'.$dData['module'].ucfirst($dData['controller']).ucfirst($dData['section']);
+				} else {
+					$pageId = 'pid_homepage';
+				}
 			}
 			$pageTitle = str_replace( array('[PAGE]', '[SITE_TITLE]'),
 									  array($cntrlrTitle, $this->_config->get('config/title')),
