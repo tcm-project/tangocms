@@ -404,22 +404,14 @@
 				}
 			} else if ( $this->_input->has( 'post', 'page_update_order' ) ) {
 				$this->setTitle( t('Update Page Order') );
-				// Update order of all of the menu items
-				if ( !$this->_acl->check( 'menu_edit_item' ) ) {
-					throw new Module_NoPermission;
-				}
 				$execData = array();
 				$sqlMiddle = null;
 				foreach( $this->_input->post( 'page_order' ) as $pid=>$order ) {
-					try {
-						$page = $this->_model()->getPage( $pid );
-						$resource = 'page-manage_'.$page['id'];
-						if ( $this->_acl->resourceExists( $resource ) && $this->_acl->check( $resource ) ) {
-							$execData[] = $page['id'];
-							$execData[] = abs( $order );
-							$sqlMiddle .= 'WHEN id = ? THEN ? ';
-						}
-					} catch ( Page_NoExist $e ) {
+					$pid = abs( $pid );
+					if ( $this->_acl->check( 'page-manage_'.$pid ) ) {
+						$execData[] = $pid;
+						$execData[] = abs( $order );
+						$sqlMiddle .= 'WHEN id = ? THEN ? ';
 					}
 				}
 				if ( $sqlMiddle !== null ) {
