@@ -187,27 +187,21 @@
 		}
 
 		/**
-		 * Allow archives (.tar or .zip) to be uploaded and the contents
+		 * Allow archives (currently only .zip) to be uploaded and the contents
 		 * extracted. Each file in the archive must match the allowed mime
 		 * types and file size, if they don't they will not be kept.
 		 *
-		 * bool false will be returned if zipExtraction and tarExtraction
-		 * are not supported.
+		 * bool false will be returned if there is no method for extracting the
+		 * supported archive types.
 		 *
 		 * @param bool $extract
 		 * @return object|bool
 		 */
 		public function extractArchives( $extract=true ) {
-			if ( $extract ) {
-				if ( zula_supports( 'zipExtraction' ) ) {
-					$this->config['extractArchives'] = true;
-					$this->config['allowedMime'][] = 'application/zip';
-				}
-				if ( zula_supports( 'tarExtraction' ) ) {
-					$this->config['extractArchives'] = true;
-					$this->config['allowedMime'][] = 'application/x-tar';
-				}
-				return $this->config['extractArchives'] ? $this : false;
+			if ( $extract && zula_supports( 'zipExtraction' ) ) {
+				$this->config['extractArchives'] = true;
+				$this->config['allowedMime'][] = 'application/zip';
+				return $this;
 			} else {
 				$this->config['extractArchives'] = false;
 				return $this;

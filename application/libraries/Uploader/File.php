@@ -142,12 +142,8 @@
 				throw new Uploader_InvalidExtension( sprintf( $this->errorMsg['file_ext'], $this->name ) );
 			}
 			// All is ok, attempt to move/extract the uploaded file
-			if ( $this->uploader->extractArchives && ($this->mime =='application/zip' || $this->mime == 'application/x-tar') ) {
-				if ( $this->mime == 'application/zip' ) {
-					$uploaded = $this->handleZip( $filename );
-				} else if ( $this->mime == 'application/x-tar' ) {
-					$uploaded = $this->handleTar( $filename );
-				}
+			if ( $this->uploader->extractArchives && $this->mime =='application/zip' ) {
+				$uploaded = $this->handleZip( $filename );
 				unlink( $this->tmpName );
 				if ( $uploaded !== true ) {
 					throw new Uploader_Exception( 'failed to extract files from archive' );
@@ -205,6 +201,7 @@
 			$za = new ZipArchive;
 			$za->open( $this->tmpName );
 			$i = 0;
+			$extractDir = $this->_zula->getDir( 'tmp' ).'/uploader/'.uniqid();
 			while( $file = $za->statIndex($i) ) {
 				$this->fileDetails[ ($i+1) ] = array(
 													'name'			=> $file['name'],
@@ -214,7 +211,6 @@
 												);
 				if ( $this->checkFileSize( $file['size'] ) && $this->checkExtension( $file['name'] ) ) {
 					// Extract file to get the mime type, will be removed if it is not valid
-					$extractDir = $this->_zula->getDir( 'tmp' ).'/uploader';
 					$za->extractTo( $extractDir, $file['name'] );
 					$mime = zula_get_file_mime( $extractDir.'/'.$file['name'] );
 					$this->fileDetails[ ($i+1) ]['mime'] = $mime;
@@ -239,6 +235,7 @@
 				$this->fileDetails[ ($i+1) ]['fromArchive'] = true;
 				++$i;
 			}
+			zula_full_rmdir( $extractDir );
 			return true;
 		}
 

@@ -31,6 +31,7 @@
 	RedirectMatch 403 /application/logs/(?:/.*?\.log)?$
 	RedirectMatch 403 /tmp/cache/.*?$
 	RedirectMatch 403 /tmp/media/?$
+	RedirectMatch 403 /tmp/uploader/.*?$
 	RedirectMatch 403 /config/.*?/(?:layouts/.*\.xml|config\.ini\.php)?$
 	RedirectMatch 403 /application/modules/.*?/install\.(?:xml|sql)$
 	RedirectMatch 403 /assets/uploads/media/(?!(wm\.png|wm_thumb\.png))
