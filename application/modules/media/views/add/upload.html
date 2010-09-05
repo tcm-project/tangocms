@@ -5,11 +5,19 @@
 				<td>
 					<dl>
 						<dt>{L_[Media file]}</dt>
-						<dd>{L_[Select any image, video or audio file to upload.]}</dd>
+						<dd>
+							<?php
+								$str = t('Select any image, video or audio file to upload.');
+								if ( $zip_supported ) {
+									$str .= ' '.t('A "zip" archive containing multiple files can also be uploaded.');
+								}
+								echo $str;
+							?>
+						</dd>
 					</dl>
 				</td>
 				<td class="confcol">
-					<input type="hidden" name="MAX_FILE_SIZE" value="{MAX_FS}">
+					<input type="hidden" name="MAX_FILE_SIZE" value="{max_fs}">
 					<input type="file" name="media_file">
 				</td>
 			</tr>
@@ -28,7 +36,7 @@
 	</table>
 
 	<div class="actions">
-		<input type="hidden" name="media[cid]" value="{MEDIA.CID}">
+		<input type="hidden" name="media[cid]" value="{media.cid}">
 		<input type="submit" value="{L_[Upload media]}">
 	</div>
 

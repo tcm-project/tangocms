@@ -88,8 +88,8 @@
 					}
 				}
 				$form->assign( array(
-									'CATEGORY'	=> $category,
-									'MAX_FS'	=> $this->_config->get('media/max_fs'),
+									'max_fs'		=> $this->_config->get('media/max_fs'),
+									'zip_supported'	=> zula_supports( 'zipExtraction' ),
 									));
 				return $form->getOutput();
 			} catch ( Input_KeyNoExist $e ) {
