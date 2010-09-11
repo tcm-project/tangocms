@@ -10,12 +10,10 @@
 		echo '<p>', t('No articles to display'), '</p>';
 	} else {
 		foreach( $articles as $article ) {
-			$aid = $article['id'];
-			$articleLink = $this->_router->makeUrl( 'article', 'view', $article['clean_title'] );
 		?>
 			<div class="article-entry">
 				<h4 class="article-title">
-					<a href="<?php echo $articleLink; ?>" title="{L_[View article]}">
+					<a href="<?php echo $this->_router->makeUrl( 'article', 'view', $article['clean_title'] ); ?>" title="{L_[View article]}">
 						<?php echo zula_htmlspecialchars( $article['title'] ); ?>
 					</a>
 				</h4>
@@ -34,9 +32,6 @@
 				<div class="article-body">
 					<?php echo $article['body']; ?>
 				</div>
-				<p class="article-links">
-					<a class="article-read-more" href="<?php echo $articleLink; ?>">{L_[View article]}</a>
-				</p>
 				<hr class="article-separator">
 			</div>
 <?php } } ?>
