@@ -1,12 +1,13 @@
 #!/bin/sh
-#---
+
+###
 # Zula Framework CLI
 #
 # @author Alex Cartwright
 # @copyright Copyright (c) 2010 Alex Cartwright
 # @license http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html GNU/LGPL 2.1
 # @package Zula_Cli
-#---
+###
 
 ## All options with their default values
 optConfig=default
