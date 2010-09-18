@@ -16,13 +16,13 @@ taskUpgrade=false
 
 if [[ ! -f index.php || ! -d config ]]; then
 	echo "---- Please run from the root directory of your Zula Framework application." >&2
-	exit 1
+	exit 2
 fi
 
 pathPHP=$(which php 2> /dev/null)
 if [[ -z $pathPHP || $($pathPHP -v | grep "(cli)" &> /dev/null; echo $?) -ne 0 ]]; then
 	echo "---- Unable to find PHP (CLI) binary, please install or update your PATH variable." >&2
-	exit 1
+	exit 2
 fi
 
 while [[ $1 == -* ]]; do
@@ -56,7 +56,7 @@ if [[ $taskUpgrade = true ]]; then
 	## Attempt to upgrade to the latest version
 	if [[ ! -f install/index.php ]]; then
 		echo "---- Unable to find 'install/index.php', failed to upgrade." >&2
-		exit 1
+		exit 2
 	fi
 	count=0
 	for config in $(find config -maxdepth 1 -type d -path "config/*" \! -name "default.dist" -printf '%f\n'); do
