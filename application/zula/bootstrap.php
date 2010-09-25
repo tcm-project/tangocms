@@ -145,12 +145,6 @@
 			$themeName = 'carbon';
 		} else {
 			$themeName = $config->get( 'theme/'.$router->getSiteType().'_default' );
-			if ( $config->get( 'theme/allow_user_override' ) ) {
-				$userTheme = $session->getUser( 'theme' );
-				if ( $userTheme != 'default' && Theme::exists( $userTheme ) ) {
-					$themeName = $userTheme;
-				}
-			}
 		}
 		define( '_THEME_NAME', $themeName );
 		try {
