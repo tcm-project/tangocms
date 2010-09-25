@@ -283,8 +283,10 @@
 		public function getAllGroups() {
 			if ( !$this->groups || !($this->groups = $this->_cache->get('ugmanager_groups')) ) {
 				$this->groups = array();
-				foreach( $this->_sql->query('SELECT * FROM {SQL_PREFIX}groups ORDER BY name', PDO::FETCH_ASSOC) as $group ) {
-					$group['user_count'] = $this->userCount( $group['id'] );
+				$query = 'SELECT g.*, COUNT(u.id) AS user_count
+							FROM {SQL_PREFIX}groups AS g LEFT JOIN {SQL_PREFIX}users AS u ON u.group = g.id
+							GROUP BY g.id';
+				foreach( $this->_sql->query($query, PDO::FETCH_ASSOC) as $group ) {
 					$this->groups[ $group['id'] ] = $group;
 				}
 				$this->_cache->add( 'ugmanager_groups', $this->groups );
@@ -642,14 +644,11 @@
 		 * @return bool
 		 */
 		public function emailTaken( $email ) {
-			if ( trim( $email ) ) {
-				foreach( $this->getAllUsers() as $user ) {
-					if ( strtolower( $email ) == strtolower( $user['email'] ) ) {
-						return true;
-					}
-				}
-			}
-			return false;
+			$pdoSt = $this->_sql->prepare( 'SELECT COUNT(id) FROM {SQL_PREFIX}users WHERE email = ?' );
+			$pdoSt->execute( array($email) );
+			$exists = (bool) $pdoSt->fetchColumn();
+			$pdoSt->closeCursor();
+			return $exists;
 		}
 
 		/**
