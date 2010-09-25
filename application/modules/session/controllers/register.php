@@ -7,7 +7,7 @@
  * @patches submit all patches to patches@tangocms.org
  *
  * @author Alex Cartwright
- * @copyright Copyright (C) 2008, 2009 Alex Cartwright
+ * @copyright Copyright (C) 2008, 2009, 2010 Alex Cartwright
  * @license http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GNU/GPL 2
  * @package TangoCMS_Session
  */
@@ -59,6 +59,7 @@
 					*/
 					$fd = $form->getValues( 'session' );
 					$userDetails = array(
+										'status'		=> 'locked',
 										'username'		=> $fd['username'],
 										'password'		=> $fd['password'],
 										'email'			=> $fd['email'],
@@ -68,6 +69,7 @@
 					$validationMethod = $this->_config->get( 'session/validation_method' );
 					switch( $validationMethod ) {
 						case 'none':
+							$userDetails['status'] = 'active';
 							$userDetails['activate_code'] = '';
 							$eventMsg = t('Successfully registered, you may now login.');
 							break;
@@ -135,17 +137,23 @@
 		 */
 		public function activateSection() {
 			$this->setTitle( t('Activate account') );
-			/**
-			 * Use the provided activation code
-			 */
 			try {
-				$uid = $this->_ugmanager->activateUser( $this->_router->getArgument('code') );
-				$user = $this->_ugmanager->getUser( $uid );
-				$this->_event->success( sprintf( t('The account "%s" has now been activated'), $user['username'] ) );
+				$code = $this->_router->getArgument( 'code' );
+				$pdoSt = $this->_sql->prepare( 'SELECT uid FROM {SQL_PREFIX}users_meta
+												WHERE name = "activate_code" AND value = ?' );
+				$pdoSt->execute( array($code) );
+				$uid = $pdoSt->fetchColumn();
+				$pdoSt->closeCursor();
+				if ( $uid ) {
+					// Remove activate code and update the user status
+					$this->_ugmanager->editUser( $uid, array('status' => 'active', 'activate_code' => null) );
+					$user = $this->_ugmanager->getUser( $uid );
+					$this->_event->success( sprintf( t('The account "%s" has now been activated'), $user['username'] ) );
+				} else {
+					$this->_event->error( t('There is no user with that activation code') );
+				}
 			} catch ( Router_ArgNoExist $e ) {
 				$this->_event->error( t('No activation code provided') );
-			} catch ( Ugmanager_InvalidActivationCode $e ) {
-				$this->_event->error( t('There is no user with that activation code') );
 			} catch ( Ugmanager_UserNoExist $e ) {
 				$this->_event->error( t('User does not exist') );
 			}

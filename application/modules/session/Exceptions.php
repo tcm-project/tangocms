@@ -15,4 +15,6 @@
  	class Session_InvalidCredentials extends Exception {}
  	class Session_UserNotActivated extends Session_InvalidCredentials {}
 
+	class Session_InvalidResetCode extends Exception {}
+
 ?>
