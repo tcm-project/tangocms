@@ -17,9 +17,6 @@
 	class Ugmanager_GroupNoExist extends Zula_Exception {}
 	class Ugmanager_UserNoExist extends Zula_Exception {}
 
-	class Ugmanager_InvalidActivationCode extends Zula_Exception {}
-	class Ugmanager_InvalidResetCode extends Zula_Exception {}
-
 	class Ugmanager_GroupExists extends Zula_Exception {}
 	class Ugmanager_InvalidInheritance extends Zula_Exception {}
 	class Ugmanager_InvalidName extends Zula_Exception {}

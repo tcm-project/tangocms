@@ -51,6 +51,13 @@
 		protected $groupCount = 0;
 
 		/**
+		 * The keys used within the SQL 'users' database
+		 * @var array
+		 */
+		private $userKeys = array('status', 'username', 'password', 'email', 'group', 'joined',
+									'hide_email', 'first_name', 'last_name', 'last_login', 'last_pw_change');
+
+		/**
 		 * Constructor
 		 * There must only ever be 1 user in the root and guest account. If
 		 * this differs then halt execution straight away.
@@ -131,13 +138,16 @@
 		}
 
 		/**
-		 * Gets details for a single user by username or ID
+		 * Gets details for a single user by username or ID (username is
+		 * more intensive as it will always run a query, by ID wont). The
+		 * meta details can also be returned.
 		 *
 		 * @param string|int $user
 		 * @param bool $byId
+		 * @param bool $withMetaData
 		 * @return array
 		 */
-		public function getUser( $user, $byId=true ) {
+		public function getUser( $user, $byId=true, $withMetaData=false ) {
 			if ( $byId == false || !isset( $this->users[ $user ] ) ) {
 				$pdoSt = $this->_sql->prepare( 'SELECT * FROM {SQL_PREFIX}users WHERE '.($byId ? 'id' : 'username').' = ?' );
 				$pdoSt->execute( array($user) );
@@ -153,7 +163,28 @@
 					throw new Ugmanager_UserNoExist( $user );
 				}
 			}
+			if ( $withMetaData ) {
+				$this->users[ $user ] = array_merge( $this->users[$user], $this->getUserMetaData($user) );
+			}
 			return $this->users[ $user ];
+		}
+
+		/**
+		 * Gets all meta data for a specified user id
+		 *
+		 * @param int $uid
+		 * @return array
+		 */
+		public function getUserMetaData( $uid ) {
+			$pdoSt = $this->_sql->prepare( 'SELECT name, value FROM {SQL_PREFIX}users_meta WHERE uid = :uid' );
+			$pdoSt->bindValue( ':uid', $uid, PDO::PARAM_INT );
+			$pdoSt->execute();
+			$metaData = array();
+			while( $row = $pdoSt->fetch( PDO::FETCH_ASSOC ) ) {
+				$metaData[ $row['name'] ] = $row['value'];
+			}
+			$pdoSt->closeCursor();
+			return $metaData;
 		}
 
 		/**
@@ -440,8 +471,12 @@
 		}
 
 		/**
-		 * Updates details about a user. A user can not be moved into the root group
-		 * and the guest use can not be edited.
+		 * Updates the standard and meta details of a user. A user can
+		 * not be moved into the root group and the guest user can not
+		 * be edited.
+		 *
+		 * To remove meta details from a user, simply set the array value
+		 * to NULL.
 		 *
 		 * @param int $uid
 		 * @param array $details
@@ -467,24 +502,58 @@
 				}
 			}
 			if ( empty( $details['password'] ) ) {
-				unset( $details['password'], $details['last_pw_change'] );
+				unset( $details['password'] );
 			} else {
 				$details['password'] = zula_hash( $details['password'] );
-				$date = new DateTime( 'now', new DateTimeZone('UTC') );
-				$details['last_pw_change'] = $date->format('Y-m-d H:i:s');
 			}
-			if ( $this->_sql->update( 'users', $details, array('id' => $user['id']) ) ) {
-				unset( $this->users[ $user['id'] ] );
-				$this->_cache->delete( 'ugmanager_users' );
-				Hooks::notifyAll( 'ugmanager_user_edit', $user['id'] );
-				return true;
-			} else {
-				return false;
+			unset( $details['id'], $details['last_pw_change'] );
+			/**
+			 * Calculate which details are 'meta' details and construct
+			 * the required queries to edit the user
+			 */
+			$params = array();
+			$editUserQ = 'UPDATE {SQL_PREFIX}users SET';
+			foreach( array_intersect_key( $details, array_flip($this->userKeys) ) as $key=>$val ) {
+				$editUserQ .= " `$key` = :$key,";
+				$params[":$key"] = $val;
+				if ( $key == 'password' ) {
+					$editUserQ .= ' last_pw_change = UTC_TIMESTAMP(),';
+				}
 			}
+			if ( $params ) {
+				$params[':id'] = $user['id'];
+				$pdoSt = $this->_sql->prepare( rtrim($editUserQ, ',').' WHERE id = :id' );
+				$pdoSt->execute( $params );
+			}
+			// Insert/update user meta data
+			$deleteMetaKeys = array();
+			$pdoStMeta = $this->_sql->prepare( 'INSERT INTO {SQL_PREFIX}users_meta (uid, name, value)
+												VALUES(:uid, :name, :value)
+												ON DUPLICATE KEY UPDATE value = VALUES(value)' );
+			foreach( array_diff_key( $details, array_flip($this->userKeys) ) as $key=>$val ) {
+				if ( $val === null ) {
+					$deleteMetaKeys[] = $key;
+				} else {
+					$pdoStMeta->execute( array(':uid' => $user['id'], ':name' => $key, ':value' => $val) );
+				}
+			}
+			// Delete meta data
+			$pdoStDelete = $this->_sql->prepare( 'DELETE FROM {SQL_PREFIX}users_meta WHERE uid = :uid AND name = :name' );
+			foreach( $deleteMetaKeys as $key ) {
+				$pdoStDelete->execute( array(':uid' => $user['id'], ':name' => $key) );
+			}
+			/**
+			 * All done, clear cache
+			 */
+			unset( $this->users[ $user['id'] ] );
+			$this->_cache->delete( 'ugmanager_users' );
+			Hooks::notifyAll( 'ugmanager_user_edit', $user['id'] );
+			return true;
 		}
 
 		/**
-		 * Adds a new user to a specified group
+		 * Adds a new user to a specified group with the provided
+		 * details (which can contain meta details)
 		 *
 		 * @param array $details
 		 * @return int|bool
@@ -500,24 +569,45 @@
 			if ( isset( $details['password'] ) ) {
 				$details['password'] = zula_hash( $details['password'] );
 			}
-			// Add in the joined and last password change date
-			$date = new DateTime( 'now', new DateTimeZone('UTC') );
-			$details['joined'] = $date->format( 'Y-m-d H:i:s' );
-			$details['last_pw_change'] = $date->format( 'Y-m-d H:i:s' );
-			if ( $this->_sql->insert( 'users', $details ) ) {
-				unset( $this->userCount['*'], $this->userCount[ $details['group'] ] );
+			unset( $details['joined'], $details['last_pw_change'] );
+			// First insert the standard data
+			$addUserQ = 'INSERT INTO {SQL_PREFIX}users (%s,joined, last_pw_change) VALUES(%s,UTC_TIMESTAMP(), UTC_TIMESTAMP())';
+			$insertData = array();
+			foreach( array_intersect_key( $details, array_flip($this->userKeys) ) as $key=>$val ) {
+				$insertData["`$key`"] = $val;
+			}
+			$addUserQ = sprintf( $addUserQ,
+								implode(',', array_keys($insertData)),
+								rtrim( str_repeat('?,', count($insertData)), ',' ) );
+			$pdoSt = $this->_sql->prepare( $addUserQ );
+			$pdoSt->execute( array_values($insertData) );
+			if ( ($uid = $this->_sql->lastInsertId()) ) {
+				/**
+				 * Insert the user meta data
+				 */
+				$pdoStMeta = $this->_sql->prepare( 'INSERT INTO {SQL_PREFIX}users_meta (uid, name, value)
+													VALUES(:uid, :name, :value)' );
+				foreach( array_diff_key( $details, array_flip($this->userKeys) ) as $key=>$val ) {
+					$pdoStMeta->execute( array(':uid' => $uid, ':name' => $key, ':value' => $val) );
+				}
+				if ( isset($this->userCount['*']) ) {
+					++$this->userCount['*'];
+				}
+				if ( isset($this->userCount[ $details['group'] ]) ) {
+					++$this->userCount[ $details['group'] ];
+				}
 				$this->_cache->delete( 'ugmanager_users' );
 				// Add the ID so hooks can use it.
-				$details['user_id'] = $this->_sql->lastInsertId();
+				$details['id'] = $uid;
 				Hooks::notifyAll( 'ugmanager_user_add', $details );
-				return $details['user_id'];
+				return $details['id'];
 			} else {
 				return false;
 			}
 		}
 
 		/**
-		 * Deletes a user
+		 * Deletes a user and all meta data related to it
 		 *
 		 * @param int $uid
 		 * @return bool
@@ -527,100 +617,21 @@
 			if ( $user['id'] == self::_ROOT_ID || $user['id'] == self::_GUEST_ID ) {
 				throw new Ugmanager_InvalidUser( 'root or guest user can not be deleted' );
 			}
-			if ( $this->_sql->exec('DELETE FROM {SQL_PREFIX}users WHERE id = '.$user['id']) ) {
-				unset( $this->userCount['*'], $this->userCount[ $user['group'] ] );
+			$result = $this->_sql->exec( 'DELETE u, m FROM {SQL_PREFIX}users AS u
+											LEFT JOIN {SQL_PREFIX}users_meta AS m ON m.uid = u.id
+											WHERE u.id = '.(int) $user['id'] );
+			if ( $result ) {
+				if ( isset($this->userCount['*']) ) {
+					--$this->userCount['*'];
+				}
+				if ( isset($this->userCount[ $user['group'] ]) ) {
+					--$this->userCount[ $user['group'] ];
+				}
 				$this->_cache->delete( 'ugmanager_users' );
 				Hooks::notifyAll( 'ugmanager_user_delete', $user );
 				return true;
 			} else {
 				return false;
-			}
-		}
-
-		/**
-		 * Gets all of the users that are awaiting validation for
-		 * all groups, or a specified group
-		 *
-		 * @param int $group	GroupID to limit by
-		 * @return array
-		 */
-		public function awaitingValidation( $group=false ) {
-			try {
-				$users = $this->getAllUsers( $group );
-			} catch ( Ugmanager_GroupNoExist $e ) {
-				// Change the message a bit =)
-				throw new Ugmanager_GroupNoExist( 'could not get users awaiting validation for group "'.$group.'" as the group does not exist' );
-			}
-			$validations = array();
-			foreach( $users as $user ) {
-				if ( !empty( $user['activate_code'] ) && $user['id'] != self::_GUEST_ID ) {
-					$validations[] = $user;
-				}
-			}
-			return $validations;
-		}
-
-		/**
-		 * Attempts to activate a user by removing the activation code
-		 * from the row and then returning the UserID it activated
-		 *
-		 * @param string $code
-		 * @return int
-		 */
-		public function activateUser( $code ) {
-			$pdoSt = $this->_sql->prepare( 'SELECT id, activate_code FROM {SQL_PREFIX}users WHERE activate_code = ? LIMIT 1' );
-			$pdoSt->execute( array( $code ) );
-			$result = $pdoSt->fetchAll( PDO::FETCH_ASSOC );
-			if ( empty( $result ) ) {
-				throw new Ugmanager_InvalidActivationCode( 'no user with the activation code "'.$code.'" could be found' );
-			} else {
-				// Gather the UserID and update (or remove) the Activate code
-				$result = $result[0];
-				$userId = &$result['id'];
-				$query = $this->_sql->prepare( 'UPDATE {SQL_PREFIX}users SET activate_code = :code WHERE id = :id' );
-				$query->execute( array(
-										':code'	=> '',
-										':id'	=> $userId,
-										));
-				if ( $query->rowCount() == 1 ) {
-					$this->_cache->delete( 'ugmanager_users' );
-					return $userId;
-				} else {
-					throw new Ugmanager_InvalidActivationCode( 'no user with the activation code "'.$code.'" could be found' );
-				}
-			}
-		}
-
-		/**
-		 * Resets a users password, and also removes the reset-code. The
-		 * user ID of the effected user will be returned.
-		 *
-		 * @param string $code
-		 * @param string $password
-		 * @return int
-		 */
-		public function resetPassword( $code, $password ) {
-			$code = trim( $code );
-			$pdoSt = $this->_sql->prepare( 'SELECT id, reset_code FROM {SQL_PREFIX}users WHERE reset_code = ? LIMIT 1' );
-			$pdoSt->execute( array( $code ) );
-			$results = $pdoSt->fetchAll( PDO::FETCH_ASSOC );
-			if ( empty( $results ) ) {
-				throw new Ugmanager_InvalidResetCode( 'no user with reset code "'.$code.'" could be found' );
-			} else {
-				$userId = $results[0]['id'];
-				// Update users reset-code and password
-				$query = $this->_sql->prepare( 'UPDATE {SQL_PREFIX}users SET reset_code = :code, password = :password WHERE id = :id' );
-				$query->execute( array(
-										':code'		=> '',
-										':id'		=> $userId,
-										'password'	=> zula_hash( $password ),
-										));
-				if ( $query->rowCount() == 1 ) {
-					$this->_cache->delete( 'ugmanager_users' );
-					return $userId;
-				} else {
-					throw new Ugmanager_InvalidResetCode( 'no user with reset code "'.$code.'" could be found' );
-				}
 			}
 		}
 
