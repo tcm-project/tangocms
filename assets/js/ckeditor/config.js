@@ -5,17 +5,15 @@ For licensing, see LICENSE.html or http://ckeditor.com/license
 
 CKEDITOR.editorConfig = function(c)
 {
-	// Load any additional plugins, e.g. "foo,bar,car"
-	c.extraPlugins = "";
-	// Default configuration for TangoCMS
+	// Default configuration
 	c.baseHref = $("head > base").attr("href");
 	c.docType = "<!DOCTYPE HTML>";
 	c.height = 170;
 	c.language = "en";
 	c.resize_dir = "vertical";
 	c.toolbarCanCollapse = false;
-	c.toolbar = "tangocms";
-	c.toolbar_tangocms = [
+	c.toolbar = "average";
+	c.toolbar_average = [
 							["Bold","Italic","Underline","Strike","-","BulletedList","NumberedList","Blockquote","-",
 							 "JustifyLeft","JustifyCenter","JustifyRight","JustifyBlock","-","Image","Link","Unlink",
 							 "Undo","Redo"
@@ -25,9 +23,8 @@ CKEDITOR.editorConfig = function(c)
 							 "-","Flash","SpecialChar","-","Outdent","Indent","-","Source"
 							]
 						  ];
-	// None of these exist in our ckeditor.js, so don"t enable the, :)
-	c.removePlugins = "about,div,elementspath,find,forms,horizontalrule,maximize,newpage,pagebreak,pastefromword, \
-					   popup,preview,print,save,scayt,showblocks,smiley,stylescombo,tab,templates,wsc";
+	// Load any additional plugins, e.g. "foo,bar,car"
+	c.extraPlugins = "tableresize";
 	if ( typeof CKEDITOR_UPLOAD_URL !== "undefined" ) {
 		c.filebrowserUploadUrl = CKEDITOR_UPLOAD_URL;
 	}
