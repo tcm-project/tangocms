@@ -1,5 +1,6 @@
 #!/bin/sh
-#---
+
+###
 # Zula Framework building tools
 #
 # @author Alex Cartwright
@@ -8,7 +9,7 @@
 # @copyright Copyright (c) 2010 Alex Cartwright
 # @license http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GNU/GPL 2
 # @package Zula_Utils
-#---
+###
 
 ## All options and tasks with their default values
 optPathClosure=/usr/share/java/closure-compiler/closure-compiler.jar

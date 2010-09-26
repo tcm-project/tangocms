@@ -14,7 +14,7 @@
 					</dl>
 				</td>
 				<td class="confcol">
-					<input type="text" name="setting[mail/outgoing]" value="{CONFIG.OUTGOING}">
+					<input type="email" name="setting[mail/outgoing]" value="{CONFIG.OUTGOING}">
 				</td>
 			</tr>
 			<tr class="odd">
@@ -25,7 +25,7 @@
 					</dl>
 				</td>
 				<td class="confcol">
-					<input type="text" name="setting[mail/incoming]" value="{CONFIG.INCOMING}">
+					<input type="email" name="setting[mail/incoming]" value="{CONFIG.INCOMING}">
 				</td>
 			</tr>
 			<tr class="even">
@@ -99,7 +99,7 @@
 						</dl>
 					</td>
 					<td class="confcol">
-						<input type="text" name="setting[mail/smtp_port]" value="{CONFIG.SMTP_PORT}">
+						<input type="number" min="1" name="setting[mail/smtp_port]" value="{CONFIG.SMTP_PORT}">
 					</td>
 				</tr>
 				<tr class="odd">

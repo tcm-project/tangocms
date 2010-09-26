@@ -12,7 +12,9 @@
  * @package TangoCMS_Article
  */
 
-	class Article_controller_index extends Zula_ControllerBase {
+	require_once 'base.php';
+
+	class Article_controller_index extends ArticleBase {
 
 		/**
 		 * Magic call function allows for shorter URLs, it will be in the format
@@ -85,8 +87,9 @@
 				$curPage = 0;
 			}
 			// Get the required articles and parse their first article part body
+			$maxDisplayAge = $this->_config->get( 'article/max_display_age' );
 			$articles = array();
-			foreach( $this->_model()->getAllArticles( $perPage, $curPage*$perPage, $cid ) as $tmpArticle ) {
+			foreach( $this->_model()->getAllArticles( $perPage, $curPage*$perPage, $cid, false, $maxDisplayAge ) as $tmpArticle ) {
 				if ( isset( $categories[ $tmpArticle['cat_id'] ] ) ) {
 					$parts = $this->_model()->getArticleParts( $tmpArticle['id'] );
 					$firstPart = current( $parts );
@@ -105,6 +108,7 @@
 			// Build up the view
 			$view = $this->loadView( 'index/latest.html' );
 			$view->assign( array(
+								'META_FORMAT'	=> $this->getMetaFormat( $this->_config->get('article/meta_format') ),
 								'CAT_DETAILS'	=> $cid ? $category : null,
 								));
 			$view->assignHtml( array(

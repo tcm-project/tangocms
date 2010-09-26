@@ -47,17 +47,12 @@
 					return false;
 				}
 			}
-			// Construct the menu
 			$menuItems = $this->_model()->getallItems( $cid );
 			if ( empty( $menuItems ) ) {
-				$output = '<p>'.t('There are no menu items to be displayed').'</p>';
+				return '<p>'.t('There are no menu items to be displayed').'</p>';
 			} else {
-				$view = $this->loadView( 'index/main.html' );
-				$view->assign( array('CAT_DETAILS' => $category) );
-				$view->assignHtml( array('MENU_ITEMS' => $this->buildItems( $menuItems )) );
-				$output = $view->getOutput();
+				return $this->buildItems( $menuItems );
 			}
-			return $output;
 		}
 
 		/**

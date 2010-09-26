@@ -21,7 +21,8 @@
 		 */
 		protected $routes = array(
 								# Stable Releases
-								'2.5.4'			=> '2.6.0-alpha1',
+								'2.5.5'			=> '2.6.0-alpha1',
+								'2.5.4'			=> '2.5.5',
 								'2.5.3'			=> '2.5.4',
 								'2.5.2'			=> '2.5.3',
 								'2.5.1'			=> '2.5.2',
@@ -35,6 +36,11 @@
 								'2.3.0'			=> '2.3.1',
 
 								# Dev Releases
+								'2.5.62'		=> '2.6.0-beta1',
+								'2.5.61'		=> '2.6.0-beta1',
+								'2.5.60'		=> '2.6.0-beta1',
+
+								'2.5.56'		=> '2.6.0-alpha1',
 								'2.5.55'		=> '2.6.0-alpha1',
 								'2.5.54'		=> '2.6.0-alpha1',
 								'2.5.53'		=> '2.6.0-alpha1',
@@ -422,6 +428,7 @@
 				case '2.5.2':
 				case '2.5.3':
 				case '2.5.4':
+				case '2.5.5':
 				case '2.5.50':
 					foreach( array('main', 'admin') as $siteType ) {
 						$layout = new Layout( $siteType.'-default' );
@@ -468,9 +475,28 @@
 					$this->_acl->allowOnly( 'page_manage', $addRoles );
 				case '2.5.55':
 					$this->sqlFile( '2.6.0-alpha1/2.5.56.sql' );
-					return '2.5.56';
+				case '2.5.56':
 				default:
 					return '2.5.60';
+			}
+		}
+
+		/**
+		 * Upgrades to 2.6.0-beta1 (2.5.80)
+		 *
+		 * @return bool|string
+		 */
+		protected function upgradeTo_260_beta1() {
+			switch( $this->version ) {
+				case '2.5.60':
+					$this->_config_sql->add( 'article/meta_format', 0 );
+				case '2.5.61':
+					$this->_config_sql->add( 'article/max_display_age', 145152000 );
+				case '2.5.62':
+					$this->sqlFile( '2.6.0-beta1/2.5.63.sql' );
+					return '2.5.63';
+				default:
+					return '2.5.80';
 			}
 		}
 

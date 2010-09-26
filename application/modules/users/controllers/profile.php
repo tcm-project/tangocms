@@ -101,6 +101,9 @@
 			// Gather user details
 			$this->displayPageLinks();
 			$user = $this->_session->getUser();
+			if ( !isset( $user['theme'] ) ) {
+				$user['theme'] = null;
+			}
 			/**
 			 * Prepare form validation
 			 */
@@ -125,6 +128,9 @@
 			if ( $form->hasInput() && $form->isValid() ) {
 				try {
 					$fd = $form->getValues( 'users' );
+					if ( empty( $fd['theme'] ) ) {
+						$fd['theme'] = null;
+					}
 					$this->_ugmanager->editUser( $this->_session->getUserId(), $fd );
 					$this->_event->success( t('Updated Profile') );
 					return zula_redirect( $this->_router->makeUrl( 'users', 'profile', 'settings' ) );

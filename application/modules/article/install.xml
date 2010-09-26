@@ -25,6 +25,8 @@
 			<conf key="article/per_page">3</conf>
 			<conf key="article/show_cat_desc">true</conf>
 			<conf key="article/sort_by">Latest</conf>
+			<conf key="article/meta_format">0</conf>
+			<conf key="article/max_display_age">145152000</conf>
 		</sql>
 	</config>
 </install>

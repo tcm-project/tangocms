@@ -119,17 +119,14 @@ DROP TABLE IF EXISTS {SQL_PREFIX}users;
 CREATE TABLE {SQL_PREFIX}users (
   id mediumint(6) NOT NULL AUTO_INCREMENT,
   `status` enum('active','locked') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'active',
+  `group` int(4) NOT NULL DEFAULT '0',
   username varchar(32) COLLATE utf8_unicode_ci NOT NULL,
   `password` char(64) COLLATE utf8_unicode_ci NOT NULL,
   email varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  `group` int(4) NOT NULL DEFAULT '0',
-  joined datetime NOT NULL,
   hide_email tinyint(1) NOT NULL DEFAULT '1',
+  joined datetime NOT NULL,
   first_name varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   last_name varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  theme varchar(20) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  activate_code char(48) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  reset_code char(48) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   last_login int(11) NOT NULL DEFAULT '0',
   last_pw_change datetime NOT NULL,
   UNIQUE KEY id (id),
@@ -140,3 +137,11 @@ CREATE TABLE {SQL_PREFIX}users (
 INSERT INTO {SQL_PREFIX}users (username, `password`, email, `group`, joined) VALUES
 ('guest', 'guest', '', 3, UTC_TIMESTAMP() ),
 ('rootUser', 'rootPass', 'rootEmail', 1, UTC_TIMESTAMP() );
+
+DROP TABLE IF EXISTS {SQL_PREFIX}users_meta;
+CREATE TABLE {SQL_PREFIX}users_meta (
+  uid mediumint(6) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `value` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  UNIQUE KEY uid (uid,`name`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=8 ;

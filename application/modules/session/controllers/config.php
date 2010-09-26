@@ -82,10 +82,10 @@
 				// Activate or Decline/Remove all selected users
 				foreach( $form->getValues( 'session/uids' ) as $user ) {
 					try {
-						$user = $this->_ugmanager->getUser( $user );
+						$user = $this->_ugmanager->getUser( $user, true, true );
 						if ( $user['activate_code'] ) {
 							if ( $form->getValues( 'session/action' ) == 'accept' ) {
-								$this->_ugmanager->activateUser( $user['activate_code'] );
+								$this->_ugmanager->editUser( $user['id'], array('status' => 'active', 'activate_code' => null) );
 								$viewFile = 'config/validation_accepted.txt';
 								$eventMsg = t('Selected users are now active');
 							} else {
@@ -111,7 +111,7 @@
 				$this->_event->success( $eventMsg );
 				return zula_redirect( $this->_router->makeUrl('session', 'config', 'validations') );
 			}
-			$form->assign( array('VALIDATIONS' => $this->_ugmanager->awaitingValidation()) );
+			$form->assign( array('VALIDATIONS' => $this->_model()->getAwaitingValidation()) );
 			return $form->getOutput();
 		}
 

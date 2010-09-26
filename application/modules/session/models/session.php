@@ -6,7 +6,7 @@
  * @patches submit all patches to patches@tangocms.org
  *
  * @author Alex Cartwright
- * @copyright Copyright (C) 2007, 2008, 2009 Alex Cartwright
+ * @copyright Copyright (C) 2007, 2008, 2009, 2010 Alex Cartwright
  * @license http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GNU/GPL 2
  * @package TangoCMS_Session
  */
@@ -24,7 +24,10 @@
 		 */
 		public function checkCredentials( $identifier, $password, $method='username' ) {
 			$field = $method == 'username' ? 'username' : 'email';
-			$pdoSt = $this->_sql->prepare( 'SELECT id, username, activate_code FROM {SQL_PREFIX}users WHERE '.$field.' = ? AND password = ?' );
+			$pdoSt = $this->_sql->prepare( 'SELECT u.id, u.username, m.value AS activate_code
+											FROM {SQL_PREFIX}users AS u LEFT JOIN {SQL_PREFIX}users_meta AS m
+											ON u.id = m.uid AND m.name = "activate_code"
+											WHERE u.'.$field.' = ? AND u.password = ?' );
 			$pdoSt->execute( array($identifier, zula_hash($password)) );
 			$user = $pdoSt->fetch( PDO::FETCH_ASSOC );
 			$pdoSt->closeCursor();
@@ -71,6 +74,45 @@
 				return $results['attempts'];
 			}
 			return 0;
+		}
+
+		/**
+		 * Gets all standard details for users that are awaiting validation
+		 * for either all groups, or a specified group.
+		 *
+		 * @param int $gid
+		 * @return array
+		 */
+		public function getAwaitingValidation( $gid=false ) {
+			$query = 'SELECT u.* FROM {SQL_PREFIX}users AS u
+						JOIN {SQL_PREFIX}users_meta AS m ON u.id = m.uid
+						WHERE m.name = "activate_code" AND m.value != ""';
+			if ( $gid ) {
+				$query .= ' AND u.group = '.(int) $gid;
+			}
+			return $this->_sql->query( $query )->fetchAll( PDO::FETCH_ASSOC );
+		}
+
+		/**
+		 * Resets a users password to the provided value for the user that
+		 * has the provided reset code.
+		 *
+		 * @param string $code
+		 * @param string $password
+		 * @return int
+		 */
+		public function resetPassword( $code, $password ) {
+			$pdoSt = $this->_sql->prepare( 'SELECT uid FROM {SQL_PREFIX}users_meta
+											WHERE name = "reset_code" AND value = ? LIMIT 1' );
+			$pdoSt->execute( array($code) );
+			$uid = $pdoSt->fetchColumn();
+			$pdoSt->closeCursor();
+			if ( $uid ) {
+				$this->_ugmanager->editUser( $uid, array('password' => $password, 'reset_code' => null) );
+				return $uid;
+			} else {
+				throw new Session_InvalidResetCode( 'no user with reset code "'.$code.'" could be found' );
+			}
 		}
 
 	}

@@ -170,7 +170,7 @@
 				// Initial identify, do so as guest
 				$uid = Ugmanager::_GUEST_ID;
 			}
-			$user = $this->_ugmanager->getUser( $uid );
+			$user = $this->_ugmanager->getUser( $uid, true, true );
 			$group = $this->_ugmanager->getGroup( $user['group'] );
 			if ( $group['id'] != Ugmanager::_ROOT_GID && ($group['status'] == 'locked' || $user['status'] == 'locked') ) {
 				return false;

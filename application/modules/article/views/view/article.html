@@ -22,15 +22,19 @@
 ?>
 
 <div id="article-header">
-	<p><em>
-		<?php
-			printf( t('Published %1$s by %2$s in %3$s'),
-					$this->_date->format( $article['date'] ),
-					$this->_helper('user')->link( $article['author']),
-					'<a href="'.$this->_router->makeUrl( 'article', 'cat', $category['clean_title'] ).'">'.$category['title'].'</a>'
-				);
-		?>
-	</em></p>
+	<?php if ( $meta_format ) { ?>
+		<p class="article-meta">
+			<?php
+				$catLink = $this->_router->makeUrl( 'article', 'cat', $category['clean_title'] );
+				printf( $meta_format,
+						$this->_date->format( $article['date'] ),
+						$this->_helper('user')->link( $article['author'] ),
+						'<a href="'.$catLink.'">'.$category['title'].'</a>'
+						);
+			?>
+		</p>
+	<?php } ?>
+
 	<?php echo $this->_config->get( 'article/jump_box_position' ) == 'top' ? $jumpBox : ''; ?>
 </div>
 

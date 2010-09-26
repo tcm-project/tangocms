@@ -58,7 +58,11 @@
 		 */
 		public function indexSection() {
 			$rcd = $this->_dispatcher->getDispatchData();
-			if ( !$this->inSector( 'SC' ) && $rcd['module'] == 'session' && $rcd['controller'] == 'index' && $rcd['section'] == 'index' ) {
+			if (
+				(!$this->inSector( 'SC' ) && $rcd['module'] == 'session')
+				&&
+				($rcd['controller'] == 'index' && $rcd['section'] == 'index' || !$rcd['controller'] && !$rcd['section'])
+			) {
 				// The session module is already loaded into another sector (not 'SC'), do not display it
 				return false;
 			}

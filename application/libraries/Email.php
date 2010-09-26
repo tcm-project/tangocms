@@ -126,10 +126,14 @@
 			if ( $message instanceof Email_Message ) {
 				$message = $message->getMessage();
 			}
-			if ( $numSent = $this->getMailer()->send($message, $failedRecipients) ) {
-				return $numSent;
-			} else {
-				throw new Email_Exception( '0 emails sent successfully, possible error' );
+			try {
+				if ( $numSent = $this->getMailer()->send($message, $failedRecipients) ) {
+					return $numSent;
+				} else {
+					throw new Email_Exception( '0 emails sent successfully, possible error' );
+				}
+			} catch ( Swift_TransportException $e ) {
+				throw new Email_Exception( $e->getMessage() );
 			}
 		}
 
@@ -144,10 +148,14 @@
 			if ( $message instanceof Email_Message ) {
 				$message = $message->getMessage();
 			}
-			if ( $numSent = $this->getMailer()->batchSend($message, $failedRecipients) ) {
-				return $numSent;
-			} else {
-				throw new Email_Exception( '0 emails sent successfully, possible error' );
+			try {
+				if ( $numSent = $this->getMailer()->batchSend($message, $failedRecipients) ) {
+					return $numSent;
+				} else {
+					throw new Email_Exception( '0 emails sent successfully, possible error' );
+				}
+			} catch ( Swift_TransportException $e ) {
+				throw new Email_Exception( $e->getMessage() );
 			}
 		}
 

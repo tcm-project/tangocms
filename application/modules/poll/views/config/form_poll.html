@@ -61,14 +61,14 @@
 	<ol id="poll-option-list">
 		<?php if ( empty( $poll['options'] ) ) { ?>
 			<li>
-				<input type="text"  name="poll[options][]">
+				<input type="text" name="poll[options][]">
 			</li>
 			<li style="margin-top: 8px; ">
-				<input type="text"  name="poll[options][]"> <input type="button" value="{L_[Remove]}">
+				<input type="text" name="poll[options][]"> <input type="button" value="{L_[Remove]}">
 			</li>
 		<?php } else { foreach( $poll['options'] as $option ) { ?>
 			<li>
-				<input type="text"  name="poll[options][]" value="<?php echo $option; ?>"> <input type="button" value="{L_[Remove]}">
+				<input type="text" name="poll[options][]" value="<?php echo $option; ?>"> <input type="button" value="{L_[Remove]}">
 			</li>
 		<?php } } ?>
 	</ol>

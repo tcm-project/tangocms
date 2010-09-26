@@ -34,7 +34,8 @@
 				try {
 					$user = $this->_ugmanager->getUser( $form->getValues('session/username'), false );
 					// Generate a reset code that is unique
-					$pdoSt = $this->_sql->prepare( 'SELECT COUNT(id) FROM {SQL_PREFIX}users WHERE reset_code = ?' );
+					$pdoSt = $this->_sql->prepare( 'SELECT COUNT(uid) FROM {SQL_PREFIX}users_meta
+													WHERE name = "reset_code" AND value = ?' );
 					do {
 						$resetCode = zula_create_key();
 						$pdoSt->execute( array($resetCode) );
@@ -78,10 +79,10 @@
 			if ( $form->hasInput() && $form->isValid() ) {
 				$fd = $form->getValues( 'session' );
 				try {
-					$userId = $this->_ugmanager->resetPassword( $fd['code'], $fd['password'] );
+					$userId = $this->_model()->resetPassword( $fd['code'], $fd['password'] );
 					$this->_event->success( t('Your password has been successfully changed') );
 					return zula_redirect( $this->_router->makeUrl( 'session' ) );
-				} catch ( Ugmanager_InvalidResetCode $e ) {
+				} catch ( Session_InvalidResetCode $e ) {
 					$this->_event->error( t('Invalid password reset code') );
 				}
 			}

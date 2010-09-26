@@ -14,24 +14,76 @@
 					</dl>
 				</td>
 				<td class="confcol">
-					<input type="number" min="1" max="100" step="1" name="article[per_page]" value="{per_page}">
+					<input type="number" min="1" step="1" name="article[per_page]" value="{per_page}">
 				</td>
 			</tr>
 			<tr class="odd">
 				<td>
 					<dl>
-						<dt>{L_[Jump box position]}</dt>
-						<dd>{L_[When an article has more than 1 part, a jump-box is shown to quickly navigate to the different parts. Select the position of where it should appear.]}</dd>
+						<dt>{L_[Publisher information format]}</dt>
+						<dd>{L_[Select how you want the date, author and category displayed underneath an article.]}
 					</dl>
 				</td>
 				<td class="confcol">
-					<select name="article[jump_box_position]">
-						<option value="top" <?php echo $jump_box_position == 'top' ? 'selected="selected"' : ''; ?>>{L_[Top]}</option>
-						<option value="bottom" <?php echo $jump_box_position == 'bottom' ? 'selected="selected"' : ''; ?>>{L_[Bottom]}</option>
+					<select name="article[meta_format]">
+						<?php
+							$date = $this->_date->format( '28th December 2009, 21:00' );
+							$user = $this->_session->getUser('username');
+							$opts = array(
+										sprintf( t('Published %1$s by %2$s in %3$s'), $date, $user, 'foobar' ),
+										sprintf( t('Published by %2$s, %1$s'), $date, $user ),
+										sprintf( t('Posted %1$s by %2$s'), $date, $user ),
+										sprintf( t('%1$s by %2$s'), $date, $user ),
+										sprintf( $date ),
+										t('Do not display this information'),
+										);
+							foreach( $opts as $key=>$text ) {
+								printf( '<option value="%1$d" %2$s>%3$s</option>',
+										$key,
+										($key == $meta_format ? 'selected="selected"' : ''),
+										$text );
+							}
+						?>
 					</select>
 				</td>
 			</tr>
 			<tr class="even">
+				<td>
+					<dl>
+						<dt>{L_[Article display cut off date]}</dt>
+						<dd>{L_[Do not display articles to users that are older than the value chosen here.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<select name="article[max_display_age]">
+						<?php
+							$opts = array(
+										86400		=> t('1 Day'),
+										172800		=> t('2 Days'),
+										259200		=> t('3 Days'),
+										604800		=> t('1 Week'),
+										1209600		=> t('2 Weeks'),
+										1814400		=> t('3 Weeks'),
+										2419200		=> t('1 Month'),
+										7257600		=> t('3 Months'),
+										14515200	=> t('6 Months'),
+										29030400	=> t('1 Year'),
+										58060800	=> t('2 Years'),
+										145152000	=> t('5 Years'),
+										290304000	=> t('10 Years'),
+										);
+							foreach( $opts as $secs=>$title ) {
+								printf( '<option value="%1$d" %2$s>%3$s</option>',
+										$secs,
+										($secs == $max_display_age ? 'selected="selected"' : ''),
+										$title
+										);
+							}
+						?>
+					</select>
+				</td>
+			</tr>
+			<tr class="odd">
 				<td>
 					<dl>
 						<dt>{L_[Show category description?]}</dt>
@@ -44,6 +96,20 @@
 					<br>
 					<input type="radio" id="articleCatDescNo" name="media[show_cat_desc]" value="0" <?php echo $show_cat_desc ? '' : 'checked="checked"'; ?>>
 					<label class="horizontal" for="articleCatDescNo">{L_[No]}</label>
+				</td>
+			</tr>
+			<tr class="even">
+				<td>
+					<dl>
+						<dt>{L_[Part selector position]}</dt>
+						<dd>{L_[When an article has more than 1 part, a drop down box is shown to quickly navigate to the different parts. Select the position of where it should appear.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<select name="article[jump_box_position]">
+						<option value="top" <?php echo $jump_box_position == 'top' ? 'selected="selected"' : ''; ?>>{L_[Top]}</option>
+						<option value="bottom" <?php echo $jump_box_position == 'bottom' ? 'selected="selected"' : ''; ?>>{L_[Bottom]}</option>
+					</select>
 				</td>
 			</tr>
 		</tbody>

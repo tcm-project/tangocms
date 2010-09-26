@@ -14,7 +14,7 @@
 					</dl>
 				</td>
 				<td class="confcol">
-					<input type="number" name="media[per_page]" value="{media.per_page}">
+					<input type="number" min="1" name="media[per_page]" value="{media.per_page}">
 				</td>
 			</tr>
 			<tr class="odd">
@@ -50,7 +50,7 @@
 					</dl>
 				</td>
 				<td class="confcol">
-					<input type="number" name="media[max_fs]" value="<?php echo (float) zula_human_readable( $media['max_fs'] ); ?>">
+					<input type="number" min="1" name="media[max_fs]" value="<?php echo (float) zula_human_readable( $media['max_fs'] ); ?>">
 					<select name="media[max_fs_unit]">
 						<option value="k" <?php echo $media['max_fs'] >= 1048576 ? '' : 'selected="selected"'; ?>>KiB</option>
 						<option value="m" <?php echo $media['max_fs'] >= 1048576 ? 'selected="selected"' : ''; ?>>MiB</option>
