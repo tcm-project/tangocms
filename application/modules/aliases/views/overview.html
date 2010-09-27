@@ -1,6 +1,6 @@
 <?php if ( !empty( $aliases ) ) { ?>
 	<div class="jsSearchBox">
-		<p><label class="horizontal" for="aliases-alias">{L_[Search aliases:]}</label> <input type="text" id="aliases-alias"></p>
+		<p><label class="horizontal" for="aliases-alias">{L_[Search aliases:]}</label> <input type="search" id="aliases-alias"></p>
 	</div>
 <?php } ?>
 <form method="post" action="<?php echo $this->_router->makeUrl( 'aliases', 'index', 'delete' ); ?>">
