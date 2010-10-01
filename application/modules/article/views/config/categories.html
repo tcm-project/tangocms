@@ -5,7 +5,7 @@
 				<th class="checkcol"></th>
 				<th>{L_[Title]}</th>
 				<th>{L_[Articles]}</th>
-				<th>{L_[Manage]}</th>
+				<th class="managecol">{L_[Manage]}</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -22,7 +22,7 @@
 						<a href="<?php echo $this->_router->makeUrl( 'article', 'cat', $cat['clean_title'], 'main' ); ?>"><?php echo zula_snippet( $cat['title'], 50, true ); ?></a>
 					</td>
 					<td><?php echo number_format( $cat['count'] ); ?></td>
-					<td class="confcol">
+					<td class="managecol">
 						<a href="<?php echo $this->_router->makeUrl( 'article', 'config', 'editcat', null, array('id' => $cat['id']) ); ?>">{L_[Edit]}</a>
 					</td>
 				</tr>

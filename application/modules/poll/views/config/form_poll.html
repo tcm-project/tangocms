@@ -94,7 +94,7 @@
 			<tr>
 				<th class="checkcol"></th>
 				<th>{L_[Title]}</th>
-				<th class="confcol">{L_[Manage]}</th>
+				<th class="managecol">{L_[Manage]}</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -108,7 +108,7 @@
 						<input type="checkbox" name="option_ids[]" value="<?php echo $opt['id']; ?>">
 					</td>
 					<td><?php echo $opt['title']; ?></td>
-					<td class="confcol">
+					<td class="managecol">
 						<a href="<?php echo $this->_router->makeUrl( 'poll', 'config', 'editopt', null, array('id'=> $opt['id']) ); ?>">{L_[Edit]}</a>
 					</td>
 				</tr>
