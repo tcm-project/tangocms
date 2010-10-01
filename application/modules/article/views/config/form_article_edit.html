@@ -72,22 +72,17 @@
 				<tr class="even">
 					<td colspan="3">{L_[There are no parts for this article.]}</td>
 				</tr>
-			<?php } else {
-					$i = 0; foreach( $parts as $key=>$part ) {
-						if ( empty( $part['title'] ) ) {
-							$part['title'] = sprintf( t('Part %d'), $i+1 );
-						}
-						?>
-						<tr class="<?php echo zula_odd_even( $i ); ?>">
-							<td class="checkcol">
-								<input type="checkbox" name="article_pids[]" value="<?php echo $part['id']; ?>">
-							</td>
-							<td><?php echo $part['title']; ?></td>
-							<td class="managecol">
-								<a href="<?php echo $this->_router->makeUrl( 'article', 'config', 'editpart', null, array('id' => $part['id']) ); ?>">{L_[Edit]}</a>
-							</td>
-						</tr>
-				<?php ++$i; } } ?>
+			<?php } else { $i = 0; foreach( $parts as $key=>$part ) { ?>
+				<tr class="<?php echo zula_odd_even( $i++ ); ?>">
+					<td class="checkcol">
+						<input type="checkbox" name="article_pids[]" value="<?php echo $part['id']; ?>">
+					</td>
+					<td><?php echo empty($part['title']) ? sprintf( t('Part %d'), $i ) : $part['title']; ?></td>
+					<td class="managecol">
+						<a href="<?php echo $this->_router->makeUrl( 'article', 'config', 'editpart', null, array('id' => $part['id']) ); ?>">{L_[Edit]}</a>
+					</td>
+				</tr>
+			<?php } } ?>
 		<tbody>
 	</table>
 
