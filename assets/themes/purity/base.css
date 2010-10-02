@@ -191,6 +191,9 @@ input[type="submit"], input[type="button"], a.button {
 	-khtml-border-radius: 3px;
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
+	box-shadow: 0 3px 5px #BFBDBD;
+	-webkit-box-shadow: 0 3px 5px #BFBDBD;
+	-moz-box-shadow: 0 3px 5px #BFBDBD;
 	color: #f1f1f1;
 	font-family: Helvetica,Arial,"Bitstream Vera Sans",Lucida,Verdana,sans-serif;
 	font-size: 12px;
@@ -211,6 +214,9 @@ a.button {
 input[type="submit"]:hover, input[type="button"]:hover, a.button:hover {
 	background-position: 50% -25px;
 	border: 1px solid #0d4673;
+	box-shadow: 0 3px 5px #97C1D9;
+	-webkit-box-shadow: 0 3px 5px #97C1D9;
+	-moz-box-shadow: 0 3px 5px #97C1D9;
 	color: #DFEEF1;
 	cursor: pointer;
 	text-decoration: none;
