@@ -43,18 +43,12 @@
 		protected function isClosed( &$poll ) {
 			if ( $poll['status'] == 'closed' ) {
 				return true;
-			} else if ( $poll['duration'] == 0 ) {
-				return false;
-			} else {
-				$closesOn = $this->_date->getDateTime( $poll['start_date'] )
-										->modify( '+'.$poll['duration'].' weeks' );
-				if ( $closesOn < new DateTime ) {
-					$this->_model()->closePoll( $poll['id'] );
-					$poll['status'] = 'closed';
-					return true;
-				}
-				return false;
+			} else if ( $poll['duration'] > 0 && new DateTime( $poll['end_date'] ) <= new DateTime ) {
+				$this->_model()->closePoll( $poll['id'] );
+				$poll['status'] = 'closed';
+				return true;
 			}
+			return false;
 		}
 
 	}

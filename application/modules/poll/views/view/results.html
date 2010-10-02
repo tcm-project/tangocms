@@ -12,7 +12,7 @@
 <?php
 	if ( $sector == 'SC' ) {
 		if ( $poll['duration'] > 0 ) {
-			$endDate = $this->_date->format( $poll['start_date'].' +'.$poll['duration'].' weeks' );
+			$endDate = $this->_date->format( $poll['end_date'] );
 		} else {
 			$endDate = t('Never');
 		}
