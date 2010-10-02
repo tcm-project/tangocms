@@ -1,0 +1,312 @@
+/**
+ * "purity"
+ *
+ * @copyright Copyright (C) 2008, 2009, 2010 Alex Cartwright
+ * @license X11/MIT (see COPYING file)
+ * @package TangoCMS_Themes
+*/
+
+@import url(base.css);
+
+body {
+	background: #fff url(images/background.png) repeat-x top;
+	color: #333;
+	font-family: Helvetica,Arial,"Bitstream Vera Sans",Lucida,Verdana,sans-serif;
+	margin: 0;
+	padding: 0;
+}
+
+/** Sticky Footer */
+html, body {
+	height: 100%;
+}
+
+#stickyWrap {
+	margin: 0 auto -58px;
+	min-height: 100%;
+	width: 950px;
+}
+
+#stickyPush {
+	height: 58px; /* this must be the same height as the footer, inc. padding & margin */
+}
+/** End Sticky Footer */
+
+#header {
+	background: transparent url(images/logo.png) no-repeat top left;
+	color: #222;
+	height: 105px;
+	padding: 45px 0 0 150px;
+	position: relative;
+	z-index: 2; /** Force it above #container */
+}
+
+#header > a {
+	color: #4C4C4C;
+	float: left;
+	font-size: 2.2em;
+	font-weight: bold;
+	letter-spacing: 1px;
+	text-shadow: 1px 1px 1px #fff;
+	margin: 15px 0 0;
+}
+
+#navbar {
+	float: right;
+	font-size: 1.3em;
+	margin-top: 61px;
+	overflow: hidden;
+	padding: 0;
+	text-align: right;
+}
+
+/** Content */
+#container {
+	background: #fff;
+	border-top: 1px solid #e5dfe1;
+	border-top-left-radius: 15px;
+	border-top-right-radius: 15px;
+	-khtml-border-top-left-radius: 15px;
+	-khtml-border-top-right-radius: 15px;
+	-moz-border-radius: 15px 15px 0 0;
+	-webkit-border-top-left-radius: 15px;
+	-webkit-border-top-right-radius: 15px;
+	font-size: 1.3em;
+	margin: 0 auto;
+	padding: 30px 30px 0px;
+	position: relative;
+	top: -17px;
+}
+
+#container > div.column.sidebar {
+	color: #808080;
+	margin-top: 5px;
+}
+
+#content.numCols1 { width: 890px !important; }
+#content.numCols2 { width: 660px !important; }
+
+/** Footer */
+#footer {
+	background-color: #F5F3F3;
+	border: 1px solid #D5D3D3;
+	border-radius: 10px;
+	-khtml-border-radius: 10px;
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	clear: both;
+	color: #8F8E8E;
+	font-size: 1em;
+	height: 20px;
+	margin: 10px auto;
+	padding: 8px 0;
+	text-align: center;
+	width: 920px;
+}
+
+/** Navbar lists (used as a menu) */
+#navbar ul {
+	color: #8e8c8d;
+	list-style-type: none;
+	margin: 0;
+	overflow: hidden;
+}
+
+#navbar ul li {
+	float: left;
+	margin: 0 0 0 2px;
+}
+
+#navbar ul li:first-child {
+	margin-left: 0;
+}
+
+#navbar li a[href] {
+	color: #8e8c8d;
+	display: block;
+	padding: 8px 14px 4px;
+}
+
+#navbar li.menu-current a[href], #navbar li a[href]:hover {
+	background: #fff;
+	border: 1px solid #e5dfe1;
+	border-bottom: 0;
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+	-khtml-border-top-left-radius: 5px;
+	-khtml-border-top-right-radius: 5px;
+	-moz-border-radius: 5px 5px 0 0;
+	-webkit-border-top-left-radius: 5px;
+	-webkit-border-top-right-radius: 5px;
+	color: #4b4b4b;
+	padding: 7px 13px 4px;
+	text-decoration: none;
+}
+
+/** Sidebar column links & lists */
+div.column.sidebar a {
+	color: #808080;
+}
+
+div.column.sidebar a:hover, div.column.sidebar li:hover {
+	color: #2984CA;
+}
+
+div.column.sidebar ul, div.column.sidebar ol {
+	list-style-position: inside;
+	margin: 0;
+	padding: 0;
+}
+
+div.column.sidebar li {
+	border-top: 1px dashed #808080;
+	margin: 0;
+	padding: 10px 0;
+}
+
+div.column.sidebar li:first-child {
+	border-top: none;
+	padding-top: 0;
+}
+
+/** Module wrap */
+.module-wrap {
+	margin-top: 30px;
+}
+
+.module-wrap:first-child {
+	margin-top: 0;
+}
+
+div.column.sidebar > h2, div.column.sidebar div.module-wrap > h2 {
+	background: transparent url(images/header-200.png) no-repeat;
+	background-position: 0 -39px;
+	color: #666;
+	font-size: 1.1em;
+	height: 35px;
+	margin-bottom: 0.5em;
+	padding: 4px 12px 0;
+	text-shadow: #eaeaea 1px 1px 1px;
+	width: 176px;
+}
+
+div.column.sidebar > h2 {
+	background-position: 0 0;
+	color: #DFEEF1;
+	text-shadow: 1px 1px 1px #1E5681;
+}
+
+div.column.sidebar div.module-wrap-body, ul#pagelinks {
+	margin: 0 10px;
+}
+
+/**
+ * The following are used to style additional items on the page
+ * and are no longer related to the main theme layout/style
+ */
+
+/** Captcha */
+.captcha {
+	overflow: hidden;
+}
+
+.captcha .image {
+	float: left;
+	padding: 0;
+	position: relative;
+	top: 5px;
+}
+
+.captcha .input {
+	float: left;
+	margin-left: 10px;
+}
+
+/** Event msgs */
+div.eventmsg {
+	border-style: solid;
+	border-width: 1px;
+	font-weight: bold;
+	margin: 0 auto 15px;
+	padding: 6px 2px;
+	text-align: center;
+}
+
+div.eventmsg p {
+	margin: 0;
+}
+
+#eventmsgError {
+	background-color: #CFA59F;
+	border-color: #B04D40;
+	color: #9B382B;
+}
+
+#eventmsgSuccess {
+	background-color: #E9F8C6;
+	border-color: #B7D05E;
+	color: #769311;
+}
+
+/** Page links */
+ul#pagelinks {
+	font-weight: bold;
+}
+
+/** Pagination */
+.pagination {
+	list-style-type: none;
+	margin: 3px 2px 10px;
+}
+
+.pagination li {
+	display: inline-block;
+	line-height: 1.2em;
+	margin: 0 2px 0 0;
+	padding: 2px 4px 1px;
+}
+
+.pagination li.digit, .pagination li.current {
+	border: solid 1px #c7c7c7;
+}
+
+.pagination li.digit a {
+	color: #000;
+}
+
+.pagination li:hover {
+	background-color: #E4E6EC;
+	border-color: #666;
+	font-weight: bold;
+}
+
+.pagination li.digit a:hover {
+	text-decoration: none;
+}
+
+.pagination li.current {
+	background-color: #E3ECF2;
+	border-color: #7FA0B8;
+	color: #7B8F9C;
+	font-weight: bold;
+}
+
+.pagination li.first, .pagination li.previous, .pagination li.next, .pagination li.last {
+	background: none;
+	border: none;
+	font-weight: normal;
+}
+
+/** JavaScript search/filter input */
+div.jsSearchBox {
+	margin: 20px 0;
+	display: none;
+}
+
+div.jsSearchBox label {
+	margin-right: 0.8em;
+}
+
+div.jsSearchBox input[type="search"] {
+	width: 250px;
+}
