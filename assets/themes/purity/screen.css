@@ -52,12 +52,15 @@ html, body {
 }
 
 #navbar {
+	clear: both;
 	float: right;
 	font-size: 1.3em;
-	margin-top: 61px;
+	height: 29px;
 	overflow: hidden;
 	padding: 0;
+	position: relative;
 	text-align: right;
+	top: 32px;
 }
 
 /** Content */
