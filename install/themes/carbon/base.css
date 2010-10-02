@@ -174,7 +174,7 @@ textarea.editor_body {
 	height: 200px;
 }
 
-input[type="submit"], input[type="button"], a.general-button {
+input[type="submit"], input[type="button"], a.button {
 	background-color: #F3F1EE;
 	border: 1px solid #c9c8c2;
 	border-radius: 3px;
@@ -189,7 +189,7 @@ input[type="submit"], input[type="button"], a.general-button {
 	width: auto;
 }
 
-a.general-button, a.general-button:hover {
+a.button, a.button:hover {
 	border: 1px solid #c9c8c2;
 	display: inline-block;
 	padding: 2px 9px;
@@ -210,7 +210,7 @@ option {
 	padding-right: 0.8em;
 }
 
-input[type="submit"]:hover, input[type="button"]:hover, a.general-button:hover {
+input[type="submit"]:hover, input[type="button"]:hover, a.button:hover {
 	border-color: #B1B0AC;
 	color: #5f504e;
 	cursor: pointer;

@@ -117,7 +117,7 @@
 	</table>
 
 	<div class="actions">
-		<a class="general-button" href="<?php echo $this->_router->makeUrl( 'poll', 'config', 'addopt', null, array('id' => $id) ); ?>">{L_[Add option]}</a>
+		<a class="button" href="<?php echo $this->_router->makeUrl( 'poll', 'config', 'addopt', null, array('id' => $id) ); ?>">{L_[Add option]}</a>
 		<?php if ( !empty( $poll['options'] ) ) { ?>
 			<input type="submit" value="{L_[Delete selected]}">
 		<?php } ?>
