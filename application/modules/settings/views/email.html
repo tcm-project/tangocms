@@ -135,11 +135,14 @@
 						<select name="setting[mail/smtp_encryption]">
 						<?php
 							$format = '<option value="%s" %s>%s</option>';
-							$opts = array(
-										t('None')	=> false,
-										'SSL'		=> 'ssl',
-										'TLS'		=> 'tls',
-										);
+							$opts = array(t('None')	=> false);
+							$transports = stream_get_transports();
+							if ( in_array( 'tls', $transports ) ) {
+								$opts['TLS'] = 'tls';
+							}
+							if ( in_array('ssl', $transports) || in_array('sslv2', $transports) || in_array('sslv3', $transports) ) {
+								$opts['SSL'] = 'ssl';
+							}
 							foreach( $opts as $key=>$val ) {
 								$selected = $val == $config['smtp_encryption'] ? 'selected="selected"' : '';
 								printf( $format, $val, $selected, $key );
