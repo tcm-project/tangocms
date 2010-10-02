@@ -14,8 +14,7 @@
 jQuery(document).ready(
 	function() {
 		// Add support for selectors, so all you need to do is add this JS file.
-		jQuery("a[rel=modal]").tangobox();
-		jQuery("a[rel=modalImage]").tangobox();
+		jQuery("a[rel=modal],a[rel=modalImage]").tangobox();
 	}
 );
 
@@ -78,7 +77,7 @@ jQuery(document).ready(
 												<a id="tbNavPrev">Prev</a> \
 												<a id="tbNavNext">Next</a> \
 											</div> \
-											<div id="tbMeta"><a id="tbClose">Close</a></div> \
+											<div id="tbMeta"><div id="tbClose"><a>Close</a></div></div> \
 										</div> \
 									</div> \
 								</div>';
@@ -249,15 +248,15 @@ jQuery(document).ready(
 								  };
 			}
 			// If displaying meta bar, bring tbOuter up by the height of the meta bar.
-			tbMeta.find(":not(#tbClose)").remove();
+			tbMeta.find("> div[id!=tbClose]").remove();
 			if ( settings.displayMeta ) {
 				tbOuterCssTop = (tbOuterCssTop - tbMeta.outerHeight()/2)+"px";
-				tbMeta.append('<p id="tbMetaTitle">'+cTitle+'</p>');
+				tbMeta.prepend('<div><p id="tbMetaTitle">'+cTitle+'</p></div>');
 				if ( itemArray.length > 1 ) {
-					tbMeta.find("#tbMetaTitle").after('<p id="tbMetaInfo">Viewing '+(itemIndex+1)+' of '+itemArray.length+'</p>');
+					tbMeta.find("> div:first").append('<p id="tbMetaInfo">Viewing '+(itemIndex+1)+' of '+itemArray.length+'</p>');
 					if ( settings.slideshowDelay ) {
-						tbMeta.find("p:last").append( $('<span><a href="" id="tbMetaSlideshow">'+(slideshowId ? "Stop" : "Start")+' slideshow</a></span>') );
-						tbMeta.find("p:last a").click(function() {
+						tbMeta.find("> div:first p:last").append( $('<span><a href="" id="tbMetaSlideshow">'+(slideshowId ? "Stop" : "Start")+' slideshow</a></span>') );
+						tbMeta.find("> div:first p:last a").click(function() {
 														if ( slideshowId ) {
 															$(this).html("Start slideshow");
 															$("#tbNav").show();
@@ -362,7 +361,7 @@ jQuery(document).ready(
 				$("#tbNav").hide();
 			}
 			// Different ways of closing the modal box
-			$("#tbOuter.typeImage #tbContent, #tbClose").bind("click", tbClose);
+			$("#tbOuter.typeImage #tbContent, #tbClose a").bind("click", tbClose);
 			if ( $.isFunction( settings.callbackOnShow ) ) {
 				settings.callbackOnShow( itemArray[ itemIndex ] );
 			}
