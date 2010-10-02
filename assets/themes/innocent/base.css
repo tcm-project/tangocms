@@ -360,7 +360,7 @@ table dd {
 /**
  * Event Feedback, such as Error and Success messages
  */
-#eventmsg {
+div.eventmsg {
 	border-style: solid;
 	border-width: 1px 0;
 	font-weight: bold;
@@ -369,17 +369,17 @@ table dd {
 	text-align: center;
 }
 
-#eventmsg p {
+div.eventmsg p {
 	margin: 0;
 }
 
-#eventmsg.error {
+#eventmsgError {
 	background-color: #CFA59F;
 	border-color: #B04D40;
 	color: #9B382B;
 }
 
-#eventmsg.success {
+#eventmsgSuccess {
 	background-color: #E9F8C6;
 	border-color: #B7D05E;
 	color: #769311;
