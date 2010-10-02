@@ -107,7 +107,9 @@
 				$constName = 'Event::_SHOW_'.strtoupper( $type );
 				if ( defined( $constName ) && ($filter & constant( $constName )) && !empty( $_SESSION['event_feedback'][ $type ] ) ) {
 					$messages = array_unique( $_SESSION['event_feedback'][ $type ] );
-					$output .= '<div id="eventmsg" class="'.$type.'">'.zula_implode_adv( $messages, '<p>', '</p>' ).'</div>';
+					$output .= sprintf( '<div id="%1$s" class="eventmsg">%2$s</div>',
+										'eventmsg'.ucfirst($type),
+										zula_implode_adv($messages, '<p>', '</p>') );
 					// Remove the old messages since they are no longer needed
 					$_SESSION['event_feedback'][ $type ] = array();
 				}
