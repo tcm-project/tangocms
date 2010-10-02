@@ -68,7 +68,7 @@ INSERT INTO {SQL_PREFIX}config (name, value) VALUES
 ('sql/pass', 'zula-framework'),
 ('sql/user', 'zula-framework'),
 ('theme/allow_user_override', '0'),
-('theme/admin_default', 'innocent'),
+('theme/admin_default', 'purity'),
 ('theme/main_default', 'carbon');
 
 DROP TABLE IF EXISTS {SQL_PREFIX}groups;

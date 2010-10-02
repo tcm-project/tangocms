@@ -10,15 +10,6 @@
       <display_category>2</display_category>
     </config>
   </controller>
-  <controller id="123" sector="S2" order="1">
-    <mod>session</mod>
-    <con>index</con>
-    <sec>index</sec>
-    <config>
-      <displayTitle>true</displayTitle>
-      <customTitle/>
-    </config>
-  </controller>
   <controller id="909" sector="S1" order="1">
     <mod>menu</mod>
     <con>index</con>
