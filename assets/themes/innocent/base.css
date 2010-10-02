@@ -177,7 +177,7 @@ textarea.editor_body {
 	height: 200px;
 }
 
-input[type="submit"], input[type="button"], a.general-button {
+input[type="submit"], input[type="button"], a.button {
 	background-image: url(images/button-background.png );
 	background-repeat: repeat-x;
 	background-color: #eff3f6;
@@ -193,7 +193,7 @@ input[type="submit"], input[type="button"], a.general-button {
 	width: auto;
 }
 
-a.general-button {
+a.button {
 	display: inline-block;
 	padding: 3px 6px 4px;
 }
@@ -213,7 +213,7 @@ option {
 	padding-right: 0.8em;
 }
 
-input[type="submit"]:hover, input[type="button"]:hover, a.general-button:hover {
+input[type="submit"]:hover, input[type="button"]:hover, a.button:hover {
 	border-color: #b3b2ac;
 	color: #1d1d1b;
 	cursor: pointer;
