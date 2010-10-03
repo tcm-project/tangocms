@@ -77,6 +77,7 @@ ol.module_manager-item li:hover {
 
 ol.module_manager-item img {
 	float: left;
+	padding-top: 3px;
 }
 
 ol.module_manager-item p {

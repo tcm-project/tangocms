@@ -278,11 +278,8 @@ table {
 	border: 1px solid #D2D2D2;
 	border-bottom: none;
 	color: #6a6a6a;
-	width: 100%;
-}
-
-table + table {
 	margin-top: 30px;
+	width: 100%;
 }
 
 thead {
@@ -358,10 +355,6 @@ table dd {
 }
 
 /** ACL form/table */
-div.acl {
-	margin-top: 30px;
-}
-
 div.acl table td > span {
 	font-weight: bold;
 	white-space: nowrap;
