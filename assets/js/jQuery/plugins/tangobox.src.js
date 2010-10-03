@@ -361,7 +361,7 @@ jQuery(document).ready(
 				$("#tbNav").hide();
 			}
 			// Different ways of closing the modal box
-			$("#tbOuter.typeImage #tbContent, #tbClose a").bind("click", tbClose);
+			$("#tbOuter.typeImage #tbContent, #tbClose").bind("click", tbClose);
 			if ( $.isFunction( settings.callbackOnShow ) ) {
 				settings.callbackOnShow( itemArray[ itemIndex ] );
 			}
