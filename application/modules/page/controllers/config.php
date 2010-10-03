@@ -88,9 +88,10 @@
 				// Setup the object to return
 				$jsonObj = new StdClass;
 				$jsonObj->query = $query;
+				$jsonObj->suggestions = array();
+				$jsonObj->data = array();
 				foreach( $pdoSt->fetchAll( PDO::FETCH_ASSOC ) as $row ) {
-					$resource = 'page-'.$row['id'];
-					if ( $this->_acl->resourceExists( $resource ) && $this->_acl->check( $resource ) ) {
+					if ( $this->_acl->check( 'page-edit_'.$row['id'] ) ) {
 						$jsonObj->suggestions[] = $row['title'];
 						$jsonObj->data[] = $this->_router->makeFullUrl( 'page', 'config', 'edit', 'admin', array('id' => $row['id']) );
 					}
