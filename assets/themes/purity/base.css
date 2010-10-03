@@ -195,20 +195,22 @@ input[type="submit"], input[type="button"], a.button {
 	-webkit-box-shadow: 0 3px 5px #BFBDBD;
 	-moz-box-shadow: 0 3px 5px #BFBDBD;
 	color: #f1f1f1;
+	display: inline-block;
 	font-family: Helvetica,Arial,"Bitstream Vera Sans",Lucida,Verdana,sans-serif;
 	font-size: 12px;
 	font-weight: bold;
 	height: 25px;
 	margin: 5px 0;
 	min-width: 65px;
-	padding: 0 8px;
+	padding: 4px 8px;
 	text-align: center;
 	text-shadow: 1px 1px 1px #56585a;
 	width: auto;
 }
 
 a.button {
-	padding: 4px 8px;
+	height: 19px;
+	padding-bottom: 0;
 }
 
 label.horizontal + input[type="submit"], label.horizontal + input[type="button"],
