@@ -129,7 +129,7 @@
 					if ( !$this->_acl->resourceExists( $resource ) || !$this->_acl->check( $resource ) ) {
 						throw new Module_NoPermission;
 					}
-					$this->setTitle( sprintf( t('Add child page to "%s"'), $parent['title'] ) );
+					$this->setTitle( sprintf( t('Add subpage to "%s"'), $parent['title'] ) );
 				} catch ( Page_NoExist $e ) {
 					$this->_event->error( t('Parent page does not exist') );
 					return zula_redirect( $this->_router->makeUrl( 'page', 'config' ) );
