@@ -1,6 +1,5 @@
-
 /**
- * TangoCMS "carbon" theme
+ * "carbon"
  *
  * @copyright Copyright (C) 2009, 2010 Alex Cartwright
  * @license X11/MIT (see COPYING file)
@@ -69,6 +68,7 @@ dl :last-child {
 }
 
 label {
+	color: #42413F;
 	display: block;
 	font-weight: bold;
 	margin-bottom: 3px;
@@ -328,7 +328,7 @@ table dd {
 /**
  * Event Feedback, such as Error and Success messages
  */
-#eventmsg {
+div.eventmsg {
 	border-style: solid;
 	border-width: 1px;
 	font-weight: bold;
@@ -337,16 +337,16 @@ table dd {
 	text-align: center;
 }
 
-#eventmsg p {
+div.eventmsg p {
 	margin: 0;
 }
 
-#eventmsg.error {
+#eventmsgError {
 	border-color: #A4260E;
 	color: #A4260E;
 }
 
-#eventmsg.success {
+#eventmsgSuccess {
 	border-color: #c8e88b;
 	color: #7cac20;
 }
