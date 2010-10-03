@@ -36,8 +36,10 @@
 		 */
 		public function getAllCategories( $limit=0, $offset=0, $aclCheck=true ) {
 			$statement = 'SELECT SQL_CALC_FOUND_ROWS mcats.*, COUNT(mitems.id) AS item_count
-						  FROM {SQL_PREFIX}mod_media_cats mcats
-							LEFT JOIN {SQL_PREFIX}mod_media_items mitems ON mitems.cat_id = mcats.id GROUP BY mcats.id';
+						  FROM
+							{SQL_PREFIX}mod_media_cats mcats
+							LEFT JOIN {SQL_PREFIX}mod_media_items mitems ON mitems.cat_id = mcats.id
+						  GROUP BY mcats.id';
 			if ( $limit != 0 || $offset != 0 ) {
 				if ( $limit > 0 ) {
 					$statement .= ' LIMIT '.(int) $limit;
@@ -119,9 +121,11 @@
 		 */
 		public function getCategory( $cat, $byId=true ) {
 			$pdoSt = $this->_sql->prepare( 'SELECT mcats.*, COUNT(mitems.id) AS item_count
-											FROM {SQL_PREFIX}mod_media_cats mcats
-											LEFT JOIN {SQL_PREFIX}mod_media_items mitems ON mitems.cat_id = mcats.id
-											WHERE mcats.'.($byId ? 'id' : 'clean_name').' = ?' );
+											FROM
+												{SQL_PREFIX}mod_media_cats mcats
+												LEFT JOIN {SQL_PREFIX}mod_media_items mitems ON mitems.cat_id = mcats.id
+											WHERE mcats.'.($byId ? 'id' : 'clean_name').' = ?
+											GROUP BY mcats.id' );
 			$pdoSt->execute( array($cat) );
 			$category = $pdoSt->fetch( PDO::FETCH_ASSOC );
 			$pdoSt->closeCursor();
