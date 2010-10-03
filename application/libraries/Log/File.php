@@ -79,10 +79,9 @@
 			}
 			$uid = Registry::has( 'session' ) ? $this->_session->getUserId() : 'unknown';
 			$msgFormat = '[%1$s] [%2$s | uid %3$s] [%4$s] -- (%5$s:%6$d) %7$s'."\r\n";
-			$raddr = PHP_SAPI == 'cli' ? '127.0.0.1' : $_SERVER['REMOTE_ADDR'];
 			$entry = sprintf( $msgFormat,
 							  date( 'c' ),
-							  $raddr,
+							  zula_get_client_ip(),
 							  $uid,
 							  $this->levelName( $level ),
 							  basename($file),

@@ -63,7 +63,9 @@
 		public function check() {
 			if ( !trim( $this->privateKey ) ) {
 				throw new Antispam_Exception( 'reCAPTCHA API private key needed' );
-			} else if ( empty( $_SERVER['REMOTE_ADDR'] ) ) {
+			}
+			$clientIp = zula_get_client_ip();
+			if ( $clientIp == '127.0.0.1' ) {
 				throw new Antispam_Exception( 'unable to gather remote address for reCAPTCHA' );
 			}
 			try {
@@ -76,7 +78,7 @@
 					}
 					$data = http_build_query( array(
 													'privatekey'	=> $this->privateKey,
-													'remoteip'		=> $_SERVER['REMOTE_ADDR'],
+													'remoteip'		=> $clientIp,
 													'challenge'		=> $challenge,
 													'response'		=> $response,
 													)
