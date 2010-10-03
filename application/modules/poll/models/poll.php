@@ -329,7 +329,7 @@
 			$pdoSt = $this->_sql->prepare( 'INSERT INTO {SQL_PREFIX}mod_poll_votes (option_id, ip, uid) VALUES(?, ?, ?)' );
 			return $pdoSt->execute( array(
 										$option['id'],
-										zula_ip2long($_SERVER['REMOTE_ADDR']),
+										zula_ip2long( zula_get_client_ip() ),
 										$this->_session->getUserId()
 										)
 								   );
