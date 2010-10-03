@@ -40,7 +40,7 @@ a[href]:hover {
 
 p {
 	line-height: 1.8em;
-	margin: 0 0 1em 0;
+	margin: 0 0 0.8em 0;
 }
 
 * p:last-child {
@@ -209,6 +209,11 @@ input[type="submit"], input[type="button"], a.button {
 
 a.button {
 	padding: 4px 8px;
+}
+
+label.horizontal + input[type="submit"], label.horizontal + input[type="button"],
+label.horizontal + a.button {
+	margin-left: 5px;
 }
 
 input[type="submit"]:hover, input[type="button"]:hover, a.button:hover {

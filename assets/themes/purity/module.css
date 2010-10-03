@@ -114,6 +114,15 @@ ol.module_manager-item .title {
 }
 
 /** Session */
+#sessionLoginMeta {
+	border-top: 2px dotted #ccc;
+	padding-top: 10px;
+}
+
+#sessionLoginMeta p {
+	margin-bottom: 0;
+}
+
 #session-profile > span {
 	font-weight: bold;
 }

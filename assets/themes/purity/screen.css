@@ -86,8 +86,8 @@ html, body {
 	margin-top: 5px;
 }
 
-#content.numCols1 { width: 890px !important; }
-#content.numCols2 { width: 660px !important; }
+#content.numCols1 { width: 890px; }
+#content.numCols2 { width: 660px; }
 
 /** Footer */
 #footer {
