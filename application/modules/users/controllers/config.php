@@ -84,6 +84,8 @@
 				// Setup the object to return
 				$jsonObj = new StdClass;
 				$jsonObj->query = $query;
+				$jsonObj->suggestions = array();
+				$jsonObj->data = array();
 				foreach( $pdoSt->fetchAll( PDO::FETCH_ASSOC ) as $row ) {
 					$jsonObj->suggestions[] = $row['username'];
 					$jsonObj->data[] = $this->_router->makeFullUrl( 'users', 'config', 'edit', 'admin', array('id' => $row['id']) );

@@ -140,6 +140,8 @@
 				// Setup the object to return
 				$jsonObj = new StdClass;
 				$jsonObj->query = $searchQuery;
+				$jsonObj->suggestions = array();
+				$jsonObj->data = array();
 				foreach( $pdoSt->fetchAll( PDO::FETCH_ASSOC ) as $row ) {
 					if ( $this->_acl->check( 'article-cat-'.$row['cat_id'] ) ) {
 						$jsonObj->suggestions[] = $row['title'];
