@@ -93,7 +93,7 @@
 		static public function find( $siteType, $requestPath ) {
 			$pdoSt = Registry::get('sql')->prepare( 'SELECT name FROM {SQL_PREFIX}layouts WHERE
 													name LIKE ? AND ? REGEXP regex LIMIT 1' );
-			$pdoSt->execute( array($siteType.'-%', $requestPath) );
+			$pdoSt->execute( array($siteType.'-%', (string) $requestPath) );
 			if ( ($layout = $pdoSt->fetchColumn()) == false ) {
 				$layout = $siteType.'-default';
 			}
