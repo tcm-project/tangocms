@@ -88,9 +88,10 @@
 				// Setup the object to return
 				$jsonObj = new StdClass;
 				$jsonObj->query = $query;
+				$jsonObj->suggestions = array();
+				$jsonObj->data = array();
 				foreach( $pdoSt->fetchAll( PDO::FETCH_ASSOC ) as $row ) {
-					$resource = 'page-'.$row['id'];
-					if ( $this->_acl->resourceExists( $resource ) && $this->_acl->check( $resource ) ) {
+					if ( $this->_acl->check( 'page-edit_'.$row['id'] ) ) {
 						$jsonObj->suggestions[] = $row['title'];
 						$jsonObj->data[] = $this->_router->makeFullUrl( 'page', 'config', 'edit', 'admin', array('id' => $row['id']) );
 					}
@@ -129,7 +130,7 @@
 					if ( !$this->_acl->resourceExists( $resource ) || !$this->_acl->check( $resource ) ) {
 						throw new Module_NoPermission;
 					}
-					$this->setTitle( sprintf( t('Add child page to "%s"'), $parent['title'] ) );
+					$this->setTitle( sprintf( t('Add subpage to "%s"'), $parent['title'] ) );
 				} catch ( Page_NoExist $e ) {
 					$this->_event->error( t('Parent page does not exist') );
 					return zula_redirect( $this->_router->makeUrl( 'page', 'config' ) );

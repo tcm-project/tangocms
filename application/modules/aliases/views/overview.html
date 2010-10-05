@@ -1,6 +1,6 @@
 <?php if ( !empty( $aliases ) ) { ?>
 	<div class="jsSearchBox">
-		<p><label class="horizontal" for="aliases-alias">{L_[Search aliases:]}</label> <input type="text" id="aliases-alias"></p>
+		<p><label class="horizontal" for="aliases-alias">{L_[Search aliases:]}</label> <input type="search" id="aliases-alias"></p>
 	</div>
 <?php } ?>
 <form method="post" action="<?php echo $this->_router->makeUrl( 'aliases', 'index', 'delete' ); ?>">
@@ -11,7 +11,7 @@
 				<th>{L_[Alias]}</th>
 				<th>{L_[Real URL]}</th>
 				<th>{L_[Redirect?]}</th>
-				<th>{L_[Manage]}</th>
+				<th class="managecol">{L_[Manage]}</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -46,7 +46,7 @@
 						</a>
 					</td>
 					<td><?php echo $alias['redirect'] ? t('Yes') : t('No'); ?></td>
-					<td class="confcol">
+					<td class="managecol">
 						<a href="<?php echo $this->_router->makeUrl( 'aliases', 'index', 'edit', null, array( 'id' => $alias['id'] ) ); ?>" title="{L_[Edit alias]}">{L_[Edit]}</a>
 					</td>
 				</tr>

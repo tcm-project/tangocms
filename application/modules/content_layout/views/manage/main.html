@@ -33,7 +33,7 @@
 				<th>{L_[Sector/Module]}</th>
 				<th class="order">{L_[Order & placement]}</th>
 				<th>{L_[Description]}</th>
-				<th>{L_[Manage]}</th>
+				<th class="managecol">{L_[Manage]}</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -93,8 +93,8 @@
 
 	<div class="actions">
 		<input type="hidden" name="content_layout_name" value="{layoutName}">
-		<a href="<?php echo $this->_router->makeUrl( 'content_layout', 'attach', $layoutName ); ?>" class="general-button">{L_[Attach new module]}</a>
+		<a href="<?php echo $this->_router->makeUrl( 'content_layout', 'attach', $layoutName ); ?>" class="button">{L_[Attach new module]}</a>
 		<input type="submit" name="content_layout_detach" value="{L_[Detach selected]}">
-		<input type="submit" name="content_layout_order" value="{L_[Update Order & placement]}">
+		<input type="submit" name="content_layout_order" value="{L_[Update order & placement]}">
 	</div>
 </form>

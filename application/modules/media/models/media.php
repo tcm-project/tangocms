@@ -35,7 +35,11 @@
 		 * @return array
 		 */
 		public function getAllCategories( $limit=0, $offset=0, $aclCheck=true ) {
-			$statement = 'SELECT SQL_CALC_FOUND_ROWS * FROM {SQL_PREFIX}mod_media_cats';
+			$statement = 'SELECT SQL_CALC_FOUND_ROWS mcats.*, COUNT(mitems.id) AS item_count
+						  FROM
+							{SQL_PREFIX}mod_media_cats mcats
+							LEFT JOIN {SQL_PREFIX}mod_media_items mitems ON mitems.cat_id = mcats.id
+						  GROUP BY mcats.id';
 			if ( $limit != 0 || $offset != 0 ) {
 				if ( $limit > 0 ) {
 					$statement .= ' LIMIT '.(int) $limit;
@@ -50,7 +54,7 @@
 				// Get from cache instead, if possible
 				$cacheKey = 'media_cats';
 				if ( !($categories = $this->_cache->get($cacheKey)) ) {
-					$statement .= ' ORDER BY name ASC';
+					$statement .= ' ORDER BY mcats.name ASC';
 					$query = $this->_sql->query( $statement );
 				}
 			}
@@ -116,11 +120,16 @@
 		 * @return array
 		 */
 		public function getCategory( $cat, $byId=true ) {
-			$pdoSt = $this->_sql->prepare( 'SELECT * FROM {SQL_PREFIX}mod_media_cats WHERE '.($byId ? 'id' : 'clean_name').' = ?' );
+			$pdoSt = $this->_sql->prepare( 'SELECT mcats.*, COUNT(mitems.id) AS item_count
+											FROM
+												{SQL_PREFIX}mod_media_cats mcats
+												LEFT JOIN {SQL_PREFIX}mod_media_items mitems ON mitems.cat_id = mcats.id
+											WHERE mcats.'.($byId ? 'id' : 'clean_name').' = ?
+											GROUP BY mcats.id' );
 			$pdoSt->execute( array($cat) );
 			$category = $pdoSt->fetch( PDO::FETCH_ASSOC );
 			$pdoSt->closeCursor();
-			if ( $category ) {
+			if ( $category['id'] !== null ) {
 				return $category;
 			} else {
 				throw new Media_CategoryNoExist( $cat );
@@ -252,9 +261,8 @@
 			$i = null;
 			do {
 				try {
-					$cleanName = zula_clean( $name ).$i;
+					$cleanName = zula_clean( $name ).$i++;
 					$this->getCategory( $cleanName, false );
-					++$i;
 				} catch ( Media_CategoryNoExist $e ) {
 					break;
 				}

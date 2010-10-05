@@ -177,7 +177,7 @@ textarea.richTextEditor {
 	height: 200px;
 }
 
-input[type="submit"], input[type="button"], a.general-button {
+input[type="submit"], input[type="button"], a.button {
 	background-image: url(images/button-background.png );
 	background-repeat: repeat-x;
 	background-color: #eff3f6;
@@ -193,7 +193,7 @@ input[type="submit"], input[type="button"], a.general-button {
 	width: auto;
 }
 
-a.general-button {
+a.button {
 	display: inline-block;
 	padding: 3px 6px 4px;
 }
@@ -213,7 +213,7 @@ option {
 	padding-right: 0.8em;
 }
 
-input[type="submit"]:hover, input[type="button"]:hover, a.general-button:hover {
+input[type="submit"]:hover, input[type="button"]:hover, a.button:hover {
 	border-color: #b3b2ac;
 	color: #1d1d1b;
 	cursor: pointer;
@@ -360,7 +360,7 @@ table dd {
 /**
  * Event Feedback, such as Error and Success messages
  */
-#eventmsg {
+div.eventmsg {
 	border-style: solid;
 	border-width: 1px 0;
 	font-weight: bold;
@@ -369,17 +369,17 @@ table dd {
 	text-align: center;
 }
 
-#eventmsg p {
+div.eventmsg p {
 	margin: 0;
 }
 
-#eventmsg.error {
+#eventmsgError {
 	background-color: #CFA59F;
 	border-color: #B04D40;
 	color: #9B382B;
 }
 
-#eventmsg.success {
+#eventmsgSuccess {
 	background-color: #E9F8C6;
 	border-color: #B7D05E;
 	color: #769311;

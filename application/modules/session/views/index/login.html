@@ -1,4 +1,4 @@
-<form id="session-login" action="{FORM_URL}" method="post">
+<form id="sessionLogin" action="{FORM_URL}" method="post">
 	<p>
 		<label for="session-identifier"><?php echo $login_by == 'username' ? t('Username') : t('Email Address'); ?></label>
 		<input type="<?php echo $login_by == 'username' ? 'text' : 'email'; ?>" id="session-identifier" name="session[identifier]">
@@ -9,9 +9,10 @@
 		<input type="submit" value="{L_[Login]}">
 	</div>
 </form>
-<p>
-	<a href="{FORGOT_URL}" title="{L_[Reset your password]}">{L_[Forgotten your password?]}</a>
+
+<div id="sessionLoginMeta">
+	<p><a href="{FORGOT_URL}" title="{L_[Reset your password]}">{L_[Forgotten your password?]}</a></p>
 	<?php if ( $this->_config->has( 'session/allow_register' ) && $this->_config->get( 'session/allow_register' ) ) { ?>
-		<br>{L_[Not yet registered?]} <a href="{REGISTER_URL}" title="{L_[Register an account]}">{L_[Register]}</a>.
+		<p>{L_[Not yet registered?]} <a href="{REGISTER_URL}" title="{L_[Register an account]}">{L_[Register]}</a>.</p>
 	<?php } ?>
-</p>
+</div>

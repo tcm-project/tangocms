@@ -1,6 +1,6 @@
 <?php if ( $count != 0 ) { ?>
 	<div class="jsSearchBox">
-		<p><label class="horizontal" for="article-title">{L_[Search articles:]}</label> <input type="text" id="article-title"></p>
+		<p><label class="horizontal" for="article-title">{L_[Search articles:]}</label> <input type="search" id="article-title"></p>
 	</div>
 <?php } ?>
 <?php if ( count($categories) > 1 ) { ?>
@@ -36,7 +36,7 @@
 				<th>{L_[Author]}</th>
 				<th>{L_[Category]}</th>
 				<th>{L_[Published]}</th>
-				<th>{L_[Manage]}</th>
+				<th class="managecol">{L_[Manage]}</th>
 			</tr>
 		</thead>
 		<tbody>

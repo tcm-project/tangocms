@@ -1,5 +1,5 @@
 <div class="jsSearchBox">
-	<p><label class="horizontal" for="users-username">{L_[Search users:]}</label> <input type="text" id="users-username"></p>
+	<p><label class="horizontal" for="users-username">{L_[Search users:]}</label> <input type="search" id="users-username"></p>
 </div>
 <form action="<?php echo $this->_router->makeUrl( 'users', 'config', 'delete' ); ?>" method="post">
 	<table class="contentdata">
@@ -11,7 +11,7 @@
 				<th>{L_[Group]}</th>
 				<th>{L_[Email]}</th>
 				<th>{L_[Account status]}</th>
-				<th>{L_[Manage]}</th>
+				<th class="managecol">{L_[Manage]}</th>
 			</tr>
 		</thead>
 		<tbody>

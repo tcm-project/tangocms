@@ -128,20 +128,22 @@
 		 */
 		public function autocompleteSection() {
 			try {
-				$query = $this->_input->get( 'query' );
-				$searchTitle = '%'.str_replace( '%', '\%', $query ).'%';
+				$searchQuery = $this->_input->get( 'query' );
 				$query = 'SELECT id, cat_id, title FROM {SQL_PREFIX}mod_articles WHERE title LIKE ?';
 				if ( $this->_router->hasArgument('catId') ) {
 					$query .= ' AND cat_id = '.(int) $this->_router->getArgument('catId');
 				}
 				$pdoSt = $this->_sql->prepare( $query );
-				$pdoSt->execute( array($searchTitle) );
+				$pdoSt->execute( array(
+									'%'.str_replace('%', '\%', $searchQuery).'%'
+									));
 				// Setup the object to return
 				$jsonObj = new StdClass;
-				$jsonObj->query = $query;
+				$jsonObj->query = $searchQuery;
+				$jsonObj->suggestions = array();
+				$jsonObj->data = array();
 				foreach( $pdoSt->fetchAll( PDO::FETCH_ASSOC ) as $row ) {
-					$resource = 'article-cat-'.$row['cat_id'];
-					if ( $this->_acl->resourceExists( $resource ) && $this->_acl->check( $resource ) ) {
+					if ( $this->_acl->check( 'article-cat-'.$row['cat_id'] ) ) {
 						$jsonObj->suggestions[] = $row['title'];
 						$jsonObj->data[] = $this->_router->makeFullUrl( 'article', 'config', 'edit', 'admin', array('id' => $row['id']) );
 					}

@@ -177,7 +177,7 @@
 			$op = $pid === null ? 'add' : 'edit';
 			$form = new View_form( 'config/form_poll.html', 'poll' );
 			$form->addElement( 'poll/title', $title, t('Title'), new Validator_Length(1, 255) );
-			$form->addElement( 'poll/duration', $duration, t('Duration'), new Validator_Between(0, 7) );
+			$form->addElement( 'poll/duration', $duration, t('Duration'), new Validator_Between(0, 29030400) );
 			$form->addElement( 'poll/status', $status, t('Status'), new Validator_InArray( array('active', 'closed') ) );
 			if ( $op == 'add' ) {
 				$form->addElement( 'poll/options', $options, t('Options'), new Validator_Between(2, 100) );

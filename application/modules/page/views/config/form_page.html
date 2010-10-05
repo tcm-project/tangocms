@@ -57,7 +57,7 @@
 </form>
 
 <?php if ( $children ) { ?>
-	<h3>{L_[Sub/Child Pages]}</h3>
+	<h3>{L_[Subpages]}</h3>
 
 	<form action="<?php echo $this->_router->makeUrl( 'page', 'config', 'bridge' ); ?>" method="post">
 		<table class="contentdata">
@@ -66,7 +66,7 @@
 					<th class="checkcol"></th>
 					<th>{L_[Order]}</th>
 					<th>{L_[Page title]}</th>
-					<th>{L_[Manage]}</th>
+					<th class="managecol">{L_[Manage]}</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -76,7 +76,7 @@
 
 		<div class="actions">
 			<input type="hidden" name="page_parent" value="{PAGE.ID}">
-			<a class="general-button" href="<?php echo $this->_router->makeUrl( 'page', 'config', 'add', null, array('pid' => $page['id']) ); ?>">{L_[Add child]}</a>
+			<a class="button" href="<?php echo $this->_router->makeUrl( 'page', 'config', 'add', null, array('pid' => $page['id']) ); ?>">{L_[Add subpage]}</a>
 			<input name="page_delete" type="submit" value="{L_[Delete selected]}">
 			<input name="page_update_order" type="submit" value="{L_[Update order]}">
 		</div>

@@ -68,9 +68,7 @@
 	padding: 0;
 }
 
-/**
- * Navigation + Meta Bar
- */
+/** Navigation */
 #tbClose, #tbClose:hover, #tbNav > a, #tbNav > a:hover {
 	border: 0;
 	cursor: pointer;
@@ -113,8 +111,11 @@
 	text-align: left;
 }
 
-#tbMeta p {
+#tbMeta > div {
 	float: left;
+}
+
+#tbMeta p {
 	margin-bottom: 0.1em;
 	margin-right: 10px;
 }
@@ -123,21 +124,17 @@
 	font-weight: bold;
 }
 
-#tbMetaInfo {
-	clear: left;
-}
-
 #tbMetaInfo > span {
 	border-left: 2px solid #ddd;
 	margin-left: 5px;
 	padding-left: 5px;
 }
 
-#tbClose, #tbClose:hover {
+#tbMeta > #tbClose, #tbMeta > #tbClose:hover {
 	background: transparent url(images/tangobox/close.png) no-repeat center right;
 	float: right;
 	height: 18px;
-	margin-top: 5px;
+	margin-top: 7px;
 	margin-right: 2px;
-	padding: 6px 23px 0 0;
+	padding: 0 23px 0 0;
 }

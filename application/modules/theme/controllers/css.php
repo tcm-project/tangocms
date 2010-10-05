@@ -88,6 +88,9 @@
 				}
 			}
 			// Assign other data to be provided to the view file
+			$this->addAsset( 'js/editor.js' );
+			$this->_theme->addCssFile( 'jquery.linedtextarea.css' );
+			$this->_theme->addJsFile( 'jquery.linedtextarea' );
 			$form->assign( array(
 								'CSS_FILES'	=> $themeCssFiles,
 								'CSS_NAME'	=> $selectedCss,

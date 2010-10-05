@@ -4,13 +4,14 @@
 			<tr>
 				<th class="checkcol"></th>
 				<th>{L_[Name]}</th>
-				<th>{L_[Manage]}</th>
+				<th>{L_[Number of items]}</th>
+				<th class="managecol">{L_[Manage]}</th>
 			</tr>
 		</thead>
 		<tbody>
 			<?php if ( empty( $categories ) ) { ?>
 				<tr class="even">
-					<td colspan="3">{L_[No media categories to display.]}</td>
+					<td colspan="4">{L_[No media categories to display.]}</td>
 				</tr>
 			<?php } else {
 				$i = 0;
@@ -22,6 +23,7 @@
 							<input type="checkbox" name="media_cat_ids[]" value="<?php echo $cat['id']; ?>">
 						</td>
 						<td><?php echo zula_snippet( $cat['name'], 80, true ); ?></td>
+						<td><?php echo number_format( $cat['item_count'] ); ?></td>
 						<td class="managecol">
 							<a href="<?php echo $edit_url; ?>" title="{L_[Edit category]}">{L_[Edit]}</a>
 							| <a href="<?php echo $this->_router->makeUrl('media', 'add', 'upload')->queryArgs(array('cid' => $cat['id'])); ?>">{L_[Upload media item]}</a>
@@ -30,9 +32,9 @@
 			<?php $i++; } } ?>
 		</tbody>
 	</table>
-	<p>
+	<div class="actions">
 		<input type="submit" name="media_purge" value="{L_[Purge selected]}">
 		<input type="submit" name="media_delete" value="{L_[Delete selected]}">
-	</p>
+	</div>
 	{CSRF}
 </form>

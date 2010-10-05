@@ -1,6 +1,6 @@
 <?php if ( !empty( $pages ) ) { ?>
 	<div class="jsSearchBox">
-		<p><label class="horizontal" for="page-name">{L_[Search pages:]}</label> <input type="text" id="page-name"></p>
+		<p><label class="horizontal" for="page-name">{L_[Search pages:]}</label> <input type="search" id="page-name"></p>
 	</div>
 <?php } ?>
 <form method="post" action="<?php echo $this->_router->makeUrl( 'page', 'config', 'delete' ); ?>">
@@ -10,7 +10,7 @@
 				<th class="checkcol"></th>
 				<th>{L_[Title]}</th>
 				<th>{L_[Author]}</th>
-				<th>{L_[Manage]}</th>
+				<th class="managecol">{L_[Manage]}</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -29,7 +29,7 @@
 					<td><?php echo $this->_helper('user')->link( $page['author'] ); ?></td>
 					<td class="managecol">
 						<a href="<?php echo $this->_router->makeUrl( 'page', 'config', 'edit', null, array('id' => $page['id']) ); ?>">{L_[Edit]}</a> |
-						<a href="<?php echo $this->_router->makeUrl( 'page', 'config', 'add', null, array('pid' => $page['id']) ); ?>">{L_[Add child]}</a>
+						<a href="<?php echo $this->_router->makeUrl( 'page', 'config', 'add', null, array('pid' => $page['id']) ); ?>">{L_[Add subpage]}</a>
 					</td>
 				</tr>
 			<?php ++$i; } } ?>

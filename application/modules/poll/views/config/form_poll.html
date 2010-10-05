@@ -15,17 +15,28 @@
 				<td>
 					<dl>
 						<dt>{L_[Duration]}</dt>
-						<dd>{L_[Select how long the poll should run for. It will automatically close after the time set here.]}</dd>
+						<dd>{L_[The poll shall automatically close for votes after the duration selected.]}</dd>
 					</dl>
 				</td>
 				<td class="confcol">
 					<select name="poll[duration]">
-						<option value="0">{L_[Forever]}</option>
 						<?php
-							for( $i=1; $i <= 7; $i++ ) {
-								printf( '<option value="%1$d" %2$s>'.nt('1 week', '%1$d weeks', $i).'</option>',
-										$i,
-										($selected = $i == $poll['duration'] ? 'selected="selected"' : '')
+							$opts = array(
+										0			=> t('Forever'),
+										86400		=> t('1 Day'),
+										172800		=> t('2 Days'),
+										604800		=> t('1 Week'),
+										1209600		=> t('2 Weeks'),
+										2419200		=> t('1 Month'),
+										7257600		=> t('3 Months'),
+										14515200	=> t('6 Months'),
+										29030400	=> t('1 Year'),
+										);
+							foreach( $opts as $secs=>$title ) {
+								printf( '<option value="%1$d" %2$s>%3$s</option>',
+										$secs,
+										($secs == $poll['duration'] ? 'selected="selected"' : ''),
+										$title
 										);
 							}
 						?>
@@ -94,7 +105,7 @@
 			<tr>
 				<th class="checkcol"></th>
 				<th>{L_[Title]}</th>
-				<th class="confcol">{L_[Manage]}</th>
+				<th class="managecol">{L_[Manage]}</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -108,7 +119,7 @@
 						<input type="checkbox" name="option_ids[]" value="<?php echo $opt['id']; ?>">
 					</td>
 					<td><?php echo $opt['title']; ?></td>
-					<td class="confcol">
+					<td class="managecol">
 						<a href="<?php echo $this->_router->makeUrl( 'poll', 'config', 'editopt', null, array('id'=> $opt['id']) ); ?>">{L_[Edit]}</a>
 					</td>
 				</tr>
@@ -117,7 +128,7 @@
 	</table>
 
 	<div class="actions">
-		<a class="general-button" href="<?php echo $this->_router->makeUrl( 'poll', 'config', 'addopt', null, array('id' => $id) ); ?>">{L_[Add option]}</a>
+		<a class="button" href="<?php echo $this->_router->makeUrl( 'poll', 'config', 'addopt', null, array('id' => $id) ); ?>">{L_[Add option]}</a>
 		<?php if ( !empty( $poll['options'] ) ) { ?>
 			<input type="submit" value="{L_[Delete selected]}">
 		<?php } ?>

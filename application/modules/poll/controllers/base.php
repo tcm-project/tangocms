@@ -23,7 +23,7 @@
 			foreach( $votes as $oid ) {
 				foreach( $oid as $vote ) {
 					if (
-						zula_ip2long( $_SERVER['REMOTE_ADDR'] ) == $vote['ip'] ||
+						zula_ip2long( zula_get_client_ip() ) == $vote['ip'] ||
 						($vote['uid'] != Ugmanager::_GUEST_ID && $vote['uid'] == $this->_session->getUserId())
 					) {
 						return (int) $vote['option_id'];
@@ -43,18 +43,12 @@
 		protected function isClosed( &$poll ) {
 			if ( $poll['status'] == 'closed' ) {
 				return true;
-			} else if ( $poll['duration'] == 0 ) {
-				return false;
-			} else {
-				$closesOn = $this->_date->getDateTime( $poll['start_date'] )
-										->modify( '+'.$poll['duration'].' weeks' );
-				if ( $closesOn < new DateTime ) {
-					$this->_model()->closePoll( $poll['id'] );
-					$poll['status'] = 'closed';
-					return true;
-				}
-				return false;
+			} else if ( $poll['duration'] > 0 && new DateTime( $poll['end_date'] ) <= new DateTime ) {
+				$this->_model()->closePoll( $poll['id'] );
+				$poll['status'] = 'closed';
+				return true;
 			}
+			return false;
 		}
 
 	}

@@ -35,7 +35,7 @@
 			 * Gather Remote address/ip and either update/insert the failed attempt,
 			 * or remove the login attempts due to successful login.
 			 */
-			$remoteAddr = zula_ip2long( $_SERVER['REMOTE_ADDR'] );
+			$remoteAddr = zula_ip2long( zula_get_client_ip() );
 			if ( empty( $user ) ) {
 				$pdoSt = $this->_sql->prepare( 'INSERT INTO {SQL_PREFIX}mod_session (ip, attempts, blocked) VALUES (?, 1, UTC_TIMESTAMP())
 												ON DUPLICATE KEY UPDATE attempts = attempts+1, blocked = UTC_TIMESTAMP()' );
@@ -59,7 +59,7 @@
 		 * @return int
 		 */
 		public function getLoginAttempts() {
-			$remoteAddr = (int) zula_ip2long( $_SERVER['REMOTE_ADDR'] );
+			$remoteAddr = (int) zula_ip2long( zula_get_client_ip() );
 			$query = $this->_sql->query( 'SELECT attempts, blocked FROM {SQL_PREFIX}mod_session WHERE ip = '.$remoteAddr );
 			$results = $query->fetch( PDO::FETCH_ASSOC );
 			$query->closeCursor();

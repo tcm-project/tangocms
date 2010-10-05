@@ -237,7 +237,7 @@ ol.comments-list .comments-body p {
 }
 
 /** Theme */
-textarea#theme-stylesheet {
+textarea#themeStylesheet {
 	height: 300px;
 }
 

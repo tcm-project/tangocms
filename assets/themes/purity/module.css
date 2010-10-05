@@ -1,0 +1,259 @@
+/**
+ * "purity"
+ *
+ * @copyright Copyright (C) 2008, 2009, 2010 Alex Cartwright
+ * @license X11/MIT (see COPYING file)
+ * @package TangoCMS_Themes
+*/
+
+/** Media */
+div.media-wrap {
+	overflow: hidden;
+}
+
+div.media-wrap ul {
+	list-style-type: none;
+}
+
+div.media-wrap > ul > li {
+	margin: 0 0 20px;
+	overflow: hidden;
+}
+
+div.media-wrap li.media-thumb > a img {
+	float: left;
+	margin-right: 10px;
+}
+
+div.media-wrap li.media-thumb ul {
+	margin: 0;
+}
+
+div.media-wrap li.title {
+	font-weight: bold;
+	font-size: 1.1em;
+}
+
+#media-item, .media-player {
+	text-align: center;
+	margin: 20px auto;
+}
+
+#media-item a:hover {
+	border: none;
+}
+
+#media-item img {
+	background: #efefef;
+	border: 1px solid #ddd;
+	padding: 8px;
+}
+
+/** Module Manager */
+.module_manager-category {
+	overflow: hidden;
+}
+
+ol.module_manager-item {
+	list-style-type: none;
+	margin: 0;
+	overflow: hidden;
+}
+
+ol.module_manager-item li {
+	display: block;
+	float: left;
+	margin: 0 8px 0 0;
+	padding: 8px 5px;
+}
+
+ol.module_manager-item li:hover {
+	background: transparent url(images/modman.png) repeat;
+	border-radius: 8px;
+	-khtml-border-radius: 8px;
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+}
+
+ol.module_manager-item img {
+	float: left;
+	padding-top: 3px;
+}
+
+ol.module_manager-item p {
+	line-height: 1.4em;
+	margin: 1px 5px 0 39px;
+	white-space: nowrap;
+}
+
+ol.module_manager-item a {
+	color: #333;
+	display: block;
+}
+
+ol.module_manager-item a:hover {
+	color: #2984CA;
+}
+
+ol.module_manager-item .title {
+	font-weight: bold;
+}
+
+/** Page */
+.page-navigation {
+	overflow: hidden;
+}
+
+.page-next {
+	display: block;
+	float: right;
+}
+
+.page-previous {
+	display: block;
+	float: left;
+}
+
+/** Session */
+#sessionLoginMeta {
+	border-top: 2px dotted #ccc;
+	padding-top: 10px;
+}
+
+#sessionLoginMeta p {
+	margin-bottom: 0;
+}
+
+#session-profile > span {
+	font-weight: bold;
+}
+
+/** Shareable */
+div.shareable {
+	overflow: hidden;
+}
+
+ul.shareable li {
+	float: left;
+	list-style-type: none;
+
+}
+
+ul.shareable li a {
+	display: inline-block;
+	height: 16px;
+	opacity: 0.6;
+	text-indent: -400px;
+	width: 16px;
+}
+
+ul.shareable li a:hover {
+	opacity: 1;
+}
+
+a.shareable-delicious {
+	background-position: 0 0;
+}
+
+a.shareable-digg {
+	background-position: 0 -18px;
+}
+
+a.shareable-facebook {
+	background-position: 0 -36px;
+}
+
+a.shareable-google {
+	background-position: 0 -54px;
+}
+
+a.shareable-reddit {
+	background-position: 0 -72px;
+}
+
+a.shareable-slashdot {
+	background-position: 0 -90px;
+}
+
+a.shareable-stumbleupon {
+	background-position: 0 -108px;
+}
+
+/** Tags */
+.tag-link-1	{ font-size: 3.3em; }
+.tag-link-2	{ font-size: 3.2em; }
+.tag-link-3	{ font-size: 3.1em; }
+.tag-link-4	{ font-size: 2.9em; }
+.tag-link-5	{ font-size: 2.7em; }
+.tag-link-6	{ font-size: 2.5em; }
+.tag-link-7	{ font-size: 2.3em; }
+.tag-link-8	{ font-size: 2.1em; }
+.tag-link-9	{ font-size: 1.9em; }
+.tag-link-10	{ font-size: 1.7em; }
+.tag-link-11	{ font-size: 1.5em; }
+.tag-link-12	{ font-size: 1.3em; }
+.tag-link-normal{ font-size: 1.1em; }
+.tag-cloud	{ text-align: center; }
+
+.tag-list {
+	margin: 5px 0;
+}
+
+.tag-list > span {
+	color: #444;
+	font-weight: bold;
+}
+
+/** Comments */
+ol.comments-list {
+	margin-bottom: 20px;
+}
+
+ol.comments-list li {
+	list-style-type: none;
+	margin: 20px 3px 3px;
+}
+
+ol.comments-list li:target .comments-body {
+	background-color: #F9F5ED;
+}
+
+ol.comments-list .comments-author {
+	font-weight: bold;
+}
+
+ol.comments-list .comments-meta {
+	color: #777;
+}
+
+ol.comments-list .comments-manage {
+	border-left: 2px solid #ccc;
+	display: none;
+	margin-left: 5px;
+	padding-left: 5px;
+}
+
+ol.comments-list li:hover .comments-manage {
+	display: inline;
+}
+
+ol.comments-list .comments-body {
+	background-color: #EFEFEF;
+	color: #454547;
+	margin-top: 5px;
+	padding: 3px 5px 0;
+}
+
+ol.comments-list .comments-body p {
+	margin-bottom: 0.5em;
+}
+
+/** Theme */
+textarea#themeStylesheet {
+	height: 300px;
+}
+
+/** Poll */
+li.poll-voted-on {
+	font-style: italic;
+}

@@ -101,6 +101,7 @@
 				$cloner = new Layout( $cloner );
 				if ( $cloner->exists() ) {
 					$cloneName = $cloner->getName();
+					$cloneRegex = $cloner->getRegex();
 					$this->setTitle( sprintf( t('Clone layout "%1$s"'), $cloneName ) );
 				} else {
 					throw new Exception;

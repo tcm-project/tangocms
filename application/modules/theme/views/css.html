@@ -2,7 +2,7 @@
 	<thead>
 		<tr>
 			<th>{L_[File]}</th>
-			<th>{L_[Manage]}</th>
+			<th class="managecol">{L_[Manage]}</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -26,9 +26,7 @@
 
 <h3><?php printf( t('Stylesheet "%1$s"'), $css_name ); ?></h3>
 <form action="" method="post">
-	<div>
-		<textarea id="theme-stylesheet" name="theme[body]" rows="30" cols="20">{THEME.BODY}</textarea>
-	</div>
+	<textarea id="themeStylesheet" name="theme[body]" rows="30" cols="20">{THEME.BODY}</textarea>
 	<div class="actions">
 		<input type="submit" value="{L_[Edit]}">
 	</div>

@@ -50,7 +50,7 @@
 					<th class="order">{L_[Order]}</th>
 					<th>{L_[Name]}</th>
 					<th>{L_[Type]}</th>
-					<th>{L_[Manage]}</th>
+					<th class="managecol">{L_[Manage]}</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -91,7 +91,7 @@
 		</table>
 
 		<div class="actions">
-			<a class="general-button" href="<?php echo $this->_router->makeUrl( 'contact', 'config', 'addfield', null, array('id' => $id) ); ?>">{L_[Add new field]}</a>
+			<a class="button" href="<?php echo $this->_router->makeUrl( 'contact', 'config', 'addfield', null, array('id' => $id) ); ?>">{L_[Add new field]}</a>
 			<?php if ( !empty( $fields ) ) { ?>
 				<input type="submit" name="contact_del_selected" value="{L_[Delete selected]}">
 			<?php } ?>

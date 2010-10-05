@@ -33,7 +33,7 @@
 					<th class="order">{L_[Order]}</th>
 					<th>{L_[Name]}</th>
 					<th>{L_[URL]}</th>
-					<th>{L_[Manage]}</th>
+					<th class="managecol">{L_[Manage]}</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -70,7 +70,7 @@
 		</table>
 
 		<div class="actions">
-			<a class="general-button" href="<?php echo $this->_router->makeUrl( 'menu', 'config', 'additem', null, array('id' => $cat_id) ); ?>">{L_[Add new item]}</a>
+			<a class="button" href="<?php echo $this->_router->makeUrl( 'menu', 'config', 'additem', null, array('id' => $cat_id) ); ?>">{L_[Add new item]}</a>
 			<?php if ( !empty( $items ) ) { ?>
 				<input type="hidden" name="menu[cid]" value="{CAT_ID}">
 				<input type="submit" name="menu_delete" value="{L_[Delete selected]}">

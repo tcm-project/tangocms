@@ -1325,4 +1325,20 @@ ERR;
 		return $ip === $domain ? false : $ip;
 	}
 
+	/**
+	 * Gets the remote client IP address
+	 *
+	 * @return string
+	 */
+	function zula_get_client_ip() {
+		if ( ($ip = zula_http_header_get('Client-Ip')) || ($ip = zula_http_header_get('X-Forwarded-For')) ) {
+			$split = explode( ',', $ip );
+			return $split[0];
+		} else if ( empty( $_SERVER['REMOTE_ADDR'] ) ) {
+			return '127.0.0.1';
+		} else {
+			return $_SERVER['REMOTE_ADDR'];
+		}
+	}
+
 ?>

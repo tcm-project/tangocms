@@ -1,6 +1,5 @@
-
 /**
- * TangoCMS "carbon" theme
+ * "carbon"
  *
  * @copyright Copyright (C) 2009, 2010 Alex Cartwright
  * @license X11/MIT (see COPYING file)
@@ -69,6 +68,7 @@ dl :last-child {
 }
 
 label {
+	color: #42413F;
 	display: block;
 	font-weight: bold;
 	margin-bottom: 3px;
@@ -174,7 +174,7 @@ textarea.richTextEditor {
 	height: 200px;
 }
 
-input[type="submit"], input[type="button"], a.general-button {
+input[type="submit"], input[type="button"], a.button {
 	background-color: #F3F1EE;
 	border: 1px solid #c9c8c2;
 	border-radius: 3px;
@@ -189,7 +189,7 @@ input[type="submit"], input[type="button"], a.general-button {
 	width: auto;
 }
 
-a.general-button, a.general-button:hover {
+a.button, a.button:hover {
 	border: 1px solid #c9c8c2;
 	display: inline-block;
 	padding: 2px 9px;
@@ -210,7 +210,7 @@ option {
 	padding-right: 0.8em;
 }
 
-input[type="submit"]:hover, input[type="button"]:hover, a.general-button:hover {
+input[type="submit"]:hover, input[type="button"]:hover, a.button:hover {
 	border-color: #B1B0AC;
 	color: #5f504e;
 	cursor: pointer;
@@ -328,7 +328,7 @@ table dd {
 /**
  * Event Feedback, such as Error and Success messages
  */
-#eventmsg {
+div.eventmsg {
 	border-style: solid;
 	border-width: 1px;
 	font-weight: bold;
@@ -337,16 +337,16 @@ table dd {
 	text-align: center;
 }
 
-#eventmsg p {
+div.eventmsg p {
 	margin: 0;
 }
 
-#eventmsg.error {
+#eventmsgError {
 	border-color: #A4260E;
 	color: #A4260E;
 }
 
-#eventmsg.success {
+#eventmsgSuccess {
 	border-color: #c8e88b;
 	color: #7cac20;
 }

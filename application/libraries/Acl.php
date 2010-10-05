@@ -566,8 +566,8 @@
 					try {
 						$role['access'] = (bool) $this->_input->post( 'acl_resources/'.$tmpResource.'/'.$role['name'] );
 					} catch ( Input_KeyNoExist $e ) {
-						if ( $this->check( $tmpResource, $role['name'], false ) ) {
-							$role['access'] = true;
+						if ( $this->resourceExists( $tmpResource ) ) {
+							$role['access'] = $this->check( $tmpResource, $role['name'], false );
 						} else {
 							$role['access'] = in_array( $role['id'], (isset($tmpRoleHint) ? $tmpRoleHint : $roleHint) );
 						}
