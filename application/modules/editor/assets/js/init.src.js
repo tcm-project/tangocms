@@ -19,7 +19,7 @@
 
 	$(document).ready(
 		function() {
-			$("textarea.editor_body").each(
+			$("textarea.richtext").each(
 				function(i) {
 					var tmpTextarea = this;
 					shebang = /^#\!([A-Z0-9_\-]+)/i.exec( $(this).val() );
