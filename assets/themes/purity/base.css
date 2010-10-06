@@ -321,6 +321,18 @@ td.managecol, th.managecol {
 	white-space: nowrap;
 }
 
+td.managecol a {
+	border-left: 1px solid #999;
+	margin-left: 1px;
+	padding-left: 5px;
+}
+
+td.managecol a:first-child {
+	border-left: none;
+	margin-left: 0;
+	padding-left: 0;
+}
+
 tr.subheading td {
 	background: #DEDEDE;
 	font-weight: bold;

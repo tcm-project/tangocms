@@ -300,6 +300,18 @@ td.managecol {
 	white-space: nowrap;
 }
 
+td.managecol a {
+	border-left: 1px solid #999;
+	margin-left: 1px;
+	padding-left: 5px;
+}
+
+td.managecol a:first-child {
+	border-left: none;
+	margin-left: 0;
+	padding-left: 0;
+}
+
 tr.subheading {
 	background-color: #bac7cf;
 	background-image: url(images/table_background.png);

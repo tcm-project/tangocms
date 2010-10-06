@@ -28,7 +28,7 @@
 							<?php echo $poll['status'] == 'active' ? t('Active') : t('Closed'); ?>
 						</td>
 						<td class="managecol">
-							<a href="<?php echo $this->_router->makeUrl( 'poll', 'config', 'edit', null, array('id' => $poll['id']) ); ?>">{L_[Edit]}</a> |
+							<a href="<?php echo $this->_router->makeUrl( 'poll', 'config', 'edit', null, array('id' => $poll['id']) ); ?>">{L_[Edit]}</a>
 							<a href="<?php echo $this->_router->makeUrl( 'poll', 'config', 'addopt', null, array('id' => $poll['id']) ); ?>">{L_[Add option]}</a>
 						</td>
 					</tr>

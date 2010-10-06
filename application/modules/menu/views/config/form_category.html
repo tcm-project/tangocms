@@ -61,7 +61,7 @@
 						<td><?php echo str_repeat( '---', $item['depth'] ).' '.zula_snippet( $item['name'], 50, true ); ?></td>
 						<td><?php echo $item['url']; ?></td>
 						<td class="managecol">
-							<a href="<?php echo $this->_router->makeUrl( 'menu', 'config', 'edititem', null, array('id' => $item['id']) ); ?>">{L_[Edit]}</a> |
+							<a href="<?php echo $this->_router->makeUrl( 'menu', 'config', 'edititem', null, array('id' => $item['id']) ); ?>">{L_[Edit]}</a>
 							<a href="<?php echo $this->_router->makeUrl( 'menu', 'config', 'additem', null, array('id' => $cat_id, 'parent' => $item['id']) );?>">{L_[Add item]}</a>
 						</td>
 					</tr>
