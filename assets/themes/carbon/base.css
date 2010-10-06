@@ -170,7 +170,7 @@ textarea {
 	width: 99%;
 }
 
-textarea.richTextEditor {
+textarea.richtext {
 	height: 200px;
 }
 
@@ -293,6 +293,18 @@ td.checkcol, th.checkcol {
 
 td.managecol {
 	white-space: nowrap;
+}
+
+td.managecol a {
+	border-left: 1px solid #999;
+	margin-left: 1px;
+	padding-left: 5px;
+}
+
+td.managecol a:first-child {
+	border-left: none;
+	margin-left: 0;
+	padding-left: 0;
 }
 
 tr.subheading {

@@ -56,7 +56,7 @@
 
 		/**
 		 * Listener for 'view_output' to check if the editor
-		 * needs to be loaded. If 'richTextEditor' is found then
+		 * needs to be loaded. If 'richtext' is found then
 		 * it will be loaded
 		 *
 		 * @param string $text
@@ -66,8 +66,8 @@
 		 */
 		public function hookViewOutput( $text, $viewFile, $module ) {
 			if ( $this->loadEditor === false ) {
-				// richTextEditor will never be at position 0, so it does not need to check for 0
-				$this->loadEditor = (bool) strpos( $text, 'richTextEditor' );
+				// richtext will never be at position 0, so it does not need to check for 0
+				$this->loadEditor = (bool) strpos( $text, 'richtext' );
 			}
 			return $text;
 		}

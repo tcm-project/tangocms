@@ -11,7 +11,7 @@ $(document).ready(
 	function() {
 		var editorShebangs = new Array(),
 			ckeditorInstances = new Array();
-		$("textarea.richTextEditor").each(
+		$("textarea.richtext").each(
 			function(i) {
 				var tmpTextarea = this;
 				shebang = /^#\!([A-Z0-9_\-]+)/i.exec( $(this).val() );
