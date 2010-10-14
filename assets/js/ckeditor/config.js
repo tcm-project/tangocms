@@ -14,14 +14,17 @@ CKEDITOR.editorConfig = function(c)
 	c.toolbarCanCollapse = false;
 	c.toolbar = "average";
 	c.toolbar_average = [
-							["Bold","Italic","Underline","Strike","-","BulletedList","NumberedList","Blockquote","-",
-							 "JustifyLeft","JustifyCenter","JustifyRight","JustifyBlock","-","Image","Link","Unlink",
-							 "Undo","Redo"
-							],
+							["Bold","Italic","Underline","Strike"],
+							["BulletedList","NumberedList","Blockquote"],
+							["JustifyLeft","JustifyCenter","JustifyRight","JustifyBlock"],
+							["Image","Link","Unlink"],
+							["Outdent","Indent"],
+							["Undo","Redo"],
 							"/",
-							["Format","FontSize","TextColor","Table","-","PasteText","RemoveFormat",
-							 "-","Flash","SpecialChar","-","Outdent","Indent","-","Source"
-							]
+							["Format","FontSize","TextColor"],
+							["PasteText","RemoveFormat"],
+							["Table","Flash","SpecialChar"],
+							["Source"]
 						  ];
 	// Load any additional plugins, e.g. "foo,bar,car"
 	c.extraPlugins = "tableresize";
