@@ -22,8 +22,9 @@ CKEDITOR.editorConfig = function(c)
 							["Undo","Redo"],
 							"/",
 							["Format","FontSize","TextColor"],
-							["PasteText","RemoveFormat"],
+							["PasteText","PasteFromWord","RemoveFormat"],
 							["Table","Flash","SpecialChar"],
+							["Form", "Checkbox", "Radio", "TextField", "Textarea", "Select", "Button", "ImageButton", "HiddenField"],
 							["Source"]
 						  ];
 	// Load any additional plugins, e.g. "foo,bar,car"
