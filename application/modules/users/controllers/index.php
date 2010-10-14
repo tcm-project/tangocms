@@ -34,23 +34,35 @@
 				$curPage = 0;
 			}
 			// Gather all of the users and attach the group name onto the array
+			$pdoSt = $this->_sql->prepare( 'SELECT
+												u.id, u.group, u.username, u.email, u.hide_email, u.joined,
+												g.name group_name
+											FROM {SQL_PREFIX}users u
+											LEFT JOIN {SQL_PREFIX}groups g ON g.id = u.group
+											WHERE u.status = "active" AND u.id != '.Ugmanager::_GUEST_ID.'
+											LIMIT :limit OFFSET :offset' );
+			$pdoSt->bindValue( ':limit', self::_PER_PAGE, PDO::PARAM_INT );
+			$pdoSt->bindValue( ':offset', ($curPage * self::_PER_PAGE), PDO::PARAM_INT );
+			$pdoSt->execute();
 			$users = array();
-			foreach( $this->_ugmanager->getAllUsers( '', self::_PER_PAGE, ($curPage*self::_PER_PAGE), Ugmanager::_SORT_ALPHA ) as $user ) {
-				if ( $user['id'] != Ugmanager::_GUEST_ID || $user['activate_code'] ) {
-					$user['group_name'] = $this->_ugmanager->gidName( $user['group'] );
-					if ( (!empty( $user['hide_email'] ) && $user['id'] != $this->_session->getUserId()) && !$this->_acl->check( 'users_edit' ) ) {
-						$user['email'] = t('Hidden');
-					}
-					$users[] = $user;
+			foreach( $pdoSt->fetchAll( PDO::FETCH_ASSOC ) as $user ) {
+				if ( (!empty( $user['hide_email'] ) && $user['id'] != $this->_session->getUserId()) && !$this->_acl->check('users_edit') ) {
+					$user['email'] = t('Hidden');
 				}
+				$users[] = $user;
 			}
+			// How many users would have been returned without limit/offset?
+			$query = $this->_sql->query( 'SELECT COUNT(id) FROM {SQL_PREFIX}users
+											WHERE status = "active" AND id != '.Ugmanager::_GUEST_ID );
+			$totalUsers = $query->fetchColumn();
+			$query->closeCursor();
 			/**
-			 * Configure Pagination, build and output the main view file
+			 * Display the table with pagination
 			 */
-			$pagination = new Pagination( $this->_ugmanager->userCount()-1, self::_PER_PAGE );
+			$pagination = new Pagination( $totalUsers, self::_PER_PAGE );
 			$view = $this->loadView( 'index/main.html' );
-			$view->assign( array('USERS' => $users) );
-			$view->assignHtml( array('PAGINATION' => $pagination->build()) );
+			$view->assign( array('users' => $users) );
+			$view->assignHtml( array('pagination' => $pagination->build()) );
 			return $view->getOutput();
 		}
 
