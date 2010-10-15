@@ -1,14 +1,14 @@
 <?php
 
 /**
- * Zula Framework
+ * Zula Framework Module
  *
  * @patches submit all patches to patches@tangocms.org
  *
  * @author Evangelos Foutras
  * @author Alex Cartwright
  * @author Robert Clipsham
- * @copyright Copyright (C) 2007, 2008, 2009 Alex Cartwright
+ * @copyright Copyright (C) 2007, 2008, 2009, 2010 Alex Cartwright
  * @license http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html GNU/LGPL 2.1
  * @package Zula_Installer
  */
@@ -16,7 +16,7 @@
 	class Stage_controller_six extends Zula_ControllerBase {
 
 		/**
-		 * Displays a simple message saying install complete
+		 * Displays a simple message saying the installation is complete
 		 *
 		 * @return string
 		 */
@@ -26,7 +26,7 @@
 			 * Check user is not skipping ahead
 			 */
 			if ( !isset( $_SESSION['install_stage'] ) || $_SESSION['install_stage'] !== 6 ) {
-				return zula_redirect( $this->_router->makeUrl( 'stage', 'one' ) );
+				return zula_redirect( $this->_router->makeUrl('stage', 'one') );
 			}
 			# Enable ACL
 			$configIni = Registry::get( 'config_ini' );

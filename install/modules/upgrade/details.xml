@@ -3,8 +3,8 @@
 	<detail>
 		<name>upgrade</name>
 		<title>Upgrade</title>
-		<description>Upgrade controller for Zula Framework</description>
+		<description>Upgrade the current application to the latest possible version</description>
 		<author>Evangelos Foutras</author>
-		<category>system</category>
+		<category>setup</category>
 	</detail>
 </details>

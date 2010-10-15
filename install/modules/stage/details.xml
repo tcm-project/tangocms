@@ -3,8 +3,8 @@
 	<detail>
 		<name>stage</name>
 		<title>Stage</title>
-		<description>Install controller for Zula Framework</description>
+		<description>Installs the Zula Framework application</description>
 		<author>Alex Cartwright</author>
-		<category>system</category>
+		<category>setup</category>
 	</detail>
 </details>

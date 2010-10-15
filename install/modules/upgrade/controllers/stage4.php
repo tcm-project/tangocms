@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Zula Framework Upgrade Controller
+ * Zula Framework Module
  *
  * @patches submit all patches to patches@tangocms.org
  *
@@ -92,7 +92,9 @@
 		protected $version = _PROJECT_VERSION;
 
 		/**
-		 * Constructor function
+		 * Constructor
+		 *
+		 * @return object
 		 */
 		public function __construct( $moduleDetails, $config, $sector ) {
 			parent::__construct( $moduleDetails, $config, $sector );
@@ -122,8 +124,8 @@
 					$this->setTitle( t('Current version unsupported') );
 					$view = $this->loadView( 'stage1/not_supported.html' );
 					$view->assign( array (
-										'CURRENT_VERSION'	=> _PROJECT_VERSION,
-										'LATEST_VERSION'	=> _PROJECT_LATEST_VERSION,
+										'current_version'	=> _PROJECT_VERSION,
+										'latest_version'	=> _PROJECT_LATEST_VERSION,
 										));
 					return $view->getOutput();
 				}

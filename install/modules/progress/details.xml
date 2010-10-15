@@ -3,8 +3,8 @@
 	<detail>
 		<name>progress</name>
 		<title>Progress</title>
-		<description>Simple progress notifier</description>
+		<description>Simple progress notification</description>
 		<author>Alex Cartwright</author>
-		<category>system</category>
+		<category>setup</category>
 	</detail>
 </details>

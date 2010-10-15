@@ -3,8 +3,8 @@
 	<detail>
 		<name>index</name>
 		<title>Index</title>
-		<description>Index controller for Zula Framework installation</description>
+		<description>Zula Framework application setup index</description>
 		<author>Alex Cartwright</author>
-		<category>system</category>
+		<category>setup</category>
 	</detail>
 </details>

@@ -1,14 +1,14 @@
 <?php
 
 /**
- * Zula Framework Upgrade Controller
+ * Zula Framework Module
  *
  * @patches submit all patches to patches@tangocms.org
  *
  * @author Evangelos Foutras
  * @author Alex Cartwright
  * @author Robert Clipsham
- * @copyright Copyright (C) 2007, 2008, 2009 Alex Cartwright
+ * @copyright Copyright (C) 2007, 2008, 2009, 2010 Alex Cartwright
  * @license http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html GNU/LGPL 2.1
  * @package Zula_Installer
  */
@@ -16,7 +16,9 @@
 	class Upgrade_controller_stage2 extends Zula_ControllerBase {
 
 		/**
-		 * Constructor function
+		 * Constructor
+		 *
+		 * @return object
 		 */
 		public function __construct( $moduleDetails, $config, $sector ) {
 			parent::__construct( $moduleDetails, $config, $sector );
@@ -24,7 +26,8 @@
 		}
 
 		/**
-		 * Security check to make sure the upgrader is only run by the owner
+		 * Security check to ensure only those authorized can perform
+		 * the upgrade. This is skiped when using CLI
 		 *
 		 * @return string
 		 */
@@ -46,14 +49,11 @@
 					$this->_event->error( sprintf( t('Verification file "%s" does not exist'), $file ));
 				}
 			}
-			// Build the view
 			if ( !isset( $_SESSION['upgrade_security_code'] ) ) {
 				$_SESSION['upgrade_security_code'] =  uniqid( 'zula_verify_' );
 			}
 			$view = $this->loadView( 'stage2/security_check.html' );
-			$view->assign( array(
-								'CODE' => $_SESSION['upgrade_security_code'],
-								));
+			$view->assign( array('code' => $_SESSION['upgrade_security_code']) );
 			return $view->getOutput();
 		}
 

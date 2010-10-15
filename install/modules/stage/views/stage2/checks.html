@@ -1,6 +1,4 @@
-<p>{L_[If any of these checks fail then please make sure you have set the correct permissions on the files/folders and have the needed PHP Extensions installed before continuing.]}</p>
-
-<h3>{L_[Results]}</h3>
+<p>{L_[Please ensure you have set the correct permissions on the below files/directories so they are writable, and the required PHP extensions are installed/enabled.]}</p>
 
 <table>
 	<thead>
@@ -15,14 +13,13 @@
 				echo '<tr class="subheading"><td colspan="2">', $name ,'</td></tr>';
 				$i = 0;
 				foreach( $details['values'] as $item=>$passed ) {
-					echo '<tr class="', zula_odd_even($i), '"><td>', $item, '</td>';
+					echo '<tr class="', zula_odd_even($i++), '"><td>', $item, '</td>';
 					if ( $passed ) {
 						echo '<td><span style="color: green;">', t('Pass'), '</span></td>';
 					} else {
 						echo '<td><strong style="color: red;">', t('Fail'), '</strong></td>';
 					}
 					echo '</tr>';
-					++$i;
 				}
 			}
 		?>
@@ -30,5 +27,5 @@
 </table>
 
 <div class="actions">
-	<a href="<?php echo $this->_router->makeUrl( 'stage', 'two' ); ?>" class="button" title="{L_[Retry]}">{L_[Retry]}</a>
+	<a href="<?php echo $this->_router->makeUrl('stage', 'two'); ?>" class="button" title="{L_[Retry]}">{L_[Retry]}</a>
 </div>

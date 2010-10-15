@@ -1,6 +1,6 @@
 <p>{L_[Below are some basic configuration settings, these can all (and many more) be changed later.]}</p>
 
-<form action="{ACTION}" method="post">
+<form action="" method="post">
 	<table>
 		<thead>
 			<tr>
@@ -16,7 +16,7 @@
 					</dl>
 				</td>
 				<td class="confcol">
-					<input type="text" name="settings[config][title]" value="{SETTINGS.CONFIG.TITLE}">
+					<input type="text" name="settings[config][title]" value="{settings.config.title}">
 				</td>
 			</tr>
 			<tr class="odd">
@@ -27,7 +27,7 @@
 					</dl>
 				</td>
 				<td class="confcol">
-					<input type="text" name="settings[meta][description]" value="{SETTINGS.META.DESCRIPTION}">
+					<input type="text" name="settings[meta][description]" value="{settings.meta.description}">
 				</td>
 			</tr>
 		</tbody>
@@ -47,7 +47,7 @@
 					</dl>
 				</td>
 				<td class="confcol">
-					<input type="email" name="settings[mail][outgoing]" value="{SETTINGS.MAIL.OUTGOING}">
+					<input type="email" name="settings[mail][outgoing]" value="{settings.mail.outgoing}">
 				</td>
 			</tr>
 			<tr class="odd">
@@ -58,7 +58,7 @@
 					</dl>
 				</td>
 				<td class="confcol">
-					<input type="email" name="settings[mail][incoming]" value="{SETTINGS.MAIL.INCOMING}">
+					<input type="email" name="settings[mail][incoming]" value="{settings.mail.incoming}">
 				</td>
 			</tr>
 			<tr class="even">

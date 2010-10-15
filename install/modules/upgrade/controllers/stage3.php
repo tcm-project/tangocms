@@ -1,14 +1,14 @@
 <?php
 
 /**
- * Zula Framework Upgrade Controller
+ * Zula Framework Module
  *
  * @patches submit all patches to patches@tangocms.org
  *
  * @author Evangelos Foutras
  * @author Alex Cartwright
  * @author Robert Clipsham
- * @copyright Copyright (C) 2007, 2008, 2009 Alex Cartwright
+ * @copyright Copyright (C) 2007, 2008, 2009, 2010 Alex Cartwright
  * @license http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html GNU/LGPL 2.1
  * @package Zula_Installer
  */
@@ -16,7 +16,9 @@
 	class Upgrade_controller_stage3 extends Zula_ControllerBase {
 
 		/**
-		 * Constructor function
+		 * Constructor
+		 *
+		 * @return object
 		 */
 		public function __construct( $moduleDetails, $config, $sector ) {
 			parent::__construct( $moduleDetails, $config, $sector );
@@ -24,14 +26,13 @@
 		}
 
 		/**
-		 * Index section
-		 * Pre-Upgrade checks such as if the main config.ini.php
-		 * file is writeable
+		 * Pre-upgrade checks to ensure the environment is how we
+		 * require it.
 		 *
-		 * @return string
+		 * @return bool|string
 		 */
 		public function indexSection() {
-			$this->setTitle( t('Pre upgrade checks') );
+			$this->setTitle( t('Pre-upgrade checks') );
 			if (
 				$this->_zula->getMode() != 'cli' &&
 				(!isset( $_SESSION['upgrade_stage'] ) || $_SESSION['upgrade_stage'] !== 3)
@@ -42,8 +43,8 @@
 			 * All the checks that need to be run, and then actualy run the needed checks
 			 */
 			$tests = array(
-							'file'	=> array( $this->_zula->getConfigPath() => '' ),
-							'dir'	=> array( $this->_zula->getDir( 'config' ) => '' ),
+							'files'	=> array( $this->_zula->getConfigPath() => '' ),
+							'dirs'	=> array( $this->_zula->getDir( 'config' ) => '' ),
 							);
 			$passed = true;
 			foreach( $tests as $type=>&$items ) {
@@ -65,9 +66,9 @@
 			}
 			$view = $this->loadView( 'stage3/checks'.($this->_zula->getMode() == 'cli' ? '-cli.txt' : '.html') );
 			$view->assign( array(
-								'FILE_RESULTS'	=> $tests['file'],
-								'DIR_RESULTS'	=> $tests['dir'],
-								'PASSED'		=> $passed,
+								'file_results'	=> $tests['files'],
+								'dir_results'	=> $tests['dirs'],
+								'passed'		=> $passed,
 								));
 			return $view->getOutput();
 		}

@@ -1,14 +1,14 @@
 <?php
 
 /**
- * Zula Framework
+ * Zula Framework Module
  *
  * @patches submit all patches to patches@tangocms.org
  *
  * @author Evangelos Foutras
  * @author Alex Cartwright
  * @author Robert Clipsham
- * @copyright Copyright (C) 2007, 2008, 2009 Alex Cartwright
+ * @copyright Copyright (C) 2007, 2008, 2009, 2010 Alex Cartwright
  * @license http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html GNU/LGPL 2.1
  * @package Zula_Installer
  */
@@ -16,10 +16,10 @@
 	class Stage_controller_three extends Zula_ControllerBase {
 
 		/**
-		 * Gathers all the details needed to connect to SQL
-		 * database. Once done it will install all modules
+		 * Gathers all details needed to connect to the database
+		 * and create the initial tables to populate.
 		 *
-		 * @return string
+		 * @return bool|string
 		 */
 		public function indexSection() {
 			$this->setTitle( t('SQL details') );
@@ -27,9 +27,8 @@
 			 * Make sure user is not trying to skip ahead
 			 */
 			if ( !isset( $_SESSION['install_stage'] ) || $_SESSION['install_stage'] !== 3 ) {
-				return zula_redirect( $this->_router->makeUrl( 'stage', 'one' ) );
+				return zula_redirect( $this->_router->makeUrl('stage', 'one') );
 			}
-			// Prepare form validation
 			$form = new View_Form( 'stage3/sql_form.html', 'stage' );
 			$form->addElement( 'database', null, t('SQL Database'), new Validator_Length(1, 64) );
 			$form->addElement( 'user', null, t('Username'), new Validator_Length(1, 16) );
@@ -37,14 +36,13 @@
 			$form->addElement( 'port', 3306, t('SQL Port'), new Validator_Int );
 			$form->addElement( 'host', 'localhost', t('SQL host'), new Validator_Length(1, 80) );
 			$form->addElement( 'prefix', 'tcm_', t('Table prefix'), array(new Validator_Length(0, 32), new Validator_Alphanumeric('_-')) );
-			// Check input
 			if ( $form->hasInput() && $form->isValid() ) {
 				$fd = $form->getValues();
 				try {
 					$sql = new SQL( 'mysql', $fd['database'], $fd['host'], $fd['user'], $fd['pass'], $fd['port'] );
 					$sql->setPrefix( $fd['prefix'] );
 					$sql->query( "SET NAMES 'utf8'" ); # Use UTF-8 character set for the connection
-					$sql->loadSqlFile( $this->getPath().'/sql/base_tables.sql' );
+					$sql->loadSqlFile( $this->getPath().'/schema.sql' );
 					/**
 					 * Register SQL, load ACL and begin installing modules. The module dir
 					 * needs to be changed to the 'real' module dir first, though.
@@ -84,7 +82,7 @@
 						// All is good, attempt to write and go to next stage
 						$this->_config_ini->writeIni();
 						$_SESSION['install_stage']++;
-						return zula_redirect( $this->_router->makeUrl( 'stage', 'four' ) );
+						return zula_redirect( $this->_router->makeUrl('stage', 'four') );
 					} catch ( Config_ini_FileNotWriteable $e ) {
 						$this->_event->error( $e->getMessage() );
 					}

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Zula Framework Upgrade Controller
+ * Zula Framework Module
  *
  * @patches submit all patches to patches@tangocms.org
  *
@@ -40,6 +40,8 @@
 
 		/**
 		 * Constructor
+		 *
+		 * @return object
 		 */
 		public function __construct( $moduleDetails, $config, $sector ) {
 			parent::__construct( $moduleDetails, $config, $sector );
@@ -47,13 +49,12 @@
 		}
 
 		/**
-		 * Checks whether there is an existing TangoCMS installation and check
-		 * if it is supported by the Upgrader
+		 * Check if the currently installed version is supported
+		 * by this upgrader
 		 *
-		 * @return string
+		 * @return bool|string
 		 */
 		public function indexSection() {
-			// Check for SQL library
 			$_SESSION['upgrade_stage'] = 1;
 			if ( Registry::has( 'sql' ) ) {
 				if ( in_array( _PROJECT_VERSION, $this->supportedVersions ) ) {
@@ -62,21 +63,21 @@
 					// Set the event and zula_redirect to next stage
 					$langStr = t('Found version "%1$s" and will upgrade to "%2$s"');
 					$this->_event->success( sprintf( $langStr, _PROJECT_VERSION, _PROJECT_LATEST_VERSION ) );
-					return zula_redirect( $this->_router->makeUrl( 'upgrade', 'stage2' ) );
+					return zula_redirect( $this->_router->makeUrl('upgrade', 'stage2') );
 				} else if ( $this->_zula->getMode() == 'cli' ) {
 					$langStr = t('Version %s is not supported by this upgrader');
 					$this->_event->error( sprintf( $langStr, _PROJECT_VERSION ) );
 					exit( 3 );
 				} else {
-					$this->setTitle( t('Current Version Unsupported') );
+					$this->setTitle( t('Current version unsupported') );
 					$view = $this->loadView( 'stage1/not_supported.html' );
 					$view->assign( array (
-										'CURRENT_VERSION'	=> _PROJECT_VERSION,
-										'LATEST_VERSION'	=> _PROJECT_LATEST_VERSION,
+										'current_version'	=> _PROJECT_VERSION,
+										'latest_version'	=> _PROJECT_LATEST_VERSION,
 										));
 				}
 			} else {
-				$this->setTitle( t('Not Upgradable') );
+				$this->setTitle( t('Not upgradable') );
 				$view = $this->loadView( 'stage1/not_upgradable.html' );
 			}
 			return $view->getOutput();
