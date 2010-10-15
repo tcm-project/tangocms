@@ -55,8 +55,8 @@ done
 
 if [[ $taskUpgrade = true ]]; then
 	## Attempt to upgrade to the latest version
-	if [[ ! -f install/index.php ]]; then
-		echo "---- Unable to find 'install/index.php', failed to upgrade." >&2
+	if [[ ! -f setup/index.php ]]; then
+		echo "---- Unable to find 'setup/index.php', failed to upgrade." >&2
 		exit 2
 	fi
 	count=0
@@ -65,7 +65,7 @@ if [[ $taskUpgrade = true ]]; then
 			echo -en "\n"
 		fi
 		echo "Starting upgrade for '$config' ..."
-		(cd install && $pathPHP -f index.php "$config" upgrade/stage1)
+		(cd setup && $pathPHP -f index.php "$config" upgrade/stage1)
 		let count++;
 	done;
 	if (( $count == 0 )); then

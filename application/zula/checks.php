@@ -2,7 +2,7 @@
 
 /**
  * Zula Framework Start Up Checks
- * --- Checks PHP version is correct and install directory is not present.
+ * --- Checks PHP version is correct and setup directory is not present.
  * Here we are checking whether the mbstring PHP extension is installed and
  * configured properly. We also set the constant UNICODE_MBSTRING accordingly
  *
@@ -21,15 +21,15 @@
 						   <p><strong>Installed PHP version ('.PHP_VERSION.') does not meet the minimum requirement for the Zula Framework (5.2.0)</strong></p>
 						   <p>Please install a version of PHP that meets the minimum requirements.</p>'
 						);
-	} else if ( PHP_SAPI != 'cli' && is_dir( './install' ) && is_readable( './install' ) ) {
+	} else if ( PHP_SAPI != 'cli' && is_dir( './setup' ) && is_readable( './setup' ) ) {
 		$base = trim( dirname( $_SERVER['SCRIPT_NAME'] ), './\ ' );
 		$base = empty( $base ) ? '/' : '/'.rtrim( $base, '/' ).'/';
-		zula_fatal_error( 'Installation - '._PROJECT_NAME,
-							'<h1>Install directory is still present</h1>
+		zula_fatal_error( 'Setup - '._PROJECT_NAME,
+							'<h1>Setup directory is still present</h1>
 							 <p>If you have not yet installed '._PROJECT_NAME.', or need to upgrade, you can do so by going to the following directory:</p>
-							 <p>Install/Upgrade Directory: <a href="'.$base.'install/">./install</a></p>
+							 <p>Setup directory: <a href="'.$base.'setup/">./setup</a></p>
 							 <hr>
-							 <p>If you have already installed '._PROJECT_NAME.', then please remove the install directory for security reasons before you can continue.</p>'
+							 <p>If you have already installed '._PROJECT_NAME.', then please remove this directory for security reasons before you can continue.</p>'
 						);
 	}
 

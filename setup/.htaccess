@@ -1,0 +1,25 @@
+##
+## Zula Framework .htaccess file
+##
+
+### Rewrite Rules, used with 'SEF' routers
+<IfModule mod_rewrite.c>
+	RewriteEngine on
+
+	# The following RewriteBase needs changing if Zula Framework
+	# is running within a subdirectory (can also be the cause of
+	# 500/Internal Server Errors).
+	#
+	# This file should have its RewriteBase suffixed with /setup
+	#
+	# e.g. running in a subdir of /zula-framework use the following:
+	# RewriteBase /zula-framework/install
+	#
+	#RewriteBase /setup
+
+	RewriteCond %{SCRIPT_FILENAME} !-f
+	RewriteCond %{SCRIPT_FILENAME} !-d [OR]
+	RewriteCond %{REQUEST_URI} !/stage/one$
+	RewriteCond %{REQUEST_URI} !/upgrade/stage1$
+	RewriteRule ^(.*)$ index.php?url=$1 [QSA]
+</IfModule>

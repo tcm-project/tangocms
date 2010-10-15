@@ -45,7 +45,7 @@
 
 		/**
 		 * Current state that Zula is running in, mostly either 'production',
-		 * 'development' or 'installation';
+		 * 'development' or 'setup';
 		 * @var string
 		 */
 		private $state = 'production';
@@ -85,7 +85,7 @@
 									'assets'	=> './assets',
 									'config'	=> './config',
 									'fonts' 	=> 'fonts',
-									'install'	=> './install',
+									'setup'		=> './setup',
 									'js'		=> './assets/js',
 									'libs'		=> 'libraries',
 									'locale'	=> 'locale',

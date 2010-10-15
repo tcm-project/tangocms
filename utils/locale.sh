@@ -148,7 +148,7 @@ msgstr \"\"
 \"Content-Transfer-Encoding: 8bit\n\"
 " > ${LOCALE_DIR}/pot/zula-installer.pot
 	fi
-	for d in `find install/modules -maxdepth 1 -type d`; do
+	for d in `find setup/modules -maxdepth 1 -type d`; do
 		m=`basename $d`
 		if [ "$m" != "modules" -a "$m" != ".svn" ]; then
 			verbose || echo "[debug] Generating .pot file for the installer module $m"

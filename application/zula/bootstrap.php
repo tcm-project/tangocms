@@ -74,12 +74,12 @@
 		}
 	} catch ( Config_KeyNoExist $e ) {}
 
-	if ( $zula->getState() == 'installation' ) {
+	if ( $zula->getState() == 'setup' ) {
 		/**
-		 * Load some installation specific files as there may be things that need
-		 * changing/adding upon installation/upgrading of Zula/TCM versions
+		 * Load some setup specific files as there may be things that need
+		 * changing/adding upon installation/upgrading of application versions
 		 */
-		require $zula->getDir( 'zula' ).'/install.php';
+		require $zula->getDir( 'zula' ).'/setup.php';
 	} else {
 		$zula->loadLib( 'ugmanager' );
 		try {
@@ -125,8 +125,8 @@
 	$requestedUrl = $router->getParsedUrl();
 	if ( $requestedUrl->module == null ) {
 		// Load data fron the fpsc (Front Page Sector Content) layout
-		if ( $zula->getState() == 'installation' ) {
-			$fpsc = new Layout( $zula->getDir( 'install' ).'/layout-fpsc.xml' );
+		if ( $zula->getState() == 'setup' ) {
+			$fpsc = new Layout( $zula->getDir('setup').'/layout-fpsc.xml' );
 		} else {
 			$fpsc = new Layout( 'fpsc-'.$requestedUrl->siteType );
 		}
@@ -141,7 +141,7 @@
 	}
 
 	if ( $zula->getMode() == 'normal' && $config->get( 'theme/use_global' ) ) {
-		if ( $zula->getState() == 'installation' ) {
+		if ( $zula->getState() == 'setup' ) {
 			$themeName = 'carbon';
 		} else {
 			$themeName = $config->get( 'theme/'.$router->getSiteType().'_default' );
@@ -173,8 +173,8 @@
 				 * Work out which layout to use with the theme, load all cntrlrs from that
 				 * and then load the main dispatchers content
 				 */
-				if ( $zula->getState() == 'installation' ) {
-					$layout = new Layout( $zula->getDir( 'install' ).'/layout.xml' );
+				if ( $zula->getState() == 'setup' ) {
+					$layout = new Layout( $zula->getDir('setup').'/layout.xml' );
 				} else {
 					$layout = new Layout( Layout::find($requestedUrl->siteType, $router->getRawRequestPath()) );
 				}

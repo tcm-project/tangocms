@@ -2,5 +2,5 @@ User-agent: *
 Disallow: /application/
 Disallow: /admin/
 Disallow: /assets/
-Disallow: /install/
+Disallow: /setup/
 Disallow: /tmp/

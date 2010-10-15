@@ -99,7 +99,7 @@
 				}
 			}
 			$path = $this->_zula->getDir( 'locale' );
-			if ( $this->_zula->getState() == 'installation' ) {
+			if ( $this->_zula->getState() == 'setup' ) {
 				$domain = 'zula-installer';
 			} else {
 				$domain = _PROJECT_ID.'-'.$moduleDetails['name'];

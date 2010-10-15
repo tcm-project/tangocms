@@ -52,7 +52,7 @@
 	 * Default directories in Zula should be fine, though you can configure
 	 * them from here if you want, via Zula::setDir()
 	 */
-	if ( $zula->getState() == 'installation' ) {
+	if ( $zula->getState() == 'setup' ) {
 		define( '_REAL_MODULE_DIR', $zula->getDir( 'modules' ) );
 		// Reconfigure some directories so they work correctly when installing
 		$zula->setDir( 'modules', './modules' );
@@ -60,7 +60,7 @@
 		$zula->setDir( 'assets', '../assets' );
 		$zula->setDir( 'js', '../assets/js' );
 		$zula->setDir( 'tmp', '../tmp' );
-		$zula->setDir( 'install', './' );
+		$zula->setDir( 'setup', './' );
 		$zula->setDir( 'uploads', '../assets/uploads' );
 		$zula->setDir( 'config', '../config' );
 	}
@@ -81,8 +81,8 @@
 		}
 		$serverName = str_replace( '/', '.', rtrim($serverName, '/') );
 		if ( strlen( $serverName ) ) {
-			if ( substr( $serverName, -8 ) == '.install' ) {
-				$serverName = substr( $serverName, 0, -8 );
+			if ( substr( $serverName, -8 ) == '.setup' ) {
+				$serverName = substr( $serverName, 0, -6 );
 			}
 			if ( strpos( $serverName, 'www.' ) === 0 ) {
 				$serverName = substr( $serverName, 4 );

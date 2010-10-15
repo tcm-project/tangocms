@@ -1,0 +1,13 @@
+<ol>
+	<?php
+		foreach( $stages as $stage=>$title ) {
+			if ( $cntrlr == $stage ) {
+				echo '<li><strong>'.$title.'</strong></li>';
+			} else if ( zula_text2int( $cntrlr ) > zula_text2int( $stage ) ) {
+				echo '<li><del>'.$title.'</del></li>';
+			} else {
+				echo '<li>'.$title.'</li>';
+			}
+		}
+	?>
+</ol>

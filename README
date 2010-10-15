@@ -33,11 +33,11 @@ Installation, http://manual.tangocms.org/installation
    folders to a directory in your web/document root e.g. public_html
 	-> Installation to a sub-directory is perfectly fine!
 
-2) Go to the "install" directory, eg: http://example.com/install/
+2) Go to the "setup" directory, eg: http://example.com/setup/
 
 3) Follow the simple steps to installing TangoCMS.
 
-4) Once installed, remove the installation directory (/install).
+4) Once installed, remove the installation directory (/setup).
 
 5) To get to the AdminCP (Control Panel) you will need to go to /admin,
    for example: http://example.org/admin

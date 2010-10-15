@@ -1,0 +1,23 @@
+<p>
+	<?php
+		printf( t('Thank you for installing %1$s %2$s. You may now login to the control panel with the user details you provided'), _PROJECT_NAME, _PROJECT_LATEST_VERSION );
+	?>
+</p>
+
+<p>
+	<strong>{L_[You must now remove the setup directory (./setup) before you can view your website]}</strong>
+</p>
+
+<hr>
+
+<p style="text-align: center;">
+	<a href="<?php echo _BASE_DIR.'../'; ?>">{L_[Main Site]}</a> |
+	<?php
+		if ( $this->_router->getType() == 'sef' ) {
+			$url = _BASE_DIR.'../admin';
+		} else {
+			$url = _BASE_DIR.'../index.php?url=/admin';
+		}
+	 ?>
+	<a href="<?php echo $url; ?>">{L_[Control panel]}</a>
+</p>
