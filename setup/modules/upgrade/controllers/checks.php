@@ -22,7 +22,7 @@
 		 */
 		public function __construct( $moduleDetails, $config, $sector ) {
 			parent::__construct( $moduleDetails, $config, $sector );
-			$this->_config->update( 'config/title', _PROJECT_NAME.' '._PROJECT_LATEST_VERSION.' '.t('Upgrader') );
+			$this->_config->update( 'config/title', sprintf('%s %s upgrader', _PROJECT_NAME, _PROJECT_LATEST_VERSION) );
 		}
 
 		/**
