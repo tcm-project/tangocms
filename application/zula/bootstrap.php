@@ -199,12 +199,12 @@
 					break;
 
 				case 403:
-					$output = sprintf( t('---- Permission denied to "%s"', I18n::_DTD), $input->cli('requestPath') )."\n";
+					$output = sprintf( t('---- Permission denied to "%s"', I18n::_DTD), $input->cli('r') )."\n";
 					$zula->setExitCode( 5 );
 					break;
 
 				case 404:
-					$output = sprintf( t('---- The request path "%s" does not exist', I18n::_DTD), $input->cli('requestPath') )."\n";
+					$output = sprintf( t('---- The request path "%s" does not exist', I18n::_DTD), $input->cli('r') )."\n";
 					$zula->setExitCode( 4 );
 					break;
 			}

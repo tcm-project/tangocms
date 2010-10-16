@@ -165,8 +165,29 @@
 						break;
 
 					case 'CLI':
-						$keys = array('scriptName', 'config', 'requestPath');
-						$inputData = array_combine( $keys, array_values($_SERVER['argv']) );
+						$inputData = array();
+						if ( !isset( $_SERVER['argv'] ) ) {
+							throw new Input_Exception( "'register_argc_argv' appears to be disabled" );
+						}
+						$cliArgs = array_slice( $_SERVER['argv'], 1 );
+						while ( ($arg = array_shift($cliArgs)) !== null ) {
+							if ( $arg[0] === '-' ) {
+								if ( preg_match( '#^--([A-Za-z_\-]+)=(.*?)$#', $arg, $matches ) ) {
+									// Support for --flag=parameter
+									$flag = $matches[1];
+									$param = $matches[2];
+								} else {
+									$flag = ltrim( $arg, '-' );
+									$param = array_shift( $cliArgs );
+								}
+								if ( isset( $inputData[$flag] ) ){
+									$inputData[ $flag ] = (array) $inputData[ $flag ];
+									$inputData[ $flag ][] = $param;
+								} else {
+									$inputData[ $flag ] = $param;
+								}
+							}
+						}
 						break;
 				}
 			}

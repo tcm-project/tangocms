@@ -73,7 +73,7 @@
 	 */
 	$configName = 'default';
 	if ( $zula->getMode() == 'cli' ) {
-		$configName = $input->cli( 'config' );
+		$configName = $input->cli( 'c' );
 	} else {
 		$serverName = $_SERVER['SERVER_NAME'];
 		if ( strlen( _BASE_DIR ) != 1 ) {

@@ -75,7 +75,7 @@
 			$this->type = $type;
 			// Get the raw request path and the scheme of the server
 			if ( $this->_zula->getMode() == 'cli' ) {
-				$this->rawRequestPath = $this->_input->cli( 'requestPath' );
+				$this->rawRequestPath = $this->_input->cli( 'r' );
 			} else if ( $this->_input->has( 'get', 'url' ) ) {
 				$this->rawRequestPath = $this->_input->get( 'url' );
 			}

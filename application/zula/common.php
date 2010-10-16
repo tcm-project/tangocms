@@ -220,26 +220,38 @@ ERR;
 	 * @return bool
 	 */
 	function zula_redirect( $url, $httpStatus=303 ) {
-		$zulaMode = Registry::get( 'zula' )->getMode();
-		if ( $zulaMode == 'normal' ) {
-			if ( $url instanceof Router_Url ) {
-				$url = $url->makeFull('&');
-			}
-			header( 'Location: '.$url, true, $httpStatus );
-		} else if ( $zulaMode == 'standalone' ) {
-			Registry::get( 'log' )->message( 'unable to redirect whilst in standalone mode', Log::L_WARNING );
-			return false;
-		} else if ( $zulaMode == 'cli' ) {
-			if ( $url instanceof Router_Url ) {
-				$url = $url->make( '&', null, true );
-			} else if ( zula_url_has_scheme( $url ) ) {
-				trigger_error( 'zula_redirect() unable to redirect to a URL whilst in CLI mode', E_USER_WARNING );
+		$zula = Registry::get( 'zula' );
+		switch( $zula->getMode() ) {
+			case 'normal':
+				if ( $url instanceof Router_Url ) {
+					$url = $url->makeFull('&');
+				}
+				header( 'Location: '.$url, true, $httpStatus );
+				break;
+
+			case 'standalone':
+				Registry::get( 'log' )->message( 'unable to redirect whilst in standalone mode', Log::L_WARNING );
 				return false;
-			}
-			// Create a new request via CLI using same args, but changed request path
-			$_SERVER['argv'][ $_SERVER['argc']-1 ] = $url;
-			$args = array_map( 'escapeshellarg', $_SERVER['argv'] );
-			system( $_SERVER['_'].' -f '.implode(' ', $args) );
+
+			case 'cli':
+				if ( $url instanceof Router_Url ) {
+					$url = $url->make( '&', null, true );
+				} else if ( zula_url_has_scheme( $url ) ) {
+					trigger_error( 'zula_redirect() unable to redirect to a URL whilst in CLI mode', E_USER_WARNING );
+					return false;
+				}
+				// Create a new request via CLI using same args, but changed request path (-r)
+				$cliArgs = $_SERVER['argv'];
+				if ( ($rIndex = array_search('-r', $cliArgs)) === false ) {
+					$cliArgs['-r'] = $url;
+				} else {
+					$cliArgs[ $rIndex+1 ] = $url;
+				}
+				$script = array_shift( $cliArgs );
+				$cliArgs = array_map( 'escapeshellarg', $cliArgs );
+				system( $_SERVER['_']." -f {$script} -- ".implode(' ', $cliArgs), $exitCode );
+				$zula->setExitCode( $exitCode );
+				break;
 		}
 		return true;
 	}
