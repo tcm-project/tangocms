@@ -57,7 +57,9 @@
 		public function indexSection() {
 			$_SESSION['upgradeStage'] = 1;
 			if ( Registry::has( 'sql' ) && in_array( _PROJECT_VERSION, $this->supportedVersions ) ) {
-				++$_SESSION['upgradeStage'];
+				if ( isset( $_SESSION['upgradeStage'] ) ) {
+					++$_SESSION['upgradeStage'];
+				}
 				$_SESSION['project_version'] = _PROJECT_VERSION;
 				// Set the event and redirect to next stage
 				$langStr = t('Found version "%1$s" and will upgrade to "%2$s"');

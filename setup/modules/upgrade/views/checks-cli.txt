@@ -1,0 +1,16 @@
+<?php
+	$results = array_merge( $dir_results, $file_results );
+	$count = count( $results );
+	$i = 0;
+	foreach( $results as $name=>$passed ) {
+		echo str_pad( $name.' ', 65, '.', STR_PAD_RIGHT );
+		if ( $passed ) {
+			echo ' Writable';
+		} else {
+			echo ' '.chr(27).'[1mNot Writable'.chr(27).'[0m';
+		}
+		if ( $i++ < $count-1 ) {
+			echo "\n";
+		}
+	}
+?>

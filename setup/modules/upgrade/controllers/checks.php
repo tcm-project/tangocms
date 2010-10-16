@@ -58,7 +58,7 @@
 			}
 			if ( $passed == false ) {
 				$this->_event->error( t('Sorry, your server environment does not meet our requirements') );
-				$view = $this->loadView( 'checks.html' );
+				$view = $this->loadView( 'checks'.($this->_zula->getMode() == 'cli' ? '-cli.txt' : '.html') );
 				$view->assign( array(
 									'file_results'	=> $tests['files'],
 									'dir_results'	=> $tests['dirs'],
@@ -67,7 +67,9 @@
 				return $view->getOutput();
 			}
 			// Next stage
-			++$_SESSION['upgradeStage'];
+			if ( isset( $_SESSION['upgradeStage'] ) ) {
+				++$_SESSION['upgradeStage'];
+			}
 			return zula_redirect( $this->_router->makeUrl('upgrade', 'migrate') );
 		}
 
