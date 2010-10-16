@@ -13,7 +13,7 @@
  * @package Zula_Setup
  */
 
-	class Upgrade_controller_stage3 extends Zula_ControllerBase {
+	class Upgrade_controller_checks extends Zula_ControllerBase {
 
 		/**
 		 * Constructor
@@ -37,14 +37,14 @@
 				$this->_zula->getMode() != 'cli' &&
 				(!isset( $_SESSION['upgrade_stage'] ) || $_SESSION['upgrade_stage'] !== 3)
 			) {
-				return zula_redirect( $this->_router->makeUrl('upgrade', 'stage1') );
+				return zula_redirect( $this->_router->makeUrl('upgrade', 'version') );
 			}
 			/**
 			 * All the checks that need to be run, and then actualy run the needed checks
 			 */
 			$tests = array(
 							'files'	=> array( $this->_zula->getConfigPath() => '' ),
-							'dirs'	=> array( $this->_zula->getDir( 'config' ) => '' ),
+							'dirs'	=> array( $this->_zula->getDir('config') => '' ),
 							);
 			$passed = true;
 			foreach( $tests as $type=>&$items ) {
@@ -57,20 +57,18 @@
 				}
 			}
 			if ( $passed == false ) {
-				$this->_event->error( t('Please ensure the following directories/files are writable.') );
-			} else if ( $this->_zula->getMode() == 'cli' ) {
-				return zula_redirect( $this->_router->makeUrl('upgrade', 'stage4') );
-			} else {
-				$this->_event->success( t('The next stage will start the upgrade process which could take some time. Please ensure you have backed up first!') );
-				$_SESSION['upgrade_stage']++;
+				$this->_event->error( t('Sorry, your server environment does not meet our requirements') );
+				$view = $this->loadView( 'checks.html' );
+				$view->assign( array(
+									'file_results'	=> $tests['files'],
+									'dir_results'	=> $tests['dirs'],
+									'passed'		=> $passed,
+									));
+				return $view->getOutput();
 			}
-			$view = $this->loadView( 'stage3/checks'.($this->_zula->getMode() == 'cli' ? '-cli.txt' : '.html') );
-			$view->assign( array(
-								'file_results'	=> $tests['files'],
-								'dir_results'	=> $tests['dirs'],
-								'passed'		=> $passed,
-								));
-			return $view->getOutput();
+			// Next stage
+			++$_SESSION['upgrade_stage'];
+			return zula_redirect( $this->_router->makeUrl('upgrade', 'migrate') );
 		}
 
 	}

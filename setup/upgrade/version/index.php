@@ -15,7 +15,7 @@
 	if ( strpos( $host, 'http://' ) !== 0 && strpos( $host, 'https://' ) !== 0 ) {
 		$host = 'http://'.$host;
 	}
-	$path = substr( dirname($_SERVER['SCRIPT_NAME']), 0, -15 ).'/index.php?url=upgrade/stage1&ns';
+	$path = substr( dirname($_SERVER['SCRIPT_NAME']), 0, -15 ).'/index.php?url=upgrade/version&ns';
 
 	header( 'HTTP/1.1 303 See Other', true, 303 );
 	header( 'Location: '.$host.$path );

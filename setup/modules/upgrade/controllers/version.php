@@ -13,7 +13,7 @@
  * @package Zula_Setup
  */
 
-	class Upgrade_controller_stage1 extends Zula_ControllerBase {
+	class Upgrade_controller_version extends Zula_ControllerBase {
 
 		/**
 		 * Versions supported by the upgrade wizard
@@ -56,31 +56,21 @@
 		 */
 		public function indexSection() {
 			$_SESSION['upgrade_stage'] = 1;
-			if ( Registry::has( 'sql' ) ) {
-				if ( in_array( _PROJECT_VERSION, $this->supportedVersions ) ) {
-					$_SESSION['upgrade_stage']++;
-					$_SESSION['project_version'] = _PROJECT_VERSION;
-					// Set the event and zula_redirect to next stage
-					$langStr = t('Found version "%1$s" and will upgrade to "%2$s"');
-					$this->_event->success( sprintf( $langStr, _PROJECT_VERSION, _PROJECT_LATEST_VERSION ) );
-					return zula_redirect( $this->_router->makeUrl('upgrade', 'stage2') );
-				} else if ( $this->_zula->getMode() == 'cli' ) {
-					$langStr = t('Version %s is not supported by this upgrader');
-					$this->_event->error( sprintf( $langStr, _PROJECT_VERSION ) );
-					exit( 3 );
-				} else {
-					$this->setTitle( t('Current version unsupported') );
-					$view = $this->loadView( 'stage1/not_supported.html' );
-					$view->assign( array (
-										'current_version'	=> _PROJECT_VERSION,
-										'latest_version'	=> _PROJECT_LATEST_VERSION,
-										));
-				}
-			} else {
-				$this->setTitle( t('Not upgradable') );
-				$view = $this->loadView( 'stage1/not_upgradable.html' );
+			if ( Registry::has( 'sql' ) && in_array( _PROJECT_VERSION, $this->supportedVersions ) ) {
+				$_SESSION['upgrade_stage']++;
+				$_SESSION['project_version'] = _PROJECT_VERSION;
+				// Set the event and redirect to next stage
+				$langStr = t('Found version "%1$s" and will upgrade to "%2$s"');
+				$this->_event->success( sprintf( $langStr, _PROJECT_VERSION, _PROJECT_LATEST_VERSION ) );
+				return zula_redirect( $this->_router->makeUrl('upgrade', 'security') );
 			}
-			return $view->getOutput();
+			$langStr = t('Version %s is not supported by this upgrader');
+			$this->_event->error( sprintf( $langStr, _PROJECT_VERSION ) );
+			if ( $this->_zula->getMode() == 'cli' ) {
+				exit( 3 );
+			} else {
+				return zula_redirect( $this->_router->makeUrl('index') );
+			}
 		}
 
 	}

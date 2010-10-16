@@ -13,7 +13,7 @@
  * @package Zula_Setup
  */
 
-	class Upgrade_controller_stage5 extends Zula_ControllerBase {
+	class Upgrade_controller_complete extends Zula_ControllerBase {
 
 		/**
 		 * Constructor
@@ -32,12 +32,10 @@
 		 */
 		public function indexSection() {
 			if ( !isset( $_SESSION['upgrade_stage'] ) || $_SESSION['upgrade_stage'] !== 5 ) {
-				return zula_redirect( $this->_router->makeUrl('upgrade', 'stage1') );
+				return zula_redirect( $this->_router->makeUrl('upgrade', 'version') );
 			}
-			$view = $this->loadView( 'stage5/upgrade_successful.html' );
-			$view->assign( array(
-								'project_version' => $_SESSION['project_version'],
-								));
+			$view = $this->loadView( 'complete.html' );
+			$view->assign( array('project_version' => $_SESSION['project_version']) );
 			return $view->getOutput();
 		}
 

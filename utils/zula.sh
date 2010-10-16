@@ -65,7 +65,7 @@ if [[ $taskUpgrade = true ]]; then
 			echo -en "\n"
 		fi
 		echo "Starting upgrade for '$config' ..."
-		(cd setup && $pathPHP -f index.php "$config" upgrade/stage1)
+		(cd setup && $pathPHP -f index.php "$config" upgrade/version)
 		let count++;
 	done;
 	if (( $count == 0 )); then

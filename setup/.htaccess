@@ -20,6 +20,6 @@
 	RewriteCond %{SCRIPT_FILENAME} !-f
 	RewriteCond %{SCRIPT_FILENAME} !-d [OR]
 	RewriteCond %{REQUEST_URI} !/install/security$
-	RewriteCond %{REQUEST_URI} !/upgrade/stage1$
+	RewriteCond %{REQUEST_URI} !/upgrade/version$
 	RewriteRule ^(.*)$ index.php?url=$1 [QSA]
 </IfModule>

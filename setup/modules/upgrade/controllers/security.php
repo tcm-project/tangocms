@@ -13,7 +13,7 @@
  * @package Zula_Setup
  */
 
-	class Upgrade_controller_stage2 extends Zula_ControllerBase {
+	class Upgrade_controller_security extends Zula_ControllerBase {
 
 		/**
 		 * Constructor
@@ -34,9 +34,9 @@
 		public function indexSection() {
 			$this->setTitle( t('Security check') );
 			if ( $this->_zula->getMode() == 'cli' ) {
-				return zula_redirect( $this->_router->makeUrl( 'upgrade', 'stage3' ) );
+				return zula_redirect( $this->_router->makeUrl( 'upgrade', 'checks' ) );
 			} else if ( !isset( $_SESSION['upgrade_stage'] ) || $_SESSION['upgrade_stage'] !== 2 ) {
-				return zula_redirect( $this->_router->makeUrl( 'upgrade', 'stage1' ) );
+				return zula_redirect( $this->_router->makeUrl( 'upgrade', 'version' ) );
 			}
 			if ( !empty( $_SESSION['upgrade_security_code'] ) ) {
 				// We've got a security code, see if the file exists
@@ -44,7 +44,7 @@
 				if ( file_exists( $file ) ) {
 					unset( $_SESSION['upgrade_security_code'] );
 					$_SESSION['upgrade_stage']++;
-					return zula_redirect( $this->_router->makeUrl( 'upgrade', 'stage3' ) );
+					return zula_redirect( $this->_router->makeUrl( 'upgrade', 'checks' ) );
 				} else {
 					$this->_event->error( sprintf( t('Verification file "%s" does not exist'), $file ));
 				}
@@ -52,7 +52,7 @@
 			if ( !isset( $_SESSION['upgrade_security_code'] ) ) {
 				$_SESSION['upgrade_security_code'] =  uniqid( 'zula_verify_' );
 			}
-			$view = $this->loadView( 'stage2/security_check.html' );
+			$view = $this->loadView( 'security.html' );
 			$view->assign( array('code' => $_SESSION['upgrade_security_code']) );
 			return $view->getOutput();
 		}
