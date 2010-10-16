@@ -19,6 +19,9 @@
 		 * Gathers all details needed to connect to the database
 		 * and create the initial tables to populate.
 		 *
+		 * The config.ini.php file also gets updated with the SQL
+		 * details and others such as hashing salt and router type.
+		 *
 		 * @return bool|string
 		 */
 		public function indexSection() {
@@ -44,42 +47,25 @@
 					$sql->query( "SET NAMES 'utf8'" ); # Use UTF-8 character set for the connection
 					$sql->loadSqlFile( $this->getPath().'/schema.sql' );
 					/**
-					 * Register SQL, load ACL and begin installing modules. The module dir
-					 * needs to be changed to the 'real' module dir first, though.
-					 */
-					Registry::register( 'sql', $sql );
-					$this->_zula->loadLib( 'acl' );
-					if ( !Registry::has( 'config_sql' ) ) {
-						$configSql = new Config_sql;
-						$configSql->load( 'config' );
-						Registry::register( 'config_sql', $configSql );
-					}
-					Module::setDirectory( _REAL_MODULE_DIR );
-					foreach( Module::getModules( Module::_INSTALLABLE ) as $modname ) {
-						$module = new Module( $modname );
-						$module->install();
-					}
-					$this->setTcmDefaults();
-					Module::setDirectory( $this->_zula->getDir( 'modules' ) );
-					/**
-					 * Attempt to update the configuration ini file with the new values
+					 * Update config.ini.php file with the new values
 					 */
 					$confKeys = array(
-										'sql/enable'	=> true,
-										'sql/host'		=> $fd['host'],
-										'sql/user'		=> $fd['user'],
-										'sql/pass'		=> $fd['pass'],
-										'sql/database'	=> $fd['database'],
-										'sql/type'		=> 'mysql',
-										'sql/prefix'	=> $fd['prefix'],
-										'sql/port'		=> $fd['port'],
-										);
+									'sql/enable'	=> true,
+									'sql/host'		=> $fd['host'],
+									'sql/user'		=> $fd['user'],
+									'sql/pass'		=> $fd['pass'],
+									'sql/database'	=> $fd['database'],
+									'sql/type'		=> 'mysql',
+									'sql/prefix'	=> $fd['prefix'],
+									'sql/port'		=> $fd['port'],
+									'hashing/salt'	=> zula_make_salt(),
+									'acl/enable'	=> true
+									);
 					if ( $this->_input->has( 'get', 'ns' ) ) {
 						$confKeys['url_router/type'] = 'standard';
 					}
 					$this->_config_ini->update( array_keys($confKeys), array_values($confKeys) );
 					try {
-						// All is good, attempt to write and go to next stage
 						$this->_config_ini->writeIni();
 						++$_SESSION['installStage'];
 						return zula_redirect( $this->_router->makeUrl('install', 'user') );
@@ -91,45 +77,6 @@
 				}
 			}
 			return $form->getOutput();
-		}
-
-		/**
-		 * Sets up defaults for TangoCMS, such as ACL rules and
-		 * default content for some modules.
-		 *
-		 * @return null
-		 */
-		protected function setTcmDefaults() {
-			// Setup some common default roles that will be used
-			$guestInherit = $adminInherit = array('group_root');
-			foreach( $this->_acl->getRoleTree( 'group_guest', true ) as $role ) {
-				array_unshift( $guestInherit, $role['name'] );
-			}
-			foreach( $this->_acl->getRoleTree( 'group_admin', true ) as $role ) {
-				array_unshift( $adminInherit, $role['name'] );
-			}
-			$aclResources = array(
-								# main-default content layout
-								'layout_controller_456'	=> $guestInherit,
-								'layout_controller_974'	=> $guestInherit,
-								'layout_controller_110'	=> $guestInherit,
-								'layout_controller_119'	=> $guestInherit,
-								'layout_controller_168'	=> $guestInherit,
-
-								# admin-default content layout
-								'layout_controller_409'	=> $adminInherit,
-								'layout_controller_123'	=> $adminInherit,
-								'layout_controller_909'	=> $adminInherit,
-								'layout_controller_551'	=> $adminInherit,
-								);
-			foreach( $aclResources as $resource=>$roles ) {
-				$this->_acl->allowOnly( $resource, $roles );
-			}
-			// Setup module load order
-			if ( Module::exists( 'comments' ) ) {
-				$tmpModule = new Module( 'comments' );
-				$tmpModule->setLoadOrder( 1 ); # Should force it below Shareable by default
-			}
 		}
 
 	}

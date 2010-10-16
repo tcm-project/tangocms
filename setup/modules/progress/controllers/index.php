@@ -33,6 +33,7 @@
 								t('Pre-installation checks'),
 								t('SQL details'),
 								t('First user'),
+								t('Module installation'),
 								t('Basic configuration'),
 								t('Installation complete!'),
 								);

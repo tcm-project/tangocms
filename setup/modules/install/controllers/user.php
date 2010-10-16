@@ -38,40 +38,10 @@
 				if ( $fd['username'] == 'guest' ) {
 					$this->_event->error( t('Username of "guest" is invalid') );
 				} else {
-					$pdoSt = $this->_sql->prepare( 'UPDATE {SQL_PREFIX}users
-													SET
-														username = :username,
-														password = :password,
-														joined = UTC_TIMESTAMP(),
-														email = :email
-													WHERE id = 2' );
-					$pdoSt->execute( array(
-											':username'	=> $fd['username'],
-											':password'	=> zula_hash( $fd['password'] ),
-											':email'	=> $fd['email'],
-											));
-					// Set the contact form email to be the same as the initial user
-					try {
-						$pdoSt->closeCursor();
-						$pdoSt = $this->_sql->prepare( 'UPDATE {SQL_PREFIX}mod_contact SET email = ?' );
-						$pdoSt->execute( array($fd['email']) );
-						$pdoSt->closeCursor();
-					} catch ( Exception $e ) {
-					}
+					$this->_ugmanager->editUser( 2, $fd );
 					++$_SESSION['installStage'];
-					return zula_redirect( $this->_router->makeUrl('install', 'settings') );
+					return zula_redirect( $this->_router->makeUrl('install', 'modules') );
 				}
-			}
-			/**
-			 * Update the config.ini.php file with a new random
-			 * salt that will be used for this installation.
-			 */
-			$configIni = Registry::get( 'config_ini' );
-			try {
-				$configIni->update( 'hashing/salt', zula_make_salt() );
-				$configIni->writeIni();
-			} catch ( Exception $e ) {
-				$this->_log->message( 'salt could not be set "'.$e->getMessage().'", reverting to default salt.', Log::L_WARNING );
 			}
 			return $form->getOutput();
 		}

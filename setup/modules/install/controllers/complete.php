@@ -25,15 +25,8 @@
 			/**
 			 * Check user is not skipping ahead
 			 */
-			if ( !isset( $_SESSION['installStage'] ) || $_SESSION['installStage'] !== 6 ) {
+			if ( !isset( $_SESSION['installStage'] ) || $_SESSION['installStage'] !== 7 ) {
 				return zula_redirect( $this->_router->makeUrl('install', 'security') );
-			}
-			$configIni = Registry::get( 'config_ini' );
-			try {
-				$configIni->update( 'acl/enable', 'true' );
-				$configIni->writeIni();
-			} catch ( Config_ini_FileNotWriteable $e ) {
-				$this->_event->error( $e->getMessage() );
 			}
 			$view = $this->loadView( 'complete.html' );
 			return $view->getOutput();

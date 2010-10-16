@@ -26,7 +26,7 @@
 			/**
 			 * Make sure user is not skipping ahead
 			 */
-			if ( !isset( $_SESSION['installStage'] ) || $_SESSION['installStage'] !== 5 ) {
+			if ( !isset( $_SESSION['installStage'] ) || $_SESSION['installStage'] !== 6 ) {
 				return zula_redirect( $this->_router->makeUrl('install', 'security') );
 			}
 			$form = new View_form( 'settings.html', 'install' );
