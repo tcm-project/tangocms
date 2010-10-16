@@ -13,7 +13,7 @@
  * @package Zula_Setup
  */
 
-	class Stage_controller_six extends Zula_ControllerBase {
+	class Install_controller_complete extends Zula_ControllerBase {
 
 		/**
 		 * Displays a simple message saying the installation is complete
@@ -26,9 +26,8 @@
 			 * Check user is not skipping ahead
 			 */
 			if ( !isset( $_SESSION['install_stage'] ) || $_SESSION['install_stage'] !== 6 ) {
-				return zula_redirect( $this->_router->makeUrl('stage', 'one') );
+				return zula_redirect( $this->_router->makeUrl('install', 'security') );
 			}
-			# Enable ACL
 			$configIni = Registry::get( 'config_ini' );
 			try {
 				$configIni->update( 'acl/enable', 'true' );
@@ -36,7 +35,7 @@
 			} catch ( Config_ini_FileNotWriteable $e ) {
 				$this->_event->error( $e->getMessage() );
 			}
-			$view = $this->loadView( 'stage6/finish.html' );
+			$view = $this->loadView( 'complete.html' );
 			return $view->getOutput();
 		}
 

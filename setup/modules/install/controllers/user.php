@@ -13,7 +13,7 @@
  * @package Zula_Setup
  */
 
-	class Stage_controller_four extends Zula_ControllerBase {
+	class Install_controller_user extends Zula_ControllerBase {
 
 		/**
 		 * Add the first user which will be created in the special
@@ -27,9 +27,9 @@
 			 * Make sure user is not skipping a head
 			 */
 			if ( !isset( $_SESSION['install_stage'] ) || $_SESSION['install_stage'] !== 4 ) {
-				return zula_redirect( $this->_router->makeUrl('stage', 'one') );
+				return zula_redirect( $this->_router->makeUrl('install', 'security') );
 			}
-			$form = new View_Form( 'stage4/user.html', 'stage' );
+			$form = new View_Form( 'user.html', 'install' );
 			$form->addElement( 'username', null, t('Username'), array(new Validator_Alphanumeric('_-'), new Validator_Length(2, 32)) );
 			$form->addElement( 'password', null, t('Password'), array(new Validator_Length(4, 32), new Validator_Confirm('password2', Validator_Confirm::_POST)) );
 			$form->addElement( 'email', null, t('Email'), array(new Validator_Email, new Validator_Confirm('email2', Validator_Confirm::_POST)) );
@@ -59,7 +59,7 @@
 					} catch ( Exception $e ) {
 					}
 					$_SESSION['install_stage']++;
-					return zula_redirect( $this->_router->makeUrl('stage', 'five') );
+					return zula_redirect( $this->_router->makeUrl('install', 'settings') );
 				}
 			}
 			/**

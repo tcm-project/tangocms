@@ -2,9 +2,9 @@
 
 <ul>
 	<li>
-		<a href="<?php echo $this->_router->makeUrl( 'stage', 'one' ); ?>"><?php printf( t('Install %s'), _PROJECT_NAME ); ?></a>
+		<a href="<?php echo $this->_router->makeUrl('install', 'security'); ?>"><?php printf( t('Install %s'), _PROJECT_NAME ); ?></a>
 	</li>
 	<li>
-		<a href="<?php echo $this->_router->makeUrl( 'upgrade', 'stage1' ); ?>"><?php printf( t('Upgrade %s'), _PROJECT_NAME ); ?></a>
+		<a href="<?php echo $this->_router->makeUrl('upgrade', 'stage1'); ?>"><?php printf( t('Upgrade %s'), _PROJECT_NAME ); ?></a>
 	</li>
 </ul>

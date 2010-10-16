@@ -13,7 +13,7 @@
  * @package Zula_Setup
  */
 
-	class Stage_controller_three extends Zula_ControllerBase {
+	class Install_controller_sql extends Zula_ControllerBase {
 
 		/**
 		 * Gathers all details needed to connect to the database
@@ -27,9 +27,9 @@
 			 * Make sure user is not trying to skip ahead
 			 */
 			if ( !isset( $_SESSION['install_stage'] ) || $_SESSION['install_stage'] !== 3 ) {
-				return zula_redirect( $this->_router->makeUrl('stage', 'one') );
+				return zula_redirect( $this->_router->makeUrl('install', 'security') );
 			}
-			$form = new View_Form( 'stage3/sql_form.html', 'stage' );
+			$form = new View_Form( 'sql.html', 'install' );
 			$form->addElement( 'database', null, t('SQL Database'), new Validator_Length(1, 64) );
 			$form->addElement( 'user', null, t('Username'), new Validator_Length(1, 16) );
 			$form->addElement( 'pass', null, t('Password'), array(new Validator_Length(0, 64), new Validator_Regex('#^[^"]*$#')) );
@@ -82,7 +82,7 @@
 						// All is good, attempt to write and go to next stage
 						$this->_config_ini->writeIni();
 						$_SESSION['install_stage']++;
-						return zula_redirect( $this->_router->makeUrl('stage', 'four') );
+						return zula_redirect( $this->_router->makeUrl('install', 'user') );
 					} catch ( Config_ini_FileNotWriteable $e ) {
 						$this->_event->error( $e->getMessage() );
 					}

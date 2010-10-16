@@ -13,7 +13,7 @@
  * @package Zula_Setup
  */
 
-	class Stage_controller_two extends Zula_ControllerBase {
+	class Install_controller_checks extends Zula_ControllerBase {
 
 		/**
 		 * Check the environment the installer is running in to
@@ -28,7 +28,7 @@
 			 * Make sure user is not trying to skip a head a stage.
 			 */
 			if ( !isset( $_SESSION['install_stage'] ) || $_SESSION['install_stage'] !== 2 ) {
-				return zula_redirect( $this->_router->makeUrl('stage', 'one') );
+				return zula_redirect( $this->_router->makeUrl('install', 'security') );
 			}
 			$checks = array(
 						'exts'	=> array(
@@ -94,10 +94,10 @@
 			if ( $passed ) {
 				$this->_event->success( t('Pre-installation checks successful') );
 				$_SESSION['install_stage']++;
-				return zula_redirect( $this->_router->makeUrl('stage', 'three') );
+				return zula_redirect( $this->_router->makeUrl('install', 'sql') );
 			} else {
 				$this->_event->error( t('Sorry, your server environment does not meet our requirements') );
-				$view = $this->loadView( 'stage2/checks.html' );
+				$view = $this->loadView( 'checks.html' );
 				$view->assign( array(
 									'checks'	=> $checks,
 									'passed'	=> $passed,

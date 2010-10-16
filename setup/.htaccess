@@ -13,13 +13,13 @@
 	# This file should have its RewriteBase suffixed with /setup
 	#
 	# e.g. running in a subdir of /zula-framework use the following:
-	# RewriteBase /zula-framework/install
+	# RewriteBase /zula-framework/setup
 	#
 	#RewriteBase /setup
 
 	RewriteCond %{SCRIPT_FILENAME} !-f
 	RewriteCond %{SCRIPT_FILENAME} !-d [OR]
-	RewriteCond %{REQUEST_URI} !/stage/one$
+	RewriteCond %{REQUEST_URI} !/install/security$
 	RewriteCond %{REQUEST_URI} !/upgrade/stage1$
 	RewriteRule ^(.*)$ index.php?url=$1 [QSA]
 </IfModule>

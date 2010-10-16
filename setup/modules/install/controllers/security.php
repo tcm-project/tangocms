@@ -13,7 +13,7 @@
  * @package Zula_Setup
  */
 
-	class Stage_controller_one extends Zula_ControllerBase {
+	class Install_controller_security extends Zula_ControllerBase {
 
 		/**
 		 * Security check to ensure the user installing this application
@@ -31,7 +31,7 @@
 				if ( file_exists( $file ) ) {
 					unset( $_SESSION['security_code'] );
 					$_SESSION['install_stage']++;
-					return zula_redirect( $this->_router->makeUrl('stage', 'two') );
+					return zula_redirect( $this->_router->makeUrl('install', 'checks') );
 				} else {
 					$this->_event->error( sprintf( t('Verification file "%s" does not exist'), $file ) );
 				}
@@ -39,7 +39,7 @@
 			if ( !isset( $_SESSION['security_code'] ) ) {
 				$_SESSION['security_code'] = uniqid( 'zula_verify_' );
 			}
-			$view = $this->loadView( 'stage1/main.html' );
+			$view = $this->loadView( 'security.html' );
 			$view->assign( array('code' => $_SESSION['security_code']) );
 			return $view->getOutput();
 		}

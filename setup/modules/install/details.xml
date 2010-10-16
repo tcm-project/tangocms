@@ -1,8 +1,8 @@
 <?xml version="1.0" ?>
 <details>
 	<detail>
-		<name>stage</name>
-		<title>Stage</title>
+		<name>install</name>
+		<title>Install</title>
 		<description>Installs the Zula Framework application</description>
 		<author>Alex Cartwright</author>
 		<category>setup</category>

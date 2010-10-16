@@ -232,7 +232,7 @@ if [[ $taskPackage = true ]]; then
 		mkdir $tmpDir/$projectId
 		mv $tmpDir/* $tmpDir/$projectId 2> /dev/null
 		mv $tmpDir/$projectId/ms-webapp/* $tmpDir
-		mv $tmpDir/$projectId/setup/modules/stage/schema.sql $tmpDir/$projectId.sql
+		mv $tmpDir/$projectId/setup/modules/install/schema.sql $tmpDir/$projectId.sql
 		rm -rf $tmpDir/$projectId/setup $tmpDir/$projectId/ms-webapp
 
 		(cd $tmpDir && zip -qr9 $curPwd/$packageName-wag.zip . && verbose || echo -ne ".")

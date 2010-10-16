@@ -13,7 +13,7 @@
  * @package Zula_Setup
  */
 
-	class Stage_controller_five extends Zula_ControllerBase {
+	class Install_controller_settings extends Zula_ControllerBase {
 
 		/**
 		 * Update common basic settings so a user doesn't forget
@@ -27,9 +27,9 @@
 			 * Make sure user is not skipping ahead
 			 */
 			if ( !isset( $_SESSION['install_stage'] ) || $_SESSION['install_stage'] !== 5 ) {
-				return zula_redirect( $this->_router->makeUrl('stage', 'one') );
+				return zula_redirect( $this->_router->makeUrl('install', 'security') );
 			}
-			$form = new View_form( 'stage5/settings.html', 'stage' );
+			$form = new View_form( 'settings.html', 'install' );
 			$form->addElement( 'settings/config/title', null, t('Site title'), new Validator_Length(0, 255) );
 			$form->addElement( 'settings/meta/description', null, t('Meta description'), new Validator_Length(0, 255) );
 			$form->addElement( 'settings/mail/outgoing', null, t('Outgoing email'), new Validator_Email );
@@ -45,7 +45,7 @@
 				// Update scheme/protocol that is being used
 				$this->_config_sql->add( 'config/protocol', $this->_router->getScheme() );
 				$_SESSION['install_stage']++;
-				return zula_redirect( $this->_router->makeUrl('stage', 'six') );
+				return zula_redirect( $this->_router->makeUrl('install', 'complete') );
 			}
 			return $form->getOutput();
 		}
