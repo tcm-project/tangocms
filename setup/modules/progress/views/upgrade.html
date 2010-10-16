@@ -1,11 +1,9 @@
 <ol>
 	<?php
-		$tmp_stage = array( 'stage1', 'stage2', 'stage3', 'stage4', 'stage5' );
-		$stage_id = array_search( $cntrlr, $tmp_stage );
 		foreach( $stages as $stage=>$title ) {
-			if ( $stage_id == $stage ) {
+			if ( $curstage == $stage+1 ) {
 				echo '<li><strong>'.$title.'</strong></li>';
-			} else if ( $stage_id > $stage ) {
+			} else if ( $curstage > $stage+1 ) {
 				echo '<li><del>'.$title.'</del></li>';
 			} else {
 				echo '<li>'.$title.'</li>';

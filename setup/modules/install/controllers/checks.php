@@ -27,7 +27,7 @@
 			/**
 			 * Make sure user is not trying to skip a head a stage.
 			 */
-			if ( !isset( $_SESSION['install_stage'] ) || $_SESSION['install_stage'] !== 2 ) {
+			if ( !isset( $_SESSION['installStage'] ) || $_SESSION['installStage'] !== 2 ) {
 				return zula_redirect( $this->_router->makeUrl('install', 'security') );
 			}
 			$checks = array(
@@ -93,7 +93,7 @@
 			}
 			if ( $passed ) {
 				$this->_event->success( t('Pre-installation checks successful') );
-				$_SESSION['install_stage']++;
+				++$_SESSION['installStage'];
 				return zula_redirect( $this->_router->makeUrl('install', 'sql') );
 			} else {
 				$this->_event->error( t('Sorry, your server environment does not meet our requirements') );

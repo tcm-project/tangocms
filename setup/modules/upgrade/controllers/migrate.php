@@ -110,7 +110,7 @@
 			$this->setTitle( 'Upgrading' );
 			if (
 				$this->_zula->getMode() != 'cli' &&
-				(!isset( $_SESSION['upgrade_stage'] ) || $_SESSION['upgrade_stage'] !== 4)
+				(!isset( $_SESSION['upgradeStage'] ) || $_SESSION['upgradeStage'] !== 4)
 			) {
 				return zula_redirect( $this->_router->makeUrl('upgrade', 'version') );
 			}
@@ -171,7 +171,7 @@
 			if ( $this->_zula->getMode() == 'cli' ) {
 				return true;
 			} else {
-				++$_SESSION['upgrade_stage'];
+				++$_SESSION['upgradeStage'];
 				return zula_redirect( $this->_router->makeUrl('upgrade', 'complete') );
 			}
 		}

@@ -25,22 +25,22 @@
 		public function indexSection() {
 			$this->setTitle( t('Security check') );
 			// Set default install stage and attempt to check for code file
-			$_SESSION['install_stage'] = 1;
-			if ( !empty( $_SESSION['security_code'] ) ) {
-				$file = $this->_zula->getDir( 'setup' ).'/'.$_SESSION['security_code'].'.txt';
+			$_SESSION['installStage'] = 1;
+			if ( !empty( $_SESSION['securityCode'] ) ) {
+				$file = $this->_zula->getDir( 'setup' ).'/'.$_SESSION['securityCode'].'.txt';
 				if ( file_exists( $file ) ) {
-					unset( $_SESSION['security_code'] );
-					$_SESSION['install_stage']++;
+					unset( $_SESSION['securityCode'] );
+					++$_SESSION['installStage'];
 					return zula_redirect( $this->_router->makeUrl('install', 'checks') );
 				} else {
 					$this->_event->error( sprintf( t('Verification file "%s" does not exist'), $file ) );
 				}
 			}
-			if ( !isset( $_SESSION['security_code'] ) ) {
-				$_SESSION['security_code'] = uniqid( 'zula_verify_' );
+			if ( !isset( $_SESSION['securityCode'] ) ) {
+				$_SESSION['securityCode'] = uniqid( 'zula_verify_' );
 			}
 			$view = $this->loadView( 'security.html' );
-			$view->assign( array('code' => $_SESSION['security_code']) );
+			$view->assign( array('code' => $_SESSION['securityCode']) );
 			return $view->getOutput();
 		}
 

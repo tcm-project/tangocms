@@ -23,24 +23,28 @@
 		 */
 		public function indexSection() {
 			$reqCntrlr = $this->_dispatcher->getDispatchData();
-			if ( $reqCntrlr['module'] == 'stage' ) {
+			if ( $reqCntrlr['module'] == 'install' ) {
 				$this->setTitle( t('Installation progress') );
+				$curStage = $_SESSION['installStage'];
+				// Build the view
 				$view = $this->loadView( 'installation.html' );
 				$stages = array(
-								'one'	=> t('Security check'),
-								'two'	=> t('Pre-installation checks'),
-								'three'	=> t('SQL details'),
-								'four'	=> t('First user'),
-								'five'	=> t('Basic configuration'),
-								'six'	=> t('Install complete!'),
+								t('Security check'),
+								t('Pre-installation checks'),
+								t('SQL details'),
+								t('First user'),
+								t('Basic configuration'),
+								t('Installation complete!'),
 								);
 			} else if ( $reqCntrlr['module'] == 'upgrade' ) {
 				$this->setTitle( t('Upgrade progress') );
+				$curStage = $_SESSION['upgradeStage'];
+				// Build the view
 				$view = $this->loadView( 'upgrade.html' );
 				$stages = array(
 								t('Version check'),
 								t('Security check'),
-								t('Pre-Upgrade checks'),
+								t('Pre-upgrade checks'),
 								t('Perform upgrades'),
 								t('Upgrade complete!'),
 								);
@@ -49,7 +53,7 @@
 			}
 			$view->assign( array(
 								'stages' 	=> $stages,
-								'cntrlr'	=> $reqCntrlr['controller'],
+								'curStage'	=> $curStage,
 								));
 			return $view->getOutput();
 		}

@@ -26,7 +26,7 @@
 			/**
 			 * Make sure user is not skipping a head
 			 */
-			if ( !isset( $_SESSION['install_stage'] ) || $_SESSION['install_stage'] !== 4 ) {
+			if ( !isset( $_SESSION['installStage'] ) || $_SESSION['installStage'] !== 4 ) {
 				return zula_redirect( $this->_router->makeUrl('install', 'security') );
 			}
 			$form = new View_Form( 'user.html', 'install' );
@@ -58,7 +58,7 @@
 						$pdoSt->closeCursor();
 					} catch ( Exception $e ) {
 					}
-					$_SESSION['install_stage']++;
+					++$_SESSION['installStage'];
 					return zula_redirect( $this->_router->makeUrl('install', 'settings') );
 				}
 			}

@@ -26,7 +26,7 @@
 			/**
 			 * Make sure user is not trying to skip ahead
 			 */
-			if ( !isset( $_SESSION['install_stage'] ) || $_SESSION['install_stage'] !== 3 ) {
+			if ( !isset( $_SESSION['installStage'] ) || $_SESSION['installStage'] !== 3 ) {
 				return zula_redirect( $this->_router->makeUrl('install', 'security') );
 			}
 			$form = new View_Form( 'sql.html', 'install' );
@@ -81,7 +81,7 @@
 					try {
 						// All is good, attempt to write and go to next stage
 						$this->_config_ini->writeIni();
-						$_SESSION['install_stage']++;
+						++$_SESSION['installStage'];
 						return zula_redirect( $this->_router->makeUrl('install', 'user') );
 					} catch ( Config_ini_FileNotWriteable $e ) {
 						$this->_event->error( $e->getMessage() );

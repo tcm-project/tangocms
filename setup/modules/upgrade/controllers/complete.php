@@ -31,7 +31,7 @@
 		 * @return string
 		 */
 		public function indexSection() {
-			if ( !isset( $_SESSION['upgrade_stage'] ) || $_SESSION['upgrade_stage'] !== 5 ) {
+			if ( !isset( $_SESSION['upgradeStage'] ) || $_SESSION['upgradeStage'] !== 5 ) {
 				return zula_redirect( $this->_router->makeUrl('upgrade', 'version') );
 			}
 			$view = $this->loadView( 'complete.html' );

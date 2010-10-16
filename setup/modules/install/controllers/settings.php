@@ -26,7 +26,7 @@
 			/**
 			 * Make sure user is not skipping ahead
 			 */
-			if ( !isset( $_SESSION['install_stage'] ) || $_SESSION['install_stage'] !== 5 ) {
+			if ( !isset( $_SESSION['installStage'] ) || $_SESSION['installStage'] !== 5 ) {
 				return zula_redirect( $this->_router->makeUrl('install', 'security') );
 			}
 			$form = new View_form( 'settings.html', 'install' );
@@ -44,7 +44,7 @@
 				}
 				// Update scheme/protocol that is being used
 				$this->_config_sql->add( 'config/protocol', $this->_router->getScheme() );
-				$_SESSION['install_stage']++;
+				++$_SESSION['installStage'];
 				return zula_redirect( $this->_router->makeUrl('install', 'complete') );
 			}
 			return $form->getOutput();

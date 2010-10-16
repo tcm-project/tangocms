@@ -35,7 +35,7 @@
 			$this->setTitle( t('Pre-upgrade checks') );
 			if (
 				$this->_zula->getMode() != 'cli' &&
-				(!isset( $_SESSION['upgrade_stage'] ) || $_SESSION['upgrade_stage'] !== 3)
+				(!isset( $_SESSION['upgradeStage'] ) || $_SESSION['upgradeStage'] !== 3)
 			) {
 				return zula_redirect( $this->_router->makeUrl('upgrade', 'version') );
 			}
@@ -67,7 +67,7 @@
 				return $view->getOutput();
 			}
 			// Next stage
-			++$_SESSION['upgrade_stage'];
+			++$_SESSION['upgradeStage'];
 			return zula_redirect( $this->_router->makeUrl('upgrade', 'migrate') );
 		}
 

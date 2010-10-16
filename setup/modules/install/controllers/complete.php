@@ -25,7 +25,7 @@
 			/**
 			 * Check user is not skipping ahead
 			 */
-			if ( !isset( $_SESSION['install_stage'] ) || $_SESSION['install_stage'] !== 6 ) {
+			if ( !isset( $_SESSION['installStage'] ) || $_SESSION['installStage'] !== 6 ) {
 				return zula_redirect( $this->_router->makeUrl('install', 'security') );
 			}
 			$configIni = Registry::get( 'config_ini' );
