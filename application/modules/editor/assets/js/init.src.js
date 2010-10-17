@@ -73,10 +73,11 @@
 					$(this).parents("form").submit(
 						function() {
 							var editorType = editorShebangs.shift();
+							var newValue = editorJitShebang($(tmpTextarea).val(), editorType);
 							if ( typeof tinyMCE !== "undefined" ) {
 								$(tmpTextarea).tinymce().remove();
 							}
-							$(tmpTextarea).val( editorJitShebang($(tmpTextarea).val(), editorType) );
+							$(tmpTextarea).val( newValue );
 							return true;
 						}
 					);
