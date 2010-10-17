@@ -5,6 +5,14 @@ TangoCMS NEWS (Basic ChangeLog for Users)
 A complete ChangeLog can be found at http://tangocms.org/changelog
 
 
+2.5.6 (2010-10-17)
+========================
+
+-- Bug Fixes
+
+	* Bug #317: WYSIWYG editor changes text to "[object Object]"
+
+
 2.5.5 (2010-06-15)
 ========================
 
