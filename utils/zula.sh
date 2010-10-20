@@ -25,11 +25,122 @@ fi
 
 ## See what action we need to run
 case "$1" in
+	--install)
+		##
+		## Setup a new configuration profile and install Zula using it
+		##
+		optPrefix=
+		optTitle=Untitled1
+		while [[ -n $2 ]]; do
+			case "$2" in
+				-c)
+					optConfig="$3"
+					;;
+				--dsn)
+					optDsn="$3"
+					;;
+				-e)
+					optEmail="$3"
+					;;
+				-p)
+					optPass="$3"
+					;;
+				--prefix)
+					optPrefix="$3"
+					;;
+				-t)
+					optTitle="$3"
+					;;
+				-u)
+					optUser="$3"
+					;;
+				-h)
+					echo "Zula Framework (cli)"
+					echo -e "Usage: zula.sh --install --dsn [--prefix] [-ceptuh]"
+					echo -e "\nOptions:"
+					echo -e "  -c\t\tConfiguration profile name to use, defaults to 'default'."
+					echo -e "  --dsn\t\tDSN string used to provide database credentials. This is in the\n"\
+							"       \tformat of 'mysql://user[:pass]@host[:port]/database'."
+					echo -e "  -e\t\tEmail address of the first user created, defaults to 'user@host'."
+					echo -e "  -p\t\tPassword of the first user created, randomly generated if omitted."
+					echo -e "  --prefix\tDatabase table prefix, blank if omitted."
+					echo -e "  -t\t\tApplication title to use, defaults to 'Untitled1'."
+					echo -e "  -u\t\tUsername of the first user created, defaults to 'admin'."
+					echo -e "  -h\t\tDisplays this help text.\n"
+					echo "Report bugs to <bugs@tangocms.org>"
+					exit 0
+					;;
+				*)
+					echo "Invalid argument '$2'. See '-h' for help text." >&2
+					exit 1
+					;;
+			esac
+			shift 2
+		done
+
+		if [[ -z $optDsn ]]; then
+			echo "Invalid arguments, expects at least '--dsn'. See '-h' for help text." >&2
+			exit 1
+		elif [[ ! -d config/default.dist ]]; then
+			echo "---- Unable to find 'config/default.dist'." >&2
+			exit 2
+		elif [[ -d config/$optConfig ]]; then
+			echo "---- Configuration profile '$optConfig' already exists." >&2
+			exit 2
+		elif (( ${#optPrefix} > 32 )); then
+			echo "---- Table prefix must be no more than 32 characters long." >&2
+			exit 2
+		fi
+
+		## Setup some default user/pass
+		if [[ -z $optUser ]]; then
+			optUser=admin
+		fi
+		if [[ -z $optPass ]]; then
+			if (( $(which apg &> /dev/null; echo -n $?) > 0 )); then
+				echo "---- Unable to generate user password, can not find 'apg'." >&2
+				exit 2
+			fi
+			optPass=$(apg -d -n1 -m10 -x14 -M LCNS -E \/\'\\\")
+		fi
+		if [[ -z $optEmail ]]; then
+			optEmail=$(id -un)@$(hostname -f)
+		fi
+
+		## Create the config profile directory
+		if (( $(cp -a config/default.dist config/$optConfig; echo -n $?) > 0 )); then
+			echo "--- Unable to create config profile directory." >&2
+		fi
+
+		echo -e "Installation will continue using the following details:\n"
+		echo "  Configuration profile: $optConfig"
+		echo "  Database table prefix: $optPrefix"
+		echo "  Application title: $optTitle"
+		echo "  User: $optUser <$optEmail>"
+		echo -e "  Password: $optPass\n"
+
+		## Run the correct Zula request path
+		(
+			cd setup
+			$pathPHP -f index.php -- -c "$optConfig" -r "install/security"\
+									 -e "$optEmail" -p "$optPass" -t "$optTitle" -u "$optUser"\
+									 --dsn "$optDsn" --dbPrefix "$optPrefix"
+		)
+		code=$?
+		if (( $code == 0 )); then
+			echo -e "\nPlease login to your Zula application using the above details."
+		else
+			rm -rf config/$optConfig
+			echo -e "\nInstallation failed! Configuration profile has been removed."
+		fi
+		exit $code
+		;;
+
 	--request)
 		##
 		## Create a new stateless request to the provided request path
 		##
-		while [[ $2 == -* ]]; do
+		while [[ -n $2 ]]; do
 			case "$2" in
 				-c)
 					optConfig="$3"
@@ -39,12 +150,12 @@ case "$1" in
 					echo "Zula Framework (cli)"
 					echo -e "Usage: zula.sh --request [options] requestPath"
 					echo -e "\nOptions:"
-					echo -e "\t-c\tConfiguration name to use."
-					echo -e "\t-h\tDisplays this help text.\n"
+					echo -e "  -c\tConfiguration profile name to use."
+					echo -e "  -h\tDisplays this help text.\n"
 					echo "Report bugs to <bugs@tangocms.org>"
 					exit 0
 					;;
-				-*)
+				*)
 					echo "Invalid argument '$2'. See '-h' for help text." >&2
 					exit 1
 					;;
@@ -60,7 +171,7 @@ case "$1" in
 		##
 		## Attempt to upgrade to the latest version
 		##
-		while [[ $2 == -* ]]; do
+		while [[ -n $2 ]]; do
 			case "$2" in
 				-h)
 					echo "Zula Framework (cli)"
@@ -68,7 +179,7 @@ case "$1" in
 					echo "Report bugs to <bugs@tangocms.org>"
 					exit 0
 					;;
-				-*)
+				*)
 					echo "Invalid argument '$2'. See '-h' for help text." >&2
 					exit 1
 					;;
@@ -89,16 +200,16 @@ case "$1" in
 			let count++;
 		done;
 		if (( $count == 0 )); then
-			echo "There are no available configurations."
+			echo "There are no available configuration profiles."
 		fi
 		exit 0
 		;;
 
 	*)
 		echo "Zula Framework (cli)"
-		echo -e "Usage: zula.sh |--request|--upgrade]\n"
+		echo -e "Usage: zula.sh --install|--request|--upgrade\n"
 		echo "Options:"
-		echo -e "\t-h\tDisplays this help text, or help for each action e.g. zula.sh --request -h\n"
+		echo -e "  -h\tDisplays this help text, or help for each action e.g. zula.sh --request -h\n"
 		echo "Report bugs to <bugs@tangocms.org>"
 		;;
 esac

@@ -1,0 +1,24 @@
+<?php
+	$checkCount = count( $checks );
+	$i = 0;
+	foreach( $checks as $type=>$chk ) {
+		if ( $i++ != 0 && $checkCount > 1 ) {
+			echo "\n\n";
+		}
+		echo $chk['title'], ":\n";
+		$valuesCount = count( $chk['values'] );
+		$x = 0;
+		foreach( $chk['values'] as $item=>$passed ) {
+			echo '    ', str_pad( $item.' ', 65, '.', STR_PAD_RIGHT ), ' ';
+			if ( $passed ) {
+				echo ($type == 'exts' || $type == 'optexts' ? 'Enabled' : 'Writable');
+			} else {
+				$str = ($type == 'exts' || $type == 'optexts') ? 'Not enabled' : 'Not writable';
+				echo chr(27), "[1m{$str}", chr(27), '[0m';
+			}
+			if ( $x++ < $valuesCount-1 ) {
+				echo "\n";
+			}
+		}
+	}
+?>

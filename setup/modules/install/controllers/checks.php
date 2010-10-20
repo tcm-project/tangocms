@@ -24,10 +24,10 @@
 		 */
 		public function indexSection() {
 			$this->setTitle( t('Pre-installation checks') );
-			/**
-			 * Make sure user is not trying to skip a head a stage.
-			 */
-			if ( !isset( $_SESSION['installStage'] ) || $_SESSION['installStage'] !== 2 ) {
+			if (
+				$this->_zula->getMode() != 'cli' &&
+				(!isset( $_SESSION['installStage'] ) || $_SESSION['installStage'] !== 2)
+			) {
 				return zula_redirect( $this->_router->makeUrl('install', 'security') );
 			}
 			$checks = array(
@@ -92,12 +92,17 @@
 				$checks[ $name ]['values'] = $results;
 			}
 			if ( $passed ) {
-				$this->_event->success( t('Pre-installation checks successful') );
-				++$_SESSION['installStage'];
+				if ( isset( $_SESSION['installStage'] ) ) {
+					++$_SESSION['installStage'];
+				}
+				$this->_event->success( t('Pre-installation checks were successful') );
 				return zula_redirect( $this->_router->makeUrl('install', 'sql') );
 			} else {
+				if ( $this->_zula->getMode() == 'cli' ) {
+					$this->_zula->setExitCode( 3 );
+				}
 				$this->_event->error( t('Sorry, your server environment does not meet our requirements') );
-				$view = $this->loadView( 'checks.html' );
+				$view = $this->loadView( 'checks'.($this->_zula->getMode() == 'cli' ? '-cli.txt' : '.html') );
 				$view->assign( array(
 									'checks'	=> $checks,
 									'passed'	=> $passed,

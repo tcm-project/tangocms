@@ -24,6 +24,9 @@
 		 */
 		public function indexSection() {
 			$this->setTitle( t('Security check') );
+			if ( $this->_zula->getMode() == 'cli' ) {
+				return zula_redirect( $this->_router->makeUrl('install', 'checks') );
+			}
 			// Set default install stage and attempt to check for code file
 			$_SESSION['installStage'] = 1;
 			if ( !empty( $_SESSION['securityCode'] ) ) {
@@ -31,6 +34,7 @@
 				if ( file_exists( $file ) ) {
 					unset( $_SESSION['securityCode'] );
 					++$_SESSION['installStage'];
+					$this->_event->success( t('Security check complete') );
 					return zula_redirect( $this->_router->makeUrl('install', 'checks') );
 				} else {
 					$this->_event->error( sprintf( t('Verification file "%s" does not exist'), $file ) );

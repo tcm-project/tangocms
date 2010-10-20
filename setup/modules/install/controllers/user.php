@@ -23,27 +23,45 @@
 		 */
 		public function indexSection() {
 			$this->setTitle( t('First user') );
-			/**
-			 * Make sure user is not skipping a head
-			 */
-			if ( !isset( $_SESSION['installStage'] ) || $_SESSION['installStage'] !== 4 ) {
+			if (
+				$this->_zula->getMode() != 'cli' &&
+				(!isset( $_SESSION['installStage'] ) || $_SESSION['installStage'] !== 4)
+			) {
 				return zula_redirect( $this->_router->makeUrl('install', 'security') );
 			}
-			$form = new View_Form( 'user.html', 'install' );
-			$form->addElement( 'username', null, t('Username'), array(new Validator_Alphanumeric('_-'), new Validator_Length(2, 32)) );
-			$form->addElement( 'password', null, t('Password'), array(new Validator_Length(4, 32), new Validator_Confirm('password2', Validator_Confirm::_POST)) );
-			$form->addElement( 'email', null, t('Email'), array(new Validator_Email, new Validator_Confirm('email2', Validator_Confirm::_POST)) );
-			if ( $form->hasInput() && $form->isValid() ) {
-				$fd = $form->getValues();
-				if ( $fd['username'] == 'guest' ) {
-					$this->_event->error( t('Username of "guest" is invalid') );
+			// Get data from either a form or CLI arguments
+			if ( $this->_zula->getMode() == 'cli' ) {
+				$data = array(
+							'username'	=> $this->_input->cli('u'),
+							'password'	=> $this->_input->cli('p'),
+							'email'		=> $this->_input->cli('e'),
+							);
+			} else {
+				$form = new View_Form( 'user.html', 'install' );
+				$form->addElement( 'username', null, t('Username'), array(new Validator_Alphanumeric('_-'), new Validator_Length(2, 32)) );
+				$form->addElement( 'password', null, t('Password'), array(new Validator_Length(4, 32), new Validator_Confirm('password2', Validator_Confirm::_POST)) );
+				$form->addElement( 'email', null, t('Email'), array(new Validator_Email, new Validator_Confirm('email2', Validator_Confirm::_POST)) );
+				if ( $form->hasInput() && $form->isValid() ) {
+					$data = $form->getValues();
 				} else {
-					$this->_ugmanager->editUser( 2, $fd );
-					++$_SESSION['installStage'];
-					return zula_redirect( $this->_router->makeUrl('install', 'modules') );
+					return $form->getOutput();
 				}
 			}
-			return $form->getOutput();
+			if ( strcasecmp( $data['username'], 'guest' ) === 0 ) {
+				$this->_event->error( t('Username of "guest" is invalid') );
+				if ( isset( $form ) ) {
+					return $form->getOutput();
+				} else {
+					$this->_zula->setExitCode( 3 );
+					return false;
+				}
+			}
+			$this->_ugmanager->editUser( 2, $data );
+			if ( isset( $_SESSION['installStage'] ) ) {
+				++$_SESSION['installStage'];
+			}
+			$this->_event->success( t('First user has been created') );
+			return zula_redirect( $this->_router->makeUrl('install', 'modules') );
 		}
 
 	}

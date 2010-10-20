@@ -23,31 +23,47 @@
 		 */
 		public function indexSection() {
 			$this->setTitle( t('Basic configuration') );
-			/**
-			 * Make sure user is not skipping ahead
-			 */
-			if ( !isset( $_SESSION['installStage'] ) || $_SESSION['installStage'] !== 6 ) {
+			if (
+				$this->_zula->getMode() != 'cli' &&
+				(!isset( $_SESSION['installStage'] ) || $_SESSION['installStage'] !== 6)
+			) {
 				return zula_redirect( $this->_router->makeUrl('install', 'security') );
 			}
-			$form = new View_form( 'settings.html', 'install' );
-			$form->addElement( 'settings/config/title', null, t('Site title'), new Validator_Length(0, 255) );
-			$form->addElement( 'settings/meta/description', null, t('Meta description'), new Validator_Length(0, 255) );
-			$form->addElement( 'settings/mail/outgoing', null, t('Outgoing email'), new Validator_Email );
-			$form->addElement( 'settings/mail/incoming', null, t('Incoming email'), new Validator_Email );
-			$form->addElement( 'settings/mail/subject_prefix', true, t('Email prefix'), new Validator_Bool );
-			if ( $form->hasInput() && $form->isValid() ) {
-				$fd = $form->getValues();
-				foreach( $fd['settings'] as $confCat=>$val ) {
-					foreach( $val as $confKey=>$value ) {
-						$this->_config_sql->update( $confCat.'/'.$confKey, $value );
-					}
+			// Get data from either a form or CLI arguments
+			if ( $this->_zula->getMode() == 'cli' ) {
+				$title = $this->_input->cli( 't' );
+				$email = $this->_input->cli( 'e' );
+				$data = array(
+							'config'=> array('title' => $title),
+							'mail'	=> array(
+											'outgoing'	=> $email,
+											'incoming'	=> $email,
+											));
+			} else {
+				$form = new View_form( 'settings.html', 'install' );
+				$form->addElement( 'settings/config/title', null, t('Site title'), new Validator_Length(0, 255) );
+				$form->addElement( 'settings/meta/description', null, t('Meta description'), new Validator_Length(0, 255) );
+				$form->addElement( 'settings/mail/outgoing', null, t('Outgoing email'), new Validator_Email );
+				$form->addElement( 'settings/mail/incoming', null, t('Incoming email'), new Validator_Email );
+				$form->addElement( 'settings/mail/subject_prefix', true, t('Email prefix'), new Validator_Bool );
+				if ( $form->hasInput() && $form->isValid() ) {
+					$data = $form->getValues( 'settings' );
+				} else {
+					return $form->getOutput();
 				}
-				// Update scheme/protocol that is being used
-				$this->_config_sql->add( 'config/protocol', $this->_router->getScheme() );
-				++$_SESSION['installStage'];
-				return zula_redirect( $this->_router->makeUrl('install', 'complete') );
 			}
-			return $form->getOutput();
+			foreach( $data as $confRealm=>$confValues ) {
+				foreach( $confValues as $key=>$val ) {
+					$this->_config_sql->update( $confRealm.'/'.$key, $val );
+				}
+			}
+			// Update scheme/protocol that is being used
+			$this->_config_sql->add( 'config/protocol', $this->_router->getScheme() );
+			if ( isset( $_SESSION['installStage'] ) ) {
+				++$_SESSION['installStage'];
+			}
+			$this->_event->success( t('Basic configuration updated') );
+			return zula_redirect( $this->_router->makeUrl('install', 'complete') );
 		}
 
 	}

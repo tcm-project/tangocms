@@ -19,11 +19,11 @@
 		 * @return bool
 		 */
 		public function indexSection() {
-			$this->setTitle( t('Module instalation') );
-			/**
-			 * Make sure user is not trying to skip ahead
-			 */
-			if ( !isset( $_SESSION['installStage'] ) || $_SESSION['installStage'] !== 5 ) {
+			$this->setTitle( t('Module installation') );
+			if (
+				$this->_zula->getMode() != 'cli' &&
+				(!isset( $_SESSION['installStage'] ) || $_SESSION['installStage'] !== 5)
+			) {
 				return zula_redirect( $this->_router->makeUrl('install', 'security') );
 			}
 			Module::setDirectory( _REAL_MODULE_DIR );
@@ -33,8 +33,10 @@
 			}
 			$this->setProjectDefaults();
 			Module::setDirectory( $this->_zula->getDir( 'modules' ) );
-			$this->_event->success( t('Successfully installed available modules') );
-			++$_SESSION['installStage'];
+			if ( isset( $_SESSION['installStage'] ) ) {
+				++$_SESSION['installStage'];
+			}
+			$this->_event->success( t('Installed all available modules') );
 			return zula_redirect( $this->_router->makeUrl('install', 'settings') );
 		}
 
