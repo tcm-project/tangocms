@@ -31,12 +31,14 @@
 		 * @return string
 		 */
 		public function indexSection() {
+			$this->setTitle( t('Upgrade complete!') );
 			if ( !isset( $_SESSION['upgradeStage'] ) || $_SESSION['upgradeStage'] !== 5 ) {
 				return zula_redirect( $this->_router->makeUrl('upgrade', 'version') );
+			} else {
+				$view = $this->loadView( 'complete.html' );
+				$view->assign( array('project_version' => $_SESSION['project_version']) );
+				return $view->getOutput();
 			}
-			$view = $this->loadView( 'complete.html' );
-			$view->assign( array('project_version' => $_SESSION['project_version']) );
-			return $view->getOutput();
 		}
 
 	}

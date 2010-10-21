@@ -119,7 +119,8 @@
 				$langStr = t('Version %s is not supported by this upgrader');
 				$this->_event->error( sprintf( $langStr, _PROJECT_VERSION ) );
 				if ( $this->_zula->getMode() == 'cli' ) {
-					exit( 3 );
+					$this->_zula->setExitCode( 3 );
+					return false;
 				} else {
 					return zula_redirect( $this->_router->makeUrl('index') );
 				}

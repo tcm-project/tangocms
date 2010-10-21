@@ -56,7 +56,16 @@
 					}
 				}
 			}
-			if ( $passed == false ) {
+			if ( $passed ) {
+				if ( isset( $_SESSION['upgradeStage'] ) ) {
+					++$_SESSION['upgradeStage'];
+				}
+				$this->_event->success( t('Pre-upgrade checks were successful') );
+				return zula_redirect( $this->_router->makeUrl('upgrade', 'migrate') );
+			} else {
+				if ( $this->_zula->getMode() == 'cli' ) {
+					$this->_zula->setExitCode( 3 );
+				}
 				$this->_event->error( t('Sorry, your server environment does not meet our requirements') );
 				$view = $this->loadView( 'checks'.($this->_zula->getMode() == 'cli' ? '-cli.txt' : '.html') );
 				$view->assign( array(
@@ -66,11 +75,6 @@
 									));
 				return $view->getOutput();
 			}
-			// Next stage
-			if ( isset( $_SESSION['upgradeStage'] ) ) {
-				++$_SESSION['upgradeStage'];
-			}
-			return zula_redirect( $this->_router->makeUrl('upgrade', 'migrate') );
 		}
 
 	}
