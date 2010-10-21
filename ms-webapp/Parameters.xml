@@ -99,8 +99,14 @@
 	<parameter name="SetAclParameter7" defaultValue="{AppPath}/config/default/layouts/admin-default.xml" tags="Hidden">
 		<parameterEntry type="ProviderPath" scope="setAcl" match="tangocms/config/default/layouts/admin-default.xml" />
 	</parameter>
+	<parameter name="SetAclParameter8" defaultValue="{AppPath}/config/default/layouts/fpsc-main.xml" tags="Hidden">
+		<parameterEntry type="ProviderPath" scope="setAcl" match="tangocms/config/default/layouts/fpsc-main.xml" />
+	</parameter>
+	<parameter name="SetAclParameter9" defaultValue="{AppPath}/config/default/layouts/fpsc-admin.xml" tags="Hidden">
+		<parameterEntry type="ProviderPath" scope="setAcl" match="tangocms/config/default/layouts/fpsc-admin.xml" />
+	</parameter>
 
-	<parameter name="SetAclParameter8" defaultValue="{AppPath}/msInstall.php" tags="Hidden">
+	<parameter name="SetAclParameter10" defaultValue="{AppPath}/msInstall.php" tags="Hidden">
 		<parameterEntry type="ProviderPath" scope="setAcl" match="tangocms/msInstall.php" />
 	</parameter>
 </parameters>

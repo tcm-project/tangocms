@@ -39,7 +39,11 @@
 			$module->setLoadOrder( 1 ); # Should force it below Shareable by default
 		} else if ( $modname == 'contact' ) {
 			// Update the contact form email address to that of the first user
-			Registry::get( 'sql' )->query( 'UPDATE {SQL_PREFIX}mod_contact SET email = "'.$rootDetails['email'].'"' );
+			try {
+				Registry::get( 'sql' )->exec( 'UPDATE {SQL_PREFIX}mod_contact
+												SET email = (SELECT email FROM {SQL_PREFIX}users WHERE id = 2)' );
+			} catch ( Exception $e ) {
+			}
 		}
 	}
 
@@ -57,12 +61,16 @@
 						'layout_controller_974'	=> $guestInherit,
 						'layout_controller_110'	=> $guestInherit,
 						'layout_controller_119'	=> $guestInherit,
+
+						# fpsc-main
 						'layout_controller_168'	=> $guestInherit,
 
 						# admin-default content layout
 						'layout_controller_409'	=> $adminInherit,
 						'layout_controller_123'	=> $adminInherit,
 						'layout_controller_909'	=> $adminInherit,
+
+						# fpsc-admin
 						'layout_controller_551'	=> $adminInherit,
 						);
 	foreach( $aclResources as $resource=>$roles ) {
