@@ -577,25 +577,6 @@ ERR;
 	}
 
 	/**
-	 * Converts a texual number word, such as "Five" to 5
-	 * Though, only up to 10 for now :P For use in the installer
-	 *
-	 * @param string $word
-	 * @return integer
-	 */
-	function zula_text2int( $word ) {
-		$texual = array(
-						'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten'
-						);
-		$intKey = array_search( strtolower( $word ), $texual );
-		if ( $intKey === false ) {
-			return false;
-		} else {
-			return $intKey+1;
-		}
-	}
-
-	/**
 	 * Converts an array into string format to be used in
 	 * javascript. Format: {"foo":bar, "car":bra}
 	 *
