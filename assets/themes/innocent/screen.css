@@ -7,12 +7,9 @@
 */
 
 @import url(base.css);
-@import url(module.css);
 
 body {
-	background-color: #fff;
-	background-image: url(images/background.png);
-	background-repeat: repeat-x;
+	background: #fff url(images/background.png) repeat-x;
 	color: #000;
 	font-family: "Bitstream Vera Sans", Lucida, Verdana, sans-serif;
 	margin: 0 10px 5px;
@@ -20,9 +17,7 @@ body {
 }
 
 #header {
-	background-color: #413d35;
-	background-image: url(images/header-background.png);
-	background-repeat: repeat;
+	background: #413d35 url(images/header-background.png) repeat;
 	color: #222;
 	height: 50px;
 	margin: 0;
@@ -42,9 +37,7 @@ body {
 }
 
 #navbar {
-	background-color: #e9f3b6;
-	background-image: url(images/top-bar.png);
-	background-repeat: repeat-x;
+	background: #e9f3b6 url(images/top-bar.png) repeat-x;
 	border: 1px solid #baca9d;
 	border-bottom-left-radius: 8px;
 	border-bottom-right-radius: 8px;
@@ -58,7 +51,8 @@ body {
 	padding: 6px 0;
 }
 
-#wrap {
+/** Content */
+#container {
 	background-color: #f8f8f8;
 	border: 1px solid #cbd2d8;
 	border-top-left-radius: 8px;
@@ -68,15 +62,16 @@ body {
 	-moz-border-radius: 8px 8px 0 0;
 	-webkit-border-top-left-radius: 8px;
 	-webkit-border-top-right-radius: 8px;
+	box-shadow: 0 3px 10px #f3f3f3;
+	-moz-box-shadow: 0 3px 10px #f3f3f3;
+	-webkit-box-shadow: 0 3px 10px #f3f3f3;
 	color: #222;
 	font-size: 1.15em;
 	margin: 8px 0 0 0;
-	overflow: hidden;
 	padding: 10px;
 }
 
-#sidebar {
-	float: left;
+#container > div.column.sidebar {
 	padding: 2px;
 	width: 210px;
 }
@@ -91,31 +86,31 @@ body {
 	-moz-border-radius: 8px 8px 0 0;
 	-webkit-border-top-left-radius: 8px;
 	-webkit-border-top-right-radius: 8px;
-	margin: 0 0 0 223px;
+	float: none;
 	padding: 10px;
+	width: auto;
 }
 
-#content.fullwidth {
-	margin: 0;
-}
+#content.numCols1 { margin-left: 0; }
+#content.numCols2 {	margin-left: 224px; }
 
-#footer {
-	clear: both;
-	font-size: 1em;
-	margin: 10px auto 0 auto;
-	text-align: center;
-}
-
-#content, #sidebar .module-wrap-body {
+#content, #container > div.column .module-wrap-body {
 	box-shadow: 0 3px 10px #EAEAEA;
 	-moz-box-shadow: 0 3px 10px #EAEAEA;
 	-webkit-box-shadow: 0 3px 10px #EAEAEA;
 }
 
-#wrap {
-	box-shadow: 0 3px 10px #f3f3f3;
-	-moz-box-shadow: 0 3px 10px #f3f3f3;
-	-webkit-box-shadow: 0 3px 10px #f3f3f3;
+h1 a[href], h1 a[href]:hover {
+	color: #cfea17;
+	text-decoration: none;
+}
+
+/** Footer */
+#footer {
+	clear: both;
+	font-size: 1em;
+	margin: 15px auto 0;
+	text-align: center;
 }
 
 /** Navbar menu */
@@ -135,18 +130,18 @@ body {
 	display: block;
 }
 
-/** Sidebar menu */
-#sidebar ul, #sidebar ol {
+/** Sidebar column links & lists */
+div.column.sidebar ul, div.column.sidebar ol {
 	list-style-type: none;
 	margin: 0;
 	padding: 0;
 }
 
-#sidebar ol {
+div.column.sidebar ol {
 	list-style-type: decimal;
 }
 
-#sidebar li {
+div.column.sidebar li {
 	border-color: #7291a6;
 	border-style: solid;
 	border-width: 0 0 1px 0;
@@ -155,40 +150,34 @@ body {
 	margin: 7px 0;
 }
 
-#sidebar ol li {
+div.column.sidebar ol li {
 	font-weight: normal;
 }
 
-#sidebar li a {
+div.column.sidebar li a {
 	color: #284e66;
 	display: block;
 	padding: 2px 0 2px 20px;
 }
 
-#sidebar li a:hover {
+div.column.sidebar li a:hover {
 	background-color: #fff;
 	text-decoration: none;
 }
 
-/**
- * Module Wrap
- */
+/** Module wrap */
 .module-wrap {
 }
 
-#sidebar .module-wrap {
+div.column.sidebar .module-wrap {
 	margin: 15px 0 0;
 }
 
-#sidebar .module-wrap:first-child {
+div.column.sidebar .module-wrap:first-child {
 	margin-top: 0;
 }
 
-#sidebar .module-wrap:last-child {
-	margin-bottom: 0;
-}
-
-#sidebar .module-wrap > h2 {
+div.column.sidebar .module-wrap > h2 {
 	background-color: #7c7b7a;
 	border-top-left-radius: 4px;
 	border-top-right-radius: 4px;
@@ -205,9 +194,141 @@ body {
 	text-align: right;
 }
 
-#sidebar .module-wrap-body {
+div.column.sidebar .module-wrap-body {
 	background-color: #e5ecf4;
 	border: 1px solid #d0dce8;
 	color: #698696;
 	padding: 10px;
+}
+
+/**
+ * The following are used to style additional items on the page
+ * and are no longer related to the main theme layout/style
+ */
+
+/** Captcha */
+.captcha {
+	overflow: hidden;
+}
+
+.captcha .image {
+	float: left;
+	padding: 0;
+	position: relative;
+	top: 5px;
+}
+
+.captcha .input {
+	float: left;
+	margin-left: 10px;
+}
+
+/** Event msgs */
+div.eventmsg {
+	border-style: solid;
+	border-width: 1px 0;
+	font-weight: bold;
+	margin: 15px auto;
+	padding: 6px 2px;
+	text-align: center;
+}
+
+div.eventmsg p {
+	margin: 0;
+}
+
+#eventmsgError {
+	background-color: #CFA59F;
+	border-color: #B04D40;
+	color: #9B382B;
+}
+
+#eventmsgSuccess {
+	background-color: #E9F8C6;
+	border-color: #B7D05E;
+	color: #769311;
+}
+
+/** Page links */
+#pagelinks {
+	background-color: #fbfdf2;
+	border-color: #c2d284;
+	border-style: solid;
+	border-width: 1px 1px 1px 5px;
+	box-shadow: 0 3px 10px #f3f3f3;
+	-moz-box-shadow: 0 3px 10px #f3f3f3;
+	-webkit-box-shadow: 0 3px 10px #f3f3f3;
+	color: #4e4c46;
+	font-weight: bold;
+	list-style-type: none;
+	margin: 10px 0;
+	overflow: auto;
+	padding: 4px 2px;
+}
+
+#pagelinks li {
+	float: left;
+	margin: 0 0.7em;
+}
+
+#pagelinks li a {
+	color: #42403b;
+}
+
+/** Pagination */
+.pagination {
+	list-style-type: none;
+	margin: 3px 2px 10px;
+}
+
+.pagination li {
+	display: inline-block;
+	line-height: 1.2em;
+	margin: 0 2px 0 0;
+	padding: 2px 4px 1px;
+}
+
+.pagination li.digit, .pagination li.current {
+	border: solid 1px #c7c7c7;
+}
+
+.pagination li.digit a {
+	color: #000;
+}
+
+.pagination li:hover {
+	background-color: #E4E6EC;
+	border-color: #666;
+	font-weight: bold;
+}
+
+.pagination li.digit a:hover {
+	text-decoration: none;
+}
+
+.pagination li.current {
+	background-color: #E3ECF2;
+	border-color: #7FA0B8;
+	color: #7B8F9C;
+	font-weight: bold;
+}
+
+.pagination li.first, .pagination li.previous, .pagination li.next, .pagination li.last {
+	background: none;
+	border: none;
+	font-weight: normal;
+}
+
+/** JavaScript search/filter input */
+div.jsSearchBox {
+	margin: 20px 5px 5px 5px;
+	display: none;
+}
+
+div.jsSearchBox label {
+	margin-right: 0.8em;
+}
+
+div.jsSearchBox input[type="search"] {
+	width: 250px;
 }

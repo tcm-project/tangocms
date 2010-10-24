@@ -22,10 +22,22 @@ caption, th {
 	text-align: left;
 }
 
-/** Main */
+/** General */
 body {
 	font-size: 62.5%;
 	line-height: 1em;
+}
+
+a[href] {
+	color: #A4260E;
+	outline: none;
+	padding-bottom: 1px;
+	text-decoration: none;
+}
+
+a[href]:hover {
+	border-bottom: 1px dashed #A4260E;
+	padding-bottom: 0;
 }
 
 p {
@@ -63,10 +75,6 @@ dd {
 	margin-left: 1em;
 }
 
-dl :last-child {
-	margin-bottom: 0;
-}
-
 label {
 	color: #42413F;
 	display: block;
@@ -101,9 +109,7 @@ code, pre {
 	display: none;
 }
 
-/**
- * All Headings
- */
+/** Headings */
 h1, h2, h3, h4, h5 {
 	line-height: 1.1;
 }
@@ -129,24 +135,27 @@ h4 {
 	margin: 1.2em 0.8em 0.5em 0;
 }
 
-/**
- * Generic Link Styles
- */
-a[href] {
-	color: #A4260E;
-	outline: none;
-	text-decoration: none;
-	padding-bottom: 1px;
+/** Columns */
+.columnWrap {
+	overflow: hidden;
 }
 
-a[href]:hover {
-	border-bottom: 1px dashed #A4260E;
-	padding-bottom: 0;
+div.column {
+	float: left;
+	margin-left: 20px;
+	width: 195px;
 }
 
-/**
- * Various Input styles
- */
+div.column:first-child {
+	margin-left: 0 !important;
+}
+
+div.column:first-of-type {
+	margin-left: 0 !important; /** Have to separate from above,
+									MSIE does not like first-of-type */
+}
+
+/** Inputs */
 input {
 	background-color: #fff;
 	border: 1px solid #bbb;
@@ -182,17 +191,33 @@ input[type="submit"], input[type="button"], a.button {
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
 	color: #6a6a63;
-	font-size: 0.9em;
+	display: inline-block;
+	font-family: "Lucida Grande","Lucida Sans Unicode",Arial,Verdana,sans-serif;
+	font-size: 12px;
 	font-weight: bold;
+	height: 23px;
 	margin: 5px 0;
-	padding: 3px;
+	padding: 3px 8px 4px;
+	text-align: center;
 	width: auto;
 }
 
 a.button, a.button:hover {
 	border: 1px solid #c9c8c2;
-	display: inline-block;
-	padding: 2px 9px;
+	height: 18px;
+	padding-bottom: 0;
+}
+
+label.horizontal + input[type="submit"], label.horizontal + input[type="button"],
+label.horizontal + a.button {
+	margin-left: 5px;
+}
+
+input[type="submit"]:hover, input[type="button"]:hover, a.button:hover {
+	border-color: #B1B0AC;
+	color: #5f504e;
+	cursor: pointer;
+	text-decoration: none;
 }
 
 input[type="radio"], input[type="checkbox"],
@@ -210,12 +235,6 @@ option {
 	padding-right: 0.8em;
 }
 
-input[type="submit"]:hover, input[type="button"]:hover, a.button:hover {
-	border-color: #B1B0AC;
-	color: #5f504e;
-	cursor: pointer;
-	text-decoration: none;
-}
 
 input:hover, input:focus, textarea:hover, textarea:focus {
 	border-color: #838271;
@@ -235,13 +254,12 @@ textarea[disabled], textarea[disabled]:hover, textarea[disabled]:focus {
 	color: #515151;
 }
 
-/**
- * All Table styles
- */
+/** Tables */
 table {
 	border-collapse: collapse;
+	border-spacing: 0;
 	color: #61533b;
-	margin: 6px 0;
+	margin: 10px 0;
 	width: 100%;
 }
 
@@ -251,32 +269,14 @@ thead {
 	font-weight: bold;
 }
 
-th, td {
-	padding: 0.6em;
-	text-align: left;
-}
-
 th {
 	padding-bottom: 0.2em;
 	white-space: nowrap;
 }
 
-tr.even, tr.odd {
-	border-bottom: 1px solid #ddd;
-}
-
-tr.even {
-	background-color: #f9f9f9;
-}
-
-tr.odd {
-	background: none;
-}
-
-tr.ondrop {
-	background-color: #f3f9d1;
-	border-color: #BFB5AB;
-	color: #4e5e32;
+th, td {
+	padding: 0.6em;
+	text-align: left;
 }
 
 table.contentdata tbody tr:hover {
@@ -291,7 +291,8 @@ td.checkcol, th.checkcol {
 	width: 1em;
 }
 
-td.managecol {
+td.managecol, th.managecol {
+	text-align: right;
 	white-space: nowrap;
 }
 
@@ -319,7 +320,29 @@ tr.subheading td {
 	padding: 0.4em 0.6em;
 }
 
+tr.ondrop {
+	background-color: #f3f9d1;
+	border-color: #BFB5AB;
+	color: #4e5e32;
+}
+
+tr.even, tr.odd {
+	border-bottom: 1px solid #ddd;
+}
+
+tr.even {
+	background-color: #f9f9f9;
+}
+
+tr.odd {
+	background: none;
+}
+
 /** Table specific element overrides */
+td textarea {
+	resize: vertical;
+}
+
 td.confcol input {
 	width: 244px;
 }
@@ -329,7 +352,7 @@ td.confcol input[type="checkbox"], td.confcol input[type="radio"] {
 }
 
 td.confcol textarea {
-	height: 70px;
+	height: 100px;
 	width: 244px;
 }
 
@@ -337,124 +360,7 @@ table dd {
 	margin-bottom: 0;
 }
 
-/**
- * Pages Links. These are those links you find
- * on some modules that provide a sub-menu.
- */
-#pagelinks {
-	background-color: #F8F6F2;
-	border: 1px solid #d9d2c8;
-	box-shadow: 0 3px 10px #f3f3f3;
-	-moz-box-shadow: 0 3px 10px #f3f3f3;
-	-webkit-box-shadow: 0 3px 10px #f3f3f3;
-	font-weight: bold;
-	list-style-type: none;
-	margin: 10px 0 20px;
-	overflow: auto;
-	padding: 4px 2px;
-}
-
-#pagelinks li {
-	float: left;
-	margin: 0 0.7em;
-}
-
-/**
- * Event Feedback, such as Error and Success messages
- */
-div.eventmsg {
-	border-style: solid;
-	border-width: 1px;
-	font-weight: bold;
-	margin: 15px auto;
-	padding: 6px 2px;
-	text-align: center;
-}
-
-div.eventmsg p {
-	margin: 0;
-}
-
-#eventmsgError {
-	border-color: #A4260E;
-	color: #A4260E;
-}
-
-#eventmsgSuccess {
-	border-color: #c8e88b;
-	color: #7cac20;
-}
-
-/**
- * Pagination
- */
-.pagination {
-	list-style-type: none;
-	margin: 10px 2px;
-}
-
-.pagination li {
-	display: inline-block;
-	line-height: 1.2em;
-	margin: 0 2px 0 0;
-	padding: 1px 5px;
-}
-
-.pagination li.digit, .pagination li.current {
-	border: solid 1px #c7c7c7;
-}
-
-.pagination li.digit a {
-	color: #000;
-}
-
-.pagination li.digit a:hover {
-	text-decoration: none;
-}
-
-.pagination li.current, .pagination li:hover {
-	background-color: #F6F6F6;
-	border-color: #D3D6D0;
-	color: #7A7875;
-	font-weight: bold;
-}
-
-.pagination li.first, .pagination li.previous, .pagination li.next, .pagination li.last {
-	background: none;
-	border: none;
-	font-weight: normal;
-	padding: 1px 3px;
-}
-
-/**
- * Actions
- */
-div.actions input:last-child {
-	margin-bottom: 0;
-}
-
-/**
- * Captcha
- */
-.captcha {
-	overflow: hidden;
-}
-
-.captcha .image {
-	float: left;
-	padding: 0;
-	position: relative;
-	top: 5px;
-}
-
-.captcha .input {
-	float: left;
-	margin-left: 10px;
-}
-
-/**
- * General rules for the ACL form/table
- */
+/** ACL form/table */
 div.acl table td > span {
 	font-weight: bold;
 	white-space: nowrap;
@@ -468,11 +374,16 @@ div.acl table td.aclrole {
 	width: 10em;
 }
 
-/**
- * Category selector list that gets displayed sometimes
- * when a module wants to display breifly it's category
- * Such as /article and /media
- */
+/** DIV that should wrap submit buttons */
+div.actions {
+	margin: 7px 0 2px;
+}
+
+div.actions input:last-child {
+	margin-bottom: 0;
+}
+
+/** Category selector */
 .categorylist {
 	background-color: #F8F6F2;
 	border: 7px solid #D9D2C8;
@@ -505,16 +416,4 @@ div.acl table td.aclrole {
 	list-style-type: circle;
 	margin: 0 20px 0 0;
 	padding: 0;
-}
-
-/**
- * Commom Search/Filter box that takes advantage of JavaScript
- */
-div.jsSearchBox {
-	margin: 20px 5px 5px 5px;
-	display: none;
-}
-
-div.jsSearchBox input[type="text"] {
-	width: 250px;
 }

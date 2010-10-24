@@ -74,10 +74,6 @@ dd {
 	margin-left: 1em;
 }
 
-.hidden {
-	display: none;
-}
-
 label {
 	display: block;
 	font-weight: bold;
@@ -105,6 +101,10 @@ code, pre {
 	font-size: 1.1em;
 	padding: 3px 6px;
 	margin: 1em 0;
+}
+
+.hidden {
+	display: none;
 }
 
 /** Headings */
@@ -143,12 +143,17 @@ h4 {
 
 div.column {
 	float: left;
-	margin-left: 30px;
+	margin-left: 25px;
 	width: 200px;
 }
 
-div.column:first-child, div.column:first-of-type {
+div.column:first-child {
 	margin-left: 0;
+}
+
+div.column:first-of-type {
+	margin-left: 0; /** Have to separate from above,
+						MSIE does not like first-of-type */
 }
 
 /** Inputs */
@@ -385,11 +390,7 @@ div.actions {
 	margin: 7px 0 15px;
 }
 
-/**
- * Category selector list that gets displayed sometimes
- * when a module wants to display breifly it's category
- * Such as /article and /media
- */
+/** Category selector */
 .categorylist {
 	background-color: #f9f9f4;
 	border: 7px solid #e0e0cf;

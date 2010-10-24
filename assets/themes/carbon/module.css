@@ -71,18 +71,11 @@ div.media-wrap li.title {
 }
 
 /** Module Manager */
-#module_manager-filter-wrap {
-	margin: 20px 5px 5px 5px;
-	display: none;
-}
-
 .module_manager-category {
 	overflow: hidden;
 }
 
 ol.module_manager-item {
-	list-style-image: none;
-	list-style-position: outside;
 	list-style-type: none;
 	margin: 0;
 	overflow: hidden;
@@ -96,8 +89,7 @@ ol.module_manager-item li {
 }
 
 ol.module_manager-item li:hover {
-	background-image: url(images/modman.png);
-	background-repeat: repeat;
+	background: transparent url(images/modman.png) repeat;
 	border-radius: 8px;
 	-khtml-border-radius: 8px;
 	-moz-border-radius: 8px;
@@ -106,6 +98,7 @@ ol.module_manager-item li:hover {
 
 ol.module_manager-item img {
 	float: left;
+	padding-top: 3px;
 }
 
 ol.module_manager-item p {
@@ -114,8 +107,13 @@ ol.module_manager-item p {
 	white-space: nowrap;
 }
 
-ol.module_manager-item p a {
+ol.module_manager-item a {
+	color: #333;
 	display: block;
+}
+
+ol.module_manager-item a:hover {
+	color: #2984CA;
 }
 
 ol.module_manager-item .title {
@@ -138,32 +136,15 @@ ol.module_manager-item .title {
 }
 
 /** Session */
+#sessionLoginMeta {
+	margin-top: 12px;
+}
+
+#sessionLoginMeta p {
+	margin-bottom: 0;
+}
+
 #session-profile > span {
-	font-weight: bold;
-}
-
-/** Tags */
-.tag-link-1	{ font-size: 3.3em; }
-.tag-link-2	{ font-size: 3.2em; }
-.tag-link-3	{ font-size: 3.1em; }
-.tag-link-4	{ font-size: 2.9em; }
-.tag-link-5	{ font-size: 2.7em; }
-.tag-link-6	{ font-size: 2.5em; }
-.tag-link-7	{ font-size: 2.3em; }
-.tag-link-8	{ font-size: 2.1em; }
-.tag-link-9	{ font-size: 1.9em; }
-.tag-link-10	{ font-size: 1.7em; }
-.tag-link-11	{ font-size: 1.5em; }
-.tag-link-12	{ font-size: 1.3em; }
-.tag-link-normal{ font-size: 1.1em; }
-.tag-cloud	{ text-align: center; }
-
-.tag-list {
-	margin: 5px 0;
-}
-
-.tag-list > span {
-	color: #444;
 	font-weight: bold;
 }
 
@@ -173,7 +154,6 @@ div.shareable {
 }
 
 ul.shareable li {
-	border: 0 !important;
 	float: left;
 	list-style-type: none;
 }
@@ -182,14 +162,11 @@ ul.shareable li a {
 	display: inline-block;
 	height: 16px;
 	opacity: 0.6;
-	padding: 0 !important;
-	margin-right: 1em;
 	text-indent: -400px;
 	width: 16px;
 }
 
 ul.shareable li a:hover {
-	border: 0 !important;
 	opacity: 1;
 }
 
@@ -219,6 +196,31 @@ a.shareable-slashdot {
 
 a.shareable-stumbleupon {
 	background-position: 0 -108px;
+}
+
+/** Tags */
+.tag-link-1	{ font-size: 3.3em; }
+.tag-link-2	{ font-size: 3.2em; }
+.tag-link-3	{ font-size: 3.1em; }
+.tag-link-4	{ font-size: 2.9em; }
+.tag-link-5	{ font-size: 2.7em; }
+.tag-link-6	{ font-size: 2.5em; }
+.tag-link-7	{ font-size: 2.3em; }
+.tag-link-8	{ font-size: 2.1em; }
+.tag-link-9	{ font-size: 1.9em; }
+.tag-link-10	{ font-size: 1.7em; }
+.tag-link-11	{ font-size: 1.5em; }
+.tag-link-12	{ font-size: 1.3em; }
+.tag-link-normal{ font-size: 1.1em; }
+.tag-cloud	{ text-align: center; }
+
+.tag-list {
+	margin: 5px 0;
+}
+
+.tag-list > span {
+	color: #444;
+	font-weight: bold;
 }
 
 /** Comments */

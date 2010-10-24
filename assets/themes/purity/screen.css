@@ -83,6 +83,7 @@ html, body {
 
 #container > div.column.sidebar {
 	color: #808080;
+	margin-left: 30px;
 	margin-top: 5px;
 }
 

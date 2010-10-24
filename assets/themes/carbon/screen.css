@@ -7,7 +7,6 @@
 */
 
 @import url(base.css);
-@import url(module.css);
 
 body {
 	color: #1b2002;
@@ -33,7 +32,7 @@ html, body {
 }
 /** End Sticky Footer */
 
-#header-wrap {
+#headerWrap {
 	background: #393a38 url(images/header-background.png) repeat-x;
 	border-bottom: 3px solid #b5b5b5;
 	color: #f0f0f0;
@@ -100,48 +99,44 @@ html, body {
 	font-family: "Lucida Grande","Lucida Sans Unicode",Arial,Verdana,sans-serif;
 	font-size: 1.3em;
 	margin: 20px auto 0;
-	overflow: hidden;
 	width: 900px;
 }
 
-#container div.column {
-	float: left;
+#container > div.column {
 	margin-left: 18px;
 }
 
-#container div.column:first-child {
-	margin-left: 0;
-}
-
-#column1, #column3 {
+#container > div.column.sidebar {
 	color: #7a7875;
 	margin-top: 5px;
 	width: 210px;
 }
 
-#column2 {
+#content {
 	background-color: #f6f6f6;
+	overflow: hidden;
 	padding: 5px;
+	width: auto;
 }
 
-#column2 > div {
+#content > div {
 	background-color: #fff;
 	border: 1px solid #d3d6d0;
 	padding: 15px;
 }
 
-#column2.numCols1 > div { width: 857px; }
-#column2.numCols2 > div { width: 630px; }
-#column2.numCols3 > div { width: 400px; }
-
-#column2, #column2 > div {
+#content, #content > div {
 	border-radius: 8px;
 	-khtml-border-radius: 8px;
 	-moz-border-radius: 8px;
 	-webkit-border-radius: 8px;
 }
 
-#column2 > div > h1 {
+#content.numCols1 > div { width: 857px; }
+#content.numCols2 > div { width: 630px; }
+#content.numCols3 > div { width: 400px; }
+
+#content > div > h1 {
 	color: #393a38;
 	font-family: Georgia,"Times New Roman",serif;
 	font-size: 1.3em;
@@ -149,7 +144,7 @@ html, body {
 	letter-spacing: 3px;
 }
 
-#column2 > div > h1:first-letter {
+#content > div > h1:first-letter {
 	color: #a4260e;
 	font-size: 1.6em;
 }
@@ -206,34 +201,32 @@ html, body {
 }
 
 /** Sidebar menu */
-#container div.sidebar ul, #container div.sidebar ol {
+div.column.sidebar ul, div.column.sidebar ol {
 	list-style-type: none;
 	margin: 5px 0 10px 10px;
 	padding: 0;
 }
 
-#container div.sidebar ol {
+div.column.sidebar ol {
 	list-style-type: decimal;
 }
 
-#container div.sidebar li {
+div.column.sidebar li {
 	border-bottom: 1px solid #d3d6d0;
 	font-weight: bold;
 	margin: 7px 0;
 	padding: 4px 0;
 }
 
-#container div.sidebar ol li {
+div.column.sidebar ol li {
 	font-weight: normal;
 }
 
-#container div.sidebar li a {
+div.column.sidebar li a {
 	padding: 3px;
 }
 
-/**
- * Module Wrap
- */
+/** Module wrap */
 .module-wrap {
 	background-color: #f6f6f6;
 	border: 1px solid #d3d6d0;
@@ -265,4 +258,118 @@ html, body {
 	border: none;
 	margin: 0;
 	padding: 0;
+}
+
+/**
+ * The following are used to style additional items on the page
+ * and are no longer related to the main theme layout/style
+ */
+
+/** Captcha */
+.captcha {
+	overflow: hidden;
+}
+
+.captcha .image {
+	float: left;
+	padding: 0;
+	position: relative;
+	top: 5px;
+}
+
+.captcha .input {
+	float: left;
+	margin-left: 10px;
+}
+
+/** Event msgs */
+div.eventmsg {
+	border-style: solid;
+	border-width: 1px;
+	font-weight: bold;
+	margin: 15px auto;
+	padding: 6px 2px;
+	text-align: center;
+}
+
+div.eventmsg p {
+	margin: 0;
+}
+
+#eventmsgError {
+	border-color: #A4260E;
+	color: #A4260E;
+}
+
+#eventmsgSuccess {
+	border-color: #c8e88b;
+	color: #7cac20;
+}
+
+/** Page links */
+ul#pagelinks {
+	background-color: #F8F6F2;
+	border: 1px solid #d9d2c8;
+	box-shadow: 0 3px 10px #f3f3f3;
+	-moz-box-shadow: 0 3px 10px #f3f3f3;
+	-webkit-box-shadow: 0 3px 10px #f3f3f3;
+	font-weight: bold;
+	list-style-type: none;
+	margin: 10px 0 20px;
+	overflow: auto;
+	padding: 4px 2px;
+}
+
+ul#pagelinks li {
+	float: left;
+	margin: 0 0.7em;
+}
+
+/** Pagination */
+.pagination {
+	list-style-type: none;
+	margin: 10px 2px;
+}
+
+.pagination li {
+	display: inline-block;
+	line-height: 1.2em;
+	margin: 0 2px 0 0;
+	padding: 1px 5px;
+}
+
+.pagination li.digit, .pagination li.current {
+	border: solid 1px #c7c7c7;
+}
+
+.pagination li.digit a {
+	color: #000;
+}
+
+.pagination li.digit a:hover {
+	text-decoration: none;
+}
+
+.pagination li.current, .pagination li:hover {
+	background-color: #F6F6F6;
+	border-color: #D3D6D0;
+	color: #7A7875;
+	font-weight: bold;
+}
+
+.pagination li.first, .pagination li.previous, .pagination li.next, .pagination li.last {
+	background: none;
+	border: none;
+	font-weight: normal;
+	padding: 1px 3px;
+}
+
+/** JavaScript search/filter input */
+div.jsSearchBox {
+	margin: 20px 5px 5px 5px;
+	display: none;
+}
+
+div.jsSearchBox input[type="search"] {
+	width: 250px;
 }

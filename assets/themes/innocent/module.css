@@ -112,6 +112,14 @@ ol.module_manager-item .title {
 }
 
 /** Session */
+#sessionLoginMeta {
+	margin-top: 10px;
+}
+
+#sessionLoginMeta p {
+	margin-bottom: 0;
+}
+
 #session-profile > span {
 	font-weight: bold;
 }
@@ -124,7 +132,6 @@ div.shareable {
 ul.shareable li {
 	float: left;
 	list-style-type: none;
-
 }
 
 ul.shareable li a {

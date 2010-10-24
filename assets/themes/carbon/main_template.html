@@ -10,6 +10,7 @@
 		<base href="<?php echo $this->_router->getBaseUrl(); ?>">
 		<link rel="icon" type="image/png" href="{DIR_BASE}favicon.png">
 		<link rel="StyleSheet" href="{DIR_CUR_THEME}/screen.css" type="text/css" media="screen">
+		<link rel="StyleSheet" href="{DIR_CUR_THEME}/module.css" type="text/css" media="screen">
 
 		{HEAD}
 	</head>
@@ -17,7 +18,7 @@
 	<body id="{PAGE_ID}">
 
 		<div id="stickyWrap">
-			<div id="header-wrap">
+			<div id="headerWrap">
 				<div id="header">
 					<h2 class="logo"><a href="<?php echo $this->_router->makeFullUrl( '/' ); ?>">{SITE_TITLE}</a></h2>
 
@@ -29,12 +30,12 @@
 
 			<?php echo empty($s1) ? '' : '<div id="navbar">'.$s1.'</div>'; ?>
 
-			<div id="container">
+			<div id="container" class="columnWrap">
 				<?php if ( !empty($s3) ) { ?>
-					<div id="column1" class="column sidebar">{S3}</div>
+					<div class="column sidebar">{S3}</div>
 				<?php } ?>
 
-				<div id="column2" class="column <?php echo 'numCols', 1+!empty($s3)+!empty($s2); ?>">
+				<div id="content" class="column <?php echo 'numCols', 1+!empty($s3)+!empty($s2); ?>">
 					<div>
 						<?php echo $controller_title ? '<h1>'.$controller_title.'</h1>' : ''; ?>
 						{EVENT_FEEDBACK}
@@ -44,7 +45,7 @@
 				</div>
 
 				<?php if ( !empty($s2) ) { ?>
-					<div id="column3" class="column sidebar">{S2}</div>
+					<div class="column sidebar">{S2}</div>
 				<?php } ?>
 			</div>
 			<div id="stickyPush"></div>
