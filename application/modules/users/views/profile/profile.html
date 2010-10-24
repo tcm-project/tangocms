@@ -1,5 +1,5 @@
-<div id="users-profile" style="overflow: auto;">
-	<div id="users-info" style="float: left;">
+<div id="usersProfile" class="columnWrap">
+	<div id="usersProfileInfo" class="column">
 		<h3>{L_[User info]}</h3>
 		<dl>
 			<dt>{L_[Username]}</dt>
@@ -12,7 +12,7 @@
 			<dd><?php echo empty($last_login) ? t('Unknown') : $this->_date->format( $last_login ); ?></dd>
 		</dl>
 	</div>
-	<div id="users-contact" style="float: left; margin-left: 80px;">
+	<div id="usersProfileContact" class="column">
 		<h3>{L_[Contact Info]}</h3>
 		<dl>
 			<?php if ( !empty( $first_name ) ) { ?>
@@ -22,7 +22,7 @@
 				<dt>{L_[Last name]}</dt>
 				<dd><?php echo $last_name; } ?>
 			<dt>{L_[Email address]}</dt>
-			<dd><?php echo $email; ?></dd>
+				<dd><?php echo $email; ?></dd>
 		</dl>
 	</div>
 </div>
