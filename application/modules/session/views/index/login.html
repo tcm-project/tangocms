@@ -1,6 +1,6 @@
 <form id="sessionLogin" action="{FORM_URL}" method="post">
 	<p>
-		<label for="session-identifier"><?php echo $login_by == 'username' ? t('Username') : t('Email Address'); ?></label>
+		<label for="session-identifier"><?php echo $login_by == 'username' ? t('Username') : t('Email address'); ?></label>
 		<input type="<?php echo $login_by == 'username' ? 'text' : 'email'; ?>" id="session-identifier" name="session[identifier]">
 	</p>
 	<p><label for="session-password">{L_[Password]}</label><input type="password" id="session-password" name="session[password]"></p>

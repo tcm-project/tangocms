@@ -15,7 +15,7 @@
 			<conf key="session/duplicate_email">false</conf>
 			<conf key="session/register_group">4</conf>
 			<conf key="session/validation_method">user</conf>
-			<conf key="session/login_by">username</conf>
+			<conf key="session/login_by">email</conf>
 			<conf key="session/max_login_attempts">5</conf>
 			<conf key="session/force_https">0</conf>
 			<conf key="session/login_destination">previous</conf>
