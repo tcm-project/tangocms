@@ -139,6 +139,7 @@
 							$transports = stream_get_transports();
 							if ( in_array( 'tls', $transports ) ) {
 								$opts['TLS'] = 'tls';
+								$opts['STARTTLS'] = 'starttls';
 							}
 							if ( in_array('ssl', $transports) || in_array('sslv2', $transports) || in_array('sslv3', $transports) ) {
 								$opts['SSL'] = 'ssl';
