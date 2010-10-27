@@ -27,7 +27,7 @@
 	<parameter name="dbTag" friendlyName="Table Prefix" description="Prefix to use for tables, if any." defaultValue="tcm_" tags="MySQL">
 		<parameterValidation type="RegularExpression, AllowEmpty" validationString="^[A-Za-z0-9_]{0,12}$" />
 		<parameterEntry type="TextFile" scope="tangocms\\config\\default\\config.ini.php" match="(?&lt;=prefix\s=\s)tcm_" />
-		<parameterEntry type="TextFile" scope="tangocms.sql" match="\{SQL_PREFIX\}" />
+		<parameterEntry type="TextFile" scope="tangocms.sql" match="\{PREFIX\}" />
 	</parameter>
 
 	<!-- Database administration details and SQL connection string for the SQL files -->

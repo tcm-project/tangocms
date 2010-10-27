@@ -40,8 +40,8 @@
 		} else if ( $modname == 'contact' ) {
 			// Update the contact form email address to that of the first user
 			try {
-				Registry::get( 'sql' )->exec( 'UPDATE {SQL_PREFIX}mod_contact
-												SET email = (SELECT email FROM {SQL_PREFIX}users WHERE id = 2)' );
+				Registry::get( 'sql' )->exec( 'UPDATE {PREFIX}mod_contact
+												SET email = (SELECT email FROM {PREFIX}users WHERE id = 2)' );
 			} catch ( Exception $e ) {
 			}
 		}
