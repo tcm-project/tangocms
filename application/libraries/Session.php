@@ -160,7 +160,7 @@
 		 */
 		public function identify( $authKey=null, $authFor=null ) {
 			if ( $authKey ) {
-				$pdoSt = $this->_sql->prepare( 'SELECT uid FROM {SQL_PREFIX}sessions WHERE session_key = ?' );
+				$pdoSt = $this->_sql->prepare( 'SELECT uid FROM {PREFIX}sessions WHERE session_key = ?' );
 				$pdoSt->execute( array($authKey) );
 				$uid = $pdoSt->fetch( PDO::FETCH_COLUMN );
 				if ( $uid == false || zula_hash($uid) != $authFor ) {
@@ -203,11 +203,11 @@
 			} else {
 				$authKey = zula_hash( uniqid(mt_rand().$uid.microtime(true), true) );
 				$authFor = zula_hash( $uid );
-				$pdoSt = $this->_sql->prepare( 'INSERT INTO {SQL_PREFIX}sessions (uid, session_key, session_id) VALUES(?, ?, ?)' );
+				$pdoSt = $this->_sql->prepare( 'INSERT INTO {PREFIX}sessions (uid, session_key, session_id) VALUES(?, ?, ?)' );
 				$pdoSt->execute( array($uid, $authKey, session_id()) );
 				// Attempt to identify the user we are switching to
 				if ( $this->identify($authKey, $authFor) === $uid ) {
-					$this->_sql->query( 'UPDATE {SQL_PREFIX}users SET last_login = UNIX_TIMESTAMP() WHERE id = '.$uid );
+					$this->_sql->query( 'UPDATE {PREFIX}users SET last_login = UNIX_TIMESTAMP() WHERE id = '.$uid );
 					$_SESSION['auth'] = array(
 											'remember'	=> (bool) $remember,
 											'key'		=> $authKey,
@@ -239,7 +239,7 @@
 		 */
 		public function destroy( $uid=null ) {
 			if ( $uid ) {
-				$pdoSt = $this->_sql->prepare( 'DELETE FROM {SQL_PREFIX}sessions WHERE uid = :uid' );
+				$pdoSt = $this->_sql->prepare( 'DELETE FROM {PREFIX}sessions WHERE uid = :uid' );
 				$sessionsClosed = 0;
 				foreach( (array) $uid as $user ) {
 					if ( $user == $this->getUserId() ) {
@@ -256,7 +256,7 @@
 				return $sessionsClosed;
 			} else {
 				if ( isset($_SESSION['auth']['key']) ) {
-					$pdoSt = $this->_sql->prepare( 'DELETE FROM {SQL_PREFIX}sessions WHERE session_key = ?' );
+					$pdoSt = $this->_sql->prepare( 'DELETE FROM {PREFIX}sessions WHERE session_key = ?' );
 					$pdoSt->execute( array($_SESSION['auth']['key']) );
 					$pdoSt->closeCursor();
 				}

@@ -69,8 +69,8 @@
 		public function cleanRules() {
 			$this->_cache->delete( 'acl_rules' );
 			return $this->_sql->exec( 'DELETE rules
-										FROM {SQL_PREFIX}acl_rules AS rules
-											LEFT JOIN {SQL_PREFIX}acl_resources AS resources
+										FROM {PREFIX}acl_rules AS rules
+											LEFT JOIN {PREFIX}acl_resources AS resources
 											ON rules.resource_id = resources.id
 										WHERE resources.id IS NULL' );
 		}
@@ -84,7 +84,7 @@
 			$this->rules = $this->_cache->get( 'acl_rules' );
 			if ( empty( $this->rules ) ) {
 				$this->rules = array();
-				foreach( $this->_sql->query( 'SELECT * FROM {SQL_PREFIX}acl_rules', PDO::FETCH_ASSOC ) as $row ) {
+				foreach( $this->_sql->query( 'SELECT * FROM {PREFIX}acl_rules', PDO::FETCH_ASSOC ) as $row ) {
 					$this->rules[ $row['id'] ] = $row;
 				}
 				$this->_cache->add( 'acl_rules', $this->rules );
@@ -104,7 +104,7 @@
 			$this->roles = $this->_cache->get( 'acl_roles' );
 			if ( empty( $this->roles ) ) {
 				$this->roles = array();
-				foreach( $this->_sql->query( 'SELECT * FROM {SQL_PREFIX}acl_roles ORDER BY parent_id ASC', PDO::FETCH_ASSOC ) as $row ) {
+				foreach( $this->_sql->query( 'SELECT * FROM {PREFIX}acl_roles ORDER BY parent_id ASC', PDO::FETCH_ASSOC ) as $row ) {
 					$this->roles[ $row['name'] ] = $row;
 				}
 				$this->_cache->add( 'acl_roles', $this->roles );
@@ -134,7 +134,7 @@
 			$this->resources = $this->_cache->get( 'acl_resources' );
 			if ( empty( $this->resources ) ) {
 				$this->resources = array();
-				foreach( $this->_sql->query( 'SELECT * FROM {SQL_PREFIX}acl_resources', PDO::FETCH_ASSOC ) as $row ) {
+				foreach( $this->_sql->query( 'SELECT * FROM {PREFIX}acl_resources', PDO::FETCH_ASSOC ) as $row ) {
 					$this->resources[ $row['name'] ] = $row;
 				}
 				$this->_cache->add( 'acl_resources', $this->resources );

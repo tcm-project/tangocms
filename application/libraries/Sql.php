@@ -116,14 +116,14 @@
 		}
 
 		/**
-		 * Replaces all occurences of {SQL_PREFIX} within the SQL query, however
-		 * not when it is within quotes.
+		 * Replaces all occurences of {PREFIX} or {SQL_PREFIX} within
+		 * the SQL query, however not when it is within quotes.
 		 *
 		 * @param string $statement
 		 * @return string
 		 */
 		protected function replacePrefix( $statement ) {
-			return preg_replace( '#\G((?>("|\')[^"\']+("|\')|.)*?)\{SQL_PREFIX\}#s', '$1'.$this->getSqlPrefix(), $statement );
+			return preg_replace( '#\G((?>("|\')[^"\']+("|\')|.)*?)\{(?:SQL_)?PREFIX\}#s', '$1'.$this->getSqlPrefix(), $statement );
 		}
 
 		/**
@@ -143,7 +143,7 @@
 		}
 
 		/**
-		 * Replaces the {SQL_PREFIX} in a prepared query
+		 * Replaces the {PREFIX} in a prepared query
 		 *
 		 * @param string $statement
 		 * @param array $driverOpts
@@ -155,7 +155,7 @@
 		}
 
 		/**
-		 * Replaces the {SQL_PREFIX} in exec
+		 * Replaces the {PREFIX} in exec
 		 *
 		 * @param string $statement
 		 * @return int|bool

@@ -65,7 +65,7 @@
 		 * @return object
 		 */
 		public function __construct() {
-			$query = $this->_sql->query( 'SELECT COUNT(id) FROM {SQL_PREFIX}users WHERE `group` IN(1,3)' );
+			$query = $this->_sql->query( 'SELECT COUNT(id) FROM {PREFIX}users WHERE `group` IN(1,3)' );
 			$uCount = $query->fetchColumn();
 			$query->closeCursor();
 			if ( $uCount != 2 ) {
@@ -83,7 +83,7 @@
 			$gid = $gid ? abs($gid) : '*';
 			if ( !isset( $this->userCount[ $gid ] ) ) {
 				$query = $this->_sql->query(
-											'SELECT COUNT(id) FROM {SQL_PREFIX}users
+											'SELECT COUNT(id) FROM {PREFIX}users
 											 WHERE `group` = '.(is_int($gid) ? $gid : '`group`')
 											);
 				$this->userCount[ $gid ] = $query->fetchColumn();
@@ -99,7 +99,7 @@
 		 */
 		public function groupCount() {
 			if ( $this->groupCount == 0 ) {
-				$query = $this->_sql->query( 'SELECT COUNT(id) FROM {SQL_PREFIX}groups' );
+				$query = $this->_sql->query( 'SELECT COUNT(id) FROM {PREFIX}groups' );
 				$this->groupCount = $query->fetchColumn();
 				$query->closeCursor();
 			}
@@ -149,7 +149,7 @@
 		 */
 		public function getUser( $user, $byId=true, $withMetaData=false ) {
 			if ( $byId == false || !isset( $this->users[ $user ] ) ) {
-				$pdoSt = $this->_sql->prepare( 'SELECT * FROM {SQL_PREFIX}users WHERE '.($byId ? 'id' : 'username').' = ?' );
+				$pdoSt = $this->_sql->prepare( 'SELECT * FROM {PREFIX}users WHERE '.($byId ? 'id' : 'username').' = ?' );
 				$pdoSt->execute( array($user) );
 				$userDetails = $pdoSt->fetch( PDO::FETCH_ASSOC );
 				$pdoSt->closeCursor();
@@ -176,7 +176,7 @@
 		 * @return array
 		 */
 		public function getUserMetaData( $uid ) {
-			$pdoSt = $this->_sql->prepare( 'SELECT name, value FROM {SQL_PREFIX}users_meta WHERE uid = :uid' );
+			$pdoSt = $this->_sql->prepare( 'SELECT name, value FROM {PREFIX}users_meta WHERE uid = :uid' );
 			$pdoSt->bindValue( ':uid', $uid, PDO::PARAM_INT );
 			$pdoSt->execute();
 			$metaData = array();
@@ -203,8 +203,8 @@
 				}
 				$pdoSt = $this->_sql->prepare( 'SELECT groups.*, COUNT(users.id) AS user_count
 												FROM
-													{SQL_PREFIX}groups AS groups
-												 	LEFT JOIN {SQL_PREFIX}users AS users ON users.group = groups.id
+													{PREFIX}groups AS groups
+												 	LEFT JOIN {PREFIX}users AS users ON users.group = groups.id
 												WHERE groups.'.$col.' = ?
 												GROUP BY groups.id' );
 				$pdoSt->execute( array($group) );
@@ -237,7 +237,7 @@
 			/**
 			 * Get all of the users from the SQL database, then hopefully store in cache
 			 */
-			$statement = 'SELECT * FROM {SQL_PREFIX}users';
+			$statement = 'SELECT * FROM {PREFIX}users';
 			$params = array();
 			if ( trim( $group ) ) {
 				$statement .= ' WHERE `group` = :group';
@@ -284,7 +284,7 @@
 			if ( !$this->groups || !($this->groups = $this->_cache->get('ugmanager_groups')) ) {
 				$this->groups = array();
 				$query = 'SELECT g.*, COUNT(u.id) AS user_count
-							FROM {SQL_PREFIX}groups AS g LEFT JOIN {SQL_PREFIX}users AS u ON u.group = g.id
+							FROM {PREFIX}groups AS g LEFT JOIN {PREFIX}users AS u ON u.group = g.id
 							GROUP BY g.id';
 				foreach( $this->_sql->query($query, PDO::FETCH_ASSOC) as $group ) {
 					$this->groups[ $group['id'] ] = $group;
@@ -313,7 +313,7 @@
 		 * @return int|bool
 		 */
 		public function roleGid( $roleId ) {
-			$query = $this->_sql->query( 'SELECT id FROM {SQL_PREFIX}groups WHERE role_id = '.(int) $roleId );
+			$query = $this->_sql->query( 'SELECT id FROM {PREFIX}groups WHERE role_id = '.(int) $roleId );
 			$gid = $query->fetchColumn();
 			$query->closeCursor();
 			return $gid ? abs($gid) : false;
@@ -352,7 +352,7 @@
 					$status = 'active';
 				}
 				// Add in the new group
-				$pdoSt = $this->_sql->prepare( 'INSERT INTO {SQL_PREFIX}groups (name, role_id, status) VALUES (?, ?, ?)' );
+				$pdoSt = $this->_sql->prepare( 'INSERT INTO {PREFIX}groups (name, role_id, status) VALUES (?, ?, ?)' );
 				$pdoSt->execute( array($name, $roleId, $status) );
 				$pdoSt->closeCursor();
 				$this->_cache->delete( 'ugmanager_groups' );
@@ -397,12 +397,12 @@
 					$status = 'active';
 				}
 				// Update group details
-				$pdoSt = $this->_sql->prepare( 'UPDATE {SQL_PREFIX}groups
+				$pdoSt = $this->_sql->prepare( 'UPDATE {PREFIX}groups
 												SET name = ?, status = ? WHERE id = ?' );
 				$pdoSt->execute( array($name, $status, $gid) );
 				// Update the ACL Role name as well, to keep it the same as the group
 				$pdoSt->closeCursor();
-				$pdoSt = $this->_sql->prepare( 'UPDATE {SQL_PREFIX}acl_roles SET name = ? WHERE id = ?' );
+				$pdoSt = $this->_sql->prepare( 'UPDATE {PREFIX}acl_roles SET name = ? WHERE id = ?' );
 				$pdoSt->execute( array('group_'.strtolower($name), $group['role_id']) );
 				// Cleanup and remove cache
 				$this->_cache->delete( array('acl_roles', 'ugmanager_groups') );
@@ -427,13 +427,13 @@
 			if ( $gid == self::_ROOT_GID || $gid == self::_GUEST_GID ) {
 				throw new Ugmanager_InvalidGroup( 'you can not delete the root or guest group' );
 			}
-			if ( $this->_sql->exec('DELETE FROM {SQL_PREFIX}groups WHERE id = '.$gid) ) {
-				$this->_sql->exec( 'DELETE FROM {SQL_PREFIX}users WHERE `group` = '.$gid );
+			if ( $this->_sql->exec('DELETE FROM {PREFIX}groups WHERE id = '.$gid) ) {
+				$this->_sql->exec( 'DELETE FROM {PREFIX}users WHERE `group` = '.$gid );
 				// Remove all ACL roles and rules associated with it
-				$this->_sql->exec( 'DELETE FROM {SQL_PREFIX}acl_roles WHERE id = '.(int) $group['role_id'] );
-				$this->_sql->exec( 'DELETE FROM {SQL_PREFIX}acl_rules WHERE role_id = '.(int) $group['role_id'] );
+				$this->_sql->exec( 'DELETE FROM {PREFIX}acl_roles WHERE id = '.(int) $group['role_id'] );
+				$this->_sql->exec( 'DELETE FROM {PREFIX}acl_rules WHERE role_id = '.(int) $group['role_id'] );
 				// Update existing groups that used to inherit this group
-				$this->_sql->exec( 'UPDATE {SQL_PREFIX}acl_roles SET parent_id = 0 WHERE parent_id = '.(int) $group['role_id'] );
+				$this->_sql->exec( 'UPDATE {PREFIX}acl_roles SET parent_id = 0 WHERE parent_id = '.(int) $group['role_id'] );
 				// Cleanup and remove cache
 				foreach( $this->users as $key=>$val ) {
 					if ( $val['group'] == $gid ) {
@@ -460,7 +460,7 @@
 			if ( $gid == self::_ROOT_GID || $gid == self::_GUEST_GID ) {
 				throw new Ugmanager_InvalidGroup( 'you can not purge the root or guest group!' );
 			}
-			$this->_sql->exec( 'DELETE FROM {SQL_PREFIX}users WHERE `group` = '.$gid );
+			$this->_sql->exec( 'DELETE FROM {PREFIX}users WHERE `group` = '.$gid );
 			// Remove cache and cleanup
 			foreach( $this->users as $key=>$val ) {
 				if ( $val['group'] == $gid ) {
@@ -514,7 +514,7 @@
 			 * the required queries to edit the user
 			 */
 			$params = array();
-			$editUserQ = 'UPDATE {SQL_PREFIX}users SET';
+			$editUserQ = 'UPDATE {PREFIX}users SET';
 			foreach( array_intersect_key( $details, array_flip($this->userKeys) ) as $key=>$val ) {
 				$editUserQ .= " `$key` = :$key,";
 				$params[":$key"] = $val;
@@ -529,7 +529,7 @@
 			}
 			// Insert/update user meta data
 			$deleteMetaKeys = array();
-			$pdoStMeta = $this->_sql->prepare( 'INSERT INTO {SQL_PREFIX}users_meta (uid, name, value)
+			$pdoStMeta = $this->_sql->prepare( 'INSERT INTO {PREFIX}users_meta (uid, name, value)
 												VALUES(:uid, :name, :value)
 												ON DUPLICATE KEY UPDATE value = VALUES(value)' );
 			foreach( array_diff_key( $details, array_flip($this->userKeys) ) as $key=>$val ) {
@@ -540,7 +540,7 @@
 				}
 			}
 			// Delete meta data
-			$pdoStDelete = $this->_sql->prepare( 'DELETE FROM {SQL_PREFIX}users_meta WHERE uid = :uid AND name = :name' );
+			$pdoStDelete = $this->_sql->prepare( 'DELETE FROM {PREFIX}users_meta WHERE uid = :uid AND name = :name' );
 			foreach( $deleteMetaKeys as $key ) {
 				$pdoStDelete->execute( array(':uid' => $user['id'], ':name' => $key) );
 			}
@@ -573,7 +573,7 @@
 			}
 			unset( $details['joined'], $details['last_pw_change'] );
 			// First insert the standard data
-			$addUserQ = 'INSERT INTO {SQL_PREFIX}users (%s,joined, last_pw_change) VALUES(%s,UTC_TIMESTAMP(), UTC_TIMESTAMP())';
+			$addUserQ = 'INSERT INTO {PREFIX}users (%s,joined, last_pw_change) VALUES(%s,UTC_TIMESTAMP(), UTC_TIMESTAMP())';
 			$insertData = array();
 			foreach( array_intersect_key( $details, array_flip($this->userKeys) ) as $key=>$val ) {
 				$insertData["`$key`"] = $val;
@@ -587,7 +587,7 @@
 				/**
 				 * Insert the user meta data
 				 */
-				$pdoStMeta = $this->_sql->prepare( 'INSERT INTO {SQL_PREFIX}users_meta (uid, name, value)
+				$pdoStMeta = $this->_sql->prepare( 'INSERT INTO {PREFIX}users_meta (uid, name, value)
 													VALUES(:uid, :name, :value)' );
 				foreach( array_diff_key( $details, array_flip($this->userKeys) ) as $key=>$val ) {
 					$pdoStMeta->execute( array(':uid' => $uid, ':name' => $key, ':value' => $val) );
@@ -619,8 +619,8 @@
 			if ( $user['id'] == self::_ROOT_ID || $user['id'] == self::_GUEST_ID ) {
 				throw new Ugmanager_InvalidUser( 'root or guest user can not be deleted' );
 			}
-			$result = $this->_sql->exec( 'DELETE u, m FROM {SQL_PREFIX}users AS u
-											LEFT JOIN {SQL_PREFIX}users_meta AS m ON m.uid = u.id
+			$result = $this->_sql->exec( 'DELETE u, m FROM {PREFIX}users AS u
+											LEFT JOIN {PREFIX}users_meta AS m ON m.uid = u.id
 											WHERE u.id = '.(int) $user['id'] );
 			if ( $result ) {
 				if ( isset($this->userCount['*']) ) {
@@ -644,7 +644,7 @@
 		 * @return bool
 		 */
 		public function emailTaken( $email ) {
-			$pdoSt = $this->_sql->prepare( 'SELECT COUNT(id) FROM {SQL_PREFIX}users WHERE email = ?' );
+			$pdoSt = $this->_sql->prepare( 'SELECT COUNT(id) FROM {PREFIX}users WHERE email = ?' );
 			$pdoSt->execute( array($email) );
 			$exists = (bool) $pdoSt->fetchColumn();
 			$pdoSt->closeCursor();
@@ -662,12 +662,12 @@
 		 */
 		public function findUsers( $phrase, $element='username', $limit=0, $offset=0 ) {
 			if ( empty( $limit ) && empty( $offset ) ) {
-				$pdoSt = $this->_sql->prepare( 'SELECT * FROM {SQL_PREFIX}users WHERE '.$element.' = ?' );
+				$pdoSt = $this->_sql->prepare( 'SELECT * FROM {PREFIX}users WHERE '.$element.' = ?' );
 				$pdoSt->execute( array( '%'.$phrase.'%' ) );
 				return $pdoSt->fetchAll( PDO::FETCH_ASSOC );
 			} else {
 				// Build the correct prepared statement
-				$statement = 'SELECT * FROM {SQL_PREFIX}users WHERE '.$element.' LIKE :phrase';
+				$statement = 'SELECT * FROM {PREFIX}users WHERE '.$element.' LIKE :phrase';
 				$params = array();
 				if ( $limit > 0 ) {
 					$statement .= ' LIMIT :limit';

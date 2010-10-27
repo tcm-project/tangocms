@@ -44,7 +44,7 @@
 		public function load( $table ) {
 			$this->setTable( $table );
 			$configValues = array();
-			foreach( $this->_sql->query( 'SELECT * FROM {SQL_PREFIX}'.$table, PDO::FETCH_ASSOC ) as $row ) {
+			foreach( $this->_sql->query( 'SELECT * FROM {PREFIX}'.$table, PDO::FETCH_ASSOC ) as $row ) {
 				/**
 				 * Create the configuration array into the correct* format that is needed
 				 */
@@ -76,7 +76,7 @@
 				$confKey = array( $confKey );
 				$confVal = array( $confVal );
 			}
-			$pdoSt = $this->_sql->prepare( 'INSERT INTO {SQL_PREFIX}'.$this->sqlTable.' ( name, value ) VALUES ( :name, :value )' );
+			$pdoSt = $this->_sql->prepare( 'INSERT INTO {PREFIX}'.$this->sqlTable.' ( name, value ) VALUES ( :name, :value )' );
 			foreach( $confKey as $key=>$name ) {
 				$pdoSt->execute( array(':name' => $name, ':value' => $confVal[ $key ]) );
 			}
@@ -96,7 +96,7 @@
 				$confKey = array( $confKey );
 				$confVal = array( $confVal );
 			}
-			$pdoSt = $this->_sql->prepare( 'UPDATE {SQL_PREFIX}'.$this->sqlTable.' SET value = :value WHERE name = :name' );
+			$pdoSt = $this->_sql->prepare( 'UPDATE {PREFIX}'.$this->sqlTable.' SET value = :value WHERE name = :name' );
 			foreach( $confKey as $key=>$name ) {
 				$pdoSt->execute( array(':name' => $name, ':value' => $confVal[ $key ]) );
 			}
@@ -111,7 +111,7 @@
 		 */
 		public function delete( $confKey ) {
 			parent::delete( $confKey );
-			$pdoSt = $this->_sql->prepare( 'DELETE FROM {SQL_PREFIX}'.$this->sqlTable.' WHERE name = :name' );
+			$pdoSt = $this->_sql->prepare( 'DELETE FROM {PREFIX}'.$this->sqlTable.' WHERE name = :name' );
 			foreach( (array) $confKey as $name ) {
 				$pdoSt->execute( array(':name' => $name) );
 			}

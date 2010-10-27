@@ -173,7 +173,7 @@
 				$typeKey = 'installable';
 			}
 			if ( self::$sqlModules === null && Registry::has( 'sql' ) && Registry::get('zula')->getState() != 'setup' ) {
-				$query = 'SELECT * FROM {SQL_PREFIX}modules ORDER BY `order`, name';
+				$query = 'SELECT * FROM {PREFIX}modules ORDER BY `order`, name';
 				foreach( Registry::get('sql')->query( $query, PDO::FETCH_ASSOC ) as $row ) {
 					self::$sqlModules[ $row['name'] ] = $row;
 				}
@@ -238,7 +238,7 @@
 				if ( !Registry::has( 'sql' ) ) {
 					return array();
 				}
-				self::$disabledModules = Registry::get( 'sql' )->query('SELECT name FROM {SQL_PREFIX}modules WHERE disabled = 1')
+				self::$disabledModules = Registry::get( 'sql' )->query('SELECT name FROM {PREFIX}modules WHERE disabled = 1')
 															   ->fetchAll( PDO::FETCH_COLUMN );
 			}
 			return self::$disabledModules;
@@ -303,7 +303,7 @@
 		 */
 		public function enable() {
 			if ( self::isDisabled( $this->name ) ) {
-				$pdoSt = $this->_sql->prepare( 'UPDATE {SQL_PREFIX}modules SET disabled = 0 WHERE name = ?' );
+				$pdoSt = $this->_sql->prepare( 'UPDATE {PREFIX}modules SET disabled = 0 WHERE name = ?' );
 				$pdoSt->execute( array($this->name) );
 				if ( $pdoSt->rowCount() > 0 ) {
 					// Remove the key from the main disabled_modules property
@@ -330,7 +330,7 @@
 			if ( self::isDisabled( $this->name ) ) {
 				return true;
 			} else {
-				$pdoSt = $this->_sql->prepare( 'UPDATE {SQL_PREFIX}modules SET disabled = 1 WHERE name = ?' );
+				$pdoSt = $this->_sql->prepare( 'UPDATE {PREFIX}modules SET disabled = 1 WHERE name = ?' );
 				$pdoSt->execute( array($this->name) );
 				if ( $pdoSt->rowCount() > 0 ) {
 					self::$disabledModules[] = $this->name;
@@ -350,7 +350,7 @@
 		 * @return bool
 		 */
 		public function setLoadOrder( $order ) {
-			$pdoSt = $this->_sql->prepare( 'UPDATE {SQL_PREFIX}modules SET `order` = ? WHERE name = ?' );
+			$pdoSt = $this->_sql->prepare( 'UPDATE {PREFIX}modules SET `order` = ? WHERE name = ?' );
 			return $pdoSt->execute( array((int) $order, $this->name) );
 		}
 
@@ -404,7 +404,7 @@
 				if ( is_readable( $sqlFile ) ) {
 					$this->_sql->loadSqlFile( $sqlFile );
 				}
-				$this->_sql->query( 'INSERT INTO {SQL_PREFIX}modules (name) VALUES("'.$this->name.'")
+				$this->_sql->query( 'INSERT INTO {PREFIX}modules (name) VALUES("'.$this->name.'")
 									 ON DUPLICATE KEY UPDATE name=name' )
 						   ->closeCursor();
 				// Add all of the new ACL resources and run the install.sql file

@@ -63,7 +63,7 @@
 			}
 			if ( Registry::has( 'sql' ) ) {
 				// Find the regex for this layout
-				$pdoSt = $this->_sql->prepare( 'SELECT regex FROM {SQL_PREFIX}layouts WHERE name = ?' );
+				$pdoSt = $this->_sql->prepare( 'SELECT regex FROM {PREFIX}layouts WHERE name = ?' );
 				$pdoSt->execute( array($name) );
 				if ( $regex = $pdoSt->fetchColumn() ) {
 					$this->regex = $regex;
@@ -91,7 +91,7 @@
 		 * @return string
 		 */
 		static public function find( $siteType, $requestPath ) {
-			$pdoSt = Registry::get('sql')->prepare( 'SELECT name FROM {SQL_PREFIX}layouts WHERE
+			$pdoSt = Registry::get('sql')->prepare( 'SELECT name FROM {PREFIX}layouts WHERE
 													name LIKE ? AND ? REGEXP regex LIMIT 1' );
 			$pdoSt->execute( array($siteType.'-%', (string) $requestPath) );
 			if ( ($layout = $pdoSt->fetchColumn()) == false ) {
@@ -116,7 +116,7 @@
 					$layouts[] = array('name' => $name, 'regex' => '');
 				} else {
 					if ( !isset( $pdoSt ) ) {
-						$pdoSt = Registry::get('sql')->prepare( 'SELECT name, regex FROM {SQL_PREFIX}layouts WHERE name = ?' );
+						$pdoSt = Registry::get('sql')->prepare( 'SELECT name, regex FROM {PREFIX}layouts WHERE name = ?' );
 					}
 					$pdoSt->execute( array($name) );
 					if ( $row = $pdoSt->fetch(PDO::FETCH_ASSOC) ) {
@@ -400,11 +400,11 @@
 			) {
 				if ( Registry::has( 'sql' ) ) {
 					if ( ($regex = $this->getRegex()) ) {
-						$pdoSt = $this->_sql->prepare( 'INSERT INTO {SQL_PREFIX}layouts (name, regex) VALUES (?, ?)
+						$pdoSt = $this->_sql->prepare( 'INSERT INTO {PREFIX}layouts (name, regex) VALUES (?, ?)
 														ON DUPLICATE KEY UPDATE regex = VALUES(regex)' );
 						$pdoSt->execute( array($this->name, $this->getRegex()) );
 					} else {
-						$pdoSt = $this->_sql->prepare( 'DELETE FROM {SQL_PREFIX}layouts WHERE name = ?' );
+						$pdoSt = $this->_sql->prepare( 'DELETE FROM {PREFIX}layouts WHERE name = ?' );
 						$pdoSt->execute( array($this->name) );
 					}
 				}
@@ -421,7 +421,7 @@
 		 */
 		public function delete() {
 			if ( zula_is_deletable( $this->path ) && unlink( $this->path ) ) {
-				$pdoSt = $this->_sql->prepare( 'DELETE FROM {SQL_PREFIX}layouts WHERE name = ?' );
+				$pdoSt = $this->_sql->prepare( 'DELETE FROM {PREFIX}layouts WHERE name = ?' );
 				$pdoSt->execute( array($this->name) );
 				return true;
 			} else {
