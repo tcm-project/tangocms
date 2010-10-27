@@ -16,46 +16,49 @@
 	class Session_controller_pwd extends Zula_ControllerBase {
 
 		/**
-		 * Displays the form for a user to enter his/her username in
-		 * which will then get a reset code emailed to the address
-		 * set within the profile.
+		 * Displays a form to enter in an email address; if this email address
+		 * is associated with a user then an email will be sent to them with
+		 * a reset code and details on how to reset their password (change it).
 		 *
 		 * @return string|bool
 		 */
-		public function resetSection() {
-			$this->setTitle( t('Reset password') );
-			// Build form
-			$form = new View_form( 'pwd/username.html', 'session' );
-			$form->addElement( 'session/username', null, t('Username'), new Validator_Length(0, 255) );
+		public function forgotSection() {
+			$this->setTitle( t('Forgotten your password?') );
+			$form = new View_form( 'pwd/form_forgotten.html', 'session' );
+			$form->addElement( 'session/email', null, t('Email'), new Validator_Email );
 			if ( $form->hasInput() && $form->isValid() ) {
 				/**
 				 * Check users exists, get details and send email
 				 */
+				$pdoSt = $this->_sql->prepare( 'SELECT id FROM {SQL_PREFIX}users WHERE email = ?' );
+				$pdoSt->execute( array($form->getValues('session/email')) );
+				$uid = $pdoSt->fetchColumn();
+				$pdoSt->closeCursor();
 				try {
-					$user = $this->_ugmanager->getUser( $form->getValues('session/username'), false );
+					$user = $this->_ugmanager->getUser( $uid );
 					// Generate a reset code that is unique
 					$pdoSt = $this->_sql->prepare( 'SELECT COUNT(uid) FROM {SQL_PREFIX}users_meta
-													WHERE name = "reset_code" AND value = ?' );
+													WHERE name = "sessionResetCode" AND value = ?' );
 					do {
 						$resetCode = zula_create_key();
 						$pdoSt->execute( array($resetCode) );
 					} while( $pdoSt->fetchColumn() >= 1 );
 					$pdoSt->closeCursor();
 					// Update user account and attempt to send the email
-					$this->_ugmanager->editUser( $user['id'], array('reset_code' => $resetCode) );
-					$msgView = $this->loadView( 'pwd/reset_email.txt' );
+					$this->_ugmanager->editUser( $user['id'], array('sessionResetCode' => $resetCode) );
+					$msgView = $this->loadView( 'pwd/email_forgotten.txt' );
 					$msgView->assign( array(
-											'RESET_CODE'	=> $resetCode,
-											'USER'			=> $user,
+											'code'	=> $resetCode,
+											'user'	=> $user,
 											));
-					$message = new Email_Message( t('Reset password'), $msgView->getOutput() );
+					$message = new Email_Message( t('Forgotten password'), $msgView->getOutput() );
 					$message->setTo( $user['email'] );
 					$email = new Email;
 					$email->send( $message );
-					$this->_event->success( t("An email has been sent to the user's email address") );
-					return zula_redirect( $this->_router->makeUrl( 'session', 'pwd', 'code' ) );
+					$this->_event->success( t("An email has been sent to the users email address") );
+					return zula_redirect( $this->_router->makeUrl('session') );
 				} catch ( Ugmanager_UserNoExist $e ) {
-					$this->_event->error( t('The provided username does not exist') );
+					$this->_event->error( t('The provided email does not exist') );
 				} catch ( Email_Exception $e ) {
 					$this->_event->error( t('An error occurred while sending the email. Please try again later') );
 				}
@@ -64,29 +67,40 @@
 		}
 
 		/**
-		 * Shows the form to enter the reset code and new password.
+		 * Takes a provided reset code (rc) and allows the user to
+		 * enter a new password for their account.
 		 *
 		 * @return string|bool
 		 */
-		public function codeSection() {
-			$this->setTitle( t('Enter reset code') );
-			// Prepare validation of the form
-			$form = new View_form( 'pwd/reset.html', 'session' );
-			$form->addElement( 'session/code', null, 'Reset Code', new Validator_Length( 48, 48 ) );
-			$form->addElement( 'session/password', null, 'Password',
-								array(new Validator_Length(4, 32), new Validator_Confirm('session/password_confirm', Validator_Confirm::_POST))
-							 );
-			if ( $form->hasInput() && $form->isValid() ) {
-				$fd = $form->getValues( 'session' );
-				try {
-					$userId = $this->_model()->resetPassword( $fd['code'], $fd['password'] );
-					$this->_event->success( t('Your password has been successfully changed') );
-					return zula_redirect( $this->_router->makeUrl( 'session' ) );
-				} catch ( Session_InvalidResetCode $e ) {
-					$this->_event->error( t('Invalid password reset code') );
+		public function resetSection() {
+			$this->setTitle( t('Reset account password') );
+			try {
+				$rc = $this->_input->get( 'rc' );
+				if ( ($uid = $this->_model()->resetCodeUid($rc)) ) {
+					$form = new View_form( 'pwd/form_reset.html', 'session' );
+					$form->addElement( 'session/password', null, t('Password'),
+										array(new Validator_Length(4, 32), new Validator_Confirm('session/password_confirm', Validator_Confirm::_POST))
+									);
+					if ( $form->hasInput() && $form->isValid() ) {
+						try {
+							$details = array(
+											'password'			=> $form->getValues('session/password'),
+											'sessionResetCode'	=> null
+											);
+							$this->_ugmanager->editUser( $uid, $details );
+							$this->_event->success( t('Your password has been successfully changed') );
+							return zula_redirect( $this->_router->makeUrl( 'session' ) );
+						} catch ( Ugmanager_UserNoExist $e ) {
+							$this->_event->error( t('User does not exist') );
+						}
+					}
+					return $form->getOutput();
+				} else {
+					$this->_event->error( t('Sorry, the reset code provided does not exist') );
 				}
+			} catch ( Input_KeyNoExist $e ) {
 			}
-			return $form->getOutput();
+			return zula_redirect( $this->_router->makeUrl('session', 'pwd', 'forgot') );
 		}
 
 		/**

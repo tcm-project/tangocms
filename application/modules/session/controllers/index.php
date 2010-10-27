@@ -105,7 +105,7 @@
 				$view = $this->loadView( 'index/login.html' );
 				$view->assign( array(
 									'FORM_URL' 		=> $formUrl,
-									'FORGOT_URL' 	=> $this->_router->makeUrl( 'session', 'pwd', 'reset' ),
+									'FORGOT_URL' 	=> $this->_router->makeUrl( 'session', 'pwd', 'forgot' ),
 									'REGISTER_URL'	=> $registerUrl,
 									'LOGIN_BY'		=> $this->loginMethod,
 									));

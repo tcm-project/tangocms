@@ -94,25 +94,19 @@
 		}
 
 		/**
-		 * Resets a users password to the provided value for the user that
-		 * has the provided reset code.
+		 * Takes a reset code value and attempts to find the UID associated
+		 * with it.
 		 *
-		 * @param string $code
-		 * @param string $password
-		 * @return int
+		 * @param string $rc
+		 * @return int|false
 		 */
-		public function resetPassword( $code, $password ) {
+		public function resetCodeUid( $rc ) {
 			$pdoSt = $this->_sql->prepare( 'SELECT uid FROM {SQL_PREFIX}users_meta
-											WHERE name = "reset_code" AND value = ? LIMIT 1' );
-			$pdoSt->execute( array($code) );
+											WHERE name = "sessionResetCode" AND value = ? LIMIT 1' );
+			$pdoSt->execute( array($rc) );
 			$uid = $pdoSt->fetchColumn();
 			$pdoSt->closeCursor();
-			if ( $uid ) {
-				$this->_ugmanager->editUser( $uid, array('password' => $password, 'reset_code' => null) );
-				return $uid;
-			} else {
-				throw new Session_InvalidResetCode( 'no user with reset code "'.$code.'" could be found' );
-			}
+			return $uid ? $uid : false;
 		}
 
 	}

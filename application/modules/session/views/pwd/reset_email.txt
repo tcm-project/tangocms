@@ -1,9 +1,0 @@
-<?php printf( t('Hello, %1$s!'), $user['username'] ); ?>
-
-
-{L_[You have received this email from us in response to wanting to reset your account password.]}
-
-{L_[Please go to the following URL and enter the Reset Code and your new password.]}
-
-{L_[URL:]} <?php echo $this->_router->makeFullUrl( 'session', 'pwd', 'code' )."\r\n"; ?>
-{L_[Reset Code:]} {RESET_CODE}
