@@ -31,7 +31,7 @@
 		 */
 		public function getAll() {
 			if ( empty( $this->tags ) ) {
-				$query = $this->_sql->query( 'SELECT LOWER(name) AS name, id FROM {SQL_PREFIX}mod_tags' );
+				$query = $this->_sql->query( 'SELECT LOWER(name) AS name, id FROM {PREFIX}mod_tags' );
 				foreach( $query->fetchAll( PDO::FETCH_ASSOC ) as $row ) {
 					$this->tags[ $row['id'] ] = $row['name'];
 				}
@@ -48,12 +48,12 @@
 		 */
 		public function getTags( $id, $type=self::_URL ) {
 			if ( $type == self::_ID ) {
-				$query = 'SELECT name FROM {SQL_PREFIX}mod_tags WHERE id = ?';
+				$query = 'SELECT name FROM {PREFIX}mod_tags WHERE id = ?';
 			} else {
 				// Get all tags for a given URL
 				$query = 'SELECT tags.name
-						  FROM {SQL_PREFIX}mod_tags AS tags
-							LEFT JOIN {SQL_PREFIX}mod_tags_xref AS xref ON xref.tag = tags.id
+						  FROM {PREFIX}mod_tags AS tags
+							LEFT JOIN {PREFIX}mod_tags_xref AS xref ON xref.tag = tags.id
 						  WHERE xref.url = ?';
 			}
 			$pdoSt = $this->_sql->prepare( $query );
@@ -69,8 +69,8 @@
 		 */
 		public function getUrls( $tag ) {
 			$pdoSt = $this->_sql->prepare( 'SELECT xref.url
-											FROM {SQL_PREFIX}mod_tags_xref AS xref
-												LEFT JOIN {SQL_PREFIX}mod_tags AS tags ON tags.id = xref.tag
+											FROM {PREFIX}mod_tags_xref AS xref
+												LEFT JOIN {PREFIX}mod_tags AS tags ON tags.id = xref.tag
 											WHERE tags.name = ?' );
 			$pdoSt->execute( array($tag) );
 			return $pdoSt->fetchAll( PDO::FETCH_COLUMN );
@@ -84,7 +84,7 @@
 		public function getStats() {
 			if ( !$stats = $this->_cache->get( 'tags_stats' ) ) {
 				$stats = array();
-				foreach( $this->_sql->query( 'SELECT tag FROM {SQL_PREFIX}mod_tags_xref' )->fetchAll( PDO::FETCH_COLUMN ) as $tagId ) {
+				foreach( $this->_sql->query( 'SELECT tag FROM {PREFIX}mod_tags_xref' )->fetchAll( PDO::FETCH_COLUMN ) as $tagId ) {
 					$tag = $this->getTags( $tagId, self::_ID );
 					if ( isset( $tag[0] ) ) {
 						if ( isset( $stats[ $tag[0] ] ) ) {
@@ -110,7 +110,7 @@
 			if ( in_array( $tagName, $this->tags ) ) {
 				return array_search( $tagName, $this->tags );
 			}
-			$pdoSt = $this->_sql->prepare( 'INSERT INTO {SQL_PREFIX}mod_tags (name) VALUES(?)' );
+			$pdoSt = $this->_sql->prepare( 'INSERT INTO {PREFIX}mod_tags (name) VALUES(?)' );
 			$pdoSt->execute( array($tagName) );
 			if ( $pdoSt->rowCount() ) {
 				$this->tags[] = $tagName;
@@ -129,7 +129,7 @@
 		 */
 		public function addUrl( $url, $tagId ) {
 			if ( !$this->urlHasTag( $url, $tagId ) ) {
-				$pdoSt = $this->_sql->prepare( 'INSERT INTO {SQL_PREFIX}mod_tags_xref (url, tag) VALUES(?, ?)' );
+				$pdoSt = $this->_sql->prepare( 'INSERT INTO {PREFIX}mod_tags_xref (url, tag) VALUES(?, ?)' );
 				$pdoSt->execute( array($url, $tagId) );
 				if ( $pdoSt->rowCount() ) {
 					$this->_cache->delete( 'tags_stats' );
@@ -171,7 +171,7 @@
 		 * @return bool
 		 */
 		public function urlHasTag( $url, $tagId ) {
-			$pdoSt = $this->_sql->prepare( 'SELECT COUNT(id) from {SQL_PREFIX}mod_tags_xref WHERE url = ? AND tag = ?' );
+			$pdoSt = $this->_sql->prepare( 'SELECT COUNT(id) from {PREFIX}mod_tags_xref WHERE url = ? AND tag = ?' );
 			$pdoSt->execute( array($url, $tagId) );
 			return (bool) $pdoSt->fetch( PDO::FETCH_COLUMN );
 		}
@@ -183,7 +183,7 @@
 		 * @return bool
 		 */
 		public function delUrlTags( $url ) {
-			$pdoSt = $this->_sql->prepare( 'DELETE FROM {SQL_PREFIX}mod_tags_xref WHERE url = ?' );
+			$pdoSt = $this->_sql->prepare( 'DELETE FROM {PREFIX}mod_tags_xref WHERE url = ?' );
 			$pdoSt->execute( array($url) );
 			return $pdoSt->rowCount();
 		}

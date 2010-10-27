@@ -357,7 +357,7 @@
 				if ( !$this->_acl->check( 'contact_edit' ) ) {
 					throw new Module_NoPermission;
 				}
-				$sqlQuery = 'UPDATE {SQL_PREFIX}mod_contact_fields SET `order` = CASE';
+				$sqlQuery = 'UPDATE {PREFIX}mod_contact_fields SET `order` = CASE';
 				$sqlMiddle = array();
 				$params = array( '' ); # Force key 0 since that wont be used with PDO
 				try {

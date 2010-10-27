@@ -1,1 +1,1 @@
-UPDATE {SQL_PREFIX}mod_menu SET url = "/" WHERE url = "[FRONT_PAGE]";
+UPDATE {PREFIX}mod_menu SET url = "/" WHERE url = "[FRONT_PAGE]";

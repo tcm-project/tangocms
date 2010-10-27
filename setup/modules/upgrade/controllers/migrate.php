@@ -461,7 +461,7 @@
 						}
 					}
 					// Add in the new resources
-					$query = $this->_sql->query( 'SELECT SUBSTRING(name, 11) AS pid FROM {SQL_PREFIX}acl_resources
+					$query = $this->_sql->query( 'SELECT SUBSTRING(name, 11) AS pid FROM {PREFIX}acl_resources
 													WHERE name LIKE "page-view_%"' );
 					foreach( $query->fetchAll( PDO::FETCH_COLUMN ) as $pid ) {
 						$this->_acl->allowOnly( 'page-edit_'.$pid, $editRoles );

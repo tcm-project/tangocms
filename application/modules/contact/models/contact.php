@@ -31,7 +31,7 @@
 		 * @return array
 		 */
 		public function getAllForms( $limit=0, $offset=0, $aclCheck=true ) {
-			$statement = 'SELECT SQL_CALC_FOUND_ROWS * FROM {SQL_PREFIX}mod_contact ORDER BY name ASC';
+			$statement = 'SELECT SQL_CALC_FOUND_ROWS * FROM {PREFIX}mod_contact ORDER BY name ASC';
 			if ( $limit != 0 || $offset != 0 ) {
 				// Limit the result set.
 				$params = array();
@@ -124,7 +124,7 @@
 			$cacheKey = $byId ? null : 'contact_form_'.$form;
 			if ( !($details = $this->_cache->get($cacheKey)) ) {
 				$col = $byId ? 'id' : 'clean_name';
-				$pdoSt = $this->_sql->prepare( 'SELECT * FROM {SQL_PREFIX}mod_contact WHERE '.$col.' = ?' );
+				$pdoSt = $this->_sql->prepare( 'SELECT * FROM {PREFIX}mod_contact WHERE '.$col.' = ?' );
 				$pdoSt->execute( array($form) );
 				$details = $pdoSt->fetch( PDO::FETCH_ASSOC );
 				$pdoSt->closeCursor();
@@ -146,7 +146,7 @@
 		public function getFormFields( $fid ) {
 			$cacheKey = 'contact_fields_'.$fid;
 			if ( !($fields = $this->_cache->get($cacheKey)) ) {
-				$fields = $this->_sql->query( 'SELECT * FROM {SQL_PREFIX}mod_contact_fields
+				$fields = $this->_sql->query( 'SELECT * FROM {PREFIX}mod_contact_fields
 											   WHERE form_id = '.(int) $fid.' ORDER BY `order`, id ASC' )
 									 ->fetchAll( PDO::FETCH_ASSOC );
 				$this->_cache->add( $cacheKey, $fields );
@@ -161,7 +161,7 @@
 		 * @return array
 		 */
 		public function getField( $id ) {
-			$field = $this->_sql->query( 'SELECT * FROM {SQL_PREFIX}mod_contact_fields WHERE id = '.(int) $id )
+			$field = $this->_sql->query( 'SELECT * FROM {PREFIX}mod_contact_fields WHERE id = '.(int) $id )
 								->fetch( PDO::FETCH_ASSOC );
 			if ( $field ) {
 				return $field;
@@ -188,7 +188,7 @@
 					break;
 				}
 			} while( true );
-			$pdoSt = $this->_sql->prepare( 'INSERT INTO {SQL_PREFIX}mod_contact (name, clean_name, email) VALUES(?, ?, ?)' );
+			$pdoSt = $this->_sql->prepare( 'INSERT INTO {PREFIX}mod_contact (name, clean_name, email) VALUES(?, ?, ?)' );
 			$pdoSt->execute( array($name, $cleanName, $email) );
 			$pdoSt->closeCursor();
 			if ( $pdoSt->rowCount() ) {
@@ -214,7 +214,7 @@
 		 */
 		public function editForm( $fid, $name, $email ) {
 			$form = $this->getForm( $fid );
-			$pdoSt = $this->_sql->prepare( 'UPDATE {SQL_PREFIX}mod_contact SET name = ?, email = ? WHERE id = ?' );
+			$pdoSt = $this->_sql->prepare( 'UPDATE {PREFIX}mod_contact SET name = ?, email = ? WHERE id = ?' );
 			$pdoSt->execute( array($name, $email, $form['id']) );
 			$this->_cache->delete( array('contact_forms', 'contact_form_'.$form['clean_name']) );
 			Hooks::notifyAll( 'contact_edit_form', $form, $name, $email );
@@ -229,11 +229,11 @@
 		 */
 		public function deleteForm( $fid ) {
 			$form = $this->getForm( $fid );
-			$query = $this->_sql->query( 'DELETE FROM {SQL_PREFIX}mod_contact WHERE id = '.(int) $form['id'] );
+			$query = $this->_sql->query( 'DELETE FROM {PREFIX}mod_contact WHERE id = '.(int) $form['id'] );
 			$query->closeCursor();
 			if ( $query->rowCount() ) {
 				$this->_acl->deleteResource( 'contact-form-'.$form['id'] );
-				$query = $this->_sql->query( 'DELETE FROM {SQL_PREFIX}mod_contact_fields WHERE form_id = '.(int) $form['id'] );
+				$query = $this->_sql->query( 'DELETE FROM {PREFIX}mod_contact_fields WHERE form_id = '.(int) $form['id'] );
 				$query->closeCursor();
 				// Remove all cache
 				$this->_cache->delete( array('contact_forms', 'contact_form_'.$form['clean_name'], 'contact_fields_'.$form['id']) );
@@ -254,7 +254,7 @@
 		 * @return int|bool
 		 */
 		public function addField( $fid, $name, $required=false, $type='textbox', $options='' ) {
-			$pdoSt = $this->_sql->prepare( 'INSERT INTO {SQL_PREFIX}mod_contact_fields (form_id, name, required, type, options)
+			$pdoSt = $this->_sql->prepare( 'INSERT INTO {PREFIX}mod_contact_fields (form_id, name, required, type, options)
 											VALUES(?, ?, ?, ?, ?)' );
 			$pdoSt->execute( array($fid, $name, $required, $type, $options) );
 			$pdoSt->closeCursor();
@@ -278,7 +278,7 @@
 		 */
 		public function editField( $id, $name, $required=false, $type='textbox', $options='' ) {
 			$field = $this->getField( $id );
-			$pdoSt = $this->_sql->prepare( 'UPDATE {SQL_PREFIX}mod_contact_fields SET name = ?, required = ?,
+			$pdoSt = $this->_sql->prepare( 'UPDATE {PREFIX}mod_contact_fields SET name = ?, required = ?,
 											type = ?, options = ? WHERE id = ?' );
 			$pdoSt->execute( array($name, $required, $type, $options, $field['id']) );
 			$this->_cache->delete( 'contact_fields_'.$field['form_id'] );
@@ -293,7 +293,7 @@
 		 */
 		public function deleteField( $id ) {
 			$field = $this->getField( $id );
-			$query = $this->_sql->query( 'DELETE FROM {SQL_PREFIX}mod_contact_fields WHERE id = '.(int) $field['id'] );
+			$query = $this->_sql->query( 'DELETE FROM {PREFIX}mod_contact_fields WHERE id = '.(int) $field['id'] );
 			$query->closeCursor();
 			if ( $query->rowCount() ) {
 				$this->_cache->delete( 'contact_fields_'.$field['form_id'] );

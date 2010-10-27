@@ -37,8 +37,8 @@
 		public function getAllCategories( $limit=0, $offset=0, $aclCheck=true ) {
 			$statement = 'SELECT SQL_CALC_FOUND_ROWS mcats.*, COUNT(mitems.id) AS item_count
 						  FROM
-							{SQL_PREFIX}mod_media_cats mcats
-							LEFT JOIN {SQL_PREFIX}mod_media_items mitems ON mitems.cat_id = mcats.id
+							{PREFIX}mod_media_cats mcats
+							LEFT JOIN {PREFIX}mod_media_items mitems ON mitems.cat_id = mcats.id
 						  GROUP BY mcats.id';
 			if ( $limit != 0 || $offset != 0 ) {
 				if ( $limit > 0 ) {
@@ -122,8 +122,8 @@
 		public function getCategory( $cat, $byId=true ) {
 			$pdoSt = $this->_sql->prepare( 'SELECT mcats.*, COUNT(mitems.id) AS item_count
 											FROM
-												{SQL_PREFIX}mod_media_cats mcats
-												LEFT JOIN {SQL_PREFIX}mod_media_items mitems ON mitems.cat_id = mcats.id
+												{PREFIX}mod_media_cats mcats
+												LEFT JOIN {PREFIX}mod_media_items mitems ON mitems.cat_id = mcats.id
 											WHERE mcats.'.($byId ? 'id' : 'clean_name').' = ?
 											GROUP BY mcats.id' );
 			$pdoSt->execute( array($cat) );
@@ -149,7 +149,7 @@
 		 */
 		public function getItems( $limit=0, $offset=0, $cid=null, $aclCheck=true ) {
 			$statement = 'SELECT SQL_CALC_FOUND_ROWS *
-						  FROM {SQL_PREFIX}mod_media_items WHERE outstanding = 0';
+						  FROM {PREFIX}mod_media_items WHERE outstanding = 0';
 			$params = array();
 			if ( $cid ) {
 				$statement .= ' AND cat_id = :cid';
@@ -213,7 +213,7 @@
 		 * @return array
 		 */
 		public function getItem( $item, $byId=true ) {
-			$pdoSt = $this->_sql->prepare( 'SELECT * FROM {SQL_PREFIX}mod_media_items WHERE '.($byId ? 'id' : 'clean_name').' = ?' );
+			$pdoSt = $this->_sql->prepare( 'SELECT * FROM {PREFIX}mod_media_items WHERE '.($byId ? 'id' : 'clean_name').' = ?' );
 			$pdoSt->execute( array($item) );
 			$details = $pdoSt->fetch( PDO::FETCH_ASSOC );
 			$pdoSt->closeCursor();
@@ -236,7 +236,7 @@
 		 * @return array
 		 */
 		public function getOutstandingItems( $cid=null, $aclCheck=true ) {
-			$statement = 'SELECT * FROM {SQL_PREFIX}mod_media_items WHERE outstanding = 1';
+			$statement = 'SELECT * FROM {PREFIX}mod_media_items WHERE outstanding = 1';
 			if ( $cid ) {
 				$statement .= ' AND cat_id = '.(int) $cid;
 			}
@@ -268,7 +268,7 @@
 				}
 			} while ( true );
 			// Insert new category
-			$pdoSt = $this->_sql->prepare( 'INSERT INTO {SQL_PREFIX}mod_media_cats (name, description, clean_name) VALUES(?, ?, ?)' );
+			$pdoSt = $this->_sql->prepare( 'INSERT INTO {PREFIX}mod_media_cats (name, description, clean_name) VALUES(?, ?, ?)' );
 			$pdoSt->execute( array($name, $desc, $cleanName) );
 			$this->_cache->delete( 'media_cats' );
 			return $this->_sql->lastInsertId();
@@ -284,7 +284,7 @@
 		 */
 		public function editCategory( $id, $name, $desc ) {
 			$category = $this->getCategory( $id );
-			$pdoSt = $this->_sql->prepare( 'UPDATE {SQL_PREFIX}mod_media_cats
+			$pdoSt = $this->_sql->prepare( 'UPDATE {PREFIX}mod_media_cats
 											SET name = ?, description = ? WHERE id = ?' );
 			$this->_cache->delete( 'media_cats' );
 			return $pdoSt->execute( array($name, $desc, $id) );
@@ -300,7 +300,7 @@
 		 */
 		public function deleteCategory( $id ) {
 			$category = $this->getCategory( $id );
-			$query = $this->_sql->query( 'DELETE FROM {SQL_PREFIX}mod_media_cats WHERE id = '.(int) $category['id'] );
+			$query = $this->_sql->query( 'DELETE FROM {PREFIX}mod_media_cats WHERE id = '.(int) $category['id'] );
 			if ( $query->rowCount() ) {
 				$query->closeCursor();
 				$this->_cache->delete( 'media_cats' );
@@ -308,7 +308,7 @@
 				$cid = $category['id'];
 				$this->_acl->deleteResource( array('media-cat_view_'.$cid, 'media-cat_upload_'.$cid, 'media-cat_moderate_'.$cid) );
 				// Delete all media items
-				$query = $this->_sql->query( 'DELETE FROM {SQL_PREFIX}mod_media_items WHERE cat_id = '.(int) $cid );
+				$query = $this->_sql->query( 'DELETE FROM {PREFIX}mod_media_items WHERE cat_id = '.(int) $cid );
 				return $query->rowCount();
 			} else {
 				return false;
@@ -324,7 +324,7 @@
 		 */
 		public function purgeCategory( $id ) {
 			$category = $this->getCategory( $id );
-			$query = $this->_sql->query( 'DELETE FROM {SQL_PREFIX}mod_media_items WHERE cat_id = '.(int) $category['id'] );
+			$query = $this->_sql->query( 'DELETE FROM {PREFIX}mod_media_items WHERE cat_id = '.(int) $category['id'] );
 			return $query->rowCount();
 		}
 
@@ -355,7 +355,7 @@
 				}
 			} while( true );
 			// Insert the new media item
-			$pdoSt = $this->_sql->prepare( 'INSERT INTO {SQL_PREFIX}mod_media_items
+			$pdoSt = $this->_sql->prepare( 'INSERT INTO {PREFIX}mod_media_items
 											(cat_id, type, date, name, clean_name, description, filename, thumbnail, external_service, external_id)
 											VALUES(?, ?, UTC_TIMESTAMP(), ?, ?, ?, ?, ?, ?, ?)' );
 			$pdoSt->execute( array($category['id'], $type, $name, $cleanName, $desc, $filename, $thumbnail, $externalService, $externalId) );
@@ -375,7 +375,7 @@
 		 */
 		public function editItem( $id, $name, $desc ) {
 			$item = $this->getItem( $id );
-			$pdoSt = $this->_sql->prepare( 'UPDATE {SQL_PREFIX}mod_media_items SET name = ?, description = ?, outstanding = 0 WHERE id = ?' );
+			$pdoSt = $this->_sql->prepare( 'UPDATE {PREFIX}mod_media_items SET name = ?, description = ?, outstanding = 0 WHERE id = ?' );
 			return $pdoSt->execute( array($name, $desc, $id) );
 		}
 
@@ -387,7 +387,7 @@
 		 */
 		public function deleteItem( $id ) {
 			$item = $this->getItem( $id );
-			$query = $this->_sql->query( 'DELETE FROM {SQL_PREFIX}mod_media_items WHERE id = '.(int) $item['id'] );
+			$query = $this->_sql->query( 'DELETE FROM {PREFIX}mod_media_items WHERE id = '.(int) $item['id'] );
 			return (bool) $query->rowCount();
 		}
 

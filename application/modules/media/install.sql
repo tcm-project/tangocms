@@ -1,5 +1,5 @@
-DROP TABLE IF EXISTS {SQL_PREFIX}mod_media_cats;
-CREATE TABLE {SQL_PREFIX}mod_media_cats (
+DROP TABLE IF EXISTS {PREFIX}mod_media_cats;
+CREATE TABLE {PREFIX}mod_media_cats (
   id smallint(4) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   clean_name varchar(255) COLLATE utf8_unicode_ci NOT NULL,
@@ -8,11 +8,11 @@ CREATE TABLE {SQL_PREFIX}mod_media_cats (
   KEY clean_name (clean_name)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
-INSERT INTO {SQL_PREFIX}mod_media_cats (name, clean_name) VALUES
+INSERT INTO {PREFIX}mod_media_cats (name, clean_name) VALUES
 ('General', 'general');
 
-DROP TABLE IF EXISTS {SQL_PREFIX}mod_media_items;
-CREATE TABLE {SQL_PREFIX}mod_media_items (
+DROP TABLE IF EXISTS {PREFIX}mod_media_items;
+CREATE TABLE {PREFIX}mod_media_items (
   id mediumint(6) NOT NULL AUTO_INCREMENT,
   `outstanding` tinyint(1) NOT NULL DEFAULT '1',
   cat_id smallint(4) NOT NULL DEFAULT '1',

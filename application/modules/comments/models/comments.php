@@ -39,7 +39,7 @@
 		 * @return array
 		 */
 		public function get( $requestPath=null, $status=self::_ACCEPTED, $limit=0, $offset=0, $order='ASC' ) {
-			$statement = 'SELECT SQL_CALC_FOUND_ROWS * FROM {SQL_PREFIX}mod_comments';
+			$statement = 'SELECT SQL_CALC_FOUND_ROWS * FROM {PREFIX}mod_comments';
 			$params = array();
 			// Add in the WHERE
 			$where = 'WHERE';
@@ -142,7 +142,7 @@
 		 * @return array
 		 */
 		public function getDetails( $id ) {
-			$pdoSt = $this->_sql->prepare( 'SELECT * FROM {SQL_PREFIX}mod_comments WHERE id = ?' );
+			$pdoSt = $this->_sql->prepare( 'SELECT * FROM {PREFIX}mod_comments WHERE id = ?' );
 			$pdoSt->execute( array($id) );
 			if ( ($details = $pdoSt->fetch( PDO::FETCH_ASSOC )) ) {
 				$pdoSt->closeCursor();
@@ -162,7 +162,7 @@
 		 */
 		public function add( $requestPath, $body, $name='', $website='' ) {
 			$status = $this->_config->get('comments/moderate') ? 'moderation' : 'accepted';
-			$pdoSt = $this->_sql->prepare( 'INSERT INTO {SQL_PREFIX}mod_comments
+			$pdoSt = $this->_sql->prepare( 'INSERT INTO {PREFIX}mod_comments
 											(user_id, status, url, date, body, name, website) VALUES (?, ?, ?, UTC_TIMESTAMP(), ?, ?, ?)' );
 			$execData = array($this->_session->getUserId(), $status, $requestPath, $body, $name, $website);
 			if ( !$pdoSt->execute( $execData ) ) {
@@ -183,7 +183,7 @@
 			}
 			// Gather all request paths/urls so we can clear cache ... a pain I know
 			$queryIn = rtrim( str_repeat( '?, ', count($comments) ), ', ' );
-			$pdoSt = $this->_sql->prepare( 'SELECT url FROM {SQL_PREFIX}mod_comments WHERE id IN ( '.$queryIn.' )' );
+			$pdoSt = $this->_sql->prepare( 'SELECT url FROM {PREFIX}mod_comments WHERE id IN ( '.$queryIn.' )' );
 			$pdoSt->execute( $comments );
 			foreach( $pdoSt->fetchAll( PDO::FETCH_COLUMN ) as $path ) {
 				$this->_cache->delete( 'comments_'.zula_hash( $path ) );
@@ -191,7 +191,7 @@
 			$this->_cache->delete( 'comments' );
 			$pdoSt->closeCursor();
 			// Now delete
-			return $this->_sql->prepare( 'DELETE FROM {SQL_PREFIX}mod_comments WHERE id IN ( '.$queryIn.' )' )
+			return $this->_sql->prepare( 'DELETE FROM {PREFIX}mod_comments WHERE id IN ( '.$queryIn.' )' )
 							  ->execute( $comments );
 		}
 
@@ -204,7 +204,7 @@
 		 */
 		public function edit( $commentId, array $details ) {
 			$commentDetails = $this->getDetails( $commentId );
-			$query = 'UPDATE {SQL_PREFIX}mod_comments SET ';
+			$query = 'UPDATE {PREFIX}mod_comments SET ';
 			$execData = array();
 			foreach( $details as $key=>$val ) {
 				$query .= $key.' = ?, ';

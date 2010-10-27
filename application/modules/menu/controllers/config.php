@@ -390,7 +390,7 @@
 					}
 				}
 				if ( $sqlMiddle !== null ) {
-					$pdoSt = $this->_sql->prepare( 'UPDATE {SQL_PREFIX}mod_menu SET `order` = CASE '.$sqlMiddle.'ELSE `order` END' );
+					$pdoSt = $this->_sql->prepare( 'UPDATE {PREFIX}mod_menu SET `order` = CASE '.$sqlMiddle.'ELSE `order` END' );
 					$pdoSt->execute( $execData );
 				}
 				$this->_event->success( t('Menu order updated') );

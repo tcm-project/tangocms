@@ -42,7 +42,7 @@
  			$offset = (int) $offset;
  			if ( !($aliases = $this->_cache->get('aliases')) ) {
 				$aliases = array();
- 				$query = 'SELECT * FROM {SQL_PREFIX}mod_aliases ORDER BY alias ASC';
+ 				$query = 'SELECT * FROM {PREFIX}mod_aliases ORDER BY alias ASC';
  				$this->aliasCount = 0;
 				foreach( $this->_sql->query( $query, PDO::FETCH_ASSOC ) as $row ) {
 					$aliases[ trim($row['alias'], '/') ] = $row;
@@ -126,7 +126,7 @@
  				$aliasDetails = $this->getDetails( $alias, self::_NAME );
  				throw new Alias_AlreadyExists( $alias );
  			} catch ( Alias_NoExist $e ) {
-				$pdoSt = $this->_sql->prepare( 'INSERT INTO {SQL_PREFIX}mod_aliases (alias, url, redirect) VALUES(?, ?, ?)' );
+				$pdoSt = $this->_sql->prepare( 'INSERT INTO {PREFIX}mod_aliases (alias, url, redirect) VALUES(?, ?, ?)' );
 				$pdoSt->execute( array($alias, $url, $redirect) );
  				if ( $pdoSt->rowCount() ) {
  					$this->_cache->delete( 'aliases' );
@@ -149,7 +149,7 @@
  		 */
  		public function edit( $id, $alias, $url, $redirect ) {
  			$aliasDetails = $this->getDetails( $id );
-			$pdoSt = $this->_sql->prepare( 'UPDATE {SQL_PREFIX}mod_aliases SET alias = ?, url = ?, redirect = ? WHERE id = ?' );
+			$pdoSt = $this->_sql->prepare( 'UPDATE {PREFIX}mod_aliases SET alias = ?, url = ?, redirect = ? WHERE id = ?' );
 			$pdoSt->execute( array($alias, $url, $redirect, $aliasDetails['id']) );
  			$this->_cache->delete( 'aliases' );
  			Hooks::notifyAll( 'aliases_edit', $id, $alias, $url, $redirect );
@@ -163,7 +163,7 @@
  		 * @return bool
  		 */
  		public function delete( $alias ) {
-			$pdoSt = $this->_sql->prepare( 'DELETE FROM {SQL_PREFIX}mod_aliases WHERE id = ?' );
+			$pdoSt = $this->_sql->prepare( 'DELETE FROM {PREFIX}mod_aliases WHERE id = ?' );
 			$delCount = 0;
 			foreach( (array) $alias as $id ) {
 				$pdoSt->execute( array($id) );

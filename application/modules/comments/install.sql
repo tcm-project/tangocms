@@ -1,5 +1,5 @@
-DROP TABLE IF EXISTS {SQL_PREFIX}mod_comments;
-CREATE TABLE {SQL_PREFIX}mod_comments (
+DROP TABLE IF EXISTS {PREFIX}mod_comments;
+CREATE TABLE {PREFIX}mod_comments (
   id mediumint(6) NOT NULL AUTO_INCREMENT,
   user_id mediumint(6) NOT NULL,
   `status` enum('accepted','moderation') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'moderation',

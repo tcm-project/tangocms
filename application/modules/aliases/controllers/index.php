@@ -78,7 +78,7 @@
 			try {
 				$query = $this->_input->get( 'query' );
 				$searchTitle = '%'.str_replace( '%', '\%', $query ).'%';
-				$pdoSt = $this->_sql->prepare( 'SELECT id, alias FROM {SQL_PREFIX}mod_aliases WHERE alias LIKE ?' );
+				$pdoSt = $this->_sql->prepare( 'SELECT id, alias FROM {PREFIX}mod_aliases WHERE alias LIKE ?' );
 				$pdoSt->execute( array($searchTitle) );
 				// Setup the object to return
 				$jsonObj = new StdClass;

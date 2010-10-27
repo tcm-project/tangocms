@@ -34,7 +34,7 @@
 		 */
 		public function getAllPages( $limit=0, $offset=0, $parent=0, $aclCheck=true, $withBody=false ) {
 			$cols = $withBody ? '*' : 'id, title, author, date, parent, `order`, clean_title';
-			$statement = 'SELECT SQL_CALC_FOUND_ROWS '.$cols.' FROM {SQL_PREFIX}mod_page
+			$statement = 'SELECT SQL_CALC_FOUND_ROWS '.$cols.' FROM {PREFIX}mod_page
 						  WHERE parent = '.(int) $parent.' ORDER BY title ASC';
 			if ( $limit != 0 || $offset != 0 ) {
 				// Limit the result set.
@@ -116,7 +116,7 @@
 		 */
 		public function getPage( $page, $byId=true, $withBody=true ) {
 			$cols = $withBody ? '*' : 'id, title, author, date, parent, `order`, clean_title';
-			$pdoSt = $this->_sql->prepare( 'SELECT '.$cols.' FROM {SQL_PREFIX}mod_page
+			$pdoSt = $this->_sql->prepare( 'SELECT '.$cols.' FROM {PREFIX}mod_page
 											WHERE '.($byId ? 'id' : 'clean_title').' = ?' );
 			$pdoSt->execute( array($page) );
 			$page = $pdoSt->fetch( PDO::FETCH_ASSOC );
@@ -150,7 +150,7 @@
 			} else {
 				$cols = $withBody ? '*' : 'id, title, author, date, parent, `order`, clean_title';
 				$children = array();
-				$query = $this->_sql->query( 'SELECT '.$cols.' FROM {SQL_PREFIX}mod_page
+				$query = $this->_sql->query( 'SELECT '.$cols.' FROM {PREFIX}mod_page
 											  WHERE parent = '.(int) $pid.' ORDER BY `order`, title ASC' );
 				foreach( $query->fetchAll( PDO::FETCH_ASSOC ) as $row ) {
 					$resource = 'page-view_'.$row['id'];
@@ -180,7 +180,7 @@
 		 * @return array
 		 */
 		public function findPath( $pid ) {
-			$query = $this->_sql->query( 'SELECT id, parent, title, clean_title, author, date FROM {SQL_PREFIX}mod_page
+			$query = $this->_sql->query( 'SELECT id, parent, title, clean_title, author, date FROM {PREFIX}mod_page
 										  WHERE id = '.(int) $pid );
 			$page = $query->fetch( PDO::FETCH_ASSOC );
 			$query->closeCursor();
@@ -215,7 +215,7 @@
 					break;
 				}
 			} while( true );
-			$pdoSt = $this->_sql->prepare( 'INSERT INTO {SQL_PREFIX}mod_page (title, body, author, parent ,date, clean_title)
+			$pdoSt = $this->_sql->prepare( 'INSERT INTO {PREFIX}mod_page (title, body, author, parent ,date, clean_title)
 											VALUES(?, ?, ?, ?, UTC_TIMESTAMP(), ?)' );
 			$pdoSt->execute( array($title, $editor->preParse(), $this->_session->getUserId(), abs($parent), $cleanTitle) );
 			if ( $pdoSt->rowCount() ) {
@@ -242,7 +242,7 @@
 		public function edit( $pid, $title, $body, $parent ) {
 			$page = $this->getPage( $pid );
 			$editor = new Editor( $body );
-			$pdoSt = $this->_sql->prepare( 'UPDATE {SQL_PREFIX}mod_page SET title = ?, body = ?, parent = ? WHERE id = ?' );
+			$pdoSt = $this->_sql->prepare( 'UPDATE {PREFIX}mod_page SET title = ?, body = ?, parent = ? WHERE id = ?' );
 			return $pdoSt->execute( array($title, $editor->preParse(), abs($parent), $page['id']) );
 		}
 
@@ -260,7 +260,7 @@
 				$pageIds[] = $child['id'];
 			}
 			// Remove the needed ACL resources and SQL entries
-			$pdoSt = $this->_sql->prepare( 'DELETE FROM {SQL_PREFIX}mod_page WHERE id = ?' );
+			$pdoSt = $this->_sql->prepare( 'DELETE FROM {PREFIX}mod_page WHERE id = ?' );
 			$aclResources = array();
 			$delCount = 0;
 			foreach( $pageIds as $id ) {

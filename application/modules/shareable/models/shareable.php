@@ -40,7 +40,7 @@
 				$where = null;
 			}
 			if ( ($sites = $this->_cache->get( $cacheKey )) === false ) {
-				$sites = $this->_sql->query( 'SELECT * FROM {SQL_PREFIX}mod_shareable '.$where.'
+				$sites = $this->_sql->query( 'SELECT * FROM {PREFIX}mod_shareable '.$where.'
 											  ORDER by disabled ASC, `order` ASC, name ASC' )->fetchAll( PDO::FETCH_ASSOC );
 				$this->_cache->add( $cacheKey, $sites );
 			}
@@ -59,7 +59,7 @@
 			if ( !is_array( $id ) ) {
 				$id = array( $id => array('order' => $order, 'disabled' => !$enabled) );
 			}
-			$pdoSt = $this->_sql->prepare( 'UPDATE {SQL_PREFIX}mod_shareable SET disabled = ?, `order` = ? WHERE id = ?' );
+			$pdoSt = $this->_sql->prepare( 'UPDATE {PREFIX}mod_shareable SET disabled = ?, `order` = ? WHERE id = ?' );
 			foreach( $id as $siteId=>$site ) {
 				$pdoSt->execute( array($site['disabled'], $site['order'], $siteId) );
 			}

@@ -83,7 +83,7 @@
 			try {
 				$query = $this->_input->get( 'query' );
 				$searchTitle = '%'.str_replace( '%', '\%', $query ).'%';
-				$pdoSt = $this->_sql->prepare( 'SELECT id, title FROM {SQL_PREFIX}mod_page WHERE title LIKE ?' );
+				$pdoSt = $this->_sql->prepare( 'SELECT id, title FROM {PREFIX}mod_page WHERE title LIKE ?' );
 				$pdoSt->execute( array($searchTitle) );
 				// Setup the object to return
 				$jsonObj = new StdClass;
@@ -416,7 +416,7 @@
 					}
 				}
 				if ( $sqlMiddle !== null ) {
-					$pdoSt = $this->_sql->prepare( 'UPDATE {SQL_PREFIX}mod_page SET `order` = CASE '.$sqlMiddle.'ELSE `order` END' );
+					$pdoSt = $this->_sql->prepare( 'UPDATE {PREFIX}mod_page SET `order` = CASE '.$sqlMiddle.'ELSE `order` END' );
 					$pdoSt->execute( $execData );
 				}
 				$this->_event->success( t('Page order updated') );

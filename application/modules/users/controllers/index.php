@@ -37,8 +37,8 @@
 			$pdoSt = $this->_sql->prepare( 'SELECT
 												u.id, u.group, u.username, u.email, u.hide_email, u.joined,
 												g.name group_name
-											FROM {SQL_PREFIX}users u
-											LEFT JOIN {SQL_PREFIX}groups g ON g.id = u.group
+											FROM {PREFIX}users u
+											LEFT JOIN {PREFIX}groups g ON g.id = u.group
 											WHERE u.status = "active" AND u.id != '.Ugmanager::_GUEST_ID.'
 											LIMIT :limit OFFSET :offset' );
 			$pdoSt->bindValue( ':limit', self::_PER_PAGE, PDO::PARAM_INT );
@@ -52,7 +52,7 @@
 				$users[] = $user;
 			}
 			// How many users would have been returned without limit/offset?
-			$query = $this->_sql->query( 'SELECT COUNT(id) FROM {SQL_PREFIX}users
+			$query = $this->_sql->query( 'SELECT COUNT(id) FROM {PREFIX}users
 											WHERE status = "active" AND id != '.Ugmanager::_GUEST_ID );
 			$totalUsers = $query->fetchColumn();
 			$query->closeCursor();

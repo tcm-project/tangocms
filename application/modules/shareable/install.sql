@@ -1,5 +1,5 @@
-DROP TABLE IF EXISTS {SQL_PREFIX}mod_shareable;
-CREATE TABLE {SQL_PREFIX}mod_shareable (
+DROP TABLE IF EXISTS {PREFIX}mod_shareable;
+CREATE TABLE {PREFIX}mod_shareable (
   id tinyint(3) NOT NULL AUTO_INCREMENT,
   `name` varchar(256) COLLATE utf8_unicode_ci NOT NULL,
   url text COLLATE utf8_unicode_ci NOT NULL,
@@ -9,7 +9,7 @@ CREATE TABLE {SQL_PREFIX}mod_shareable (
   PRIMARY KEY (id)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=8 ;
 
-INSERT INTO {SQL_PREFIX}mod_shareable (id, name, url, icon, disabled, `order`) VALUES
+INSERT INTO {PREFIX}mod_shareable (id, name, url, icon, disabled, `order`) VALUES
 (1, 'Delicious', 'http://delicious.com/post?url={URL}&title={TITLE}', 'delicious', 0, 0),
 (2, 'Digg', 'http://digg.com/submit?phase=2&url={URL}&title={TITLE}', 'digg', 0, 0),
 (3, 'Facebook', 'http://www.facebook.com/share.php?u={URL}&t={TITLE}', 'facebook', 0, 0),

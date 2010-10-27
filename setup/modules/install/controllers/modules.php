@@ -83,8 +83,8 @@
 			if ( Module::exists( 'contact' ) ) {
 				// Set the contact form email to be the same as the initial user
 				try {
-					$this->_sql->exec( 'UPDATE {SQL_PREFIX}mod_contact
-										SET email = (SELECT email FROM {SQL_PREFIX}users WHERE id = 2)' );
+					$this->_sql->exec( 'UPDATE {PREFIX}mod_contact
+										SET email = (SELECT email FROM {PREFIX}users WHERE id = 2)' );
 				} catch ( Exception $e ) {
 				}
 			}

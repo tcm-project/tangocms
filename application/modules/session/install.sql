@@ -1,5 +1,5 @@
-DROP TABLE IF EXISTS {SQL_PREFIX}mod_session;
-CREATE TABLE {SQL_PREFIX}mod_session (
+DROP TABLE IF EXISTS {PREFIX}mod_session;
+CREATE TABLE {PREFIX}mod_session (
   ip varchar(38) NOT NULL DEFAULT '',
   attempts tinyint(3) NOT NULL,
   blocked datetime NOT NULL,

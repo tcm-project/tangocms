@@ -31,7 +31,7 @@
 			parent::__construct( $this );
 			if ( !$this->aliases = $this->_cache->get( 'aliases' ) ) {
 				$query = 'SELECT id, alias, url, redirect
-						  FROM {SQL_PREFIX}mod_aliases ORDER BY alias ASC';
+						  FROM {PREFIX}mod_aliases ORDER BY alias ASC';
 				foreach( $this->_sql->query( $query, PDO::FETCH_ASSOC ) as $row ) {
 					$this->aliases[ trim($row['alias'], '/') ] = array(
 																	'id'		=> $row['id'],

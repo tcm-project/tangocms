@@ -61,7 +61,7 @@
 				$title = 'id-';
 			}
 			$table = ($type & self::_TYPE_ARTICLE) ? 'mod_articles' : 'mod_article_cats';
-			$result = $this->_sql->prepare( 'SELECT clean_title FROM {SQL_PREFIX}'.$table.' WHERE clean_title LIKE :title' );
+			$result = $this->_sql->prepare( 'SELECT clean_title FROM {PREFIX}'.$table.' WHERE clean_title LIKE :title' );
 			$result->execute( array(':title' => $title.'%') );
 			// Re-build the title if need by by adding a int on the end
 			$cleanTitles = $result->fetchAll( PDO::FETCH_COLUMN );
@@ -88,7 +88,7 @@
 		 * @return array
 		 */
 		public function getAllArticles( $limit=0, $offset=0, $cid=false, $unpublished=false, $maxDisplayAge=null, $aclCheck=true ) {
-			$statement = 'SELECT SQL_CALC_FOUND_ROWS * FROM {SQL_PREFIX}mod_articles';
+			$statement = 'SELECT SQL_CALC_FOUND_ROWS * FROM {PREFIX}mod_articles';
 			$params = array();
 			if ( $cid ) {
 				$statement .= ' WHERE cat_id = :cid';
@@ -185,7 +185,7 @@
 		 * @return int
 		 */
 		public function countArticles( $cid, $unpublished=false, $maxDisplayAge=null ) {
-			$query = 'SELECT COUNT(id) FROM {SQL_PREFIX}mod_articles WHERE cat_id = '.(int) $cid;
+			$query = 'SELECT COUNT(id) FROM {PREFIX}mod_articles WHERE cat_id = '.(int) $cid;
 			if ( $unpublished == false ) {
 				$query .= ' AND published = 1';
 			}
@@ -205,7 +205,7 @@
 		public function getAllCategories( $aclCheck=true ) {
 			if ( ($categories = $this->_cache->get('article_categories')) == false ) {
 				$categories = array();
-				foreach( $this->_sql->query( 'SELECT * FROM {SQL_PREFIX}mod_article_cats', PDO::FETCH_ASSOC ) as $cat ) {
+				foreach( $this->_sql->query( 'SELECT * FROM {PREFIX}mod_article_cats', PDO::FETCH_ASSOC ) as $cat ) {
 					$categories[ $cat['id'] ] = $cat;
 				}
 				$this->_cache->add( 'article_categories', $categories );
@@ -246,7 +246,7 @@
 		 */
 		public function getCategory( $cat, $byId=true ) {
 			$col = $byId ? 'id' : 'clean_title';
-			$pdoSt = $this->_sql->prepare( 'SELECT * FROM {SQL_PREFIX}mod_article_cats WHERE '.$col.' = ?' );
+			$pdoSt = $this->_sql->prepare( 'SELECT * FROM {PREFIX}mod_article_cats WHERE '.$col.' = ?' );
 			$pdoSt->execute( array($cat) );
 			$category = $pdoSt->fetch( PDO::FETCH_ASSOC );
 			$pdoSt->closeCursor();
@@ -281,7 +281,7 @@
 		 */
 		public function getArticle( $article, $byId=true ) {
 			$col = $byId ? 'id' : 'clean_title';
-			$pdoSt = $this->_sql->prepare( 'SELECT * FROM {SQL_PREFIX}mod_articles WHERE '.$col.' = ?' );
+			$pdoSt = $this->_sql->prepare( 'SELECT * FROM {PREFIX}mod_articles WHERE '.$col.' = ?' );
 			$pdoSt->execute( array($article) );
 			$article = $pdoSt->fetch( PDO::FETCH_ASSOC );
 			$pdoSt->closeCursor();
@@ -303,7 +303,7 @@
 		public function getArticleParts( $aid, $withBody=true ) {
 			$article = $this->getArticle( $aid );
 			$cols = $withBody ? '*' : 'id, article_id, title, `order`';
-			$query = $this->_sql->query( 'SELECT '.$cols.' FROM {SQL_PREFIX}mod_article_parts
+			$query = $this->_sql->query( 'SELECT '.$cols.' FROM {PREFIX}mod_article_parts
 					   				      WHERE article_id = '.(int) $article['id'].' ORDER BY `order`, id ASC' );
 			$parts = array();
 			foreach( $query->fetchAll( PDO::FETCH_ASSOC ) as $row ) {
@@ -334,7 +334,7 @@
 		 * @return array
 		 */
 		public function getPart( $pid ) {
-			$query = $this->_sql->query( 'SELECT * FROM {SQL_PREFIX}mod_article_parts WHERE id = '.(int) $pid );
+			$query = $this->_sql->query( 'SELECT * FROM {PREFIX}mod_article_parts WHERE id = '.(int) $pid );
 			$part = $query->fetch( PDO::FETCH_ASSOC );
 			$query->closeCursor();
 			if ( $part ) {
@@ -357,7 +357,7 @@
 							'description'	=> $description,
 							'clean_title'	=> $this->cleanCategoryTitle( $title ),
 							);
-			$pdoSt = $this->_sql->prepare( 'INSERT INTO {SQL_PREFIX}mod_article_cats (title, description, clean_title) VALUES (?, ?, ?)' );
+			$pdoSt = $this->_sql->prepare( 'INSERT INTO {PREFIX}mod_article_cats (title, description, clean_title) VALUES (?, ?, ?)' );
 			if ( $pdoSt->execute( array_values($details) ) ) {
 				$this->_cache->delete( 'article_categories' );
 				$id = $this->_sql->lastInsertId();
@@ -386,7 +386,7 @@
 							'description'	=> $description,
 							'id'			=> $category['id'],
 							);
-			$pdoSt = $this->_sql->prepare( 'UPDATE {SQL_PREFIX}mod_article_cats SET title = ?, description = ? WHERE id = ?' );
+			$pdoSt = $this->_sql->prepare( 'UPDATE {PREFIX}mod_article_cats SET title = ?, description = ? WHERE id = ?' );
 			if ( $pdoSt->execute( array_values($details) ) ) {
 				$this->_cache->delete( 'article_categories' );
 				Hooks::notifyAll( 'article_edit_category', $category['id'], $details );
@@ -403,15 +403,15 @@
 		 */
 		public function deleteCategory( $cid ) {
 			$category = $this->getCategory( $cid );
-			$query = $this->_sql->query( 'DELETE FROM {SQL_PREFIX}mod_article_cats WHERE id = '.(int) $category['id'] );
+			$query = $this->_sql->query( 'DELETE FROM {PREFIX}mod_article_cats WHERE id = '.(int) $category['id'] );
 			if ( $query->rowCount() ) {
 				$query->closeCursor();
 				$this->_cache->delete( array('article_categories', 'articles_c'.$category['id'], 'articles') );
 				$this->_acl->deleteResource( 'article-cat-'.$category['id'] );
 				// Remove all articles and parts
 				$query = $this->_sql->query( 'DELETE article, part
-											  FROM {SQL_PREFIX}mod_articles AS article
-												LEFT JOIN {SQL_PREFIX}mod_article_parts AS part ON part.article_id = article.id
+											  FROM {PREFIX}mod_articles AS article
+												LEFT JOIN {PREFIX}mod_article_parts AS part ON part.article_id = article.id
 											  WHERE article.cat_id = '.(int) $category['id'].' AND part.id IS NOT NULL' );
 				Hooks::notifyAll( 'article_delete_category', $category['id'], $category );
 				return true;
@@ -441,7 +441,7 @@
 							'published'		=> (int) $published,
 							'author'		=> $this->_session->getUserId(),
 							);
-			$pdoSt = $this->_sql->prepare( 'INSERT INTO {SQL_PREFIX}mod_articles (cat_id, title, clean_title, `date`, published, author)
+			$pdoSt = $this->_sql->prepare( 'INSERT INTO {PREFIX}mod_articles (cat_id, title, clean_title, `date`, published, author)
 											VALUES(?, ?, ?, UTC_TIMESTAMP(), ?, ?)' );
 			$result = $pdoSt->execute( array(
 											$details['cat_id'], $details['title'], $details['clean_title'],
@@ -484,7 +484,7 @@
 			} else {
 				$date = $article['date'];
 			}
-			$pdoSt = $this->_sql->prepare( 'UPDATE {SQL_PREFIX}mod_articles SET cat_id = ?, title = ?, published = ?, `date` = ?
+			$pdoSt = $this->_sql->prepare( 'UPDATE {PREFIX}mod_articles SET cat_id = ?, title = ?, published = ?, `date` = ?
 											WHERE id = ?' );
 			if ( $pdoSt->execute( array($details['cid'], $details['title'], $details['published'], $date, $details['id']) ) ) {
 				$this->_cache->delete( array('articles', 'articles_c'.$article['cat_id']) );
@@ -504,8 +504,8 @@
 		public function deleteArticle( $aid ) {
 			$article = $this->getArticle( $aid );
 			$pdoSt = $this->_sql->prepare( 'DELETE article, part
-											FROM {SQL_PREFIX}mod_articles AS article
-												INNER JOIN {SQL_PREFIX}mod_article_parts AS part
+											FROM {PREFIX}mod_articles AS article
+												INNER JOIN {PREFIX}mod_article_parts AS part
 											WHERE article.id = :aid AND part.article_id = :aid' );
 			$pdoSt->execute( array(':aid' => $article['id']) );
 			$pdoSt->closeCursor();
@@ -536,7 +536,7 @@
 							'body'			=> $editor->preParse(),
 							'order'			=> abs( $order ),
 							);
-			$pdoSt = $this->_sql->prepare( 'INSERT INTO {SQL_PREFIX}mod_article_parts (article_id, title, body, `order`)
+			$pdoSt = $this->_sql->prepare( 'INSERT INTO {PREFIX}mod_article_parts (article_id, title, body, `order`)
 											VALUES(?, ?, ?, ?)' );
 			if ( $pdoSt->execute( array_values($details) ) ) {
 				$id = $this->_sql->lastInsertId();
@@ -566,7 +566,7 @@
 							'body'			=> $editor->preParse(),
 							'order'			=> abs( $order ),
 							);
-			$pdoSt = $this->_sql->prepare( 'UPDATE {SQL_PREFIX}mod_article_parts SET title = ?, body = ?, `order` = ?
+			$pdoSt = $this->_sql->prepare( 'UPDATE {PREFIX}mod_article_parts SET title = ?, body = ?, `order` = ?
 											WHERE id = ?' );
 
 			if ( $pdoSt->execute( array($details['title'], $details['body'], $details['order'], $details['id']) ) ) {
@@ -584,7 +584,7 @@
 		 */
 		public function deletePart( $pid ) {
 			$part = $this->getPart( $pid );
-			$query = $this->_sql->query( 'DELETE FROM {SQL_PREFIX}mod_article_parts WHERE id = '.(int) $part['id'] );
+			$query = $this->_sql->query( 'DELETE FROM {PREFIX}mod_article_parts WHERE id = '.(int) $part['id'] );
 			$query->closeCursor();
 			if ( $query->rowCount() > 0 ) {
 				Hooks::notifyAll( 'article_delete_part', $part['id'], $part );

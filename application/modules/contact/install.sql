@@ -1,5 +1,5 @@
-DROP TABLE IF EXISTS {SQL_PREFIX}mod_contact;
-CREATE TABLE {SQL_PREFIX}mod_contact (
+DROP TABLE IF EXISTS {PREFIX}mod_contact;
+CREATE TABLE {PREFIX}mod_contact (
   id smallint(4) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   clean_name varchar(255) COLLATE utf8_unicode_ci NOT NULL,
@@ -7,11 +7,11 @@ CREATE TABLE {SQL_PREFIX}mod_contact (
   UNIQUE KEY id (id)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=2 ;
 
-INSERT INTO {SQL_PREFIX}mod_contact (id, name, email, clean_name) VALUES
+INSERT INTO {PREFIX}mod_contact (id, name, email, clean_name) VALUES
 (1, 'Contact us', 'tangocms@example.com', 'contact-us');
 
-DROP TABLE IF EXISTS {SQL_PREFIX}mod_contact_fields;
-CREATE TABLE {SQL_PREFIX}mod_contact_fields (
+DROP TABLE IF EXISTS {PREFIX}mod_contact_fields;
+CREATE TABLE {PREFIX}mod_contact_fields (
   id smallint(4) NOT NULL AUTO_INCREMENT,
   form_id smallint(4) NOT NULL,
   `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
@@ -24,6 +24,6 @@ CREATE TABLE {SQL_PREFIX}mod_contact_fields (
   KEY `order` (`order`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=3 ;
 
-INSERT INTO {SQL_PREFIX}mod_contact_fields (id, form_id, name, type, options, required, `order`) VALUES
+INSERT INTO {PREFIX}mod_contact_fields (id, form_id, name, type, options, required, `order`) VALUES
 (1, 1, 'Your name', 'textbox', '', 1, 2),
 (2, 1, 'Your message', 'textarea', '', 1, 2);

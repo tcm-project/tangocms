@@ -34,7 +34,7 @@
 		public function getAllPolls( $limit=0, $offset=0, $aclCheck=true ) {
 			$statement = 'SELECT SQL_CALC_FOUND_ROWS id, title, status,
 							start_date, end_date, TIMESTAMPDIFF(SECOND, start_date, end_date) AS duration
-							FROM {SQL_PREFIX}mod_poll ORDER BY start_date DESC';
+							FROM {PREFIX}mod_poll ORDER BY start_date DESC';
 			if ( $limit != 0 || $offset != 0 ) {
 				// Limit the result set.
 				$params = array();
@@ -124,7 +124,7 @@
 		public function getPoll( $pid ) {
 			$pdoSt = $this->_sql->prepare( 'SELECT id, title, status, start_date, end_date,
 												TIMESTAMPDIFF(SECOND, start_date, end_date) AS duration
-											FROM {SQL_PREFIX}mod_poll WHERE id = :id' );
+											FROM {PREFIX}mod_poll WHERE id = :id' );
 			$pdoSt->bindValue( ':id', $pid, PDO::PARAM_INT );
 			$pdoSt->execute();
 			$poll = $pdoSt->fetch( PDO::FETCH_ASSOC );
@@ -143,7 +143,7 @@
 		 * @return array
 		 */
 		public function getPollOptions( $pid ) {
-			return $this->_sql->query( 'SELECT * FROM {SQL_PREFIX}mod_poll_options
+			return $this->_sql->query( 'SELECT * FROM {PREFIX}mod_poll_options
 										WHERE poll_id = '.(int) $pid.' ORDER BY id ASC' )
 							  ->fetchAll( PDO::FETCH_ASSOC );
 		}
@@ -170,7 +170,7 @@
 		 * @return array
 		 */
 		public function getOption( $id ) {
-			$query = $this->_sql->query( 'SELECT * FROM {SQL_PREFIX}mod_poll_options WHERE id = '.(int) $id );
+			$query = $this->_sql->query( 'SELECT * FROM {PREFIX}mod_poll_options WHERE id = '.(int) $id );
 			$option = $query->fetch( PDO::FETCH_ASSOC );
 			$query->closeCursor();
 			if ( $option ) {
@@ -187,8 +187,8 @@
 		 * @return array
 		 */
 		public function getPollVotes( $pid ) {
-			$query = $this->_sql->query( 'SELECT votes.* FROM {SQL_PREFIX}mod_poll_votes AS votes
-											LEFT JOIN {SQL_PREFIX}mod_poll_options AS options ON options.id = votes.option_id
+			$query = $this->_sql->query( 'SELECT votes.* FROM {PREFIX}mod_poll_votes AS votes
+											LEFT JOIN {PREFIX}mod_poll_options AS options ON options.id = votes.option_id
 										  WHERE options.poll_id = '.(int) $pid );
 			$votes = array();
 			foreach( $query->fetchAll( PDO::FETCH_ASSOC ) as $row ) {
@@ -207,7 +207,7 @@
 		 * @return int
 		 */
 		public function addPoll( $title, $duration, array $options, $status='active' ) {
-			$pdoSt = $this->_sql->prepare( 'INSERT INTO {SQL_PREFIX}mod_poll(title, status, start_date, end_date)
+			$pdoSt = $this->_sql->prepare( 'INSERT INTO {PREFIX}mod_poll(title, status, start_date, end_date)
 											VALUES (?, ?, UTC_TIMESTAMP(), DATE_ADD(UTC_TIMESTAMP(), INTERVAL ? SECOND))' );
 			$pdoSt->execute( array($title, $status, $duration) );
 			$this->_cache->delete( 'polls' );
@@ -227,7 +227,7 @@
 		 */
 		public function editPoll( $pid, $title, $duration, $status ) {
 			$poll = $this->getPoll( $pid );
-			$pdoSt = $this->_sql->prepare( 'UPDATE {SQL_PREFIX}mod_poll
+			$pdoSt = $this->_sql->prepare( 'UPDATE {PREFIX}mod_poll
 											SET title = ?, status = ?, end_date = DATE_ADD(start_date, INTERVAL ? SECOND)
 											WHERE id = ?' );
 			$this->_cache->delete( 'polls' );
@@ -243,8 +243,8 @@
 		public function deletePoll( $pid ) {
 			$poll = $this->getPoll( $pid );
 			$pdoSt = $this->_sql->prepare( 'DELETE options, poll
-											FROM {SQL_PREFIX}mod_poll AS poll
-												INNER JOIN {SQL_PREFIX}mod_poll_options AS options
+											FROM {PREFIX}mod_poll AS poll
+												INNER JOIN {PREFIX}mod_poll_options AS options
 											WHERE poll.id = :pid AND options.poll_id = :pid' );
 			$pdoSt->execute( array(':pid' => $poll['id']) );
 			$pdoSt->closeCursor();
@@ -267,7 +267,7 @@
 		 */
 		public function addOption( $pid, $options ) {
 			$poll = $this->getPoll( $pid );
-			$pdoSt = $this->_sql->prepare( 'INSERT INTO {SQL_PREFIX}mod_poll_options (poll_id, title) VALUES(?, ?)' );
+			$pdoSt = $this->_sql->prepare( 'INSERT INTO {PREFIX}mod_poll_options (poll_id, title) VALUES(?, ?)' );
 			$count = 0;
 			foreach( (array) $options as $title ) {
 				$pdoSt->execute( array($pid, $title) );
@@ -285,7 +285,7 @@
 		 */
 		public function editOption( $id, $title ) {
 			$option = $this->getOption( $id );
-			$pdoSt = $this->_sql->prepare( 'UPDATE {SQL_PREFIX}mod_poll_options SET title = ? WHERE id = ?' );
+			$pdoSt = $this->_sql->prepare( 'UPDATE {PREFIX}mod_poll_options SET title = ? WHERE id = ?' );
 			$pdoSt->execute( array($title, $option['id']) );
 			return (bool) $pdoSt->rowCount();
 		}
@@ -298,7 +298,7 @@
 		 */
 		public function deleteOption( $id ) {
 			$option = $this->getOption( $id );
-			$pdoSt = $this->_sql->prepare( 'DELETE FROM {SQL_PREFIX}mod_poll_options WHERE id = ?' );
+			$pdoSt = $this->_sql->prepare( 'DELETE FROM {PREFIX}mod_poll_options WHERE id = ?' );
 			$pdoSt->execute( array($option['id']) );
 			$this->removeOrphanVotes();
 			return true;
@@ -311,8 +311,8 @@
 		 */
 		protected function removeOrphanVotes() {
 			$query = $this->_sql->query( 'DELETE votes
-										  FROM {SQL_PREFIX}mod_poll_votes AS votes
-											LEFT JOIN {SQL_PREFIX}mod_poll_options AS options ON votes.option_id = options.id
+										  FROM {PREFIX}mod_poll_votes AS votes
+											LEFT JOIN {PREFIX}mod_poll_options AS options ON votes.option_id = options.id
 										  WHERE options.id IS NULL' );
 			$query->closeCursor();
 			return $query->rowCount();
@@ -326,7 +326,7 @@
 		 */
 		public function vote( $oid ) {
 			$option = $this->getOption( $oid );
-			$pdoSt = $this->_sql->prepare( 'INSERT INTO {SQL_PREFIX}mod_poll_votes (option_id, ip, uid) VALUES(?, ?, ?)' );
+			$pdoSt = $this->_sql->prepare( 'INSERT INTO {PREFIX}mod_poll_votes (option_id, ip, uid) VALUES(?, ?, ?)' );
 			return $pdoSt->execute( array(
 										$option['id'],
 										zula_ip2long( zula_get_client_ip() ),
@@ -343,7 +343,7 @@
 		 */
 		public function closePoll( $pid ) {
 			$poll = $this->getPoll( $pid );
-			$pdoSt = $this->_sql->prepare( 'UPDATE {SQL_PREFIX}mod_poll
+			$pdoSt = $this->_sql->prepare( 'UPDATE {PREFIX}mod_poll
 											SET status = "closed" WHERE id = :id AND status = "active"' );
 			$pdoSt->bindValue( ':id', $poll['id'], PDO::PARAM_INT );
 			$pdoSt->execute();

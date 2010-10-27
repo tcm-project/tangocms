@@ -1,5 +1,5 @@
-DROP TABLE IF EXISTS {SQL_PREFIX}mod_aliases;
-CREATE TABLE {SQL_PREFIX}mod_aliases (
+DROP TABLE IF EXISTS {PREFIX}mod_aliases;
+CREATE TABLE {PREFIX}mod_aliases (
   id smallint(4) NOT NULL AUTO_INCREMENT,
   alias varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   url varchar(255) COLLATE utf8_unicode_ci NOT NULL,

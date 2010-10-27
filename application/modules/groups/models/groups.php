@@ -22,9 +22,9 @@
 			$query = $this->_sql->query(
 										'SELECT groups.*, COUNT(users.id) AS user_count
 										 FROM
-										 	{SQL_PREFIX}groups AS groups
-										 	JOIN {SQL_PREFIX}acl_roles AS roles ON groups.role_id = roles.id AND roles.parent_id = 0
-										 	LEFT JOIN {SQL_PREFIX}users AS users ON users.group = groups.id
+										 	{PREFIX}groups AS groups
+										 	JOIN {PREFIX}acl_roles AS roles ON groups.role_id = roles.id AND roles.parent_id = 0
+										 	LEFT JOIN {PREFIX}users AS users ON users.group = groups.id
 										 GROUP BY groups.id'
 										);
 			return $query->fetchAll( PDO::FETCH_ASSOC );

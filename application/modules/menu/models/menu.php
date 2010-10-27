@@ -23,7 +23,7 @@
 		public function getAllCategories( $aclCheck=true ) {
 			if ( !($categories = $this->_cache->get('menu_categories')) ) {
 				$categories = array();
-				foreach( $this->_sql->query( 'SELECT * FROM {SQL_PREFIX}mod_menu_cats', PDO::FETCH_ASSOC ) as $category ) {
+				foreach( $this->_sql->query( 'SELECT * FROM {PREFIX}mod_menu_cats', PDO::FETCH_ASSOC ) as $category ) {
 					$categories[ $category['id'] ] = $category;
 				}
 				$this->_cache->add( 'menu_categories', $categories );
@@ -85,7 +85,7 @@
 			$category = $this->getCategory( $cid, $aclCheck );
 			if ( !($items = $this->_cache->get('menu_items_'.$category['id'])) ) {
 				$items = array();
-				$pdoSt = $this->_sql->prepare( 'SELECT * FROM {SQL_PREFIX}mod_menu
+				$pdoSt = $this->_sql->prepare( 'SELECT * FROM {PREFIX}mod_menu
 												WHERE cat_id = ? AND heading_id = 0 ORDER BY `order` ASC ' );
 				$pdoSt->execute( array($category['id']) );
 				$tmpItems = $pdoSt->fetchAll( PDO::FETCH_ASSOC );
@@ -122,7 +122,7 @@
 			$itemId = abs( $itemId );
 			if ( !($items = $this->_cache->get( 'menu_child_items_'.$itemId )) ) {
 				$items = array();
-				$query = $this->_sql->query( 'SELECT * FROM {SQL_PREFIX}mod_menu
+				$query = $this->_sql->query( 'SELECT * FROM {PREFIX}mod_menu
 											  WHERE heading_id = '.(int) $itemId.' ORDER BY `order` ASC' );
 				$tmpItems = $query->fetchAll( PDO::FETCH_ASSOC );
 				$count = count( $tmpItems );
@@ -166,7 +166,7 @@
 		 * @return array
 		 */
 		public function getItem( $itemId ) {
-			$query = $this->_sql->query( 'SELECT * FROM {SQL_PREFIX}mod_menu WHERE id = '.(int) $itemId );
+			$query = $this->_sql->query( 'SELECT * FROM {PREFIX}mod_menu WHERE id = '.(int) $itemId );
 			$item = $query->fetch( PDO::FETCH_ASSOC );
 			$query->closeCursor();
 			if ( $item ) {
@@ -183,7 +183,7 @@
 		 * @return int|bool
 		 */
 		public function addCategory( $name ) {
-			$pdoSt = $this->_sql->prepare( 'INSERT INTO {SQL_PREFIX}mod_menu_cats (name) VALUES (?)' );
+			$pdoSt = $this->_sql->prepare( 'INSERT INTO {PREFIX}mod_menu_cats (name) VALUES (?)' );
 			$pdoSt->execute( array($name) );
 			if ( $pdoSt->rowCount() ) {
 				$id = $this->_sql->lastInsertId();
@@ -204,7 +204,7 @@
 		 */
 		public function editCategory( $cid, $name ) {
 			$category = $this->getCategory( $cid );
-			$pdoSt = $this->_sql->prepare( 'UPDATE {SQL_PREFIX}mod_menu_cats SET name = ? WHERE ID = ?' );
+			$pdoSt = $this->_sql->prepare( 'UPDATE {PREFIX}mod_menu_cats SET name = ? WHERE ID = ?' );
 			$result = $pdoSt->execute( array($name, $category['id']) );
 			if ( $result ) {
 				$this->_cache->delete( 'menu_categories' );
@@ -224,12 +224,12 @@
 		public function deleteCategory( $cid ) {
 			$category = $this->getCategory( $cid );
 			// Gather menu items, so we can remove their ACL resource and cache later
-			$itemIds = $this->_sql->query( 'SELECT id FROM {SQL_PREFIX}mod_menu WHERE cat_id = '.(int) $category['id'] )
+			$itemIds = $this->_sql->query( 'SELECT id FROM {PREFIX}mod_menu WHERE cat_id = '.(int) $category['id'] )
 					  			  ->fetchAll( PDO::FETCH_COLUMN );
 			// Remove the category and menu items
-			$catRowCount = $this->_sql->query( 'DELETE FROM {SQL_PREFIX}mod_menu_cats WHERE id = '.(int) $category['id'] )
+			$catRowCount = $this->_sql->query( 'DELETE FROM {PREFIX}mod_menu_cats WHERE id = '.(int) $category['id'] )
 									  ->rowCount();
-			$this->_sql->query( 'DELETE FROM {SQL_PREFIX}mod_menu WHERE cat_id = '.(int) $category['id'] )
+			$this->_sql->query( 'DELETE FROM {PREFIX}mod_menu WHERE cat_id = '.(int) $category['id'] )
 					   ->closeCursor();
 			if ( $catRowCount ) {
 				$aclResources = array('menu-cat-'.$category['id']);
@@ -260,12 +260,12 @@
 		public function addItem( $cid, $name, $heading=0, $url='', $attrTitle='' ) {
 			$category = $this->getCategory( $cid );
 			// Get next order id
-			$order = $this->_sql->query( 'SELECT MAX(`order`)+1 AS item_order FROM {SQL_PREFIX}mod_menu
+			$order = $this->_sql->query( 'SELECT MAX(`order`)+1 AS item_order FROM {PREFIX}mod_menu
 										  WHERE cat_id = '.(int) $category['id'] )
 							    ->fetch( PDO::FETCH_COLUMN );
 			// Insert new item
 			$heading = abs( $heading );
-			$pdoSt = $this->_sql->prepare( 'INSERT INTO {SQL_PREFIX}mod_menu (cat_id, name, heading_id, url, attr_title, `order`)
+			$pdoSt = $this->_sql->prepare( 'INSERT INTO {PREFIX}mod_menu (cat_id, name, heading_id, url, attr_title, `order`)
 											VALUES(?, ?, ?, ?, ?, ?)' );
 			$pdoSt->execute( array(
 								$category['id'], $name, $heading,
@@ -306,7 +306,7 @@
 							'attr_title'=> $attrTitle,
 							'order'		=> $order,
 							);
-			$stmt = 'UPDATE {SQL_PREFIX}mod_menu SET name = :name, heading_id = :heading, url = :url, attr_title = :attr_title';
+			$stmt = 'UPDATE {PREFIX}mod_menu SET name = :name, heading_id = :heading, url = :url, attr_title = :attr_title';
 			if ( is_null( $details['order'] ) ) {
 				unset( $details['order'] );
 			} else {
@@ -331,11 +331,11 @@
 		public function deleteItem( $id ) {
 			$item = $this->getItem( $id );
 			// Get all menu item IDs to delete ACL resources and cache later on
-			$itemIds = $this->_sql->query( 'SELECT id, heading_id FROM {SQL_PREFIX}mod_menu
+			$itemIds = $this->_sql->query( 'SELECT id, heading_id FROM {PREFIX}mod_menu
 											WHERE id = '.(int) $item['id'].' OR heading_id = '.(int) $item['id'] )
 								  ->fetchAll( PDO::FETCH_ASSOC );
 			// Remove all menu items
-			$pdoSt = $this->_sql->prepare( 'DELETE FROM {SQL_PREFIX}mod_menu WHERE id = :id OR heading_id = :id' );
+			$pdoSt = $this->_sql->prepare( 'DELETE FROM {PREFIX}mod_menu WHERE id = :id OR heading_id = :id' );
 			$pdoSt->execute( array(':id' => $item['id']) );
 			if ( $pdoSt->rowCount() ) {
 				$aclResources = array();

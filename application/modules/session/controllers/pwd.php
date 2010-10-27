@@ -30,14 +30,14 @@
 				/**
 				 * Check users exists, get details and send email
 				 */
-				$pdoSt = $this->_sql->prepare( 'SELECT id FROM {SQL_PREFIX}users WHERE email = ?' );
+				$pdoSt = $this->_sql->prepare( 'SELECT id FROM {PREFIX}users WHERE email = ?' );
 				$pdoSt->execute( array($form->getValues('session/email')) );
 				$uid = $pdoSt->fetchColumn();
 				$pdoSt->closeCursor();
 				try {
 					$user = $this->_ugmanager->getUser( $uid );
 					// Generate a reset code that is unique
-					$pdoSt = $this->_sql->prepare( 'SELECT COUNT(uid) FROM {SQL_PREFIX}users_meta
+					$pdoSt = $this->_sql->prepare( 'SELECT COUNT(uid) FROM {PREFIX}users_meta
 													WHERE name = "sessionResetCode" AND value = ?' );
 					do {
 						$resetCode = zula_create_key();

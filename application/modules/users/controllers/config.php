@@ -79,7 +79,7 @@
 			try {
 				$query = $this->_input->get( 'query' );
 				$searchTitle = '%'.str_replace( '%', '\%', $query ).'%';
-				$pdoSt = $this->_sql->prepare( 'SELECT id, username FROM {SQL_PREFIX}users WHERE username LIKE ?' );
+				$pdoSt = $this->_sql->prepare( 'SELECT id, username FROM {PREFIX}users WHERE username LIKE ?' );
 				$pdoSt->execute( array($searchTitle) );
 				// Setup the object to return
 				$jsonObj = new StdClass;

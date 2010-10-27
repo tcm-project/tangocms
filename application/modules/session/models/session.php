@@ -25,7 +25,7 @@
 		public function checkCredentials( $identifier, $password, $method='username' ) {
 			$field = $method == 'username' ? 'username' : 'email';
 			$pdoSt = $this->_sql->prepare( 'SELECT u.id, u.username, m.value AS activate_code
-											FROM {SQL_PREFIX}users AS u LEFT JOIN {SQL_PREFIX}users_meta AS m
+											FROM {PREFIX}users AS u LEFT JOIN {PREFIX}users_meta AS m
 											ON u.id = m.uid AND m.name = "activate_code"
 											WHERE u.'.$field.' = ? AND u.password = ?' );
 			$pdoSt->execute( array($identifier, zula_hash($password)) );
@@ -37,12 +37,12 @@
 			 */
 			$remoteAddr = zula_ip2long( zula_get_client_ip() );
 			if ( empty( $user ) ) {
-				$pdoSt = $this->_sql->prepare( 'INSERT INTO {SQL_PREFIX}mod_session (ip, attempts, blocked) VALUES (?, 1, UTC_TIMESTAMP())
+				$pdoSt = $this->_sql->prepare( 'INSERT INTO {PREFIX}mod_session (ip, attempts, blocked) VALUES (?, 1, UTC_TIMESTAMP())
 												ON DUPLICATE KEY UPDATE attempts = attempts+1, blocked = UTC_TIMESTAMP()' );
 				$pdoSt->execute( array($remoteAddr) );
 				throw new Session_InvalidCredentials;
 			} else {
-				$pdoSt = $this->_sql->prepare( 'DELETE FROM {SQL_PREFIX}mod_session WHERE ip = ?' );
+				$pdoSt = $this->_sql->prepare( 'DELETE FROM {PREFIX}mod_session WHERE ip = ?' );
 				$pdoSt->execute( array($remoteAddr) );
 			}
 			// Update everything needed to set the user has logged in.
@@ -60,7 +60,7 @@
 		 */
 		public function getLoginAttempts() {
 			$remoteAddr = (int) zula_ip2long( zula_get_client_ip() );
-			$query = $this->_sql->query( 'SELECT attempts, blocked FROM {SQL_PREFIX}mod_session WHERE ip = '.$remoteAddr );
+			$query = $this->_sql->query( 'SELECT attempts, blocked FROM {PREFIX}mod_session WHERE ip = '.$remoteAddr );
 			$results = $query->fetch( PDO::FETCH_ASSOC );
 			$query->closeCursor();
 			if ( $results )  {
@@ -68,7 +68,7 @@
 											->modify( '+10 minutes' );
 				if ( $blockedUntil < new DateTime ) {
 					// Remove the entry as it has now expired
-					$this->_sql->exec( 'DELETE FROM {SQL_PREFIX}mod_session WHERE ip = '.$remoteAddr );
+					$this->_sql->exec( 'DELETE FROM {PREFIX}mod_session WHERE ip = '.$remoteAddr );
 					$results['attempts'] = 0;
 				}
 				return $results['attempts'];
@@ -84,8 +84,8 @@
 		 * @return array
 		 */
 		public function getAwaitingValidation( $gid=false ) {
-			$query = 'SELECT u.* FROM {SQL_PREFIX}users AS u
-						JOIN {SQL_PREFIX}users_meta AS m ON u.id = m.uid
+			$query = 'SELECT u.* FROM {PREFIX}users AS u
+						JOIN {PREFIX}users_meta AS m ON u.id = m.uid
 						WHERE m.name = "activate_code" AND m.value != ""';
 			if ( $gid ) {
 				$query .= ' AND u.group = '.(int) $gid;
@@ -101,7 +101,7 @@
 		 * @return int|false
 		 */
 		public function resetCodeUid( $rc ) {
-			$pdoSt = $this->_sql->prepare( 'SELECT uid FROM {SQL_PREFIX}users_meta
+			$pdoSt = $this->_sql->prepare( 'SELECT uid FROM {PREFIX}users_meta
 											WHERE name = "sessionResetCode" AND value = ? LIMIT 1' );
 			$pdoSt->execute( array($rc) );
 			$uid = $pdoSt->fetchColumn();

@@ -139,7 +139,7 @@
 			$this->setTitle( t('Activate account') );
 			try {
 				$code = $this->_router->getArgument( 'code' );
-				$pdoSt = $this->_sql->prepare( 'SELECT uid FROM {SQL_PREFIX}users_meta
+				$pdoSt = $this->_sql->prepare( 'SELECT uid FROM {PREFIX}users_meta
 												WHERE name = "activate_code" AND value = ?' );
 				$pdoSt->execute( array($code) );
 				$uid = $pdoSt->fetchColumn();

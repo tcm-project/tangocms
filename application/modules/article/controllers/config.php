@@ -129,7 +129,7 @@
 		public function autocompleteSection() {
 			try {
 				$searchQuery = $this->_input->get( 'query' );
-				$query = 'SELECT id, cat_id, title FROM {SQL_PREFIX}mod_articles WHERE title LIKE ?';
+				$query = 'SELECT id, cat_id, title FROM {PREFIX}mod_articles WHERE title LIKE ?';
 				if ( $this->_router->hasArgument('catId') ) {
 					$query .= ' AND cat_id = '.(int) $this->_router->getArgument('catId');
 				}
