@@ -41,46 +41,40 @@
 		 * Creates a new PDO instance
 		 *
 		 * @param string $type				Simple string such as 'mysql' or a PDO DNS string
-		 * @param string $database
+		 * @param string $dbname
 		 * @param string $host
 		 * @param string $user
 		 * @param string $pass
 		 * @param string $port
-		 * @param array $driverOptions	PDO specific driver options
+		 * @param array $opts	PDO specific driver options
 		 */
-		public function __construct( $type, $database='', $host='', $user='', $pass='', $port='', $driverOptions=array() ) {
-			if ( empty( $database ) && empty( $host ) ) {
+		public function __construct( $type, $dbname='', $host='', $user='', $pass='', $port='', array $opts=array() ) {
+			if ( empty( $dbname ) && empty( $host ) ) {
 				$dns = $type;
 				// Get the driver that is to be used
 				$splitDns = explode( ':', $dns );
 				$driver = $splitDns[0];
 			} else if ( $type == 'mysql' || $type == 'mysqli' ) {
 				$driver = 'mysql';
-				$dns = sprintf( 'mysql:host=%1$s;dbname=%2$s', $host, $database );
+				$dns = sprintf( 'mysql:host=%1$s;dbname=%2$s', $host, $dbname );
 				if ( trim( $port ) ) {
 					$dns .= ';port='.$port;
 				}
 			} else if ( $type == 'pgsql' ) {
 				$driver = 'pgsql';
 				$port = trim($port) ? $port : 5432;
-				$dns = sprintf( 'pgsql:host=%1$s port=%2$s dbname=%3$s user=%3$s password=%4$s', $host, $port, $database, $user, $pass );
+				$dns = sprintf( 'pgsql:host=%1$s port=%2$s dbname=%3$s user=%3$s password=%4$s',
+								$host, $port, $dbname, $user, $pass );
 			}
-			/**
-			 * Check the needed PDO driver is there
-			 */
 			if ( !in_array( $driver, PDO::getAvailableDrivers() ) ) {
 				throw new SQL_InvalidDriver( 'PDO driver "'.$driver.'" is not available, ensure it is installed', 20 );
 			}
 			try {
-				if ( empty( $driverOptions ) || !is_array( $driverOptions ) ) {
-					$driverOptions = array(
-											PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-											);
-				}
+				$opts = array_merge( $opts, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION) );
 				if ( $driver == 'mysql' ) {
-					$driverOptions[ PDO::MYSQL_ATTR_USE_BUFFERED_QUERY ] = true;
+					$opts[ PDO::MYSQL_ATTR_USE_BUFFERED_QUERY ] = true;
 				}
-				parent::__construct( $dns, $user, $pass, $driverOptions );
+				parent::__construct( $dns, $user, $pass, $opts );
 			} catch ( PDOexception $e ) {
 				throw new SQL_UnableToConnect( $e->getMessage(), 21 );
 			}
