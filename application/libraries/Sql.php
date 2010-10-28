@@ -410,7 +410,11 @@
 			}
 			foreach( explode( ";\n", file_get_contents($file) ) as $query ) {
 				if ( ($query = trim($query)) ) {
-					$this->query( $query )->closeCursor();
+					// We should use PDO::exec() but we had many bugs with it
+					$result = $this->query( $query );
+					if ( $result instanceof PDOStatement ) {
+						$result->closeCursor();
+					}
 				}
 			}
 			return true;
