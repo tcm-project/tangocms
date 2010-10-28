@@ -43,6 +43,7 @@ while [[ $1 == -* ]]; do
 			;;
 		-p)
 			taskPackage=true
+			taskLint=true
 			if [[ $# -gt 1 && $2 =~ ^[^-] ]]; then
 				optPackageMode="$2"
 				shift 2;
@@ -64,9 +65,8 @@ while [[ $1 == -* ]]; do
 			echo -e "\t-j\tCompress source JavaScript files using Google Closure Compiler (requires Java)"
 			echo -e "\t-l\tCheck PHP syntax on *.php, *.html and *.txt files (lint check)."
 			echo -e "\t-m\tCreates Microsoft Web App Gallery package (used only with '-p')."
-			echo -e "\t-p\tCreates .tar.gz, .tar.bz2 and .zip archives. This implies '-l' and '-j'. Zula" \
-					"\n\t\tapplication mode argument optional, 'development' or 'production' which" \
-					"\n\t\tdefaults to 'production'."
+			echo -e "\t-p\tCreates .tar.gz, .tar.bz2 and .zip archives. This implies '-l'. Zula application" \
+					"\n\t\tmode argument optional, 'development' or 'production' which defaults to 'production'."
 			echo -e "\t-x\tCheck all thrown PHP exceptions are defined, and list those not used."
 			echo -e "\t-v\tBe more verbose with output, providing more detail."
 			echo -e "\t-h\tDisplays this help text.\n"
@@ -115,7 +115,7 @@ if [[ $taskLint = true ]]; then
 	fi
 fi
 
-if [[ $taskJsCompress = true || $taskPackage = true ]]; then
+if [[ $taskJsCompress = true ]]; then
 	verbose || echo -ne ":: Compressing source JavaScript files (*.src.js) "
 	if [[ -n $JAVA_HOME ]]; then
 		javaBin=$JAVA_HOME/bin/java
