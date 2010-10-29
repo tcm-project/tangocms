@@ -243,10 +243,11 @@ input[type="submit"]:active, input[type="button"]:active, a.button:active {
 input[type="radio"], input[type="checkbox"],
 input[type="radio"]:hover, input[type="checkbox"]:hover
 input[type="radio"]:focus, input[type="checkbox"]:focus {
-	background: #fff;
-	border-width: 0 !important;
+	background: auto;
+	border: 0;
 	font-size: auto;
 	margin: auto 3px 3px auto;
+	padding: 0;
 	width: auto;
 }
 
