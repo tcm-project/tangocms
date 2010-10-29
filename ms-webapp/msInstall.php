@@ -67,8 +67,8 @@
 
 						# admin-default content layout
 						'layout_controller_409'	=> $adminInherit,
-						'layout_controller_123'	=> $adminInherit,
 						'layout_controller_909'	=> $adminInherit,
+						'layout_controller_425'	=> $adminInherit,
 
 						# fpsc-admin
 						'layout_controller_551'	=> $adminInherit,

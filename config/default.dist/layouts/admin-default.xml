@@ -20,4 +20,13 @@
       <display_category>1</display_category>
     </config>
   </controller>
+  <controller id="425" sector="S3" order="1">
+	  <mod>session</mod>
+	  <con>index</con>
+	  <sec>index</sec>
+	  <config>
+		  <displayTitle>false</displayTitle>
+		  <customTitle/>
+	  </config>
+  </controller>
 </controllers>
