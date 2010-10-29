@@ -67,9 +67,9 @@
 				return false;
 			}
 			if ( $this->_session->isLoggedIn() ) {
-				$this->setTitle( t('Simple profile') );
+				$this->setTitle( t('My account') );
 				// Display a very simple profile
-				$view = $this->loadView( 'index/simple_profile.html' );
+				$view = $this->loadView( 'index/greeting.html' );
 				$view->assign( array('USER' => $this->_session->getUser()) );
 				return $view->getOutput();
 			} else if ( $this->maxLoginAttempts > 0 && $this->_model()->getLoginAttempts() >= $this->maxLoginAttempts ) {

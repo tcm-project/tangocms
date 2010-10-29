@@ -1,0 +1,8 @@
+<div id="sessionGreeting">
+	<p>
+		<?php printf( t('Welcome back, %1$s'), '<span>'.$this->_helper('user')->link($user['id']).'</span>' ); ?>
+	</p>
+	<p>
+		<a href="<?php echo $this->_router->makeUrl( 'session', 'index', 'logout' ); ?>" title="{L_[Logout]}">{L_[Logout]}</a>
+	</p>
+</div>
