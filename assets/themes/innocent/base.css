@@ -197,6 +197,7 @@ input[type="submit"], input[type="button"], a.button {
 	font-family: "Bitstream Vera Sans", Lucida, Verdana, sans-serif;
 	font-size: 12px;
 	height: 25px;
+	line-height: 15px;
 	margin: 5px 0;
 	padding: 4px 8px;
 	text-align: center;

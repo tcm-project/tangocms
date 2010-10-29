@@ -196,6 +196,7 @@ input[type="submit"], input[type="button"], a.button {
 	font-size: 12px;
 	font-weight: bold;
 	height: 23px;
+	line-height: 15px;
 	margin: 5px 0;
 	padding: 3px 8px 4px;
 	text-align: center;
