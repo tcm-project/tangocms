@@ -120,8 +120,12 @@ ol.module_manager-item .title {
 	margin-bottom: 0;
 }
 
-#session-profile > span {
+#sessionGreeting span {
 	font-weight: bold;
+}
+
+#sessionGreeting p, #sessionLoginMeta p {
+	margin: 0;
 }
 
 /** Shareable */

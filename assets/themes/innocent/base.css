@@ -41,11 +41,11 @@ a[href]:hover {
 
 p {
 	line-height: 1.8em;
-	margin: 0 0 1em 0;
+	margin: 1em 0 0;
 }
 
-* p:last-child {
-	margin-bottom: 0;
+* p:first-child {
+	margin-top: 0;
 }
 
 hr {
