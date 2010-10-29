@@ -335,6 +335,7 @@
 			$resource = 'layout_controller_'.$details['id'];
 			if ( !$this->_acl->resourceExists( $resource ) ) {
 				$this->_acl->allow( $resource, 'group_guest' );
+				$this->_acl->allow( $resource, 'group_root' );
 			}
 			$this->_cache->delete( 'layout_cntrlrs_'.$this->name );
 			Hooks::notifyAll( 'layout_add_cntrlr', $details );
