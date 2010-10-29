@@ -35,8 +35,8 @@ html, body {
 #header {
 	background: transparent url(images/logo.png) no-repeat top left;
 	color: #222;
-	height: 105px;
-	padding: 45px 0 0 150px;
+	height: 149px;
+	padding: 0 0 0 150px;
 	position: relative;
 	z-index: 2; /** Force it above #container */
 }
@@ -48,7 +48,26 @@ html, body {
 	font-weight: bold;
 	letter-spacing: 1px;
 	text-shadow: 1px 1px 1px #fff;
-	margin: 15px 0 0;
+	margin: 59px 0 0;
+}
+
+/** Topbar with very limited Y space */
+#topbar {
+	color: #fff;
+	font-size: 1.3em;
+	height: 26px;
+	margin-right: 14px;
+	padding-top: 4px;
+	text-align: right;
+	text-shadow: 1px 1px 1px #65811C;
+}
+
+#topbar a {
+	color: #fff;
+}
+
+#topbar + a {
+	margin-top: 29px;
 }
 
 #navbar {
@@ -56,11 +75,10 @@ html, body {
 	float: right;
 	font-size: 1.3em;
 	height: 29px;
+	margin-top: 32px;
 	overflow: hidden;
 	padding: 0;
-	position: relative;
 	text-align: right;
-	top: 32px;
 }
 
 /** Content */

@@ -124,8 +124,22 @@ ol.module_manager-item .title {
 	margin-bottom: 0;
 }
 
-#session-profile > span {
+#sessionGreeting span {
 	font-weight: bold;
+}
+
+#topbar #sessionGreeting span {
+	border-right: 1px solid #ddd;
+	margin-right: 2px;
+	padding-right: 6px;
+}
+
+#sessionGreeting p {
+	margin: 0;
+}
+
+#topbar #sessionGreeting p {
+	display: inline;
 }
 
 /** Shareable */

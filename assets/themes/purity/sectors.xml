@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <sectors>
 	<sector id="S1">
-		<description>Top bar</description>
+		<description>Navigation bar</description>
 	</sector>
 	<sector id="S2">
 		<description>Right sidebar</description>
+	</sector>
+	<sector id="S3">
+		<description>Top bar</description>
 	</sector>
 </sectors>

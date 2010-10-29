@@ -19,8 +19,15 @@
 
 		<div id="stickyWrap">
 			<div id="header">
+				<?php if ( !empty($s3) ) { ?>
+					<div id="topbar">{S3}</div>
+				<?php } ?>
+
 				<a href="{URL_CURRENT_ST}">{SITE_TITLE}</a>
-				<div id="navbar">{S1}</div>
+
+				<?php if ( !empty($s1) ) { ?>
+					<div id="navbar">{S1}</div>
+				<?php } ?>
 			</div>
 
 			<div id="container" class="columnWrap">
