@@ -28,12 +28,15 @@
 
 ### Stop people accessing various directories
 <IfModule mod_alias.c>
-	RedirectMatch 403 /application/logs/(?:/.*?\.log)?$
-	RedirectMatch 403 /tmp/cache/.*?$
-	RedirectMatch 403 /tmp/media/?$
-	RedirectMatch 403 /tmp/uploader/.*?$
-	RedirectMatch 403 /config/.*?/(?:layouts/.*\.xml|config\.ini\.php)?$
-	RedirectMatch 403 /application/modules/.*?/install\.(?:xml|sql)$
-	RedirectMatch 403 /assets/uploads/media/(?!(wm\.png|wm_thumb\.png))
-	RedirectMatch 403 \.svn/?
+	# If running in a subdirectory you will need to change "^/" to
+	# "^/subdirectory/"
+	#
+	# e.g. running in subdir of /zula-framework:
+	# RedirectMatch 403 ^/zula-framework/tmp/js?$
+	#
+	RedirectMatch 403 ^/application/(?!(modules/.*?/assets/?))
+	RedirectMatch 403 ^/assets/uploads/media/(?!(wm\.png|wm_thumb\.png))
+	RedirectMatch 403 ^/config/.*?/?
+	RedirectMatch 403 ^/tmp/(?:cache|media|sysinfo|uploader)/?
+	RedirectMatch 403 ^/tmp/js/?$
 </IfModule>
