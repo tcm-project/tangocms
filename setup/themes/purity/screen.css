@@ -1,0 +1,186 @@
+/**
+ * "purity"
+ *
+ * @copyright Copyright (C) 2008, 2009, 2010 Alex Cartwright
+ * @license X11/MIT (see COPYING file)
+ * @package TangoCMS_Themes
+*/
+
+@import url(base.css);
+
+body {
+	background: #fff url(images/background.png) repeat-x top;
+	color: #333;
+	font-family: Helvetica,Arial,"Bitstream Vera Sans",Lucida,Verdana,sans-serif;
+	margin: 0;
+	padding: 0;
+}
+
+/** Sticky Footer */
+html, body {
+	height: 100%;
+}
+
+#stickyWrap {
+	margin: 0 auto -58px;
+	min-height: 100%;
+	width: 950px;
+}
+
+#stickyPush {
+	height: 58px; /* this must be the same height as the footer, inc. padding & margin */
+}
+/** End Sticky Footer */
+
+#header {
+	background: transparent url(images/logo.png) no-repeat top left;
+	color: #222;
+	height: 149px;
+	overflow: hidden;
+	padding: 0 0 0 150px;
+	position: relative;
+	z-index: 2; /** Force it above #container */
+}
+
+#header > a {
+	color: #4C4C4C;
+	display: block;
+	font-size: 2.2em;
+	font-weight: bold;
+	letter-spacing: 1px;
+	text-shadow: 1px 1px 1px #fff;
+	margin: 59px 0 0;
+}
+
+/** Content */
+#container {
+	background: #fff;
+	border-top: 1px solid #e5dfe1;
+	border-top-left-radius: 15px;
+	border-top-right-radius: 15px;
+	-khtml-border-top-left-radius: 15px;
+	-khtml-border-top-right-radius: 15px;
+	-moz-border-radius: 15px 15px 0 0;
+	-webkit-border-top-left-radius: 15px;
+	-webkit-border-top-right-radius: 15px;
+	font-size: 1.3em;
+	margin: 0 auto;
+	padding: 30px 30px 0px;
+	position: relative;
+	top: -17px;
+}
+
+#container > div.column.sidebar {
+	color: #808080;
+	margin-left: 30px;
+	margin-top: 5px;
+}
+
+#content.numCols1 { width: 890px; }
+#content.numCols2 { width: 660px; }
+
+/** Footer */
+#footer {
+	background-color: #F5F3F3;
+	border: 1px solid #D5D3D3;
+	border-radius: 10px;
+	-khtml-border-radius: 10px;
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	clear: both;
+	color: #8F8E8E;
+	font-size: 1em;
+	height: 20px;
+	margin: 10px auto;
+	padding: 8px 0;
+	text-align: center;
+	width: 920px;
+}
+
+/** Sidebar column links & lists */
+div.column.sidebar a {
+	color: #808080;
+}
+
+div.column.sidebar a:hover, div.column.sidebar li:hover {
+	color: #2984CA;
+}
+
+div.column.sidebar ul, div.column.sidebar ol {
+	list-style-position: inside;
+	margin: 0;
+	padding: 0;
+}
+
+div.column.sidebar li {
+	border-top: 1px dashed #808080;
+	margin: 0;
+	padding: 10px 0;
+}
+
+div.column.sidebar li:first-child {
+	border-top: none;
+	padding-top: 0;
+}
+
+/** Module wrap */
+.module-wrap {
+	margin-top: 30px;
+}
+
+.module-wrap:first-child {
+	margin-top: 0;
+}
+
+div.column.sidebar div.module-wrap > h2 {
+	background: transparent url(images/header-200.png) no-repeat;
+	background-position: 0 -39px;
+	color: #666;
+	font-size: 1.1em;
+	height: 35px;
+	margin-bottom: 0.1em;
+	padding: 4px 12px 0;
+	text-shadow: #eaeaea 1px 1px 1px;
+	width: 176px;
+}
+
+div.column.sidebar div.module-wrap:first-child > h2 {
+	background-position: 0 0;
+	color: #DFEEF1;
+	text-shadow: 1px 1px 1px #1E5681;
+}
+
+div.column.sidebar div.module-wrap-body {
+	margin: 0 10px;
+}
+
+/**
+ * The following are used to style additional items on the page
+ * and are no longer related to the main theme layout/style
+ */
+
+/** Event msgs */
+div.eventmsg {
+	border-style: solid;
+	border-width: 1px;
+	font-weight: bold;
+	margin: 0 auto 15px;
+	padding: 6px 2px;
+	text-align: center;
+}
+
+div.eventmsg p {
+	margin: 0;
+}
+
+#eventmsgError {
+	background-color: #CFA59F;
+	border-color: #B04D40;
+	color: #9B382B;
+}
+
+#eventmsgSuccess {
+	background-color: #E9F8C6;
+	border-color: #B7D05E;
+	color: #769311;
+}

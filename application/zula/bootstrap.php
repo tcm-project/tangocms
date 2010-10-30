@@ -142,7 +142,7 @@
 
 	if ( $zula->getMode() == 'normal' && $config->get( 'theme/use_global' ) ) {
 		if ( $zula->getState() == 'setup' ) {
-			$themeName = 'carbon';
+			$themeName = 'purity';
 		} else {
 			$themeName = $config->get( 'theme/'.$router->getSiteType().'_default' );
 		}
