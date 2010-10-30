@@ -40,10 +40,10 @@ a[href]:hover {
 
 p {
 	line-height: 1.8em;
-	margin: 0.8em 0 0;
+	margin: 0.8em 0;
 }
 
-* p:first-child {
+p:first-child {
 	margin-top: 0;
 }
 
@@ -72,6 +72,14 @@ dt {
 dd {
 	margin-bottom: 10px;
 	margin-left: 1em;
+}
+
+form {
+	margin: 20px 0;
+}
+
+form :first-child {
+	margin-top: 0;
 }
 
 label {
@@ -285,8 +293,12 @@ table {
 	border: 1px solid #D2D2D2;
 	border-bottom: none;
 	color: #6a6a6a;
-	margin-top: 30px;
+	margin: 0;
 	width: 100%;
+}
+
+table + table {
+	margin-top: 30px;
 }
 
 thead {
@@ -375,5 +387,10 @@ table dd {
 
 /** DIV that should wrap submit buttons */
 div.actions {
-	margin: 7px 0 15px;
+	margin: 10px 0 15px;
+}
+
+div.actions > input {
+	margin-top: 0;
+	margin-bottom: 0;
 }
