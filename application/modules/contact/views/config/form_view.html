@@ -30,13 +30,19 @@
 	{AMC.TABLE}
 	{ACL_FORM}
 
+	<?php if ( $op == 'add' ) { ?>
+		<div class="help helpInfo">
+			<p>{L_[The contact form fields can be added after you press "Add contact form" below.]}
+		</div>
+	<?php } ?>
+
 	<div class="actions">
 		<input type="hidden" name="id" value="{ID}">
 		<input type="submit" value="<?php echo $op == 'add' ? t('Add contact form') : t('Edit contact form'); ?>">
 	</div>
 </form>
 
-<?php if ( !is_null( $fields ) ) { ?>
+<?php if ( $op == 'edit' ) { ?>
 	<h3>{L_[Form fields]}</h3>
 
 	<div class="help helpInfo">
@@ -55,39 +61,38 @@
 				</tr>
 			</thead>
 			<tbody>
-				<?php if ( empty($fields) ) { ?>
-					<tr class="even">
-						<td colspan="5">{L_[Currently no fields to display.]}</td>
+				<tr class="nodrag nodrop">
+					<td class="checkcol">
+						<input type="checkbox" disabled="disabled">
+					</td>
+					<td class="order"></td>
+					<td>{L_[Your email address]}</td>
+					<td>{L_[email]} ({L_[Required]})</td>
+					<td class="managecol"></td>
+				</tr>
+				<?php $i = 0; $f_count = count( $fields ); foreach( $fields as $field ) { ?>
+					<tr class="<?php echo zula_odd_even($i++); ?>">
+						<td class="checkcol">
+							<input type="checkbox" name="contact_field_ids[]" value="<?php echo $field['id']; ?>">
+						</td>
+						<td class="order">
+							<select name="contact_order[<?php echo $field['id']; ?>]">
+								<?php
+									$format = '<option value="%1$d" %2$s>%1$d</option>';
+									for( $a=1; $a <= $f_count; $a++ ) {
+										$selected = $a == $field['order'] ? 'selected="selected"' : '';
+										printf( $format, $a, $selected );
+									}
+								?>
+							</select>
+						</td>
+						<td><?php echo $field['name']; ?></td>
+						<td><?php echo $field['type']; echo ($field['required'] == 1) ? ' ('.t('Required').')' : ''; ?></td>
+						<td class="managecol">
+							<a href="<?php echo $this->_router->makeUrl('contact', 'config', 'editfield', null, array('id' => $field['id'])); ?>" title="{L_[Edit]}">{L_[Edit]}</a>
+						</td>
 					</tr>
-				<?php
-					} else {
-						$i = 0;
-						$f_count = count( $fields );
-						foreach( $fields as $field ) {
-							$edit_url = $this->_router->makeUrl( 'contact', 'config', 'editfield', null, array( 'id' => $field['id'] ) );
-				?>
-							<tr class="<?php echo zula_odd_even($i); ?>">
-								<td class="checkcol">
-									<input type="checkbox" name="contact_field_ids[]" value="<?php echo $field['id']; ?>">
-								</td>
-								<td class="order">
-									<select name="contact_order[<?php echo $field['id']; ?>]">
-										<?php
-											$format = '<option value="%1$d" %2$s>%1$d</option>';
-											for( $a=1; $a <= $f_count; $a++ ) {
-												$selected = $a == $field['order'] ? 'selected="selected"' : '';
-												printf( $format, $a, $selected );
-											}
-										?>
-									</select>
-								</td>
-								<td><?php echo $field['name']; ?></td>
-								<td><?php echo $field['type']; echo ($field['required'] == 1) ? ' ('.t('Required').')' : ''; ?></td>
-								<td class="managecol">
-									<a href="<?php echo $edit_url ?>" title="{L_[Edit]}">{L_[Edit]}</a>
-								</td>
-							</tr>
-				<?php $i++; } } ?>
+				<?php } ?>
 			</tbody>
 		</table>
 
