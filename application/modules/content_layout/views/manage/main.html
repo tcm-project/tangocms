@@ -21,9 +21,9 @@
 	<h3>{L_[Attached modules]}</h3>
 <?php } ?>
 
-<ul>
-	<li>{L_[Drag and drop the table rows to adjust the order of the attached modules.]}</li>
-</ul>
+<div class="help helpInfo">
+	<p>{L_[Drag and drop the table rows to adjust the order & placement of the attached modules.]}</p>
+</div>
 
 <form action="<?php echo $this->_router->makeUrl( 'content_layout', 'manage', 'bridge' ); ?>" method="post" >
 	<table id="content_layout" class="contentdata">

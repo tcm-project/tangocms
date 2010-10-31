@@ -38,9 +38,10 @@
 
 <?php if ( !is_null( $fields ) ) { ?>
 	<h3>{L_[Form fields]}</h3>
-	<ul>
-		<li>{L_[Drag and drop the table rows to adjust the order of the fields.]}</li>
-	</ul>
+
+	<div class="help helpInfo">
+		<p>{L_[Drag and drop the table rows to adjust the order of the fields.]}</p>
+	</div>
 
 	<form action="<?php echo $this->_router->makeUrl( 'contact', 'config', 'bridge', null, array('fid' => $id) ); ?>" method="post">
 		<table id="contact-form-fields" class="contentdata">
