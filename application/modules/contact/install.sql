@@ -8,8 +8,8 @@ CREATE TABLE {PREFIX}mod_contact (
   UNIQUE KEY identifier (identifier)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=2 ;
 
-INSERT INTO {PREFIX}mod_contact (id, name, email, identifier) VALUES
-(1, 'Contact us', 'tangocms@example.com', 'contact-us');
+INSERT INTO {PREFIX}mod_contact (id, `name`, identifier, email) VALUES
+(1, 'Contact us', 'contact-us', 'tangocms@example.com');
 
 DROP TABLE IF EXISTS {PREFIX}mod_contact_fields;
 CREATE TABLE {PREFIX}mod_contact_fields (

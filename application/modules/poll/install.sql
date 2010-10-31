@@ -1,16 +1,16 @@
 DROP TABLE IF EXISTS {PREFIX}mod_poll;
 CREATE TABLE {PREFIX}mod_poll (
   id smallint(4) NOT NULL AUTO_INCREMENT,
-  title varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `status` enum('active','closed') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'active',
+  title varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   start_date datetime NOT NULL,
   end_date datetime NOT NULL,
   UNIQUE KEY id (id),
   KEY start_date (start_date)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=2 ;
 
-INSERT INTO {PREFIX}mod_poll (id, title, status, start_date, end_date) VALUES
-(1, 'Which music service/radio do you use?', 'active', UTC_TIMESTAMP(), UTC_TIMESTAMP());
+INSERT INTO {PREFIX}mod_poll (id, status, title, start_date, end_date) VALUES
+(1, 'active', 'Which music service/radio do you use?', UTC_TIMESTAMP(), UTC_TIMESTAMP());
 
 DROP TABLE IF EXISTS {PREFIX}mod_poll_options;
 CREATE TABLE {PREFIX}mod_poll_options (

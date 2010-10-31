@@ -2,10 +2,10 @@ DROP TABLE IF EXISTS {PREFIX}mod_menu;
 CREATE TABLE {PREFIX}mod_menu (
   id smallint(4) NOT NULL AUTO_INCREMENT,
   cat_id smallint(4) NOT NULL,
-  `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  attr_title varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  url varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   heading_id smallint(4) NOT NULL DEFAULT '0',
+  `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  url varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  attr_title varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `order` smallint(4) NOT NULL DEFAULT '0',
   UNIQUE KEY id (id),
   KEY cat_id (cat_id),
@@ -13,7 +13,7 @@ CREATE TABLE {PREFIX}mod_menu (
   KEY `order` (`order`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=15 ;
 
-INSERT INTO {PREFIX}mod_menu (id, cat_id, heading_id, url, name, attr_title, `order`) VALUES
+INSERT INTO {PREFIX}mod_menu (id, cat_id, heading_id, url, `name`, attr_title, `order`) VALUES
 (1, 1, 0, '/', 'View website', '', 1),
 (2, 1, 0, 'admin', 'Modules', '', 2),
 (3, 1, 0, 'admin/settings', 'Settings', '', 3),
