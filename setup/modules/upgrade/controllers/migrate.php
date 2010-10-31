@@ -36,6 +36,8 @@
 								'2.3.0'			=> '2.3.1',
 
 								# Dev Releases
+								'2.5.70'		=> '2.6.0-rc1',
+
 								'2.5.65'		=> '2.6.0-beta1',
 								'2.5.64'		=> '2.6.0-beta1',
 								'2.5.63'		=> '2.6.0-beta1',
@@ -499,6 +501,21 @@
 					return '2.5.70';
 				default:
 					return '2.5.80';
+			}
+		}
+
+		/**
+		 * Upgrades to 2.6-0-rc1 (2.5.90)
+		 *
+		 * @return bool|string
+		 */
+		protected function upgradeTo_260_rc1() {
+			switch( $this->version ) {
+				case '2.5.70':
+					$this->sqlFile( '2.6.0-rc1/2.5.71.sql' );
+					return '2.5.71';
+				default:
+					return '2.5.90';
 			}
 		}
 
