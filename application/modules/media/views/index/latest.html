@@ -3,25 +3,25 @@
 		if ( empty( $items ) ) {
 			echo t('There are no media items to display.');
 		} else {
-			if ( isset($category['clean_name']) ) {
-				echo '<ul class="'.$category['clean_name'].'">';
+			if ( isset($category['identifier']) ) {
+				echo '<ul class="'.$category['identifier'].'">';
 			} else {
 				echo '<ul>';
 			}
 			foreach( $items as $item ) {
-				$url = $this->_router->makeUrl( 'media', 'view', $item['clean_name'] );
+				$url = $this->_router->makeUrl( 'media', 'view', $item['identifier'] );
 				if ( $item['type'] == 'image' && $this->_config->get( 'media/use_lightbox' ) ) {
 					$url->queryArgs( array('f' => 'large') );
 				}
 		?>
 				<li class="media-thumb">
 					<a class="imglink" <?php echo ($lightbox && $item['type'] == 'image') ? 'rel="modalImage"' : ''; ?> href="<?php echo $url; ?>" title="<?php echo $item['name']; ?>">
-						<img src="<?php echo $this->_router->makeUrl( 'media', 'view', $item['clean_name'] )->queryArgs( array('f' => 'thumb') ); ?>" alt="<?php echo $item['name']; ?>">
+						<img src="<?php echo $this->_router->makeUrl( 'media', 'view', $item['identifier'] )->queryArgs( array('f' => 'thumb') ); ?>" alt="<?php echo $item['name']; ?>">
 					</a>
 					<?php if ( $show_details ) { ?>
 						<ul>
 							<li class="title">
-								<a href="<?php echo $this->_router->makeUrl( 'media', 'view', $item['clean_name'] ); ?>">
+								<a href="<?php echo $this->_router->makeUrl( 'media', 'view', $item['identifier'] ); ?>">
 									<?php echo $item['name']; ?>
 								</a>
 							</li>
@@ -31,7 +31,7 @@
 								</li>
 							<?php } ?>
 							<li>
-								<a href="<?php echo $this->_router->makeUrl( 'media', 'view', $item['clean_name'] ); ?>">
+								<a href="<?php echo $this->_router->makeUrl( 'media', 'view', $item['identifier'] ); ?>">
 									<?php
 										switch( $item['type'] ) {
 											case 'image':

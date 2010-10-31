@@ -17,8 +17,8 @@
 					}
 					foreach( $pages as $page ) {
 						printf( '<option value="%1$s" %2$s>%3$s</option>',
-								$page['clean_title'],
-								($curPage == $page['clean_title'] ? 'selected="selected"' : ''),
+								$page['identifier'],
+								($curPage == $page['identifier'] ? 'selected="selected"' : ''),
 								$page['title']
 							   );
 					}

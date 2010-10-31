@@ -14,7 +14,7 @@
 				<?php $i = 0; foreach( $outstanding as $key=>$item ) { ?>
 					<tr class="<?php echo zula_odd_even($i++); ?>">
 						<td>
-							<img src="<?php echo $this->_router->makeUrl( 'media', 'view', $item['clean_name'] )->queryArgs( array('f' => 'thumb') ); ?>" alt="<?php echo $item['name']; ?>">
+							<img src="<?php echo $this->_router->makeUrl( 'media', 'view', $item['identifier'] )->queryArgs( array('f' => 'thumb') ); ?>" alt="<?php echo $item['name']; ?>">
 						</td>
 						<td class="confcol">
 							<input type="text" name="media[item][<?php echo $key; ?>][name]" placeholder="{L_[Enter a short title...]}" value="<?php echo $item['name']; ?>">

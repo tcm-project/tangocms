@@ -2,7 +2,7 @@
 	<?php
 		foreach( $categories as $category ) {
 			printf( '<li><a href="%1$s" title="'.t('View category').'">%2$s (%3$s)</a></li>',
-					$this->_router->makeUrl( 'article', 'cat', $category['clean_title'] ),
+					$this->_router->makeUrl( 'article', 'cat', $category['identifier'] ),
 					$category['title'],
 					number_format( $category['count'] )
 				   );

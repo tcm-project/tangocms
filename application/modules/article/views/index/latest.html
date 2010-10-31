@@ -13,14 +13,14 @@
 		?>
 			<div class="article-entry">
 				<h4 class="article-title">
-					<a href="<?php echo $this->_router->makeUrl( 'article', 'view', $article['clean_title'] ); ?>" title="{L_[View article]}">
+					<a href="<?php echo $this->_router->makeUrl( 'article', 'view', $article['identifier'] ); ?>" title="{L_[View article]}">
 						<?php echo zula_htmlspecialchars( $article['title'] ); ?>
 					</a>
 				</h4>
 				<?php if ( $meta_format ) { ?>
 					<p class="article-meta">
 						<?php
-							$catLink = $this->_router->makeUrl( 'article', 'cat', $article['category_clean_title'] );
+							$catLink = $this->_router->makeUrl( 'article', 'cat', $article['category_identifier'] );
 							printf( $meta_format,
 									$this->_date->format( $article['date'] ),
 									$this->_helper('user')->link( $article['author'] ),

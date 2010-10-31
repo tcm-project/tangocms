@@ -156,7 +156,7 @@
 					$this->_acl->allowOnly( $resource.$page['id'], $roles );
 				}
 				// Redirect back to correct location
-				$form->success( 'page/index/'.$page['clean_title'] );
+				$form->success( 'page/index/'.$page['identifier'] );
 				$this->_event->success( t('Added new page') );
 				if ( empty( $parent ) ) {
 					$url = $this->_router->makeUrl( 'page', 'config' );
@@ -193,7 +193,7 @@
 				}
 				// Build the form and check it is all valid
 				$form = $this->buildForm( $page['parent'], $page['id'], $page['title'], $page['body'], $quickEdit );
-				$form->setContentUrl( 'page/index/'.$page['clean_title'] );
+				$form->setContentUrl( 'page/index/'.$page['identifier'] );
 				if ( $form->hasInput() && $form->isValid() ) {
 					$fd = $form->getValues( 'page' );
 					if ( !isset( $fd['parent'] ) ) {
@@ -212,10 +212,10 @@
 						}
 					}
 					// Redirect back to correct URL
-					$form->success( 'page/index/'.$page['clean_title'] );
+					$form->success( 'page/index/'.$page['identifier'] );
 					$this->_event->success( t('Edited page') );
 					if ( $quickEdit ) {
-						$url = $this->_router->makeUrl( 'page', 'index', $page['clean_title'] );
+						$url = $this->_router->makeUrl( 'page', 'index', $page['identifier'] );
 					} else if ( empty( $fd['parent'] ) ) {
 						$url = $this->_router->makeUrl( 'page', 'config' );
 					} else {

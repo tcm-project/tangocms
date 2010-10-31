@@ -346,7 +346,7 @@
 					} else {
 						$details = $this->_model()->addArticle( $category['id'], $fd['title'], $fd['part_body'],
 																$fd['part_title'], $fd['published'] );
-						$form->success( 'article/view/'.$details['clean_title'] );
+						$form->success( 'article/view/'.$details['identifier'] );
 						$this->_event->success( t('Added article') );
 						return zula_redirect( $this->_router->makeUrl( 'article', 'config', 'edit', null, array('id' => $details['id']) ) );
 					}
@@ -388,11 +388,11 @@
 				$form->addElement( 'article/cid', $article['cat_id'], t('Category'), new Validator_Int );
 				$form->addElement( 'article/title', $article['title'], t('Title'), new Validator_Length(1, 255) );
 				$form->addElement( 'article/published', $article['published'], t('Published'), new Validator_Bool );
-				$form->setContentUrl( 'article/view/'.$article['clean_title'] );
+				$form->setContentUrl( 'article/view/'.$article['identifier'] );
 				if ( $form->hasInput() && $form->isValid() ) {
 					$fd = $form->getValues( 'article' );
 					$this->_model()->editArticle( $article['id'], $fd['title'], $fd['published'], $fd['cid'] );
-					$form->success( 'article/view/'.$article['clean_title'] );
+					$form->success( 'article/view/'.$article['identifier'] );
 					$this->_event->success( t('Edited article') );
 					return zula_redirect( $this->_router->makeUrl( 'article', 'config', 'edit', null, array('id' => $article['id']) ) );
 				} else {

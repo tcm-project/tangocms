@@ -50,7 +50,7 @@
 						<input type="checkbox" name="article_ids[]" value="<?php echo $article['id']; ?>">
 					</td>
 					<td>
-						<a href="<?php echo $this->_router->makeUrl( 'article', 'view', $article['clean_title'], $this->_router->getDefaultSiteType() ); ?>">
+						<a href="<?php echo $this->_router->makeUrl( 'article', 'view', $article['identifier'], $this->_router->getDefaultSiteType() ); ?>">
 							<?php echo zula_snippet( $article['title'], 50, true ); ?>
 						</a>
 					</td>

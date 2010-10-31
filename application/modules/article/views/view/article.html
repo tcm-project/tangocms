@@ -25,7 +25,7 @@
 	<?php if ( $meta_format ) { ?>
 		<p class="article-meta">
 			<?php
-				$catLink = $this->_router->makeUrl( 'article', 'cat', $category['clean_title'] );
+				$catLink = $this->_router->makeUrl( 'article', 'cat', $category['identifier'] );
 				printf( $meta_format,
 						$this->_date->format( $article['date'] ),
 						$this->_helper('user')->link( $article['author'] ),

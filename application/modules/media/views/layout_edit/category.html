@@ -15,11 +15,11 @@
 						} catch ( Input_KeyNoExist $e ) {
 							$curCategory = null;
 						}
-						array_unshift( $categories, array('clean_name' => '', 'name' => t('All categories')) );
+						array_unshift( $categories, array('identifier' => '', 'name' => t('All categories')) );
 						foreach( $categories as $cat ) {
 							printf( '<option value="%1$s" %2$s>%3$s</option>',
-									$cat['clean_name'],
-									($curCategory == $cat['clean_name'] ? 'selected="selected"' : ''),
+									$cat['identifier'],
+									($curCategory == $cat['identifier'] ? 'selected="selected"' : ''),
 									$cat['name']
 								);
 						}

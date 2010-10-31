@@ -18,8 +18,8 @@
 					<td class="checkcol">
 						<input type="checkbox" name="article_cids[]" value="<?php echo $cat['id']; ?>">
 					</td>
-					<td title="<?php echo $cat['clean_title']; ?>">
-						<a href="<?php echo $this->_router->makeUrl( 'article', 'cat', $cat['clean_title'], 'main' ); ?>"><?php echo zula_snippet( $cat['title'], 50, true ); ?></a>
+					<td title="<?php echo $cat['identifier']; ?>">
+						<a href="<?php echo $this->_router->makeUrl( 'article', 'cat', $cat['identifier'], 'main' ); ?>"><?php echo zula_snippet( $cat['title'], 50, true ); ?></a>
 					</td>
 					<td><?php echo number_format( $cat['count'] ); ?></td>
 					<td class="managecol">

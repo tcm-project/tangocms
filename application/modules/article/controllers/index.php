@@ -94,10 +94,10 @@
 					$parts = $this->_model()->getArticleParts( $tmpArticle['id'] );
 					$firstPart = current( $parts );
 					$editor = new Editor( $firstPart['body'] );
-					$editor->setContentUrl( $this->_router->makeUrl( 'article', 'view', $tmpArticle['clean_title'] ) );
+					$editor->setContentUrl( $this->_router->makeUrl( 'article', 'view', $tmpArticle['identifier'] ) );
 					$tmpArticle['body'] = $editor->parse( true );
 					$tmpArticle['category_title'] = $categories[ $tmpArticle['cat_id'] ]['title'];
-					$tmpArticle['category_clean_title'] = $categories[ $tmpArticle['cat_id'] ]['clean_title'];
+					$tmpArticle['category_identifier'] = $categories[ $tmpArticle['cat_id'] ]['identifier'];
 					$articles[] = $tmpArticle;
 				}
 			}

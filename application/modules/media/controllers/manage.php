@@ -48,9 +48,9 @@
 					$redirectUrl = $this->_router->makeUrl( 'media', 'config' );
 				} else {
 					$redirectUrl = new Router_Url( 'media' );
-					if ( isset( $category['clean_name'] ) ) {
+					if ( isset( $category['identifier'] ) ) {
 						$redirectUrl->controller( 'cat' )
-									->section( $category['clean_name'] );
+									->section( $category['identifier'] );
 					}
 				}
 			}
@@ -134,7 +134,7 @@
 					$fd = $form->getValues( 'media' );
 					$this->_model()->editItem( $item['id'], $fd['title'], $fd['desc'] );
 					$this->_event->success( t('Edited media item') );
-					return zula_redirect( $this->_router->makeUrl( 'media', 'view', $item['clean_name'] ) );
+					return zula_redirect( $this->_router->makeUrl( 'media', 'view', $item['identifier'] ) );
 				}
 				return $form->getOutput();
 			} catch ( Router_ArgNoExist $e ) {
@@ -166,7 +166,7 @@
 						// Redirect back to the parent media category
 						try {
 							$category = $this->_model()->getCategory( $item['cat_id'] );
-							return zula_redirect( $this->_router->makeUrl('media', 'cat', $category['clean_name']) );
+							return zula_redirect( $this->_router->makeUrl('media', 'cat', $category['identifier']) );
 						} catch ( Media_CatNoExist $e ) {
 						}
 					} else {

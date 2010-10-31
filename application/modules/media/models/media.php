@@ -113,7 +113,7 @@
 		}
 
 		/**
-		 * Gets details for a single category by ID or clean name
+		 * Gets details for a single category by ID or identifier
 		 *
 		 * @param int|string $cat
 		 * @param bool $byId
@@ -124,7 +124,7 @@
 											FROM
 												{PREFIX}mod_media_cats mcats
 												LEFT JOIN {PREFIX}mod_media_items mitems ON mitems.cat_id = mcats.id
-											WHERE mcats.'.($byId ? 'id' : 'clean_name').' = ?
+											WHERE mcats.'.($byId ? 'id' : 'identifier').' = ?
 											GROUP BY mcats.id' );
 			$pdoSt->execute( array($cat) );
 			$category = $pdoSt->fetch( PDO::FETCH_ASSOC );
@@ -206,14 +206,14 @@
 		}
 
 		/**
-		 * Gets details for an item by ID or clean name
+		 * Gets details for an item by ID or identifier
 		 *
 		 * @param string|int $item
 		 * @param bool $byId
 		 * @return array
 		 */
 		public function getItem( $item, $byId=true ) {
-			$pdoSt = $this->_sql->prepare( 'SELECT * FROM {PREFIX}mod_media_items WHERE '.($byId ? 'id' : 'clean_name').' = ?' );
+			$pdoSt = $this->_sql->prepare( 'SELECT * FROM {PREFIX}mod_media_items WHERE '.($byId ? 'id' : 'identifier').' = ?' );
 			$pdoSt->execute( array($item) );
 			$details = $pdoSt->fetch( PDO::FETCH_ASSOC );
 			$pdoSt->closeCursor();
@@ -261,15 +261,15 @@
 			$i = null;
 			do {
 				try {
-					$cleanName = zula_clean( $name ).$i++;
-					$this->getCategory( $cleanName, false );
+					$identifier = zula_clean( $name ).$i++;
+					$this->getCategory( $identifier, false );
 				} catch ( Media_CategoryNoExist $e ) {
 					break;
 				}
 			} while ( true );
 			// Insert new category
-			$pdoSt = $this->_sql->prepare( 'INSERT INTO {PREFIX}mod_media_cats (name, description, clean_name) VALUES(?, ?, ?)' );
-			$pdoSt->execute( array($name, $desc, $cleanName) );
+			$pdoSt = $this->_sql->prepare( 'INSERT INTO {PREFIX}mod_media_cats (name, description, identifier) VALUES(?, ?, ?)' );
+			$pdoSt->execute( array($name, $desc, $identifier) );
 			$this->_cache->delete( 'media_cats' );
 			return $this->_sql->lastInsertId();
 		}
@@ -343,12 +343,12 @@
 		 */
 		public function addItem( $cid, $name, $desc, $type, $filename, $thumbnail, $externalService='', $externalId='' ) {
 			$category = $this->getCategory( $cid );
-			// Create the clean name for the item
+			// Create the identifier for the item
 			$i = null;
 			do {
 				try {
-					$cleanName = zula_clean( $name ).$i;
-					$this->getItem( $cleanName, false );
+					$identifier = zula_clean( $name ).$i;
+					$this->getItem( $identifier, false );
 					++$i;
 				} catch ( Media_ItemNoExist $e ) {
 					break;;
@@ -356,12 +356,12 @@
 			} while( true );
 			// Insert the new media item
 			$pdoSt = $this->_sql->prepare( 'INSERT INTO {PREFIX}mod_media_items
-											(cat_id, type, date, name, clean_name, description, filename, thumbnail, external_service, external_id)
+											(cat_id, type, date, name, identifier, description, filename, thumbnail, external_service, external_id)
 											VALUES(?, ?, UTC_TIMESTAMP(), ?, ?, ?, ?, ?, ?, ?)' );
-			$pdoSt->execute( array($category['id'], $type, $name, $cleanName, $desc, $filename, $thumbnail, $externalService, $externalId) );
+			$pdoSt->execute( array($category['id'], $type, $name, $identifier, $desc, $filename, $thumbnail, $externalService, $externalId) );
 			return array(
 						'id'			=> $this->_sql->lastInsertId(),
-						'clean_name'	=> $cleanName,
+						'identifier'	=> $identifier,
 						);
 		}
 

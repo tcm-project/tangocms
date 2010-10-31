@@ -5,7 +5,7 @@
 			if ( $path_node['id'] == $page['id'] ) {
 				$path_node['title'] = '<strong>'.$path_node['title'].'</strong>';
 			}
-			$url = $this->_router->makeUrl( 'page', 'index', $path_node['clean_title'] );
+			$url = $this->_router->makeUrl( 'page', 'index', $path_node['identifier'] );
 			$breadcrumbs[] = sprintf( '<a href="%1$s">%2$s</a>', $url, $path_node['title'] );
 		}
 		echo '<p>'.trim( implode( ' &raquo; ', $breadcrumbs ), '&raquo' ).'</p>';
@@ -19,11 +19,11 @@
 	if ( count( $path ) > 1 ) {
 		echo '<hr><p class="page-navigation">';
 		if ( isset( $links['previous'] ) ) {
-			$url = $this->_router->makeUrl( 'page', 'index', $links['previous']['clean_title'] );
+			$url = $this->_router->makeUrl( 'page', 'index', $links['previous']['identifier'] );
 			echo sprintf( '<a class="page-previous" href="%2$s">&laquo; %1$s</a>', $links['previous']['title'], $url );
 		}
 		if ( isset( $links['next'] ) ) {
-			$url = $this->_router->makeUrl( 'page', 'index', $links['next']['clean_title'] );
+			$url = $this->_router->makeUrl( 'page', 'index', $links['next']['identifier'] );
 			echo sprintf( '<a class="page-next" href="%2$s">%1$s  &raquo;</a>', $links['next']['title'], $url );
 		}
 		echo '</p>';

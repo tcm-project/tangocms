@@ -15,7 +15,8 @@
 	class Page_controller_index extends Zula_ControllerBase {
 
 		/**
-		 * Magic method - allows for shorter URL's eg: /page/index/page-title
+		 * Magic method, allows for shorter URLs e.g.
+		 * /page/index/identifier
 		 *
 		 * @param string $name
 		 * @param array $args
@@ -26,16 +27,17 @@
 		}
 
 		/**
-		 * Builds up the correct view for the requested page to be displayed, if it exists.
+		 * Builds up the correct view for the requested
+		 * page to be displayed if it exists.
 		 *
-		 * @param string $cleanTitle
-		 * @param bool $import			Toogle if page is an import into main page.
+		 * @param string $identifier
+		 * @param bool $import
 		 * @return string|bool
 		 */
-		protected function displayPage( $cleanTitle, $import=false ) {
+		protected function displayPage( $identifier, $import=false ) {
 			$this->setOutputType( self::_OT_CONTENT_STATIC );
 			try {
-				$page = $this->_model()->getPage( $cleanTitle, false );
+				$page = $this->_model()->getPage( $identifier, false );
 				if ( $import === false ) {
 					$this->setTitle( $page['title'] );
 				}
@@ -98,7 +100,7 @@
 		}
 
 		/**
-		 * Handles page imports using {%import:clean_title%}
+		 * Handles page imports using {%import:identifier%}
 		 * syntax.
 		 *
 		 * @param array $matches
@@ -160,7 +162,7 @@
 			if ( !empty( $children ) ) {
 				$wikiPage = "#!mediawiki\n===".t('Table of contents')."===\n";
 				foreach( $children as $child ) {
-					$pageLink = $this->_router->makeUrl( 'page', 'index', $child['clean_title'] );
+					$pageLink = $this->_router->makeUrl( 'page', 'index', $child['identifier'] );
 					$wikiPage .= str_repeat( '#', $child['depth']+1 ).'[['.$pageLink.'|'.$child['title'].']]'."\n";
 				}
 				$editor = new Editor( $wikiPage );

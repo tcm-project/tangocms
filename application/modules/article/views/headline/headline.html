@@ -5,18 +5,18 @@
 		<dl class="article-headlines">
 			<?php foreach( $articles as $article ) { ?>
 				<dt>
-					<a href="<?php echo $this->_router->makeUrl( 'article', 'view', $article['clean_title'] ); ?>" title="{L_[View article]}">
+					<a href="<?php echo $this->_router->makeUrl( 'article', 'view', $article['identifier'] ); ?>" title="{L_[View article]}">
 						<?php echo zula_snippet( $article['title'], 35, true ); ?>
 					</a>
 				</dt>
 				<dd class="article-meta">
 					<?php
 						if ( $meta_format ) {
-							$catLink = $this->_router->makeUrl( 'article', 'cat', $categories[ $article['cat_id'] ]['clean_title'] );
+							$catLink = $this->_router->makeUrl( 'article', 'cat', $categories[ $article['cat_id'] ]['identifier'] );
 							printf( $meta_format,
 									$this->_date->format( $article['date'] ),
 									$this->_helper('user')->link( $article['author'] ),
-									'<a href="'.$catLink.'">'.$categories[ $article['cat_id'] ]['clean_title'].'</a>'
+									'<a href="'.$catLink.'">'.$categories[ $article['cat_id'] ]['identifier'].'</a>'
 									);
 						}
 					?>
@@ -26,9 +26,9 @@
 		<?php
 			if ( count( $articles ) < $article_count ) {
 				$url = $this->_router->makeUrl( 'article' );
-				if ( isset( $category['clean_title'] ) ) {
+				if ( isset( $category['identifier'] ) ) {
 					$url->controller( 'cat' )
-						->section( $category['clean_title'] );
+						->section( $category['identifier'] );
 				}
 				printf( '<a href="%1$s">%2$s &raquo;</a>', $url, t('View more articles') );
 			}

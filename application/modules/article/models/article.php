@@ -27,52 +27,49 @@
 		protected $articleCount = null;
 
 		/**
-		 * Creates a unique 'clean' title to be used for a
-		 * article title.
+		 * Creates a unique identifier for a given article title
 		 *
 		 * @param string $title
 		 * @return string
 		 */
-		protected function cleanArticleTitle( $title ) {
-			return $this->cleanTitle( $title, self::_TYPE_ARTICLE );
+		protected function makeArticleIdent( $title ) {
+			return $this->makeIdentifier( $title, self::_TYPE_ARTICLE );
 		}
 
 		/**
-		 * Creates a unique 'clean' title to be used for a
-		 * category title.
+		 * Creates a unique identifier for a given category title
 		 *
 		 * @param string $title
 		 * @return string
 		 */
-		protected function cleanCategoryTitle( $title ) {
-			return $this->cleanTitle( $title, self::_TYPE_CATEGORY );
+		protected function makeCatIdent( $title ) {
+			return $this->makeIdentifier( $title, self::_TYPE_CATEGORY );
 		}
 
 		/**
-		 * Cleans and creates a unique title to be used for an article or category title
+		 * Creates a unique identifier for a given article or
+		 * category title
 		 *
 		 * @param string $title
 		 * @param int $type
 		 * @return string
 		 */
-		protected function cleanTitle( $title, $type=self::_TYPE_ARTICLE ) {
+		protected function makeIdentifier( $title, $type=self::_TYPE_ARTICLE ) {
 			$title = zula_clean( $title );
-			if ( !trim( $title ) ) {
+			if ( !$title ) {
 				$title = 'id-';
 			}
 			$table = ($type & self::_TYPE_ARTICLE) ? 'mod_articles' : 'mod_article_cats';
-			$result = $this->_sql->prepare( 'SELECT clean_title FROM {PREFIX}'.$table.' WHERE clean_title LIKE :title' );
-			$result->execute( array(':title' => $title.'%') );
-			// Re-build the title if need by by adding a int on the end
-			$cleanTitles = $result->fetchAll( PDO::FETCH_COLUMN );
-			if ( !empty( $cleanTitles ) ) {
-				$i = 1;
-				while( in_array( $title.$i, $cleanTitles ) ) {
-					++$i;
-				}
-				$title .= $i;
-			}
-			return $title;
+			$pdoSt = $this->_sql->prepare( 'SELECT identifier FROM {PREFIX}'.$table.' WHERE identifier = :ident' );
+			$i = null;
+			do {
+				$identifier = $title.$i;
+				$pdoSt->bindValue( ':ident', $identifier );
+				$pdoSt->execute();
+				++$i;
+			} while( $pdoSt->rowCount() > 0 );
+			$pdoSt->closeCursor;
+			return $identifier;
 		}
 
 		/**
@@ -222,7 +219,7 @@
 		}
 
 		/**
-		 * Checks if a category exists by ID or clean title
+		 * Checks if a category exists by ID or identifier
 		 *
 		 * @param int|string $cat
 		 * @param bool $byId
@@ -238,14 +235,14 @@
 		}
 
 		/**
-		 * Gets details for a category by ID or clean title
+		 * Gets details for a category by ID or identifier
 		 *
 		 * @param int|string $cat
 		 * @param bool $byId
 		 * @return array
 		 */
 		public function getCategory( $cat, $byId=true ) {
-			$col = $byId ? 'id' : 'clean_title';
+			$col = $byId ? 'id' : 'identifier';
 			$pdoSt = $this->_sql->prepare( 'SELECT * FROM {PREFIX}mod_article_cats WHERE '.$col.' = ?' );
 			$pdoSt->execute( array($cat) );
 			$category = $pdoSt->fetch( PDO::FETCH_ASSOC );
@@ -258,7 +255,7 @@
 		}
 
 		/**
-		 * Checks if an article exists by ID or clean_title
+		 * Checks if an article exists by ID or identifier
 		 *
 		 * @param int|string $article
 		 * @return bool
@@ -273,14 +270,14 @@
 		}
 
 		/**
-		 * Get details for an article by ID or clean_title
+		 * Get details for an article by ID or identifier
 		 *
 		 * @param int|string $article
 		 * @param bool $byId
 		 * @return array
 		 */
 		public function getArticle( $article, $byId=true ) {
-			$col = $byId ? 'id' : 'clean_title';
+			$col = $byId ? 'id' : 'identifier';
 			$pdoSt = $this->_sql->prepare( 'SELECT * FROM {PREFIX}mod_articles WHERE '.$col.' = ?' );
 			$pdoSt->execute( array($article) );
 			$article = $pdoSt->fetch( PDO::FETCH_ASSOC );
@@ -355,16 +352,16 @@
 			$details = array(
 							'title'			=> $title,
 							'description'	=> $description,
-							'clean_title'	=> $this->cleanCategoryTitle( $title ),
+							'identifier'	=> $this->makeCatIdent( $title ),
 							);
-			$pdoSt = $this->_sql->prepare( 'INSERT INTO {PREFIX}mod_article_cats (title, description, clean_title) VALUES (?, ?, ?)' );
+			$pdoSt = $this->_sql->prepare( 'INSERT INTO {PREFIX}mod_article_cats (title, description, identifier) VALUES (?, ?, ?)' );
 			if ( $pdoSt->execute( array_values($details) ) ) {
 				$this->_cache->delete( 'article_categories' );
 				$id = $this->_sql->lastInsertId();
 				Hooks::notifyAll( 'article_add_category', $id, $details );
 				return array(
 							'id'			=> $id,
-							'clean_title'	=> $details['clean_title'],
+							'identifier'	=> $details['identifier'],
 							);
 			} else {
 				return false;
@@ -435,16 +432,16 @@
 			$details = array(
 							'cat_id'		=> $category['id'],
 							'title'			=> $title,
-							'clean_title'	=> $this->cleanArticleTitle( $title ),
+							'identifier'	=> $this->makeArticleIdent( $title ),
 							'part_body'		=> $partBody,
 							'part_title'	=> $partTitle,
 							'published'		=> (int) $published,
 							'author'		=> $this->_session->getUserId(),
 							);
-			$pdoSt = $this->_sql->prepare( 'INSERT INTO {PREFIX}mod_articles (cat_id, title, clean_title, `date`, published, author)
+			$pdoSt = $this->_sql->prepare( 'INSERT INTO {PREFIX}mod_articles (cat_id, title, identifier, `date`, published, author)
 											VALUES(?, ?, ?, UTC_TIMESTAMP(), ?, ?)' );
 			$result = $pdoSt->execute( array(
-											$details['cat_id'], $details['title'], $details['clean_title'],
+											$details['cat_id'], $details['title'], $details['identifier'],
 											$details['published'], $details['author']
 											));
 			if ( $result ) {
@@ -454,7 +451,7 @@
 				Hooks::notifyAll( 'article_add', $articleId, $details, $category );
 				return array(
 							'id'			=> $articleId,
-							'clean_title'	=> $details['clean_title'],
+							'identifier'	=> $details['identifier'],
 							);
 			} else {
 				return false;

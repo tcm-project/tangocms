@@ -98,7 +98,7 @@
 		}
 
 		/**
-		 * Checks if a contact form exists by ID or clean title
+		 * Checks if a contact form exists by ID or identifier
 		 *
 		 * @param int|string $form
 		 * @param bool $byId
@@ -114,7 +114,7 @@
 		}
 
 		/**
-		 * Gets details for a contact form by ID or clean title
+		 * Gets details for a contact form by ID or identifier
 		 *
 		 * @param int|string $form
 		 * @param bool $byId
@@ -123,7 +123,7 @@
 		public function getForm( $form, $byId=true ) {
 			$cacheKey = $byId ? null : 'contact_form_'.$form;
 			if ( !($details = $this->_cache->get($cacheKey)) ) {
-				$col = $byId ? 'id' : 'clean_name';
+				$col = $byId ? 'id' : 'identifier';
 				$pdoSt = $this->_sql->prepare( 'SELECT * FROM {PREFIX}mod_contact WHERE '.$col.' = ?' );
 				$pdoSt->execute( array($form) );
 				$details = $pdoSt->fetch( PDO::FETCH_ASSOC );
@@ -181,23 +181,23 @@
 			$i = null;
 			do {
 				try {
-					$cleanName = zula_clean($name).$i;
-					$this->getForm( $cleanName, false );
+					$identifier = zula_clean($name).$i;
+					$this->getForm( $identifier, false );
 					++$i;
 				} catch ( Contact_NoExist $e ) {
 					break;
 				}
 			} while( true );
-			$pdoSt = $this->_sql->prepare( 'INSERT INTO {PREFIX}mod_contact (name, clean_name, email) VALUES(?, ?, ?)' );
-			$pdoSt->execute( array($name, $cleanName, $email) );
+			$pdoSt = $this->_sql->prepare( 'INSERT INTO {PREFIX}mod_contact (name, identifier, email) VALUES(?, ?, ?)' );
+			$pdoSt->execute( array($name, $identifier, $email) );
 			$pdoSt->closeCursor();
 			if ( $pdoSt->rowCount() ) {
 				$id = $this->_sql->lastInsertId();
 				$this->_cache->delete( 'contact_forms' );
-				Hooks::notifyAll( 'contact_add_form', $id, $name, $cleanName, $email );
+				Hooks::notifyAll( 'contact_add_form', $id, $name, $identifier, $email );
 				return array(
 							'id'	 		=> $id,
-							'clean_name'	=> $cleanName,
+							'identifier'	=> $identifier,
 							);
 			} else {
 				return false;
@@ -216,7 +216,7 @@
 			$form = $this->getForm( $fid );
 			$pdoSt = $this->_sql->prepare( 'UPDATE {PREFIX}mod_contact SET name = ?, email = ? WHERE id = ?' );
 			$pdoSt->execute( array($name, $email, $form['id']) );
-			$this->_cache->delete( array('contact_forms', 'contact_form_'.$form['clean_name']) );
+			$this->_cache->delete( array('contact_forms', 'contact_form_'.$form['identifier']) );
 			Hooks::notifyAll( 'contact_edit_form', $form, $name, $email );
 			return true;
 		}
@@ -236,7 +236,7 @@
 				$query = $this->_sql->query( 'DELETE FROM {PREFIX}mod_contact_fields WHERE form_id = '.(int) $form['id'] );
 				$query->closeCursor();
 				// Remove all cache
-				$this->_cache->delete( array('contact_forms', 'contact_form_'.$form['clean_name'], 'contact_fields_'.$form['id']) );
+				$this->_cache->delete( array('contact_forms', 'contact_form_'.$form['identifier'], 'contact_fields_'.$form['id']) );
 				Hooks::notifyAll( 'contact_delete_form', $form['id'] );
 			} else {
 				return false;

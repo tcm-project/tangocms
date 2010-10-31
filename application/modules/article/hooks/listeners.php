@@ -62,16 +62,16 @@
 																'desc'	=> sprintf( t('%s Latest articles'), $this->_config->get( 'config/title' ) ),
 																'url'	=> $this->_router->makeFullUrl( '/article' ),
 															),
-										'article-'.$cat['clean_title']	=> array(
+										'article-'.$cat['identifier']	=> array(
 																				'title'	=> sprintf( t('Articles - %s', 'tangocms-article'), $cat['title'] ),
 																				'desc'	=> sprintf( t('Latest %s articles', 'tangocms-article'), $cat['title'] ),
-																				'url'	=> $this->_router->makeFullUrl( 'article/cat/'.$cat['clean_title'] ),
+																				'url'	=> $this->_router->makeFullUrl( 'article/cat/'.$cat['identifier'] ),
 																		),
 									),
 						'item'	=> array(
 										'id'	=> 'article-'.$details['id'],
 										'title'	=> $details['title'],
-										'url'	=> $this->_router->makeFullUrl( 'article/view/'.$details['clean_title'] ),
+										'url'	=> $this->_router->makeFullUrl( 'article/view/'.$details['identifier'] ),
 										'desc'	=> empty($details['part_body']) ? null : $details['part_body'],
 										),
 						);
@@ -155,7 +155,7 @@
 								'url'	=> null,
 								'desc'	=> $partDetails['body']
 								);
-					Hooks::notifyAll( 'rssmod_edit', array('article-latest', 'article-'.$cat['clean_title']), $item );
+					Hooks::notifyAll( 'rssmod_edit', array('article-latest', 'article-'.$cat['identifier']), $item );
 				} catch ( Article_CatNoExist $e ) {
 					return false;
 				} catch ( Article_NoExist $e ) {

@@ -17,8 +17,8 @@
 						}
 						foreach( $categories as $category ) {
 							printf( '<option value="%1$s" %2$s>%3$s</option>',
-									$category['clean_title'],
-									($curCat == $category['clean_title'] ? 'selected="selected"' : ''),
+									$category['identifier'],
+									($curCat == $category['identifier'] ? 'selected="selected"' : ''),
 									$category['title']
 								  );
 						}

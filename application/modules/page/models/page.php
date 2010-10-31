@@ -33,7 +33,7 @@
 		 * @return array
 		 */
 		public function getAllPages( $limit=0, $offset=0, $parent=0, $aclCheck=true, $withBody=false ) {
-			$cols = $withBody ? '*' : 'id, title, author, date, parent, `order`, clean_title';
+			$cols = $withBody ? '*' : 'id, title, author, date, parent, `order`, identifier';
 			$statement = 'SELECT SQL_CALC_FOUND_ROWS '.$cols.' FROM {PREFIX}mod_page
 						  WHERE parent = '.(int) $parent.' ORDER BY title ASC';
 			if ( $limit != 0 || $offset != 0 ) {
@@ -91,7 +91,7 @@
 		}
 
 		/**
-		 * Checks if a page exists by ID or clean title
+		 * Checks if a page exists by ID or identifier
 		 *
 		 * @param int|string $page
 		 * @param bool $byId
@@ -107,7 +107,7 @@
 		}
 
 		/**
-		 * Gets details for a single page, either by ID or clean title
+		 * Gets details for a single page, either by ID or identifier
 		 *
 		 * @param int|string $page
 		 * @param bool $byId
@@ -115,9 +115,9 @@
 		 * @return array
 		 */
 		public function getPage( $page, $byId=true, $withBody=true ) {
-			$cols = $withBody ? '*' : 'id, title, author, date, parent, `order`, clean_title';
+			$cols = $withBody ? '*' : 'id, title, author, date, parent, `order`, identifier';
 			$pdoSt = $this->_sql->prepare( 'SELECT '.$cols.' FROM {PREFIX}mod_page
-											WHERE '.($byId ? 'id' : 'clean_title').' = ?' );
+											WHERE '.($byId ? 'id' : 'identifier').' = ?' );
 			$pdoSt->execute( array($page) );
 			$page = $pdoSt->fetch( PDO::FETCH_ASSOC );
 			$pdoSt->closeCursor();
@@ -148,7 +148,7 @@
 			if ( in_array( $pid, $ignore ) || $pid == false ) {
 				return array();
 			} else {
-				$cols = $withBody ? '*' : 'id, title, author, date, parent, `order`, clean_title';
+				$cols = $withBody ? '*' : 'id, title, author, date, parent, `order`, identifier';
 				$children = array();
 				$query = $this->_sql->query( 'SELECT '.$cols.' FROM {PREFIX}mod_page
 											  WHERE parent = '.(int) $pid.' ORDER BY `order`, title ASC' );
@@ -180,7 +180,7 @@
 		 * @return array
 		 */
 		public function findPath( $pid ) {
-			$query = $this->_sql->query( 'SELECT id, parent, title, clean_title, author, date FROM {PREFIX}mod_page
+			$query = $this->_sql->query( 'SELECT id, parent, title, identifier, author, date FROM {PREFIX}mod_page
 										  WHERE id = '.(int) $pid );
 			$page = $query->fetch( PDO::FETCH_ASSOC );
 			$query->closeCursor();
@@ -196,7 +196,7 @@
 		}
 
 		/**
-		 * Adds a new page and returns ID and clean_title if successfuly
+		 * Adds a new page and returns ID and identifier if successfuly
 		 *
 		 * @param string $title
 		 * @param string $body
@@ -208,22 +208,22 @@
 			$i = null;
 			do {
 				try {
-					$cleanTitle = zula_clean($title).$i;
-					$this->getPage( $cleanTitle, false );
+					$identifier = zula_clean($title).$i;
+					$this->getPage( $identifier, false );
 					++$i;
 				} catch ( Page_NoExist $e ) {
 					break;
 				}
 			} while( true );
-			$pdoSt = $this->_sql->prepare( 'INSERT INTO {PREFIX}mod_page (title, body, author, parent ,date, clean_title)
+			$pdoSt = $this->_sql->prepare( 'INSERT INTO {PREFIX}mod_page (title, body, author, parent ,date, identifier)
 											VALUES(?, ?, ?, ?, UTC_TIMESTAMP(), ?)' );
-			$pdoSt->execute( array($title, $editor->preParse(), $this->_session->getUserId(), abs($parent), $cleanTitle) );
+			$pdoSt->execute( array($title, $editor->preParse(), $this->_session->getUserId(), abs($parent), $identifier) );
 			if ( $pdoSt->rowCount() ) {
 				$id = $this->_sql->lastInsertId();
-				Hooks::notifyAll( 'page_add', $id, $cleanTitle );
+				Hooks::notifyAll( 'page_add', $id, $identifier );
 				return array(
 							'id'			=> $id,
-							'clean_title'	=> $cleanTitle,
+							'identifier'	=> $identifier,
 							);
 			} else {
 				return false;

@@ -5,7 +5,7 @@
 			<?php
 				$format = '<li><a href="%s" title="'.t('View category').'">%s</a></li>';
 				foreach( $categories as $cat ) {
-					$url = $this->_router->makeUrl( 'article', 'cat', $cat['clean_title'] );
+					$url = $this->_router->makeUrl( 'article', 'cat', $cat['identifier'] );
 					printf( $format, $url, $cat['title'] );
 				}
 			?>
