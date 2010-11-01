@@ -9,8 +9,6 @@
  * @package TangoCMS_Theme
  */
 
-$(document).ready(
-	function() {
-		$("#themeStylesheet").linedtextarea();
-	}
-);
+$(document).ready( function() {
+	$("#themeStylesheet").linedtextarea();
+});

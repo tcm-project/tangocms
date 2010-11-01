@@ -9,12 +9,8 @@
  * @package TangoCMS_Article
  */
 
-	$(document).ready(
-		function() {
-			$('#article-jumpbox').change(
-				function() {
-					window.location = $(this).val();
-				}
-			);
-		}
-	);
+$(document).ready( function() {
+	$("#article-jumpbox").change( function() {
+		window.location = $(this).val();
+	});
+});

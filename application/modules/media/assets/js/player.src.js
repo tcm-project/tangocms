@@ -9,23 +9,21 @@
  * @package TangoCMS_Media
  */
 
-$(document).ready(
-	function() {
-		var fpConfig = {
-						canvas: {backgroundColor: "#0C1013", backgroundGradient: "low", border: "1px solid #000", borderRadius: "10"},
-						clip: {autoPlay: true, scaling: "fit"}
-						}
-		$("a.mediaPlayer").each( function() {
-			if ( $(this).hasClass("audio") ) {
-				fpConfig = $.extend(fpConfig,
-									{
-										plugins: {
-											controls: {autoHide: false}
-										},
-										clip: {type: "audio"}
-									});
-			}
-			$(this).flowplayer( {src: zula_dir_js+"/flowplayer/flowplayer-3.2.3.swf", wmode: "transparent"}, fpConfig );
-		});
-	}
-);
+$(document).ready(function() {
+	var fpConfig = {
+					canvas: {backgroundColor: "#0C1013", backgroundGradient: "low", border: "1px solid #000", borderRadius: "10"},
+					clip: {autoPlay: true, scaling: "fit"}
+					}
+	$("a.mediaPlayer").each( function() {
+		if ( $(this).hasClass("audio") ) {
+			fpConfig = $.extend(fpConfig,
+								{
+									plugins: {
+										controls: {autoHide: false}
+									},
+									clip: {type: "audio"}
+								});
+		}
+		$(this).flowplayer( {src: zula_dir_js+"/flowplayer/flowplayer-3.2.3.swf", wmode: "transparent"}, fpConfig );
+	});
+});

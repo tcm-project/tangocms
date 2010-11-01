@@ -9,19 +9,15 @@
  * @package TangoCMS_Session
  */
 
-	$(document).ready(
-		function() {
-			if ( $('#session-login_destination').val() != 'custom' ) {
-				$('#session-destination_url').hide();
-			}
-			$('#session-login_destination').change(
-				function() {
-					if ( $(this).val() == 'custom' ) {
-						$('#session-destination_url').show().focus();
-					} else {
-						$('#session-destination_url').hide();
-					}
-				}
-			);
+$(document).ready( function() {
+	if ( $("#session-login_destination").val() != "custom" ) {
+		$("#session-destination_url").hide();
+	}
+	$("#session-login_destination").change( function() {
+		if ( $(this).val() == "custom" ) {
+			$("#session-destination_url").show().focus();
+		} else {
+			$("#session-destination_url").hide();
 		}
-	);
+	});
+});
