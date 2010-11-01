@@ -138,7 +138,7 @@ default = en_US.UTF-8
 title = "Powered By TangoCMS"
 title_format = "[PAGE] | [SITE_TITLE]"
 slogan = "Powered by TangoCMS"
-version = 2.5.71
+version = 2.5.72
 
 ;---
 ; Meta Data

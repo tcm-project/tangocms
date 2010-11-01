@@ -1,0 +1,1 @@
+ALTER TABLE {PREFIX}mod_contact ADD body TEXT NOT NULL;

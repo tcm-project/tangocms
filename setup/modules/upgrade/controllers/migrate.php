@@ -36,6 +36,7 @@
 								'2.3.0'			=> '2.3.1',
 
 								# Dev Releases
+								'2.5.71'		=> '2.6.0-rc1',
 								'2.5.70'		=> '2.6.0-rc1',
 
 								'2.5.65'		=> '2.6.0-beta1',
@@ -513,7 +514,9 @@
 			switch( $this->version ) {
 				case '2.5.70':
 					$this->sqlFile( '2.6.0-rc1/2.5.71.sql' );
-					return '2.5.71';
+				case '2.5.71':
+					$this->sqlFile( '2.6.0-rc1/2.5.72.sql' );
+					return '2.5.72';
 				default:
 					return '2.5.90';
 			}
