@@ -30,6 +30,10 @@
 	{AMC.TABLE}
 	{ACL_FORM}
 
+	<h3>{L_[Body]}</h3>
+	<p>{L_[Enter additional contact information such as your address and telephone numbers.]}</p>
+	<textarea class="richtext" name="contact[body]" rows="30" cols="20">{contact.body}</textarea>
+
 	<?php if ( $op == 'add' ) { ?>
 		<div class="help helpInfo">
 			<p>{L_[The contact form fields can be added after you press "Add contact form" below.]}

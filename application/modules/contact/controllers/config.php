@@ -108,7 +108,7 @@
 			$form = $this->buildFormView();
 			if ( $form->hasInput() && $form->isValid() ) {
 				$fd = $form->getValues( 'contact' );
-				$details = $this->_model()->addForm( $fd['name'], $fd['email'] );
+				$details = $this->_model()->addForm( $fd['name'], $fd['email'], $fd['body'] );
 				// Update ACL resource
 				try {
 					$roles = $this->_input->post( 'acl_resources/contact-form' );
@@ -142,10 +142,10 @@
 				}
 				$this->setTitle( sprintf( t('Edit contact form "%s"'), $details['name'] ) );
 				// Prepare form and attempt to update the form
-				$form = $this->buildFormView( $details['name'], $details['email'], $details['id'] );
+				$form = $this->buildFormView( $details['name'], $details['email'], $details['body'], $details['id'] );
 				if ( $form->hasInput() && $form->isValid() ) {
 					$fd = $form->getValues( 'contact' );
-					$this->_model()->editForm( $details['id'], $fd['name'], $fd['email'] );
+					$this->_model()->editForm( $details['id'], $fd['name'], $fd['email'], $fd['body'] );
 					// Update ACL resource
 					try {
 						$roles = $this->_input->post( 'acl_resources/contact-form-'.$details['id'] );
@@ -170,10 +170,11 @@
 		 *
 		 * @param string $name
 		 * @param string $email
+		 * @param string $body
 		 * @param int $id
 		 * @return string
 		 */
-		protected function buildFormView( $name=null, $email=null, $id=null ) {
+		protected function buildFormView( $name=null, $email=null, $body=null, $id=null ) {
 			if ( is_null( $id ) ) {
 				$op = 'add';
 				$resource = 'contact-form';
@@ -188,6 +189,7 @@
 			$viewForm->action( $this->_router->makeUrl( 'contact', 'config', $op, null, array('id' => $id) ) );
 			$viewForm->addElement( 'contact/name', $name, t('Name'), new Validator_Length(1, 255) );
 			$viewForm->addElement( 'contact/email', $email, t('Email'), new Validator_Email );
+			$viewForm->addElement( 'contact/body', $body, t('Body'), new Validator_Length(0, 50000), ($id != null) );
 			// Assign some more data to use
 			$viewForm->assign( array(
 									'ID'		=> $id,

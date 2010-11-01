@@ -175,9 +175,10 @@
 		 *
 		 * @param string $name
 		 * @param string $email
+		 * @param string $body
 		 * @return array|bool
 		 */
-		public function addForm( $name, $email ) {
+		public function addForm( $name, $email, $body ) {
 			$i = null;
 			do {
 				try {
@@ -188,13 +189,14 @@
 					break;
 				}
 			} while( true );
-			$pdoSt = $this->_sql->prepare( 'INSERT INTO {PREFIX}mod_contact (name, identifier, email) VALUES(?, ?, ?)' );
-			$pdoSt->execute( array($name, $identifier, $email) );
+			$pdoSt = $this->_sql->prepare( 'INSERT INTO {PREFIX}mod_contact (name, identifier, email, body)
+											VALUES(?, ?, ?, ?)' );
+			$pdoSt->execute( array($name, $identifier, $email, $body) );
 			$pdoSt->closeCursor();
 			if ( $pdoSt->rowCount() ) {
 				$id = $this->_sql->lastInsertId();
 				$this->_cache->delete( 'contact_forms' );
-				Hooks::notifyAll( 'contact_add_form', $id, $name, $identifier, $email );
+				Hooks::notifyAll( 'contact_add_form', $id, $name, $identifier, $email, $body );
 				return array(
 							'id'	 		=> $id,
 							'identifier'	=> $identifier,
@@ -210,14 +212,16 @@
 		 * @param int $id
 		 * @param string $name
 		 * @param string $email
+		 * @param string $body
 		 * @return bool
 		 */
-		public function editForm( $fid, $name, $email ) {
+		public function editForm( $fid, $name, $email, $body ) {
 			$form = $this->getForm( $fid );
-			$pdoSt = $this->_sql->prepare( 'UPDATE {PREFIX}mod_contact SET name = ?, email = ? WHERE id = ?' );
-			$pdoSt->execute( array($name, $email, $form['id']) );
+			$pdoSt = $this->_sql->prepare( 'UPDATE {PREFIX}mod_contact
+											SET name = ?, email = ?, body = ? WHERE id = ?' );
+			$pdoSt->execute( array($name, $email, $body, $form['id']) );
 			$this->_cache->delete( array('contact_forms', 'contact_form_'.$form['identifier']) );
-			Hooks::notifyAll( 'contact_edit_form', $form, $name, $email );
+			Hooks::notifyAll( 'contact_edit_form', $form, $name, $email, $body );
 			return true;
 		}
 

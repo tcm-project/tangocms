@@ -4,12 +4,13 @@ CREATE TABLE {PREFIX}mod_contact (
   `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   identifier varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   email varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  body text COLLATE utf8_unicode_ci NOT NULL,
   UNIQUE KEY id (id),
   UNIQUE KEY identifier (identifier)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=2 ;
 
-INSERT INTO {PREFIX}mod_contact (id, `name`, identifier, email) VALUES
-(1, 'Contact us', 'contact-us', 'tangocms@example.com');
+INSERT INTO {PREFIX}mod_contact (id, `name`, identifier, email, body) VALUES
+(1, 'Contact us', 'contact-us', 'tangocms@example.com', '');
 
 DROP TABLE IF EXISTS {PREFIX}mod_contact_fields;
 CREATE TABLE {PREFIX}mod_contact_fields (

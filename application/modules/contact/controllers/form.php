@@ -97,6 +97,10 @@
 			} else {
 				$form = $this->loadView( 'contact.html' );
 			}
+			// Parse the body
+			$editor = new Editor( $contact['body'] );
+			unset( $contact['body'] );
+			$form->assignHtml( array('body' => $editor->parse()) );
 			$form->assign( array(
 								'contact'	=> $contact,
 								'fields'	=> $fields,
