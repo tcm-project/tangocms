@@ -2,7 +2,7 @@
 
 /**
  * Zula Framework Module (Editor)
- * --- Hooks file for listning to possible events
+ * --- Hooks file for listening to possible events
  *
  * @patches submit all patches to patches@tangocms.org
  *

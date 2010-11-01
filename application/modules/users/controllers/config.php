@@ -1,8 +1,8 @@
 <?php
 
 /**
- * Zula Framework Module (users)
- * --- Configure users, add new users etc
+ * Zula Framework Module
+ * Configure users, add new users etc
  *
  * @patches submit all patches to patches@tangocms.org
  *

@@ -1,14 +1,13 @@
 <?php
 
 /**
- * Zula Framework Module (content_layout)
- * --- Shows all of the template sectors and which modules are current
- * attached to it
+ * Zula Framework Module
+ * Attaches a new module to a specified sector
  *
  * @patches submit all patches to patches@tangocms.org
  *
  * @author Alex Cartwright
- * @copyright Copyright (C) 2007, 2008, 2009 Alex Cartwright
+ * @copyright Copyright (C) 2007, 2008, 2009, 2010 Alex Cartwright
  * @license http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GNU/GPL 2
  * @package TangoCMS_Content_layout
  */

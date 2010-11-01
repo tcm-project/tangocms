@@ -1,8 +1,8 @@
 <?php
 
 /**
- * Zula Framework Module (groups)
- * --- Allows management of all groups within TangoCMS/Zula
+ * Zula Framework Module
+ * Allows management of all groups within Zula
  *
  * @patches submit all patches to patches@tangocms.org
  *

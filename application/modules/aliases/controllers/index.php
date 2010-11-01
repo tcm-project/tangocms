@@ -1,8 +1,8 @@
 <?php
 
 /**
- * Zula Framework Module (Aliases)
- * --- Configure URL Aliases that are used with the Zula Routers
+ * Zula Framework Module
+ * Configure URL Aliases that are used with the Zula Routers
  *
  * @patches submit all patches to patches@tangocms.org
  *

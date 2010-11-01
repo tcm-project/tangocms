@@ -1,8 +1,8 @@
 <?php
 
 /**
- * Zula Framework Module (media)
- * --- Adds a new media item
+ * Zula Framework Module
+ * Adds a new media item
  *
  * @patches submit all patches to patches@tangocms.org
  *

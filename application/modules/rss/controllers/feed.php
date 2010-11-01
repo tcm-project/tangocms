@@ -1,14 +1,14 @@
 <?php
 
 /**
- * Zula Framework Module (Rss)
- * --- Manages RSS Feeds
+ * Zula Framework Module
+ * Manages RSS Feeds
  *
  * @patches submit all patches to patches@tangocms.org
  *
  * @author Robert Clipsham
  * @author Alex Cartwright
- * @copyright Copyright (C) 2008, 2010 Robert Clipsham
+ * @copyright Copyright (C) 2008, 2009, 2010 Robert Clipsham
  * @license http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GNU/GPL 2
  * @package TangoCMS_Rss
  */

@@ -1,10 +1,10 @@
 <?php
 
 /**
- * Zula Framework Module (page)
- * --- Provides a way of creating static pages which can then be displayed
- * Also allows for parent/child relationships to provide a sort of 'book'
- * with full contents/index
+ * Zula Framework Module
+ * Provides a way of creating static pages which can then be displayed. Also
+ * allows for parent/child relationships to provide a sort of 'book' with full
+ * contents/index
  *
  * @patches submit all patches to patches@tangocms.org
  *

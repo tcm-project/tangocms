@@ -2,7 +2,7 @@
 
 /**
  * Zula Framework Module
- * --- Displays and handles the sending of contact forms.
+ * Displays and handles the sending of contact forms.
  *
  * @patches submit all patches to patches@tangocms.org
  *

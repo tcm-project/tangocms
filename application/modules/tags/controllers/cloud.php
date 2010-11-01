@@ -1,13 +1,13 @@
 <?php
 
 /**
- * Zula Framework Module (Tags)
- * --- Allows for a tag cloud
+ * Zula Framework Module
+ * Allows for a tag cloud
  *
  * @patches submit all patches to patches@tangocms.org
  *
  * @author Robert Clipsham
- * @copyright Copyright (C) 2009, Robert Clipsham
+ * @copyright Copyright (C) 2009, 2010 Robert Clipsham
  * @license http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GNU/GPL 2
  * @package TangoCMS_Tags
  */

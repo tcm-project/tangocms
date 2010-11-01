@@ -1,8 +1,8 @@
 <?php
 
 /**
- * Zula Framework Module (media)
- * --- Manages a media item, i.e. - Edit/Delete
+ * Zula Framework Module
+ * Manages a media item, e.g. edit & delete
  *
  * @patches submit all patches to patches@tangocms.org
  *

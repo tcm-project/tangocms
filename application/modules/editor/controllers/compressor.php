@@ -1,8 +1,8 @@
 <?php
 
 /**
- * Zula Framework Module (Editor)
- * --- Custom implementation of TinyMCE Compressor
+ * Zula Framework Module
+ * Custom implementation of TinyMCE Compressor
  *
  * @patches submit all patches to patches@tangocms.org
  *

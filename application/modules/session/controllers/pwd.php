@@ -2,8 +2,8 @@
 
 /**
  * Zula Framework Module
- * --- Allows the user to reset his/her password, or to change it once
- * it has expired.
+ * Allows the user to reset his/her password, or to change it once it has
+ * expired.
  *
  * @patches submit all patches to patches@tangocms.org
  *

@@ -1,8 +1,8 @@
 <?php
 
 /**
- * Zula Framework Module (article)
- * --- Publish articles which can have multiple parts
+ * Zula Framework Module
+ * Publish articles which can have multiple parts
  *
  * @patches submit all patches to patches@tangocms.org
  *

@@ -1,14 +1,14 @@
 <?php
 
 /**
- * Zula Framework Module (Aliases)
- * --- Hooks file for listning to possible events
+ * Zula Framework Module
+ * Hooks file for listening to possible events
  *
  * @patches submit all patches to patches@tangocms.org
  *
  * @author Alex Cartwright
  * @author Robert Clipsham
- * @copyright Copyright (C) 2008, 2009 Alex Cartwright
+ * @copyright Copyright (C) 2008, 2009, 2010 Alex Cartwright
  * @license http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GNU/GPL 2
  * @package TangoCMS_Aliases
  */

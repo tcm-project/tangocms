@@ -1,6 +1,6 @@
-/*!
- * Zula Framework Module (page)
- * --- Autocomplete/suggest feature
+/*
+ * Zula Framework Module
+ * Autocomplete/suggest feature
  *
  * @patches submit all patches to patches@tangocms.org
  *

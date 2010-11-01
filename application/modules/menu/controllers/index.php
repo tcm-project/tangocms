@@ -1,8 +1,8 @@
 <?php
 
 /**
- * Zula Framework Module (menu)
- * -- Provides a powerful menu that can be used anywhere to display links
+ * Zula Framework Module
+ * Provides a powerful menu that can be used anywhere to display links
  *
  * @patches submit all patches to patches@tangocms.org
  *

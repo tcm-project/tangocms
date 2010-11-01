@@ -1,12 +1,12 @@
 <?php
 
 /**
- * Zula Framework Module (Session)
+ * Zula Framework Module
  * Allows the user to login/logout as well as show a simple profile
  *
- * Within Zula/TangoCMS a user never really 'logs in' like a 'normal' application
- * but instead it's more of a 'change user', where the user changes from being logged in
- * as guest, to which ever credentials they provided (and were correct).
+ * Within Zula a user never really 'logs in' like a 'normal' application but
+ * instead it's more of a 'change user', where the user changes from being
+ * logged in as guest, to which ever credentials they provided.
  *
  * @patches submit all patches to patches@tangocms.org
  *

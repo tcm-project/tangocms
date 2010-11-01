@@ -1,14 +1,14 @@
 <?php
 
 /**
- * Zula Framework Module (Article)
- * --- Displays all categories the user has permission to and
- * how many articles are in that category
+ * Zula Framework Module
+ * Displays all categories the user has permission to and how many articles are
+ * in that category
  *
  * @patches submit all patches to patches@tangocms.org
  *
  * @author Alex Cartwright
- * @copyright Copyright (C) 2007, 2008, 2009 Alex Cartwright
+ * @copyright Copyright (C) 2007, 2008, 2009, 2010 Alex Cartwright
  * @license http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GNU/GPL 2
  * @package TangoCMS_Article
  */

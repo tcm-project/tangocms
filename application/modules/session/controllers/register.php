@@ -1,8 +1,8 @@
 <?php
 
 /**
- * Zula Framework Module (Session)
- * --- Allows the users to register an account and reset password
+ * Zula Framework Module
+ * Allows the users to register an account
  *
  * @patches submit all patches to patches@tangocms.org
  *

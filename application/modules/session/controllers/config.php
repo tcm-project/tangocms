@@ -1,8 +1,7 @@
 <?php
 
 /**
- * Zula Framework Module (Session)
- * --- Configuration
+ * Zula Framework Module
  *
  * @patches submit all patches to patches@tangocms.org
  *

@@ -1,14 +1,14 @@
 <?php
 
 /**
- * Zula Framework Module (Module Manager)
- * --- Lists all of the ACL Resources for the specified module. Basically any
- * Resource that has the modules name as it's prefix.
+ * Zula Framework Module
+ * Lists all of the ACL Resources for the specified module. Basically any
+ * resource that has the modules name as its prefix.
  *
  * @patches submit all patches to patches@tangocms.org
  *
  * @author Alex Cartwright
- * @copyright Copyright (C) 2007, 2008, 2009 Alex Cartwright
+ * @copyright Copyright (C) 2007, 2008, 2009, 2010 Alex Cartwright
  * @license http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GNU/GPL 2
  * @package TangoCMS_Module_manager
  */
