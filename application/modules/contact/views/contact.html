@@ -1,11 +1,10 @@
 <?php if ( empty( $fields ) ) { ?>
 	<p>{L_[There are no fields for this contact form]}</p>
 <?php } else { ?>
-	<p>{L_[Fields marked with a * are required.]}</p>
-	<form action="{ACTION}" method="post" id="contact">
+	<form action="" method="post" id="contactForm">
 		<p>
-			<label for="contact-field-email"><span>*</span> {L_[Your email address]}</label>
-			<input type="email" id="contact-field-email" name="contact[email]" value="{contact.email}">
+			<label for="contactFieldEmail"><span>*</span> {L_[Your email address]}</label>
+			<input type="email" id="contactFieldEmail" name="contact[email]" value="{contact.email}">
 		</p>
 		<?php
 			$html = new Html( 'contact[fields][%s]' );
@@ -16,10 +15,10 @@
 				$default = $contact['fields'][ $field['id'] ];
 				switch( $field['type'] ) {
 					case 'password':
-						$element = $html->inputPassword( $field['id'], $default, 'contact-field-'.$field['id'] );
+						$element = $html->inputPassword( $field['id'], $default, 'contactField'.$field['id'] );
 						break;
 					case 'textarea':
-						$element = $html->textarea( $field['id'], $default, 'contact-field-'.$field['id'] );
+						$element = $html->textarea( $field['id'], $default, 'contactField'.$field['id'] );
 						break;
 					case 'radio':
 						$element = $html->radio( $field['id'], $default, $field['options'] );
@@ -32,9 +31,9 @@
 						break;
 					case 'textbox':
 					default:
-						$element = $html->input( $field['id'], $default, 'contact-field-'.$field['id'] );
+						$element = $html->input( $field['id'], $default, 'contactField'.$field['id'] );
 				}
-				printf( '<p><label for="contact-field-%1$d">%2$s</label>%3$s</p>',
+				printf( '<p><label for="contactField%1$d">%2$s</label>%3$s</p>',
 						$field['id'],
 						$field['name'],
 						$element

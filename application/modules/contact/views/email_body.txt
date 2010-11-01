@@ -3,7 +3,6 @@
 {L_[You have received the following contact form. Replying to this email will reply to the email provided by the form submitter.]}
 
 ----------
-
 {L_[Form name:]} {form.name}
 {L_[Username:]} <?php echo $this->_session->getUser( 'username' ), "\n"; ?>
 {L_[Email address]}: {email}
@@ -25,6 +24,5 @@
 	}
 	echo trim( $out );
 ?>
-
 
 ----------

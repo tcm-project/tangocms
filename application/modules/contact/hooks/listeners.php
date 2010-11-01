@@ -73,7 +73,7 @@
 		public function hookContactDisplayModeConfig( $mode ) {
 			$view = new View( 'layout_edit/contact_form.html', 'contact' );
 			$view->assign( array(
-								'FORMS'	=> $this->_model( 'contact', 'contact' )->getAllForms(),
+								'forms'	=> $this->_model( 'contact', 'contact' )->getAllForms(),
 								));
 			return $view->getOutput();
 		}

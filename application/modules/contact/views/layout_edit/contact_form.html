@@ -8,15 +8,13 @@
 				</dl>
 			</td>
 			<td class="confcol">
-				<select name="content_layout[config][display_form]">
+				<select name="content_layout[section]">
 				<?php
-					$format = '<option value="%d" %s>%s</option>';
 					foreach( $forms as $form ) {
-						$selected = '';
-						if ( $this->_input->has( 'post', 'display_form' ) && $this->_input->post( 'display_form' ) == $form['id'] ) {
-							$selected = 'selected="selected"';
-						}
-						printf( $format, $form['id'], $selected, $form['name'] );
+						printf( '<option value="%1$s" %2$s>%3$s</option>',
+								$form['identifier'],
+								($this->_input->post('sec') == $form['identifier'] ? 'selected="selected"' : ''),
+								$form['name'] );
 					}
 				?>
 				</select>
@@ -26,6 +24,5 @@
 </table>
 
 <div>
-	<input type="hidden" name="content_layout[cntrlr]" value="index">
-	<input type="hidden" name="content_layout[section]" value="index">
+	<input type="hidden" name="content_layout[cntrlr]" value="form">
 </div>

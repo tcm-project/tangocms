@@ -19,7 +19,7 @@
 						<input type="checkbox" name="contact_ids[]" value="<?php echo $form['id']; ?>">
 					</td>
 					<td>
-						<a href="<?php echo $this->_router->makeUrl( 'contact', 'index', $form['id'], 'main' ); ?>">
+						<a href="<?php echo $this->_router->makeUrl( 'contact', 'form', $form['identifier'], 'main' ); ?>">
 							<?php echo zula_snippet( $form['name'], 80, true ); ?>
 						</a>
 					</td>
