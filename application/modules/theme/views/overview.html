@@ -3,8 +3,8 @@
 		<div><input type="hidden" name="url" value="<?php echo $this->_router->getRawRequestPath(); ?>"></div>
 	<?php } ?>
 	<p>
-		<label for="theme-site-select" class="horizontal">{L_[Change theme for:]}</label>
-		<select id="theme-site-select" name="type">
+		<label for="themeSite" class="horizontal">{L_[Change theme for:]}</label>
+		<select id="themeSite" name="type">
 			<option value="main" <?php echo $site_type == 'main' ? 'selected="selected"' : ''; ?>>{L_[Main website]}</option>
 			<option value="admin" <?php echo $site_type == 'admin' ? 'selected="selected"' : ''; ?>>{L_[Control panel]}</option>
 		</select>

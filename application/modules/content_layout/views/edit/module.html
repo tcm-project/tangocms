@@ -18,7 +18,7 @@
 					</dl>
 				</td>
 				<td class="confcol">
-					<select name="content_layout[config][displayTitle]" id="content_layout_title">
+					<select name="content_layout[config][displayTitle]" id="contentlayoutTitle">
 						<?php
 							$format = '<option value="%1$s" %2$s>%3$s</option>';
 							$opts = array(
@@ -35,7 +35,7 @@
 							}
 						?>
 					</select>
-					<input type="text" id="content_layout_custom" name="content_layout[config][customTitle]" value="{CONTENT_LAYOUT.CONFIG.CUSTOMTITLE}">
+					<input type="text" id="contentlayoutCustomTitle" name="content_layout[config][customTitle]" value="{CONTENT_LAYOUT.CONFIG.CUSTOMTITLE}">
 				</td>
 			</tr>
 			<tr class="odd">
@@ -68,7 +68,7 @@
 					</dl>
 				</td>
 				<td class="confcol">
-					<select id="content_layout-display-mode">
+					<select id="contentlayoutDM">
 						<?php
 							foreach( $display_modes as $name=>$title ) {
 								printf( '<option value="%s" %s>%s</option>',
@@ -95,7 +95,7 @@
 		<input type="hidden" name="content_layout[cid]" value="{CID}">
 	</div>
 
-	<div id="content_layout-module-config">
+	<div id="contentlayoutConfig">
 		<p>{L_[There are no configuration values for this display mode]}</p>
 	</div>
 

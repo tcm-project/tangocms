@@ -10,14 +10,14 @@
  */
 
 $(document).ready( function() {
-	if ( $("#session-login_destination").val() != "custom" ) {
-		$("#session-destination_url").hide();
+	if ( $("#sessionLoginDestination").val() != "custom" ) {
+		$("#sessionLoginDestinationUrl").hide();
 	}
-	$("#session-login_destination").change( function() {
+	$("#sessionLoginDestination").change( function() {
 		if ( $(this).val() == "custom" ) {
-			$("#session-destination_url").show().focus();
+			$("#sessionLoginDestinationUrl").show().focus();
 		} else {
-			$("#session-destination_url").hide();
+			$("#sessionLoginDestinationUrl").hide();
 		}
 	});
 });

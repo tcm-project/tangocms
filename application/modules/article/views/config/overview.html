@@ -1,6 +1,6 @@
 <?php if ( $count != 0 ) { ?>
 	<div class="jsSearchBox">
-		<p><label class="horizontal" for="article-title">{L_[Search articles:]}</label> <input type="search" id="article-title"></p>
+		<p><label class="horizontal" for="articleFilter">{L_[Search articles:]}</label> <input type="search" id="articleFilter"></p>
 	</div>
 <?php } ?>
 <?php if ( count($categories) > 1 ) { ?>
@@ -10,7 +10,7 @@
 				<input type="hidden" name="url" value="<?php echo $this->_router->getRawRequestPath(); ?>">
 			<?php } ?>
 			<label class="horizontal" for="article-filter">{L_[Show from category:]}</label>
-			<select id="article-filter" name="cid">
+			<select id="articleCategoryFilter" name="cid">
 				<option value="">{L_[All categories]}</option>
 				<?php
 					foreach( $categories as $cat ) {

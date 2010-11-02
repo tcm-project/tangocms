@@ -46,11 +46,11 @@
 					</dl>
 				</td>
 				<td class="confcol">
-					<input type="radio" id="session-https-yes" name="session[force_https]" value="1" <?php echo $force_https ? 'checked="checked"' : ''; ?>>
-					<label class="horizontal" for="session-https-yes">{L_[Yes]}</label>
+					<input type="radio" id="sessionHttpsYes" name="session[force_https]" value="1" <?php echo $force_https ? 'checked="checked"' : ''; ?>>
+					<label class="horizontal" for="sessionHttpsYes">{L_[Yes]}</label>
 					<br>
-					<input type="radio" id="session-https-no" name="session[force_https]" value="0" <?php echo $force_https ? '' : 'checked="checked"'; ?>>
-					<label class="horizontal" for="session-https-no">{L_[No]}</label>
+					<input type="radio" id="sessionHttpsNo" name="session[force_https]" value="0" <?php echo $force_https ? '' : 'checked="checked"'; ?>>
+					<label class="horizontal" for="sessionHttpsNo">{L_[No]}</label>
 				</td>
 			</tr>
 			<tr class="odd">
@@ -61,7 +61,7 @@
 					</dl>
 				</td>
 				<td class="confcol">
-					<select id="session-login_destination" name="session[login_destination]">
+					<select id="sessionLoginDestination" name="session[login_destination]">
 						<?php
 							$opts = array(
 										t('Previous URL')	=> 'previous',
@@ -77,7 +77,7 @@
 							}
 						?>
 					</select>
-					<input type="text" id="session-destination_url" name="session[login_destination_url]" value="{LOGIN_DESTINATION_URL}">
+					<input type="text" id="sessionLoginDestinationUrl" name="session[login_destination_url]" value="{LOGIN_DESTINATION_URL}">
 				</td>
 			</tr>
 			<tr class="even">
@@ -126,11 +126,11 @@
 					</dl>
 				</td>
 				<td class="confcol">
-					<input type="radio" id="session-register-yes" name="session[allow_register]" value="1" <?php echo $allow_register ? 'checked="checked"' : ''; ?>>
-					<label class="horizontal" for="session-register-yes">{L_[Yes]}</label>
+					<input type="radio" id="sessionRegisterYes" name="session[allow_register]" value="1" <?php echo $allow_register ? 'checked="checked"' : ''; ?>>
+					<label class="horizontal" for="sessionRegisterYes">{L_[Yes]}</label>
 					<br>
-					<input type="radio" id="session-register-no" name="session[allow_register]" value="0" <?php echo $allow_register ? '' : 'checked="checked"'; ?>>
-					<label class="horizontal" for="session-register-no">{L_[No]}</label>
+					<input type="radio" id="sessionRegisterNo" name="session[allow_register]" value="0" <?php echo $allow_register ? '' : 'checked="checked"'; ?>>
+					<label class="horizontal" for="sessionRegisterNo">{L_[No]}</label>
 				</td>
 			</tr>
 			<tr class="odd">
@@ -164,11 +164,11 @@
 					</dl>
 				</td>
 				<td class="confcol">
-					<input type="radio" id="session-duplicate-yes" name="session[duplicate_email]" value="1" <?php echo $duplicate_email ? 'checked="checked"' : ''; ?>>
-					<label class="horizontal" for="session-duplicate-yes">{L_[Yes]}</label>
+					<input type="radio" id="sessionDuplicateYes" name="session[duplicate_email]" value="1" <?php echo $duplicate_email ? 'checked="checked"' : ''; ?>>
+					<label class="horizontal" for="sessionDuplicateYes">{L_[Yes]}</label>
 					<br>
-					<input type="radio" id="session-duplicate-no" name="session[duplicate_email]" value="0" <?php echo $duplicate_email ? '' : 'checked="checked"'; ?>>
-					<label class="horizontal" for="session-duplicate-no">{L_[No]}</label>
+					<input type="radio" id="sessionDuplicateNo" name="session[duplicate_email]" value="0" <?php echo $duplicate_email ? '' : 'checked="checked"'; ?>>
+					<label class="horizontal" for="sessionDuplicateNo">{L_[No]}</label>
 				</td>
 			</tr>
 			<tr class="odd">

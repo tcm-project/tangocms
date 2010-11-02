@@ -13,11 +13,11 @@
 
 $(document).ready( function() {
 	$("div.jsSearchBox").show();
-	$("#aliases-alias").autocomplete({
+	$("#aliasesFilter").autocomplete({
 									serviceUrl: zula_dir_base+"index.php?url=aliases/index/autocomplete",
 									onSelect: function(value, data) {
 												window.location = data;
 											}
 									});
-	$("#aliases-alias").focus();
+	$("#aliasesFilter").focus();
 });

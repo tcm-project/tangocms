@@ -11,11 +11,11 @@
 
 $(document).ready( function () {
 	function content_layout_dm_update() {
-		var layout_url = $("#content_layout-display-mode").val();
+		var layout_url = $("#contentlayoutDM").val();
 		// Display AJAX throbber
-		$("div#content_layout-module-config").ajax_throbber();
+		$("div#contentlayoutConfig").ajax_throbber();
 		if ( layout_url == "default" ) {
-			$("div#content_layout-module-config").html("<p>There are no configuration values for this display mode</p>");
+			$("div#contentlayoutConfig").html("<p>There are no configuration values for this display mode</p>");
 			return true;
 		} else {
 			if ( content_layout_config.length == 0 ) {
@@ -26,25 +26,25 @@ $(document).ready( function () {
 				content_layout_config,
 				function( data ) {
 					var content = data.length < 1 ? "<p>There are no configuration values for this display mode</p>" : data;
-					$("div#content_layout-module-config").hide();
-					$("div#content_layout-module-config").html( content ).slideDown();
+					$("div#contentlayoutConfig").hide();
+					$("div#contentlayoutConfig").html( content ).slideDown();
 				}
 			);
 		}
 	}
 	content_layout_dm_update();
-	$("#content_layout-display-mode").change( content_layout_dm_update );
+	$("#contentlayoutDM").change( content_layout_dm_update );
 	/**
 	 * Toggles the custom title box depending on drop down value
 	 */
-	if ( $("#content_layout_title").val() != "custom" ) {
-		$("#content_layout_custom").hide();
+	if ( $("#contentlayoutTitle").val() != "custom" ) {
+		$("#contentlayoutCustomTitle").hide();
 	}
-	$("#content_layout_title").change( function() {
+	$("#contentlayoutTitle").change( function() {
 		if ( $(this).val() == "custom" ) {
-			$("#content_layout_custom").show().focus();
+			$("#contentlayoutCustomTitle").show().focus();
 		} else {
-			$("#content_layout_custom").hide();
+			$("#contentlayoutCustomTitle").hide();
 		}
 	});
 });

@@ -2,8 +2,8 @@
 	<ul>
 		<?php foreach( $options as $option ) { ?>
 			<li>
-				<input type="radio" id="poll-option-<?php echo $option['id']; ?>" name="poll[oid]" value="<?php echo $option['id']; ?>">
-				<label class="horizontal" for="poll-option-<?php echo $option['id']; ?>"><?php echo $option['title']; ?></label>
+				<input type="radio" id="pollOptionId<?php echo $option['id']; ?>" name="poll[oid]" value="<?php echo $option['id']; ?>">
+				<label class="horizontal" for="pollOptionId<?php echo $option['id']; ?>"><?php echo $option['title']; ?></label>
 			</li>
 		<?php } ?>
 	</ul>

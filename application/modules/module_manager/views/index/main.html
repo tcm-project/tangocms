@@ -3,17 +3,17 @@
 		echo 'No modules to display ... wait, that is impossible';
 	} else { ?>
 		<div class="jsSearchBox">
-			<label for="module_manager-filter" class="horizontal" >{L_[Filter modules:]}</label>
-			<input type="search" id="module_manager-filter" >
+			<label for="modulemanagerFilter" class="horizontal" >{L_[Filter modules:]}</label>
+			<input type="search" id="modulemanagerFilter" >
 		</div>
 		<?php
 			$mod_dir = $this->_zula->getDir( 'modules' );
 			$mod_dir_html = $this->_zula->getDir( 'modules', true );
 			foreach( $categories as $category=>$tmp_modules ) {
 		?>
-			<div class="module_manager-category">
+			<div class="modulemanagerCategory">
 				<h3><?php echo ucwords( zula_strtolower($category) ); ?></h3>
-				<ol class="module_manager-item">
+				<ol class="modulemanagerItem">
 					<?php
 						foreach( $tmp_modules as $module ) {
 							$mod_url = $this->_router->makeUrl( $module['name'], $module['cntrlr'] );
@@ -31,7 +31,7 @@
 						</a>
 						<p>
 							<a class="title" href="<?php echo $mod_url; ?>" title="<?php echo $module['description']; ?>"><?php echo $module['title']; ?></a>
-							<a class="module_manager-item-permission" href="<?php echo $perm_url; ?>" title="{L_[Manage permissions]}">{L_[Permissions]}</a>
+							<a class="modulemanagerUrlPermission" href="<?php echo $perm_url; ?>" title="{L_[Manage permissions]}">{L_[Permissions]}</a>
 						</p>
 					</li>
 				<?php } ?>

@@ -41,11 +41,11 @@
 					</dl>
 				</td>
 				<td class="confcol">
-					<input type="radio" id="article-published-yes" name="article[published]" value="1" <?php echo $article['published'] ? 'checked="checked"' : ''; ?>>
-					<label class="horizontal" for="article-published-yes">{L_[Yes]}</label>
+					<input type="radio" id="articlePublishedYes" name="article[published]" value="1" <?php echo $article['published'] ? 'checked="checked"' : ''; ?>>
+					<label class="horizontal" for="articlePublishedYes">{L_[Yes]}</label>
 					<br>
-					<input type="radio" id="article-published-no" name="article[published]" value="0" <?php echo $article['published'] ? '' : 'checked="checked"'; ?>>
-					<label class="horizontal" for="article-published-no">{L_[No]}</label>
+					<input type="radio" id="articlePublishedNo" name="article[published]" value="0" <?php echo $article['published'] ? '' : 'checked="checked"'; ?>>
+					<label class="horizontal" for="articlePublishedNo">{L_[No]}</label>
 				</td>
 			</tr>
 		</tbody>
@@ -59,13 +59,13 @@
 			{L_[Enter the first part of this article, you will be able to create others afterwards.]}
 		</p>
 		<p>
-			<label for="article-part-title">{L_[Part title]}</label>
-			<input type="text" name="article[part_title]" id="article-part-title" value="{ARTICLE.PART_TITLE}">
+			<label for="articlePartTitle">{L_[Part title]}</label>
+			<input type="text" name="article[part_title]" id="articlePartTitle" value="{ARTICLE.PART_TITLE}">
 		</p>
 		<p>
-			<label for="editor-part-body">{L_[Content/Body]}</label>
+			<label for="articlePartBody">{L_[Content/Body]}</label>
 		</p>
-		<textarea name="article[part_body]" class="richtext" id="article-part-body">{ARTICLE.PART_BODY}</textarea>
+		<textarea name="article[part_body]" class="richtext" id="articlePartBody">{ARTICLE.PART_BODY}</textarea>
 	</div>
 
 	<div class="actions"><input type="submit" value="{L_[Add article]}"></div>

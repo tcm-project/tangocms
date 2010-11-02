@@ -1,4 +1,4 @@
-<div class="media-wrap">
+<div class="mediaWrap">
 	<?php
 		if ( empty( $items ) ) {
 			echo t('There are no media items to display.');
@@ -14,7 +14,7 @@
 					$url->queryArgs( array('f' => 'large') );
 				}
 		?>
-				<li class="media-thumb">
+				<li class="mediaThumb">
 					<a class="imglink" <?php echo ($lightbox && $item['type'] == 'image') ? 'rel="modalImage"' : ''; ?> href="<?php echo $url; ?>" title="<?php echo $item['name']; ?>">
 						<img src="<?php echo $this->_router->makeUrl( 'media', 'view', $item['identifier'] )->queryArgs( array('f' => 'thumb') ); ?>" alt="<?php echo $item['name']; ?>">
 					</a>

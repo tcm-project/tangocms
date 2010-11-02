@@ -1,6 +1,6 @@
-<div id="media-item">
+<div id="mediaItem">
 	<?php if ( $item['type'] == 'external' ) { ?>
-		<div id="media-flash-item">
+		<div>
 			<object type="application/x-shockwave-flash" data="http://www.youtube.com/v/{ITEM.EXTERNAL_ID}" width="425" height="355">
 				<param name="movie" value="http://www.youtube.com/v/{ITEM.EXTERNAL_ID}">
 				<param name="wmode" value="transparent">
@@ -17,7 +17,7 @@
 	<?php } ?>
 </div>
 
-<div id="media-item-details">
+<div id="mediaItemDetails">
 	<p>
 		<strong>{L_[Title]}:</strong> {ITEM.NAME}<br>
 		<strong>{L_[Category]}:</strong> <a href="<?php echo $this->_router->makeUrl( 'media', 'cat', $category['identifier'] ); ?>">{CATEGORY.NAME}</a>

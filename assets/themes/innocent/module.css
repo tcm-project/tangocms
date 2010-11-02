@@ -7,54 +7,54 @@
 */
 
 /** Media */
-div.media-wrap {
+div.mediaWrap {
 	overflow: hidden;
 }
 
-div.media-wrap ul {
+div.mediaWrap ul {
 	list-style-type: none;
 }
 
-div.media-wrap > ul > li {
+div.mediaWrap > ul > li {
 	margin: 0 0 20px;
 	overflow: hidden;
 }
 
-div.media-wrap li.media-thumb > a img {
+div.mediaWrap li.mediaThumb > a img {
 	float: left;
 	margin-right: 10px;
 }
 
-div.media-wrap li.media-thumb ul {
+div.mediaWrap li.mediaThumb ul {
 	margin: 0;
 }
 
-div.media-wrap li.title {
+div.mediaWrap li.title {
 	font-weight: bold;
 	font-size: 1.1em;
 }
 
-#media-item, .media-player {
+#mediaItem {
 	text-align: center;
 	margin: 20px auto;
 }
 
-#media-item a:hover {
+#mediaItem a:hover {
 	border: none;
 }
 
-#media-item img {
+#mediaItem img {
 	background: #efefef;
 	border: 1px solid #ddd;
 	padding: 8px;
 }
 
 /** Module Manager */
-.module_manager-category {
+.modulemanagerCategory {
 	overflow: hidden;
 }
 
-ol.module_manager-item {
+ol.modulemanagerItem {
 	list-style-image: none;
 	list-style-position: outside;
 	list-style-type: none;
@@ -62,14 +62,14 @@ ol.module_manager-item {
 	overflow: hidden;
 }
 
-ol.module_manager-item li {
+ol.modulemanagerItem li {
 	display: block;
 	float: left;
 	margin: 0 8px 0 0;
 	padding: 8px 5px;
 }
 
-ol.module_manager-item li:hover {
+ol.modulemanagerItem li:hover {
 	background-image: url(images/modman.png);
 	background-repeat: repeat;
 	border-radius: 8px;
@@ -78,35 +78,35 @@ ol.module_manager-item li:hover {
 	-webkit-border-radius: 8px;
 }
 
-ol.module_manager-item img {
+ol.modulemanagerItem img {
 	float: left;
 }
 
-ol.module_manager-item p {
+ol.modulemanagerItem p {
 	line-height: 1.4em;
 	margin: 1px 5px 0 39px;
 	white-space: nowrap;
 }
 
-ol.module_manager-item p a {
+ol.modulemanagerItem p a {
 	display: block;
 }
 
-ol.module_manager-item .title {
+ol.modulemanagerItem .title {
 	font-weight: bold;
 }
 
 /** Page */
-.page-navigation {
+.pageNavigation {
 	overflow: hidden;
 }
 
-.page-next {
+.pageNext {
 	display: block;
 	float: right;
 }
 
-.page-previous {
+.pagePrevious {
 	display: block;
 	float: left;
 }
@@ -179,71 +179,71 @@ a.shareable-stumbleupon {
 }
 
 /** Tags */
-.tag-link-1	{ font-size: 3.3em; }
-.tag-link-2	{ font-size: 3.2em; }
-.tag-link-3	{ font-size: 3.1em; }
-.tag-link-4	{ font-size: 2.9em; }
-.tag-link-5	{ font-size: 2.7em; }
-.tag-link-6	{ font-size: 2.5em; }
-.tag-link-7	{ font-size: 2.3em; }
-.tag-link-8	{ font-size: 2.1em; }
-.tag-link-9	{ font-size: 1.9em; }
-.tag-link-10	{ font-size: 1.7em; }
-.tag-link-11	{ font-size: 1.5em; }
-.tag-link-12	{ font-size: 1.3em; }
-.tag-link-normal{ font-size: 1.1em; }
-.tag-cloud	{ text-align: center; }
+.tagLink1 { font-size: 3.3em; }
+.tagLink2 { font-size: 3.2em; }
+.tagLink3 { font-size: 3.1em; }
+.tagLink4 { font-size: 2.9em; }
+.tagLink5 { font-size: 2.7em; }
+.tagLink6 { font-size: 2.5em; }
+.tagLink7 { font-size: 2.3em; }
+.tagLink8 { font-size: 2.1em; }
+.tagLink9 { font-size: 1.9em; }
+.tagLink10 { font-size: 1.7em; }
+.tagLink11 { font-size: 1.5em; }
+.tagLink12 { font-size: 1.3em; }
+.tagLinknormal { font-size: 1.1em; }
+.tagCloud { text-align: center; }
 
-.tag-list {
+.tagList {
 	margin: 5px 0;
 }
 
-.tag-list > span {
+.tagList > span {
 	color: #444;
 	font-weight: bold;
 }
 
 /** Comments */
-ol.comments-list {
+ol.commentsList {
 	margin-bottom: 20px;
 }
 
-ol.comments-list li {
+ol.commentsList li {
 	list-style-type: none;
 	margin: 20px 3px 3px;
 }
 
-ol.comments-list li:target .comments-body {
+ol.commentsList li:target .commentsBody {
 	background-color: #F9F5ED;
 }
 
-ol.comments-list .comments-author {
+ol.commentsList .commentsAuthor {
 	font-weight: bold;
 }
 
-ol.comments-list .comments-meta {
+ol.commentsList .commentsMeta {
 	color: #777;
 }
 
-ol.comments-list .comments-manage {
+ol.commentsList .commentsManage {
 	border-left: 2px solid #ccc;
 	display: none;
 	margin-left: 5px;
 	padding-left: 5px;
 }
 
-ol.comments-list li:hover .comments-manage {
+ol.commentsList li:hover .commentsManage {
 	display: inline;
 }
 
-ol.comments-list .comments-body {
+ol.commentsList .commentsBody {
 	background-color: #EFEFEF;
 	color: #454547;
 	margin-top: 5px;
 	padding: 3px 5px 0;
 }
 
-ol.comments-list .comments-body p {
+ol.commentsList .commentsBody p {
 	margin-bottom: 0.5em;
 }
 
@@ -253,6 +253,6 @@ textarea#themeStylesheet {
 }
 
 /** Poll */
-li.poll-voted-on {
+li.pollOptionVoted {
 	font-style: italic;
 }

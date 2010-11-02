@@ -51,11 +51,11 @@
 					</dl>
 				</td>
 				<td class="confcol">
-					<input type="radio" id="poll-status-active" name="poll[status]" value="active" <?php echo $poll['status'] == 'active' ? 'checked="checked"' : ''; ?>>
-					<label for="poll-status-active" class="horizontal">{L_[Active]}</label>
+					<input type="radio" id="pollStatusActive" name="poll[status]" value="active" <?php echo $poll['status'] == 'active' ? 'checked="checked"' : ''; ?>>
+					<label for="pollStatusActive" class="horizontal">{L_[Active]}</label>
 					<br>
-					<input type="radio" id="poll-status-closed" name="poll[status]" value="closed" <?php echo $poll['status'] == 'closed' ? 'checked="checked"' : ''; ?>>
-					<label for="poll-status-closed" class="horizontal">{L_[Closed]}</label>
+					<input type="radio" id="pollStatusClosed" name="poll[status]" value="closed" <?php echo $poll['status'] == 'closed' ? 'checked="checked"' : ''; ?>>
+					<label for="pollStatusClosed" class="horizontal">{L_[Closed]}</label>
 				</td>
 			</tr>
 		</tbody>
@@ -69,7 +69,7 @@
 	<h3>{L_[Poll options]}</h3>
 	<p>{L_[Enter the poll options that users can vote on. More options can be added after the poll has been created.]}</p>
 
-	<ol id="poll-option-list">
+	<ol id="pollOptionList">
 		<?php if ( empty( $poll['options'] ) ) { ?>
 			<li>
 				<input type="text" name="poll[options][]">
@@ -85,7 +85,7 @@
 	</ol>
 
 	<div class="actions">
-		<input type="button" id="poll-add-option" value="{L_[Add option]}">
+		<input type="button" id="pollAddOption" value="{L_[Add option]}">
 		<input type="submit" value="{L_[Add poll]}">
 	</div>
 </form>

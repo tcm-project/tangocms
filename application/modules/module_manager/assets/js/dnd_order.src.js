@@ -16,19 +16,19 @@ $(document).ready( function() {
 	 */
 	function setOrder( element, row ) {
 		element = (element == "select") ? "select" : "input";
-		$("table#module_manager-loadorder .order "+element ).each(
+		$("table#modulemanagerLoadOrder .order "+element ).each(
 			function(i) {
 				$(this).replaceWith('<input type="text" name="'+$(this).attr("name")+'" value="'+(i+1)+'">');
 				}
 		);
 		// Update the odd/even class of the rows
-		$("table#module_manager-loadorder tbody tr").each( function(i) {
+		$("table#modulemanagerLoadOrder tbody tr").each( function(i) {
 			$(this).removeClass("odd even");
 			$(this).addClass( (i % 2 == 0) ? "even" : "odd");
 		});
 		$(row).addClass("ondrop");
 	}
-	$("table#module_manager-loadorder").tableDnD({onDrop: setOrder});
-	$("table#module_manager-loadorder .order").hide();
+	$("table#modulemanagerLoadOrder").tableDnD({onDrop: setOrder});
+	$("table#modulemanagerLoadOrder .order").hide();
 	setOrder("select");
 });

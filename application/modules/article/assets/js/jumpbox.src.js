@@ -10,7 +10,7 @@
  */
 
 $(document).ready( function() {
-	$("#article-jumpbox").change( function() {
+	$("#articleJumpbox").change( function() {
 		window.location = $(this).val();
 	});
 });

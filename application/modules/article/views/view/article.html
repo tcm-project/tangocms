@@ -15,15 +15,15 @@
 								 (trim($part['title']) ? $part['title'] : sprintf( t('Part %d'), $key+1 ))
 							   );
 		}
-		$jumpBox = '<p>'.t('View part:').' <select id="article-jumpbox">'.$options.'</select></p>';
+		$jumpBox = '<p>'.t('View part:').' <select id="articleJumpbox">'.$options.'</select></p>';
 	} else {
 		$jumpBox = '';
 	}
 ?>
 
-<div id="article-header">
+<div id="articleHeader">
 	<?php if ( $meta_format ) { ?>
-		<p class="article-meta">
+		<p class="articleMeta">
 			<?php
 				$catLink = $this->_router->makeUrl( 'article', 'cat', $category['identifier'] );
 				printf( $meta_format,
@@ -40,7 +40,7 @@
 
 <hr>
 
-<div id="article-body">
+<div id="articleBody">
 	<?php if ( trim( $requested_part['title'] ) ) { ?>
 		<h3>{REQUESTED_PART.TITLE}</h3>
 	<?php } ?>

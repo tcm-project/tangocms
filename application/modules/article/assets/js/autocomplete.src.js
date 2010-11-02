@@ -15,15 +15,15 @@ $(document).ready( function() {
 	$("div.jsSearchBox").show();
 	// Find out which URL to use, only search in category if we have specified category.
 	var ajaxUrl = zula_dir_base+"index.php?url=article/config/autocomplete";
-	var cid = $("#article-filter").val();
+	var cid = $("#articleCategoryFilter").val();
 	if ( cid !== undefined && cid != 0 ) {
 		ajaxUrl += '/catId/'+cid;
 	}
-	$("#article-title").autocomplete({
+	$("#articleFilter").autocomplete({
 									serviceUrl: ajaxUrl,
 									onSelect: function(value, data) {
 												window.location = data;
 											}
 									});
-	$("#article-title").focus();
+	$("#articleFilter").focus();
 });

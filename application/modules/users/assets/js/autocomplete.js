@@ -1,1 +1,1 @@
-$(document).ready(function(){$("div.jsSearchBox").show();$("#users-username").autocomplete({serviceUrl:zula_dir_base+"index.php?url=users/config/autocomplete",onSelect:function(b,a){window.location=a}});$("#users-username").focus()});
+$(document).ready(function(){$("div.jsSearchBox").show();$("#usersFilter").autocomplete({serviceUrl:zula_dir_base+"index.php?url=users/config/autocomplete",onSelect:function(b,a){window.location=a}});$("#usersFilter").focus()});

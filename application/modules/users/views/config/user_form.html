@@ -25,11 +25,11 @@
 					</dl>
 				</td>
 				<td class="confcol">
-					<input type="radio" id="users-status-active" name="users[status]" value="active" <?php echo $users['status'] == 'active' ? 'checked="checked"' : ''; ?>>
-					<label for="users-status-active" class="horizontal">{L_[Active]}</label>
+					<input type="radio" id="usersStatusActive" name="users[status]" value="active" <?php echo $users['status'] == 'active' ? 'checked="checked"' : ''; ?>>
+					<label for="usersStatusActive" class="horizontal">{L_[Active]}</label>
 					<br>
-					<input type="radio" id="users-status-locked" name="users[status]" value="locked" <?php echo $users['status'] == 'locked' ? 'checked="checked"' : ''; ?>>
-					<label for="users-status-locked" class="horizontal">{L_[Locked]}</label>
+					<input type="radio" id="usersStatusLocked" name="users[status]" value="locked" <?php echo $users['status'] == 'locked' ? 'checked="checked"' : ''; ?>>
+					<label for="usersStatusLocked" class="horizontal">{L_[Locked]}</label>
 				</td>
 			</tr>
 			<tr class="even">
@@ -162,11 +162,11 @@
 					</dl>
 				</td>
 				<td class="confcol">
-					<input type="radio" id="users-hide_yes" name="users[hide_email]" value="1" <?php echo $users['hide_email'] ? 'checked="checked"' : ''; ?>>
-					<label for="users-hide_yes" class="horizontal">{L_[Yes]}</label>
+					<input type="radio" id="usersHideEmailYes" name="users[hide_email]" value="1" <?php echo $users['hide_email'] ? 'checked="checked"' : ''; ?>>
+					<label for="usersHideEmailYes" class="horizontal">{L_[Yes]}</label>
 					<br>
-					<input type="radio" id="users-hide_no" name="users[hide_email]" value="0" <?php echo $users['hide_email'] ? '' : 'checked="checked"'; ?>>
-					<label for="users-hide_no" class="horizontal">{L_[No]}</label>
+					<input type="radio" id="usersHideEmailNo" name="users[hide_email]" value="0" <?php echo $users['hide_email'] ? '' : 'checked="checked"'; ?>>
+					<label for="usersHideEmailNo" class="horizontal">{L_[No]}</label>
 				</td>
 			</tr>
 		</tbody>

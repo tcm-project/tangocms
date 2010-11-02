@@ -2,14 +2,14 @@
 	if ( empty( $articles ) ) {
 		echo '<p>'.t('There are no headlines to display').'</p>';
 	} else { ?>
-		<dl class="article-headlines">
+		<dl class="articleHeadlines">
 			<?php foreach( $articles as $article ) { ?>
 				<dt>
 					<a href="<?php echo $this->_router->makeUrl( 'article', 'view', $article['identifier'] ); ?>" title="{L_[View article]}">
 						<?php echo zula_snippet( $article['title'], 35, true ); ?>
 					</a>
 				</dt>
-				<dd class="article-meta">
+				<dd class="articleMeta">
 					<?php
 						if ( $meta_format ) {
 							$catLink = $this->_router->makeUrl( 'article', 'cat', $categories[ $article['cat_id'] ]['identifier'] );

@@ -3,8 +3,8 @@
 		<div><input type="hidden" name="url" value="<?php echo $this->_router->getRawRequestPath(); ?>"></div>
 	<?php } ?>
 	<p>
-		<label for="content_layout-site-select" class="horizontal">{L_[Manage layouts for:]}</label>
-		<select id="content_layout-site-select" name="type">
+		<label for="contentlayoutSite" class="horizontal">{L_[Manage layouts for:]}</label>
+		<select id="contentlayoutSite" name="type">
 			<option value="main" <?php echo $site_type == 'main' ? 'selected="selected"' : ''; ?>>{L_[Main website]}</option>
 			<option value="admin" <?php echo $site_type == 'admin' ? 'selected="selected"' : ''; ?>>{L_[Control panel]}</option>
 		</select>
@@ -33,7 +33,7 @@
 <form action="<?php echo $this->_router->makeUrl( 'content_layout', 'index', 'delete' ); ?>" method="post">
 	<h3>{L_[Layouts]}</h3>
 	<p>{L_[Control which modules should appear around your content, such as in the sidebar or menu area of the current theme.]}</p>
-	<table id="content_layout" class="contentdata">
+	<table id="contentlayout" class="contentdata">
 		<thead>
 			<tr>
 				<th class="checkcol"></th>

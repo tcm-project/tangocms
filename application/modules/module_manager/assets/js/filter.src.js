@@ -14,12 +14,12 @@
  */
 $(document).ready( function() {
 	$("div.jsSearchBox").show();
-	$("#module_manager-filter").focus().keyup( function(event) {
-		var filter = RegExp.escape( $("#module_manager-filter").val() );
+	$("#modulemanagerFilter").focus().keyup( function(event) {
+		var filter = RegExp.escape( $("#modulemanagerFilter").val() );
 		/**
 		 * Go through each module and see if it matches (case insensitive
 		 */
-		$("ol.module_manager-item li").each( function() {
+		$("ol.modulemanagerItem li").each( function() {
 			var module = jQuery.trim( $(this).find("p a.title").text() );
 			var title_regex = new RegExp( filter, "gi");
 			if ( module.match( title_regex ) ) {
@@ -31,7 +31,7 @@ $(document).ready( function() {
 
 		var visible_modules_total = 0;
 		var last_visible_module;
-		$("div.module_manager-category").each( function() {
+		$("div.modulemanagerCategory").each( function() {
 			$(this).show();
 			var visible_modules = $(this).find("li:visible");
 			if ( visible_modules.length > 0 ) {
@@ -44,7 +44,7 @@ $(document).ready( function() {
 
 		if ( visible_modules_total == 1 && event.keyCode == 13 ) {
 			if ( event.shiftKey ) {
-				location.href = last_visible_module.find("p a.module_manager-item-permission").attr("href");
+				location.href = last_visible_module.find("p a.modulemanagerUrlPermission").attr("href");
 			} else {
 				location.href = last_visible_module.find("p a.title").attr("href");
 			}
@@ -54,9 +54,9 @@ $(document).ready( function() {
 		 * Toggle Visual Feedback in the input box
 		 */
 		if ( visible_modules_total > 0 ) {
-			$("#module_manager-filter").removeClass("error");
-		} else if ( $("#module_manager-filter").hasClass("error") == false ) {
-			$("#module_manager-filter").addClass("error");
+			$("#modulemanagerFilter").removeClass("error");
+		} else if ( $("#modulemanagerFilter").hasClass("error") == false ) {
+			$("#modulemanagerFilter").addClass("error");
 		}
 	});
 });

@@ -11,14 +11,14 @@
 	} else {
 		foreach( $articles as $article ) {
 		?>
-			<div class="article-entry">
-				<h4 class="article-title">
+			<div class="article">
+				<h4 class="articleTitle">
 					<a href="<?php echo $this->_router->makeUrl( 'article', 'view', $article['identifier'] ); ?>" title="{L_[View article]}">
 						<?php echo zula_htmlspecialchars( $article['title'] ); ?>
 					</a>
 				</h4>
 				<?php if ( $meta_format ) { ?>
-					<p class="article-meta">
+					<p class="articleMeta">
 						<?php
 							$catLink = $this->_router->makeUrl( 'article', 'cat', $article['category_identifier'] );
 							printf( $meta_format,
@@ -29,10 +29,10 @@
 						?>
 					</p>
 				<?php } ?>
-				<div class="article-body">
+				<div class="articleBody">
 					<?php echo $article['body']; ?>
 				</div>
-				<hr class="article-separator">
+				<hr class="articleSeparator">
 			</div>
 <?php } } ?>
 

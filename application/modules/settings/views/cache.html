@@ -58,11 +58,11 @@
 					</dl>
 				</td>
 				<td class="confcol">
-					<input type="radio" id="settings-purge-yes" name="cache_purge" value="1">
-					<label class="horizontal" for="settings-purge-yes">{L_[Yes]}</label>
+					<input type="radio" id="settingsPurgeYes" name="cache_purge" value="1">
+					<label class="horizontal" for="settingsPurgeYes">{L_[Yes]}</label>
 					<br>
-					<input type="radio" id="settings-purge-no" name="cache_purge" value="0" checked="checked">
-					<label class="horizontal" for="settings-purge-no">{L_[No]}</label>
+					<input type="radio" id="settingsPurgeNo" name="cache_purge" value="0" checked="checked">
+					<label class="horizontal" for="settingsPurgeNo">{L_[No]}</label>
 				</td>
 			</tr>
 		</tbody>
@@ -83,11 +83,11 @@
 					</dl>
 				</td>
 				<td class="confcol">
-					<input type="radio" id="settings-aggregate-yes" name="setting[cache/js_aggregate]" value="1" <?php echo $config['js_aggregate'] ? 'checked="checked"' : ''; ?>>
-					<label class="horizontal" for="settings-aggregate-yes">{L_[Yes]}</label>
+					<input type="radio" id="settingsAggregateYes" name="setting[cache/js_aggregate]" value="1" <?php echo $config['js_aggregate'] ? 'checked="checked"' : ''; ?>>
+					<label class="horizontal" for="settingsAggregateYes">{L_[Yes]}</label>
 					<br>
-					<input type="radio" id="settings-aggregate-no" name="setting[cache/js_aggregate]" value="0" <?php echo $config['js_aggregate'] ? '' : 'checked="checked"'; ?>>
-					<label class="horizontal" for="settings-aggregate-no">{L_[No]}</label>
+					<input type="radio" id="settingsAggregateNo" name="setting[cache/js_aggregate]" value="0" <?php echo $config['js_aggregate'] ? '' : 'checked="checked"'; ?>>
+					<label class="horizontal" for="settingsAggregateNo">{L_[No]}</label>
 				</td>
 			</tr>
 			<tr class="odd">
@@ -98,11 +98,11 @@
 					</dl>
 				</td>
 				<td class="confcol">
-					<input type="radio" id="settings-gcdn-yes" name="setting[cache/google_cdn]" value="1" <?php echo $config['google_cdn'] ? 'checked="checked"' : ''; ?>>
-					<label class="horizontal" for="settings-gcdn-yes">{L_[Yes]}</label>
+					<input type="radio" id="settingsCdnYes" name="setting[cache/google_cdn]" value="1" <?php echo $config['google_cdn'] ? 'checked="checked"' : ''; ?>>
+					<label class="horizontal" for="settingsCdnYes">{L_[Yes]}</label>
 					<br>
-					<input type="radio" id="settings-gcdn-no" name="setting[cache/google_cdn]" value="0" <?php echo $config['google_cdn'] ? '' : 'checked="checked"'; ?>>
-					<label class="horizontal" for="settings-gcdn-no">{L_[No]}</label>
+					<input type="radio" id="settingsCdnNo" name="setting[cache/google_cdn]" value="0" <?php echo $config['google_cdn'] ? '' : 'checked="checked"'; ?>>
+					<label class="horizontal" for="settingsCdnNo">{L_[No]}</label>
 				</td>
 			</tr>
 		</tbody>

@@ -1,1 +1,1 @@
-$(document).ready(function(){$("#article-jumpbox").change(function(){window.location=$(this).val()})});
+$(document).ready(function(){$("#articleJumpbox").change(function(){window.location=$(this).val()})});

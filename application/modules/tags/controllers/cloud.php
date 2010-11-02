@@ -39,7 +39,7 @@
 			$i = 1;
 			foreach( $stats as $tag=>$freq ) {
 				$size = $i <= 12 ? (string) $i : 'normal';
-				$ret[ $tag ] = 'tag-link-'.$size;
+				$ret[ $tag ] = 'tagLink'.$size;
 				$i++;
 			}
 			ksort( $ret );

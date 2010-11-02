@@ -11,14 +11,14 @@
 	<?php if ( empty($comments) ) { ?>
 		<p>{L_[There are currently no comments.]}</p>
 	<?php } else { ?>
-		<ol class="comments-list">
+		<ol class="commentsList">
 			<?php
 				$format = '<li id="comment-%1$d" class="%2$s">
-								<div class="comments-header">
-									<div class="comments-author">%3$s</div>
-									<div class="comments-meta">%4$s</div>
+								<div class="commentsHeader">
+									<div class="commentsAuthor">%3$s</div>
+									<div class="commentsMeta">%4$s</div>
 								</div>
-								<div class="comments-body">%5$s</div>
+								<div class="commentsBody">%5$s</div>
 							</li>';
 				$i = 0;
 				foreach( $comments as $comment ) {
@@ -32,7 +32,7 @@
 						($comment['user_id'] != Ugmanager::_GUEST_ID && $comment['user_id'] == $this->_session->getUserId())
 					) {
 						$editUrl = $this->_router->makeUrl( 'comments', 'edit', $comment['id'], null, array('inline' => 1) );
-						$meta .= '<span class="comments-manage"><a href="'.$editUrl.'">'.t('Edit').'</a></span>';
+						$meta .= '<span class="commentsManage"><a href="'.$editUrl.'">'.t('Edit').'</a></span>';
 					}
 					printf( $format,
 							$comment['id'],

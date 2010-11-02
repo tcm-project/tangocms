@@ -10,12 +10,12 @@
  */
 
 $(document).ready( function() {
-	$("#poll-add-option").click( function() {
-		var newLi = $("#poll-option-list li:last").clone( true );
+	$("#pollAddOption").click( function() {
+		var newLi = $("#pollOptionList li:last").clone( true );
 		$(newLi).find("input[type=text]").val(""); // Reset the value to nothing
-		$(newLi).insertAfter("#poll-option-list li:last");
+		$(newLi).insertAfter("#pollOptionList li:last");
 	});
-	$("#poll-option-list li input[type=button]").click(	function() {
+	$("#pollOptionList li input[type=button]").click(	function() {
 		$(this).parent("li").remove();
 	});
 });

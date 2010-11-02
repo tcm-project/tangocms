@@ -2,7 +2,7 @@
 	<?php
 		foreach( $options as $option ) {
 			printf( '<li %1$s>%2$s</li>'."\n",
-					($voted_on == $option['id'] ? 'class="poll-voted-on"' : ''),
+					($voted_on == $option['id'] ? 'class="pollOptionVoted"' : ''),
 					$option['title'].' - '.$option['percent'].'% ('.$option['votes'].')'
 				  );
 		}

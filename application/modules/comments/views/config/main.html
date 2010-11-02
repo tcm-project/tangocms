@@ -1,7 +1,7 @@
 <form action="<?php echo $this->_router->makeUrl( 'comments', 'config' ); ?>" method="get">
 	<p>
-		<label for="comments-type" class="horizontal">{L_[Type]}:</label>
-		<select id="comments-type" name="type">
+		<label for="commentsFilter" class="horizontal">{L_[Type]}:</label>
+		<select id="commentsFilter" name="type">
 			<?php
 				foreach( array('all', 'accepted', 'moderation') as $key ) {
 					printf( '<option value="%1$s" %2$s>%3$s</option>',

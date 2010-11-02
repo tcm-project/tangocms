@@ -36,11 +36,11 @@
 					</dl>
 				</td>
 				<td class="confcol">
-					<input type="radio" id="prefix_yes" name="setting[mail/subject_prefix]" value="1" <?php echo $config['prefix'] ? 'checked="checked"' : ''; ?>>
-					<label class="horizontal" for="prefix_yes">{L_[Yes]}</label>
+					<input type="radio" id="settingsPrefixYes" name="setting[mail/subject_prefix]" value="1" <?php echo $config['prefix'] ? 'checked="checked"' : ''; ?>>
+					<label class="horizontal" for="settingsPrefixYes">{L_[Yes]}</label>
 					<br>
-					<input type="radio" id="prefix_no" name="setting[mail/subject_prefix]" value="0" <?php echo !$config['prefix'] ? 'checked="checked"' : ''; ?>>
-					<label class="horizontal" for="prefix_no">{L_[No]}</label>
+					<input type="radio" id="settingsPrefixNo" name="setting[mail/subject_prefix]" value="0" <?php echo !$config['prefix'] ? 'checked="checked"' : ''; ?>>
+					<label class="horizontal" for="settingsPrefixNo">{L_[No]}</label>
 				</td>
 			</tr>
 			<tr class="odd">
@@ -73,11 +73,11 @@
 						</dl>
 					</td>
 					<td class="confcol">
-						<input type="radio" id="smtp_yes" name="setting[mail/type]" value="smtp" <?php echo $config['type'] == 'smtp' ? 'checked="checked"' : ''; ?>>
-						<label class="horizontal" for="smtp_yes">{L_[Yes]}</label>
+						<input type="radio" id="settingsSmtpYes" name="setting[mail/type]" value="smtp" <?php echo $config['type'] == 'smtp' ? 'checked="checked"' : ''; ?>>
+						<label class="horizontal" for="settingsSmtpYes">{L_[Yes]}</label>
 						<br>
-						<input type="radio" id="smtp_no" name="setting[mail/type]" value="mail" <?php echo $config['type'] == 'mail' ? 'checked="checked"' : ''; ?>>
-						<label class="horizontal" for="smtp_no">{L_[No]}</label>
+						<input type="radio" id="settingsSmtpNo" name="setting[mail/type]" value="mail" <?php echo $config['type'] == 'mail' ? 'checked="checked"' : ''; ?>>
+						<label class="horizontal" for="settingsSmtpNo">{L_[No]}</label>
 					</td>
 				</tr>
 				<tr class="odd">

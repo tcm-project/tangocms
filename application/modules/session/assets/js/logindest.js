@@ -1,1 +1,1 @@
-$(document).ready(function(){$("#session-login_destination").val()!="custom"&&$("#session-destination_url").hide();$("#session-login_destination").change(function(){$(this).val()=="custom"?$("#session-destination_url").show().focus():$("#session-destination_url").hide()})});
+$(document).ready(function(){$("#sessionLoginDestination").val()!="custom"&&$("#sessionLoginDestinationUrl").hide();$("#sessionLoginDestination").change(function(){$(this).val()=="custom"?$("#sessionLoginDestinationUrl").show().focus():$("#sessionLoginDestinationUrl").hide()})});

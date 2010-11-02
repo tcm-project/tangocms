@@ -1,10 +1,10 @@
 <form action="<?php echo $this->_router->makeUrl( 'comments', 'edit' ); ?>" method="post">
 	<?php if ( $edit_inline ) { ?>
 		<p>
-			<label for="comments-website">{L_[Website]}</label>
-			<input type="text" id="comments-website" name="comments[website]" value="{COMMENTS.WEBSITE}">
+			<label for="commentsWebsite">{L_[Website]}</label>
+			<input type="text" id="commentsWebsite" name="comments[website]" value="{COMMENTS.WEBSITE}">
 		</p>
-		<label for="comments-body">{L_[Message]}</label>
+		<label for="commentsBody">{L_[Message]}</label>
 	<?php } else { ?>
 		<table>
 			<tbody>
@@ -16,14 +16,14 @@
 						</dl>
 					</td>
 					<td class="confcol">
-						<input type="text" id="comments-website" name="comments[website]" value="{COMMENTS.WEBSITE}">
+						<input type="text" id="commentsWebsite" name="comments[website]" value="{COMMENTS.WEBSITE}">
 					</td>
 				</tr>
 			</tbody>
 		</table>
 		<h3>{L_[Message]}</h3>
 	<?php } ?>
-	<textarea id="comments-body" name="comments[body]">{COMMENTS.BODY}</textarea>
+	<textarea id="commentsBody" name="comments[body]">{COMMENTS.BODY}</textarea>
 
 	<div class="actions">
 		<input type="hidden" name="comments[id]" value="{COMMENTS.ID}">

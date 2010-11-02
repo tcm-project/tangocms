@@ -13,18 +13,18 @@
 	}
 ?>
 
-<div class="page_body">{BODY}</div>
+<div class="pageBody">{BODY}</div>
 
 <?php
 	if ( count( $path ) > 1 ) {
-		echo '<hr><p class="page-navigation">';
+		echo '<hr><p class="pageNavigation">';
 		if ( isset( $links['previous'] ) ) {
 			$url = $this->_router->makeUrl( 'page', 'index', $links['previous']['identifier'] );
-			echo sprintf( '<a class="page-previous" href="%2$s">&laquo; %1$s</a>', $links['previous']['title'], $url );
+			echo sprintf( '<a class="pagePrevious" href="%2$s">&laquo; %1$s</a>', $links['previous']['title'], $url );
 		}
 		if ( isset( $links['next'] ) ) {
 			$url = $this->_router->makeUrl( 'page', 'index', $links['next']['identifier'] );
-			echo sprintf( '<a class="page-next" href="%2$s">%1$s  &raquo;</a>', $links['next']['title'], $url );
+			echo sprintf( '<a class="pageNext" href="%2$s">%1$s  &raquo;</a>', $links['next']['title'], $url );
 		}
 		echo '</p>';
 	}

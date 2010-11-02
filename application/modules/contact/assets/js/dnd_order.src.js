@@ -16,17 +16,17 @@ $(document).ready( function() {
 	 */
 	function setOrder( element, row ) {
 		element = (element == "select") ? "select" : "input";
-		$("table#contact-form-fields .order "+element ).each( function(i) {
+		$("table#contactFormFields .order "+element ).each( function(i) {
 			$(this).replaceWith('<input type="text" name="'+$(this).attr("name")+'" value="'+(i+1)+'">');
 		});
 		// Update the odd/even class of the rows
-		$("table#contact-form-fields tbody tr").each( function(i) {
+		$("table#contactFormFields tbody tr").each( function(i) {
 			$(this).removeClass("odd even");
 			$(this).addClass( (i % 2 == 0) ? "even" : "odd");
 		});
 		$(row).addClass("ondrop");
 	}
-	$("table#contact-form-fields").tableDnD({onDrop: setOrder});
-	$("table#contact-form-fields .order").hide();
+	$("table#contactFormFields").tableDnD({onDrop: setOrder});
+	$("table#contactFormFields .order").hide();
 	setOrder("select");
 });

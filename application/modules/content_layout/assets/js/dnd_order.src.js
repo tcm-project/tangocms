@@ -16,7 +16,7 @@ $(document).ready( function() {
 	 */
 	function setOrder( element ) {
 		var iteration = 1, sector = null;
-		$("table#content_layout tbody tr").each( function() {
+		$("table#contentlayout tbody tr").each( function() {
 			if ( $(this).hasClass("subheading") ) {
 				sector = $(this).find("input.sector:first").val();
 				iteration = 1;
@@ -36,12 +36,12 @@ $(document).ready( function() {
 			}
 		});
 	}
-	$("table#content_layout").tableDnD({
+	$("table#contentlayout").tableDnD({
 										onDrop: function( table, row ) {
 													setOrder("input.order-values");
 													$(row).addClass("ondrop");
 												}
 										});
-	$("table#content_layout .order").hide();
+	$("table#contentlayout .order").hide();
 	setOrder("select");
 });
