@@ -30,7 +30,6 @@
 			$siteCount = count( $sites );
 			// Build form with validation
 			$form = new View_form( 'config/manage.html', 'shareable' );
-			$form->action( $this->_router->makeUrl( 'shareable', 'config' ) );
 			$form->addElement( 'shareable/order', null, t('Order'), new Validator_Length( $siteCount ) );
 			$form->addElement( 'shareable/enabled', null, t('Enabled'), new Validator_Length(0, $siteCount), false );
 			if ( $form->hasInput() && $form->isValid() ) {
@@ -52,7 +51,7 @@
 			}
 			$this->_theme->addJsFile( 'jQuery/plugins/dnd.js' );
 			$this->addAsset( 'js/dnd_order.js' );
-			$form->assign( array('SITES' => $sites) );
+			$form->assign( array('sites' => $sites) );
 			return $form->getOutput();
 		}
 

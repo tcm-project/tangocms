@@ -59,10 +59,16 @@
 			if ( !is_array( $id ) ) {
 				$id = array( $id => array('order' => $order, 'disabled' => !$enabled) );
 			}
-			$pdoSt = $this->_sql->prepare( 'UPDATE {PREFIX}mod_shareable SET disabled = ?, `order` = ? WHERE id = ?' );
+			$pdoSt = $this->_sql->prepare( 'UPDATE {PREFIX}mod_shareable SET
+												disabled = :disabled, `order` = :order
+											WHERE id = :id' );
 			foreach( $id as $siteId=>$site ) {
-				$pdoSt->execute( array($site['disabled'], $site['order'], $siteId) );
+				$pdoSt->bindValue( ':disabled', (int) $site['disabled'], PDO::PARAM_INT );
+				$pdoSt->bindValue( ':order', $site['order'], PDO::PARAM_INT );
+				$pdoSt->bindValue( ':id', $siteId, PDO::PARAM_INT );
+				$pdoSt->execute();
 			}
+			$pdoSt->closeCursor();
 			// Delete needed cache
 			$this->_cache->delete( array('shareable_all', 'shareable_enabled', 'shareable_disabled') );
 			return $pdoSt->rowCount();
