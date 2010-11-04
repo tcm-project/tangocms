@@ -27,6 +27,9 @@
 			// Build path and check if the cached version exists
 			$jsFilePath = $this->_zula->getDir( 'tmp' ).'/js/'.$jsFile;
 			if ( !file_exists( $jsFilePath ) ) {
+				if ( !is_dir( dirname($jsFilePath) ) ) {
+					zula_make_dir( dirname($jsFilePath) );
+				}
 				try {
 					$tinyMcePath = $this->_zula->getDir( 'js' ).'/tinymce';
 					$tinyMceLang = $this->_input->get( 'languages' );
