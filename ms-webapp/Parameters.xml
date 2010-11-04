@@ -19,6 +19,7 @@
 	</parameter>
 
 	<parameter name="dbUserPassword" tags="New,Password,MySQL,dbUserPassword">
+		<parameterValidation type="RegularExpression,AllowEmpty" validationString="^[^&quot;]*$" />
 		<parameterEntry type="TextFile" scope="setup.sql" match="dbPass"/>
 	</parameter>
 	<parameter name="Zula config.ini.php dbUserPassword" defaultValue="pass = {dbUserPassword}" tags="Hidden,MySQL">
@@ -72,7 +73,7 @@
 		name="TangoCMS Administrator Password"
 		description="Passwords must be between 4 and 32 characters."
 		tags="New,Password,NoStore">
-			<parameterValidation type="RegularExpression" validationString="^.{1,16}$" />
+			<parameterValidation type="RegularExpression" validationString="^.{4,32}$" />
 			<parameterEntry type="TextFile" scope="tangocms.sql" match="rootPass" />
 	</parameter>
 	<parameter
