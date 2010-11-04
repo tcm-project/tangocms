@@ -4,40 +4,50 @@
 	</parameter>
 
 	<!-- Database configuration -->
-	<parameter name="dbServer" defaultValue="localhost" tags="MySQL, dbServer">
-		<parameterEntry type="TextFile" scope="tangocms\\config\\default\\config.ini.php" match="(?&lt;=host\s=\s)127\.0\.0\.1" />
-		<parameterEntry type="TextFile" scope="setup.sql" match="dbServer" />
+	<parameter name="dbServer" defaultValue="localhost" tags="MySQL,dbServer" >
+		<parameterEntry type="TextFile" scope="setup.sql" match="dbServer"/>
 	</parameter>
-	<parameter name="dbUsername" tags="MySQL, dbUsername">
-		<parameterValidation type="RegularExpression" validationString="^[A-Za-z0-9_\-]{1,16}$" />
-		<parameterEntry type="TextFile" scope="tangocms\\config\\default\\config.ini.php" match="(?&lt;=user\s=\s)dbUser" />
-		<parameterEntry type="TextFile" scope="setup.sql" match="dbUser" />
+	<parameter name="Zula config.ini.php dbServer" defaultValue="host = {dbServer}" tags="Hidden,MySQL">
+		<parameterEntry type="TextFile" scope="\\config\\default\\config\.ini\.php$" match="host\s*=\s*[^\r\n]*" />
 	</parameter>
-	<parameter name="dbUserPassword" tags="New, Password, MySQL, dbUserPassword">
-		<!--  Password must not contain the double quote character. -->
-		<parameterValidation type="RegularExpression" validationString="^[^&quot;]*$" />
-		<parameterEntry type="TextFile" scope="tangocms\\config\\default\\config.ini.php" match="(?&lt;=pass\s=\s)dbPass" />
-		<parameterEntry type="TextFile" scope="setup.sql" match="dbPass" />
+
+	<parameter name="dbUsername" tags="MySQL,dbUsername" >
+		<parameterEntry type="TextFile" scope="setup.sql" match="dbUser"/>
 	</parameter>
-	<parameter name="dbName" defaultValue="tangocms" tags="MySQL, dbName">
-		<parameterValidation type="RegularExpression" validationString="^[A-Za-z0-9_]{1,64}$" />
-		<parameterEntry type="TextFile" scope="tangocms\\config\\default\\config.ini.php" match="(?&lt;=database\s=\s)dbName" />
-		<parameterEntry type="TextFile" scope="setup.sql" match="dbName" />
+	<parameter name="Zula config.ini.php dbUsername" defaultValue="user = {dbUsername}" tags="Hidden,MySQL">
+		<parameterEntry type="TextFile" scope="\\config\\default\\config\.ini\.php$" match="user\s*=\s*[^\r\n]*" />
 	</parameter>
-	<parameter name="dbTag" friendlyName="Table Prefix" description="Prefix to use for tables, if any." defaultValue="tcm_" tags="MySQL">
-		<parameterValidation type="RegularExpression, AllowEmpty" validationString="^[A-Za-z0-9_]{0,12}$" />
-		<parameterEntry type="TextFile" scope="tangocms\\config\\default\\config.ini.php" match="(?&lt;=prefix\s=\s)tcm_" />
-		<parameterEntry type="TextFile" scope="tangocms.sql" match="\{PREFIX\}" />
+
+	<parameter name="dbUserPassword" tags="New,Password,MySQL,dbUserPassword">
+		<parameterEntry type="TextFile" scope="setup.sql" match="dbPass"/>
 	</parameter>
+	<parameter name="Zula config.ini.php dbUserPassword" defaultValue="pass = {dbUserPassword}" tags="Hidden,MySQL">
+		<parameterEntry type="TextFile" scope="\\config\\default\\config\.ini\.php$" match="pass\s*=\s*[^\r\n]*" />
+	</parameter>
+
+	<parameter name="dbName" defaultValue="tangocms" tags="MySQL,dbName">
+		<parameterEntry type="TextFile" scope="setup.sql" match="dbName"/>
+	</parameter>
+	<parameter name="Zula config.ini.php dbName" defaultValue="database = {dbName}" tags="Hidden,MySQL">
+		<parameterEntry type="TextFile" scope="\\config\\default\\config\.ini\.php$" match="database\s*=\s*[^\r\n]*" />
+	</parameter>
+
+   <parameter name="dbTablePrefix" friendlyName="Table Prefix" description="Prefix to use for tables, if any." defaultValue="tcm_" tags="MySQL">
+	   <parameterValidation type="RegularExpression,AllowEmpty" validationString="^[A-Za-z0-9_]{0,12}$" />
+	   <parameterEntry type="TextFile" scope="tangocms.sql" match="{PREFIX}"/>
+   </parameter>
+   <parameter name="Zula config.ini.php dbPrefix" defaultValue="prefix = {dbTablePrefix}" tags="Hidden,MySQL">
+	   <parameterEntry type="TextFile" scope="\\config\\default\\config\.ini\.php$" match="prefix\s*=\s*[^\r\n]*" />
+   </parameter>
 
 	<!-- Database administration details and SQL connection string for the SQL files -->
 	<parameter name="dbAdminUsername" defaultValue="root" tags="MySQL, dbAdminUsername" />
-	<parameter name="dbAdminPassword" tags="MySQL, Password, dbAdminPassword" />
+	<parameter name="dbAdminPassword" tags="MySQL,Password,dbAdminPassword" />
 
 	<parameter
 		name="ConnectionString"
 		defaultValue="Server={dbServer};Database={dbName};uid={dbAdminUsername};Pwd={dbAdminPassword};"
-		tags="Hidden, MySQLConnectionString, Validate">
+		tags="Hidden,MySQLConnectionString,Validate">
 			<parameterEntry type="ProviderPath" scope="dbmysql" match="setup.sql" />
 			<parameterEntry type="ProviderPath" scope="dbmysql" match="tangocms.sql" />
 	</parameter>
@@ -46,26 +56,29 @@
 	<parameter
 		name="Website Title"
 		description="Title of the website to be displayed."
-		defaultValue="My TangoCMS Website">
+		defaultValue="My TangoCMS Website"
+		tags="NoStore">
 			<parameterEntry type="TextFile" scope="tangocms.sql" match="websiteTitle" />
 	</parameter>
 	<parameter
 		name="TangoCMS Administrator Username"
 		description="Username must be alphanumic (underscore and dash are allowed) between 2 and 32 characters long."
-		defaultValue="root">
+		defaultValue="root"
+		tags="NoStore">
 			<parameterValidation type="RegularExpression" validationString="^[A-Za-z0-9_\-]{2,32}$" />
 			<parameterEntry type="TextFile" scope="tangocms.sql" match="rootUser" />
 	</parameter>
 	<parameter
 		name="TangoCMS Administrator Password"
 		description="Passwords must be between 4 and 32 characters."
-		tags="New, Password">
+		tags="New,Password,NoStore">
 			<parameterValidation type="RegularExpression" validationString="^.{1,16}$" />
 			<parameterEntry type="TextFile" scope="tangocms.sql" match="rootPass" />
 	</parameter>
 	<parameter
 		name="TangoCMS Administrator Email"
-		description="Enter the email address for this user, e.g. tangocms@example.org">
+		description="Enter the email address for this user, e.g. tangocms@example.org"
+		tags="NoStore">
 			<parameterValidation type="RegularExpression" validationString="^([a-zA-Z0-9])+([a-zA-Z0-9\.\\+=_-])*@([a-zA-Z0-9_-])+([a-zA-Z0-9\._-]+)+$" />
 			<parameterEntry type="TextFile" scope="tangocms.sql" match="rootEmail" />
 			<parameterEntry type="TextFile" scope="tangocms.sql" match="mailIncoming" />
@@ -73,37 +86,37 @@
 	</parameter>
 
 	<!-- Hidden config.ini.php required changes -->
-	<parameter name="tcmSqlEnable" defaultValue="1" tags="Hidden">
+	<parameter name="tcmSqlEnable" defaultValue="1" tags="Hidden,NoStore">
 		<parameterEntry type="TextFile" scope="tangocms\\config\\default\\config.ini.php" match="(?&lt;=enable\s=\s)0" />
 	</parameter>
 
 	<!-- ACL files and directories -->
 	<parameter name="SetAclParameter1" defaultValue="{AppPath}/config/default/layouts" tags="Hidden">
-		<parameterEntry type="ProviderPath" scope="setAcl" match="tangocms/config/default/layouts" />
+		<parameterEntry type="ProviderPath" scope="setAcl" match="tangocms/config/default/layouts$" />
 	</parameter>
 	<parameter name="SetAclParameter2" defaultValue="{AppPath}/application/logs" tags="Hidden">
-		<parameterEntry type="ProviderPath" scope="setAcl" match="tangocms/application/logs" />
+		<parameterEntry type="ProviderPath" scope="setAcl" match="tangocms/application/logs$" />
 	</parameter>
 	<parameter name="SetAclParameter3" defaultValue="{AppPath}/tmp" tags="Hidden">
-		<parameterEntry type="ProviderPath" scope="setAcl" match="tangocms/tmp" />
+		<parameterEntry type="ProviderPath" scope="setAcl" match="tangocms/tmp$" />
 	</parameter>
 	<parameter name="SetAclParameter4" defaultValue="{AppPath}/assets/uploads" tags="Hidden">
-		<parameterEntry type="ProviderPath" scope="setAcl" match="tangocms/assets/uploads" />
+		<parameterEntry type="ProviderPath" scope="setAcl" match="tangocms/assets/uploads$" />
 	</parameter>
 	<parameter name="SetAclParameter5" defaultValue="{AppPath}/config/default/config.ini.php" tags="Hidden">
-		<parameterEntry type="ProviderPath" scope="setAcl" match="tangocms/config/default/config.ini.php" />
+		<parameterEntry type="ProviderPath" scope="setAcl" match="tangocms/config/default/config.ini.php$" />
 	</parameter>
 	<parameter name="SetAclParameter6" defaultValue="{AppPath}/config/default/layouts/main-default.xml" tags="Hidden">
-		<parameterEntry type="ProviderPath" scope="setAcl" match="tangocms/config/default/layouts/main-default.xml" />
+		<parameterEntry type="ProviderPath" scope="setAcl" match="tangocms/config/default/layouts/main-default.xml$" />
 	</parameter>
 	<parameter name="SetAclParameter7" defaultValue="{AppPath}/config/default/layouts/admin-default.xml" tags="Hidden">
-		<parameterEntry type="ProviderPath" scope="setAcl" match="tangocms/config/default/layouts/admin-default.xml" />
+		<parameterEntry type="ProviderPath" scope="setAcl" match="tangocms/config/default/layouts/admin-default.xml$" />
 	</parameter>
 	<parameter name="SetAclParameter8" defaultValue="{AppPath}/config/default/layouts/fpsc-main.xml" tags="Hidden">
-		<parameterEntry type="ProviderPath" scope="setAcl" match="tangocms/config/default/layouts/fpsc-main.xml" />
+		<parameterEntry type="ProviderPath" scope="setAcl" match="tangocms/config/default/layouts/fpsc-main.xml$" />
 	</parameter>
 	<parameter name="SetAclParameter9" defaultValue="{AppPath}/config/default/layouts/fpsc-admin.xml" tags="Hidden">
-		<parameterEntry type="ProviderPath" scope="setAcl" match="tangocms/config/default/layouts/fpsc-admin.xml" />
+		<parameterEntry type="ProviderPath" scope="setAcl" match="tangocms/config/default/layouts/fpsc-admin.xml$" />
 	</parameter>
 
 	<parameter name="SetAclParameter10" defaultValue="{AppPath}/msInstall.php" tags="Hidden">
