@@ -126,6 +126,9 @@
  				$aliasDetails = $this->getDetails( $alias, self::_NAME );
  				throw new Alias_AlreadyExists( $alias );
  			} catch ( Alias_NoExist $e ) {
+				if ( $redirect == false && zula_url_has_scheme( $url ) ) {
+					$redirect = true;
+				}
 				$pdoSt = $this->_sql->prepare( 'INSERT INTO {PREFIX}mod_aliases (alias, url, redirect) VALUES(?, ?, ?)' );
 				$pdoSt->execute( array($alias, $url, $redirect) );
  				if ( $pdoSt->rowCount() ) {
@@ -149,6 +152,9 @@
  		 */
  		public function edit( $id, $alias, $url, $redirect ) {
  			$aliasDetails = $this->getDetails( $id );
+			if ( $redirect == false && zula_url_has_scheme( $url ) ) {
+				$redirect = true;
+			}
 			$pdoSt = $this->_sql->prepare( 'UPDATE {PREFIX}mod_aliases SET alias = ?, url = ?, redirect = ? WHERE id = ?' );
 			$pdoSt->execute( array($alias, $url, $redirect, $aliasDetails['id']) );
  			$this->_cache->delete( 'aliases' );
