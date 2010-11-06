@@ -57,7 +57,7 @@
 				$form->addElement( 'host', 'localhost', t('SQL host'), new Validator_Length(1, 80) );
 				$form->addElement( 'port', 3306, t('SQL Port'), new Validator_Int );
 				$form->addElement( 'dbname', null, t('SQL Database'), new Validator_Length(1, 64) );
-				$form->addElement( 'prefix', 'tcm_', t('Table prefix'), array(new Validator_Length(0, 32), new Validator_Alphanumeric('_-')) );
+				$form->addElement( 'prefix', 'tcm_', t('Table prefix'), array(new Validator_Length(0, 12), new Validator_Alphanumeric('_-')) );
 				if ( $form->hasInput() && $form->isValid() ) {
 					$data = $form->getValues();
 					$data['type'] = 'mysql';
