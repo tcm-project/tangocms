@@ -20,7 +20,7 @@ function editorJitShebang( body, editorType ) {
 $(document).ready( function() {
 	$("textarea.richtext").each( function(i) {
 		var tmpTextarea = this;
-		shebang = /^#\!([A-Z0-9_\-]+)/i.exec( $(this).val() );
+		var shebang = /^#\!([A-Z0-9_\-]+)/i.exec( $(this).val() );
 		if ( shebang == null ) {
 			editorShebangs[i] = tcmEditor.defaultFormat.toLowerCase();
 		} else {
@@ -30,42 +30,43 @@ $(document).ready( function() {
 		}
 		if ( editorShebangs[i] == "html" ) {
 			// Configure TinyMCE including preinit to set different base dir to the script url
-			tinyMCEPreInit = {base: zula_dir_js+"/tinymce", suffix: null, query: "cb=20100530"}
-			$(this).tinymce({
-							script_url: zula_dir_base+"index.php?url=editor/compressor/gzip",
-							width: "100%",
+			tinyMCEPreInit = {base: zula_dir_js+"/tinymce", suffix: null, query: "cb=20101106"}
+			var tinyMCEConfig = {
+				script_url: zula_dir_base+"index.php?url=editor/compressor/gzip",
+				width: "100%",
 
-							document_base_url: zula_dir_base,
-							convert_urls: false,
-							relative_urls: false,
+				document_base_url: zula_dir_base,
+				convert_urls: false,
+				relative_urls: false,
 
-							cleanup_on_startup: true,
-							doctype: "<!DOCTYPE HTML>",
-							element_format: "html",
-							extended_valid_elements: "code,pre",
+				cleanup_on_startup: true,
+				doctype: "<!DOCTYPE HTML>",
+				element_format: "html",
+				extended_valid_elements: "code,pre",
 
-							fix_list_elements: true,
-							fix_table_elements: true,
-							fix_nesting: true,
-							remove_trailing_nbsp: true,
+				fix_list_elements: true,
+				fix_table_elements: true,
+				fix_nesting: true,
+				remove_trailing_nbsp: true,
 
-							plugins: tcmEditor.tinymcePlugins,
-							pagebreak_separator: "<!--break-->",
-							inlinepopups_skin: "tcmPop",
+				plugins: tcmEditor.tinymcePlugins,
+				pagebreak_separator: "<!--break-->",
+				inlinepopups_skin: "tcmPop",
 
-							// Advanced theme setup
-							theme: "advanced",
-							skin: "tcm",
-							button_tile_map: true,
-							theme_advanced_toolbar_align: "left",
-							theme_advanced_toolbar_location: "top",
-							theme_advanced_statusbar_location: "bottom",
-							theme_advanced_resizing: true,
-							theme_advanced_resize_horizontal: false,
-							theme_advanced_buttons1: "bold,italic,underline,strikethrough,|,bullist,numlist,blockquote,|,justifyleft,justifycenter,justifyright,|,image,link,unlink,|,pagebreak,undo,redo",
-							theme_advanced_buttons2: "formatselect,fontsizeselect,forecolor,justifyfull,table,|,pastetext,pasteword,removeformat,|,media,charmap,|,outdent,indent,|,code,help",
-							theme_advanced_buttons3: ""
-							});
+				// Advanced theme setup
+				theme: "advanced",
+				skin: "tcm",
+				button_tile_map: true,
+				theme_advanced_toolbar_align: "left",
+				theme_advanced_toolbar_location: "top",
+				theme_advanced_statusbar_location: "bottom",
+				theme_advanced_resizing: true,
+				theme_advanced_resize_horizontal: false,
+				theme_advanced_buttons1: "bold,italic,underline,strikethrough,|,bullist,numlist,blockquote,|,justifyleft,justifycenter,justifyright,|,image,link,unlink,|,pagebreak,undo,redo",
+				theme_advanced_buttons2: "formatselect,fontsizeselect,forecolor,justifyfull,table,|,pastetext,pasteword,removeformat,|,media,charmap,|,outdent,indent,|,code,help",
+				theme_advanced_buttons3: ""
+			};
+			$(this).tinymce( tinyMCEConfig );
 		}
 		// Prepend the shebang back into the textarea on submit
 		$(this).parents("form").submit( function() {
