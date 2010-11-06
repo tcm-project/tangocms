@@ -14,6 +14,8 @@ function editorJitShebang( body, editorType ) {
 		return body.replace( /<p>#\!([A-Z0-9_\-]+)<\/p>/i, "#!$1");
 	} else if ( /^#\!([A-Z0-9_\-]+)/i.test( body ) == false ) {
 		return "#!" + editorType + "\n" + body;
+	} else {
+		return body;
 	}
 }
 
