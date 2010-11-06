@@ -11,10 +11,10 @@
 			<label for="commentsWebsite">{L_[Website]}</label>
 			<input type="url" id="commentsWebsite" name="comments[website]" value="{COMMENTS.WEBSITE}">
 		</p>
-		<div>
+		<p>
 			<label for="commentsBody">{L_[Message]}</label>
-			<textarea id="commentsBody" name="comments[body]" rows="30" cols="20">{COMMENTS.BODY}</textarea>
-		</div>
+		</p>
+		<textarea id="commentsBody" name="comments[body]" rows="30" cols="20">{COMMENTS.BODY}</textarea>
 
 		<?php if ( isset($antispam) ) { echo $antispam; } ?>
 
