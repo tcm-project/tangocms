@@ -38,29 +38,33 @@
 					<input type="text" id="contentlayoutCustomTitle" name="content_layout[config][customTitle]" value="{CONTENT_LAYOUT.CONFIG.CUSTOMTITLE}">
 				</td>
 			</tr>
-			<tr class="odd">
-				<td>
-					<dl>
-						<dt>{L_[Additional HTML 'class' attribute values.]}</dt>
-						<dd>{L_[Enter additional HTML class names to help ease styling of this attached module.]}</dd>
-					</dl>
-				</td>
-				<td class="confcol">
-					<input type="text" name="content_layout[config][htmlWrapClass]" value="{CONTENT_LAYOUT.CONFIG.HTMLWRAPCLASS}">
-				</td>
-			</tr>
-			<tr class="even">
-				<td>
-					<dl>
-						<dt>{L_[Enter an optional description for this attached module]}</dt>
-						<dd>{L_[A description makes it easier to locate attached modules when managing a content layout.]}</dd>
-					</dl>
-				</td>
-				<td class="confcol">
-					<input type="text" name="content_layout[config][clDescription]" value="{CONTENT_LAYOUT.CONFIG.CLDESCRIPTION}">
-				</td>
-			</tr>
-			<tr class="odd">
+			<?php if ( $sector != 'SC' ) { ?>
+				<tr class="odd">
+					<td>
+						<dl>
+							<dt>{L_[Additional HTML 'class' attribute values.]}</dt>
+							<dd>{L_[Enter additional HTML class names to help ease styling of this attached module.]}</dd>
+						</dl>
+					</td>
+					<td class="confcol">
+						<input type="text" name="content_layout[config][htmlWrapClass]" value="{CONTENT_LAYOUT.CONFIG.HTMLWRAPCLASS}">
+					</td>
+				</tr>
+				<tr class="even">
+					<td>
+						<dl>
+							<dt>{L_[Enter an optional description for this attached module]}</dt>
+							<dd>{L_[A description makes it easier to locate attached modules when managing a content layout.]}</dd>
+						</dl>
+					</td>
+					<td class="confcol">
+						<input type="text" name="content_layout[config][clDescription]" value="{CONTENT_LAYOUT.CONFIG.CLDESCRIPTION}">
+					</td>
+				</tr>
+				<tr class="odd">
+			<?php } else { ?>
+				<tr class="even">
+			<?php } ?>
 				<td>
 					<dl>
 						<dt>{L_[Display mode]}</dt>

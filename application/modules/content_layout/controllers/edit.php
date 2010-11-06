@@ -90,9 +90,12 @@
 							   t('Display Title'),
 							   new Validator_InArray( array('true', 'false', 'custom') ) # Yes, that is a quoted bool.
 							);
-			$form->addElement( 'content_layout/config/customTitle', $cntrlr['config']['customTitle'], t('Custom title'), new Validator_Length(0, 255) );
-			$form->addElement( 'content_layout/config/htmlWrapClass', $cntrlr['config']['htmlWrapClass'], t('HTML class'), new Validator_Length(0, 500) );
-			$form->addElement( 'content_layout/config/clDescription', $cntrlr['config']['clDescription'], t('Description'), new Validator_Length(0, 255) );
+			$form->addElement( 'content_layout/config/customTitle', $cntrlr['config']['customTitle'],
+								t('Custom title'), new Validator_Length(0, 255) );
+			$form->addElement( 'content_layout/config/htmlWrapClass', $cntrlr['config']['htmlWrapClass'],
+								t('HTML class'), new Validator_Length(0, 500), ($cntrlr['sector'] != 'SC') );
+			$form->addElement( 'content_layout/config/clDescription', $cntrlr['config']['clDescription'],
+								t('Description'), new Validator_Length(0, 255), ($cntrlr['sector'] != 'SC') );
 			$form->addElement( 'content_layout/cntrlr', null, t('Controller'), new Validator_Alphanumeric('_-.!+') );
 			$form->addElement( 'content_layout/section', null, t('Section'), new Validator_Alphanumeric('_-.!+') );
 			$form->addElement( 'content_layout/config', null, t('Config'), new Validator_Is('array'), false );
@@ -143,6 +146,7 @@
 			$form->assign( array(
 								'CID'			=> $cntrlr['id'],
 								'LAYOUT_NAME'	=> $layoutName,
+								'SECTOR'		=> $cntrlr['sector'],
 								'MODULE'		=> $module->getDetails(),
 								'DISPLAY_MODES'	=> empty($displayModes) ? array('default' => t('Default')) : $displayModes,
 								'CURRENT_MODE'	=> empty($currentMode) ? 'default' : $currentMode[0],
