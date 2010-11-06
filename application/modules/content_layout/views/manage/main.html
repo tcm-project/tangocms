@@ -71,11 +71,11 @@
 							</select>
 							<select name="content_layout[<?php echo $cntrlr['id']; ?>][sector]">
 								<?php
-									foreach ( array_keys($themeSectors) as $sector ) {
+									foreach ( $themeSectors as $sector ) {
 										printf( '<option value="%1$s" %2$s>%3$s</option>',
-												$sector['id'],
-												($sector['id'] == $cntrlr['sector'] ? 'selected="selected"' : ''),
-												$sector['description']
+												$sector['sector']['id'],
+												($sector['sector']['id'] == $cntrlr['sector'] ? 'selected="selected"' : ''),
+												$sector['sector']['description']
 											);
 									}
 								?>
