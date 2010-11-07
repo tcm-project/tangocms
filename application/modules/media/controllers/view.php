@@ -43,6 +43,9 @@
 				 * to the parent category.
 				 */
 				$item = $this->_model()->getItem( substr($name, 0, -7), false );
+				if ( $item['outstanding'] && $format != 'thumb' ) {
+					throw new Module_NoExist;
+				}
 				$this->setTitle( $item['name'] );
 				$category = $this->_model()->getCategory( $item['cat_id'] );
 				$resource = 'media-cat_view_'.$category['id'];
