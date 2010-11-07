@@ -25,7 +25,6 @@
 									 'video/x-flv',
 									 'video/mp4',
 									 'audio/mpeg',
-									 'application/octet-stream',
 									 'application/x-flash-video',
 									 );
 
