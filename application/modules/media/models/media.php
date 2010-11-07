@@ -35,11 +35,7 @@
 		 * @return array
 		 */
 		public function getAllCategories( $limit=0, $offset=0, $aclCheck=true ) {
-			$statement = 'SELECT SQL_CALC_FOUND_ROWS mcats.*, COUNT(mitems.id) AS item_count
-						  FROM
-							{PREFIX}mod_media_cats mcats
-							LEFT JOIN {PREFIX}mod_media_items mitems ON mitems.cat_id = mcats.id
-						  GROUP BY mcats.id';
+			$statement = 'SELECT SQL_CALC_FOUND_ROWS * FROM {PREFIX}mod_media_cats';
 			if ( $limit != 0 || $offset != 0 ) {
 				if ( $limit > 0 ) {
 					$statement .= ' LIMIT '.(int) $limit;
@@ -54,7 +50,7 @@
 				// Get from cache instead, if possible
 				$cacheKey = 'media_cats';
 				if ( !($categories = $this->_cache->get($cacheKey)) ) {
-					$statement .= ' ORDER BY mcats.name ASC';
+					$statement .= ' ORDER BY name ASC';
 					$query = $this->_sql->query( $statement );
 				}
 			}
@@ -73,14 +69,32 @@
 			} else {
 				$this->categoryCount = count( $categories );
 			}
-			if ( $aclCheck ) {
-				foreach( $categories as $key=>$cat ) {
-					$resource = 'media-cat_view_'.$cat['id'];
-					if ( !$this->_acl->resourceExists( $resource ) || !$this->_acl->check( $resource ) ) {
-						unset( $categories[ $key ] );
+			/**
+			 * Get the media item count for the categories, and check
+			 * ACL resource permission
+			 */
+			$pdoSt = $this->_sql->prepare( 'SELECT COUNT(*) qty, outstanding
+											FROM {PREFIX}mod_media_items
+											WHERE cat_id = :cid
+											GROUP BY outstanding HAVING qty > 0' );
+			foreach( $categories as $key=>$cat ) {
+				if ( $aclCheck && !$this->_acl->check('media-cat_view_'.$cat['id']) ) {
+					unset( $categories[ $key ] );
+					continue;
+				}
+				$categories[ $key ]['item_count'] = 0;
+				$categories[ $key ]['outstanding_count'] = 0;
+				$pdoSt->bindValue( ':cid', $cat['id'], PDO::PARAM_INT );
+				$pdoSt->execute();
+				foreach( $pdoSt->fetchAll( PDO::FETCH_ASSOC ) as $row ) {
+					if ( $row['outstanding'] ) {
+						$categories[ $key ]['outstanding_count'] += $row['qty'];
+					} else {
+						$categories[ $key ]['item_count'] += $row['qty'];
 					}
 				}
 			}
+			$pdoSt->closeCursor();
 			return $categories;
 		}
 
