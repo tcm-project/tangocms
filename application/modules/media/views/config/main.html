@@ -28,7 +28,7 @@
 						<td><?php echo number_format( $cat['outstanding_count'] ); ?></td>
 						<td class="managecol">
 							<a href="<?php echo $edit_url; ?>" title="{L_[Edit category]}">{L_[Edit]}</a>
-							<a href="<?php echo $this->_router->makeUrl('media', 'add', 'upload')->queryArgs(array('cid' => $cat['id'])); ?>">{L_[Upload media item]}</a>
+							<a href="<?php echo $this->_router->makeUrl('media', 'add')->queryArgs(array('cid' => $cat['id'])); ?>">{L_[Upload media item]}</a>
 						</td>
 					</tr>
 			<?php $i++; } } ?>

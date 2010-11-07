@@ -74,12 +74,9 @@
 					}
 					$this->setTitle( $category['name'] );
 					// Check if the user can upload/add items to this category
-					$moderateAcl = $this->_acl->check( 'media-cat_moderate_'.$cid );
-					$uploadAcl = $this->_acl->check( 'media-cat_upload_'.$cid );
-					if ( $moderateAcl || $uploadAcl ) {
+					if ( $this->_acl->check( 'media-cat_upload_'.$cid ) ) {
 						$this->setPageLinks( array(
-													t('Upload media item')		=> $this->_router->makeUrl('media', 'add', 'upload')->queryArgs(array('cid' => $cid)),
-													t('Add external media item')=> $this->_router->makeUrl('media', 'add', 'external')->queryArgs(array('cid' => $cid)),
+													t('Upload/add media item') => $this->_router->makeUrl('media', 'add')->queryArgs(array('cid' => $cid)),
 													));
 					}
 				} catch ( Media_CategoryNoExist $e ) {

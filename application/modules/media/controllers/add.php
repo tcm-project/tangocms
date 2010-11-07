@@ -29,6 +29,37 @@
 									 );
 
 		/**
+		 * Displays the form to either upload a file, or add an external
+		 * media item (such as YouTube)
+		 *
+		 * @return string
+		 */
+		public function indexSection() {
+			$this->setTitle( t('Add/upload media item') );
+			// Get details for the category we'll be adding to
+			try {
+				$cid = $this->_input->get( 'cid' );
+				$category = $this->_model()->getCategory( $cid );
+				if ( !$this->_acl->check( 'media-cat_upload_'.$category['id'] ) ) {
+					throw new Module_NoPermission;
+				}
+				$view = $this->loadView( 'add/form.html' );
+				$view->assignHtml( array('csrf' => $this->_input->createToken(true)) );
+				$view->assign( array(
+								'cid'			=> $cid,
+								'max_fs'		=> $this->_config->get('media/max_fs'),
+								'zip_supported'	=> zula_supports( 'zipExtraction' ),
+								));
+				return $view->getOutput();
+			} catch ( Input_KeyNoExist $e ) {
+				$this->_event->error( t('No media category selected') );
+			} catch ( Media_CategoryNoExist $e ) {
+				$this->_event->error( t('Media category does not exist') );
+			}
+			return zula_redirect( $this->_router->makeUrl('media') );
+		}
+
+		/**
 		 * Handles adding a new media item to a category, either uploaded or from
 		 * external media such as a YouTube video.
 		 *
@@ -41,62 +72,61 @@
 			if ( $type != 'external' && $type != 'upload' ) {
 				throw new Module_ControllerNoExist;
 			}
-			$this->setTitle( t('Add new media item') );
-			// Get details for the category we'll be adding to
-			try {
-				$cid = $this->_input->get( 'cid' );
-				$category = $this->_model()->getCategory( $cid );
-				$resource = 'media-cat_upload_'.$category['id'];
-				if ( !$this->_acl->resourceExists( $resource ) || !$this->_acl->check( $resource ) ) {
-					throw new Module_NoPermission;
-				}
-				// Prepare form validation
-				$form = new View_form( 'add/'.$type.'.html', 'media' );
-				$form->addElement( 'media/cid', $category['id'], 'CID', new Validator_Confirm($category['id']) );
-				if ( $type == 'external' ) {
-					// Specific for external media/YouTube
-					$form->addElement( 'media/external_id', null, t('External media ID'), new Validator_Length(6, 128) );
-					$form->addElement( 'media/external_service', null, t('External service'), new Validator_Length(2, 32) );
-				}
-				if ( $form->hasInput() && $form->isValid() ) {
-					// Handle the provided form data to correctly add the item
-					try {
-						if ( $type == 'upload' ) {
-							$uploadedFiles = $this->handleUpload( $form->getValues('media') );
-						} else if ( $type == 'external' ) {
-							$uploadedFiles = $this->handleExternal( $form->getValues('media') );
-						}
-						$fileCount = count( $uploadedFiles );
-						foreach( $uploadedFiles as $file ) {
-							if ( !isset( $file['external'] ) ) {
-								$file['external'] = array('service' => '', 'id' => '');
-							}
-							$lastItem = $this->_model()->addItem( $category['id'], $file['title'], $file['desc'], $file['type'], $file['file'],
-																  $file['thumbnail'], $file['external']['service'], $file['external']['id'] );
-						}
-						if ( $fileCount == 1 ) {
-							$this->_event->success( t('Added new media item') );
-						} else {
-							$this->_event->success( sprintf('Added %1$d new media items', $fileCount) );
-						}
-						return zula_redirect( $this->_router->makeUrl('media', 'manage', 'outstanding')
-															->queryArgs( array('cid' => $category['id']) )
-											);
-					} catch ( Media_Exception $e ) {
-						$this->_event->error( $e->getMessage() );
-					}
-				}
-				$form->assign( array(
-									'max_fs'		=> $this->_config->get('media/max_fs'),
-									'zip_supported'	=> zula_supports( 'zipExtraction' ),
-									));
-				return $form->getOutput();
-			} catch ( Input_KeyNoExist $e ) {
-				$this->_event->error( t('No media category selected') );
-			} catch ( Media_CategoryNoExist $e ) {
-				$this->_event->error( t('Media category does not exist') );
+			$this->setTitle( t('Add/upload new media item') );
+			// Prepare the form validation
+			$form = new View_form( 'add/form.html', 'media' );
+			$form->addElement( 'media/cid', null, 'CID', new Validator_Int );
+			if ( $type == 'external' ) {
+				// Specific for external YouTube
+				$form->addElement( 'media/external/service', null, t('External service'), new Validator_Length(1, 32) );
+				$form->addElement( 'media/external/youtube_url', null, t('YouTube URL'), new Validator_Url );
 			}
-			return zula_redirect( $this->_router->makeUrl( 'media' ) );
+			if ( $form->hasInput() && $form->isValid() ) {
+				/**
+				 * Ensure the category exists and user has permission
+				 */
+				try {
+					$category = $this->_model()->getCategory( $form->getValues('media/cid') );
+					if ( !$this->_acl->check( 'media-cat_upload_'.$category['id'] ) ) {
+						throw new Module_NoPermission;
+					}
+				} catch ( Media_CategoryNoExist $e ) {
+					$this->_event->error( t('Media category does not exist') );
+					return zula_redirect( $this->_router->makeUrl('media') );
+				}
+				try {
+					if ( $type == 'upload' ) {
+						$uploadedFiles = $this->handleUpload( $form->getValues('media') );
+					} else if ( $type == 'external' ) {
+						$uploadedFiles = $this->handleExternal( $form->getValues('media') );
+					}
+					$fileCount = count( $uploadedFiles );
+					foreach( $uploadedFiles as $file ) {
+						if ( !isset( $file['external'] ) ) {
+							$file['external'] = array('service' => '', 'id' => '');
+						}
+						$lastItem = $this->_model()->addItem( $category['id'], $file['title'], $file['desc'], $file['type'], $file['file'],
+																$file['thumbnail'], $file['external']['service'], $file['external']['id'] );
+					}
+					if ( $fileCount == 1 ) {
+						$this->_event->success( t('Added new media item') );
+					} else {
+						$this->_event->success( sprintf('Added %1$d new media items', $fileCount) );
+					}
+					return zula_redirect( $this->_router->makeUrl('media', 'manage', 'outstanding')
+														->queryArgs( array('cid' => $category['id']) )
+										);
+				} catch ( Media_Exception $e ) {
+					$this->_event->error( $e->getMessage() );
+				}
+			}
+			// Redirect back to correct location
+			$url = $this->_router->makeUrl( 'media', 'add' );
+			try {
+				$url->queryArgs( array('cid' => $this->_input->post('media/cid')) );
+			} catch ( Input_KeyNoExist $e ) {
+			}
+			return zula_redirect( $url );
 		}
 
 		/**
@@ -200,9 +230,14 @@
 		 */
 		protected function handleExternal( array $fd ) {
 			try {
-				$externalMedia = Externalmedia::factory( $fd['external_service'], $fd['external_id'] );
+				parse_str( parse_url($fd['external']['youtube_url'], PHP_URL_QUERY), $queryArgs );
+				if ( empty( $queryArgs['v'] ) ) {
+					throw new Media_Exception( t('Please provide a valid YouTube URL') );
+				}
+				$serviceId = $queryArgs['v'];
+				$externalMedia = Externalmedia::factory( $fd['external']['service'], $serviceId );
 			} catch ( ExternalMediaDriver_InvalidID $e ) {
-				throw new Media_Exception( t('External media ID does not exist') );
+				throw new Media_Exception( t('Please provide a valid YouTube URL') );
 			} catch ( Externalmedia_Exception $e ) {
 				throw new Media_Exception( $e->getMessage() );
 			}
@@ -214,12 +249,10 @@
 				if ( copy( $externalMedia->thumbUrl, $uploadDir.'/'.$thumbname ) ) {
 					// Resize the thumbnail image
 					try {
+						$thumbnailWH = $this->_config->get( 'media/thumb_dimension' );
 						$thumbnail = new Image( $uploadDir.'/'.$thumbname );
 						$thumbnail->mime = 'image/png';
-						$thumbnail->thumbnail(
-											$this->_config->get('media/thumb_size_x'),
-											$this->_config->get('media/thumb_size_y')
-											);
+						$thumbnail->thumbnail( $thumbnailWH, $thumbnailWH );
 						$thumbnail->save();
 					} catch ( Image_Exception $e ) {
 						$this->_event->error( t('Oops, an error occurred while processing an image') );
@@ -236,8 +269,8 @@
 								'file'		=> '',
 								'thumbnail'	=> isset($thumbname) ? $dirname.'/'.$thumbname : '',
 								'external'	=> array(
-													'service'	=> $fd['external_service'],
-													'id'		=> $fd['external_id'],
+													'service'	=> $fd['external']['service'],
+													'id'		=> $serviceId,
 													),
 								)
 							);

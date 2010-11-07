@@ -1,4 +1,4 @@
-<form action="" method="post" enctype="multipart/form-data">
+<form action="<?php echo $this->_router->makeUrl( 'media', 'add', 'upload' ); ?>" method="post" enctype="multipart/form-data">
 	<div class="help helpInfo">
 		<p><?php printf( t('The maximum filesize that can be uploaded is %s'), zula_human_readable($max_fs) ); ?></p>
 	</div>
@@ -20,7 +20,6 @@
 					</dl>
 				</td>
 				<td class="confcol">
-					<input type="hidden" name="MAX_FILE_SIZE" value="{max_fs}">
 					<input type="file" name="media_file">
 				</td>
 			</tr>
@@ -38,9 +37,35 @@
 		</tbody>
 	</table>
 
+	{csrf}
 	<div class="actions">
-		<input type="hidden" name="media[cid]" value="{media.cid}">
+		<input type="hidden" name="media[cid]" value="{cid}">
 		<input type="submit" value="{L_[Upload media]}">
 	</div>
+</form>
 
+<h3>{L_[Or, add a video from YouTube]}</h3>
+<form action="<?php echo $this->_router->makeUrl( 'media', 'add', 'external' ); ?>" method="post">
+	<table>
+		<tbody>
+			<tr class="even">
+				<td>
+					<dl>
+						<dt>{L_[YouTube URL]}</dt>
+						<dd>{L_[Enter the YouTube URL of the video you wish to add.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="text" name="media[external][youtube_url]" value="">
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	{csrf}
+	<div class="actions">
+		<input type="hidden" name="media[external][service]" value="youtube">
+		<input type="hidden" name="media[cid]" value="{cid}">
+		<input type="submit" value="{L_[Add YouTube video]}">
+	</div>
 </form>

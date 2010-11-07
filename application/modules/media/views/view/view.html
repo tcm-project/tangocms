@@ -1,26 +1,26 @@
 <div id="mediaItem">
 	<?php if ( $item['type'] == 'external' ) { ?>
 		<div>
-			<object type="application/x-shockwave-flash" data="http://www.youtube.com/v/{ITEM.EXTERNAL_ID}" width="425" height="355">
-				<param name="movie" value="http://www.youtube.com/v/{ITEM.EXTERNAL_ID}">
+			<object type="application/x-shockwave-flash" data="http://www.youtube.com/v/{item.external_id}" width="480" height="385">
+				<param name="movie" value="http://www.youtube.com/v/{item.external_id}">
 				<param name="wmode" value="transparent">
 			</object>
 		</div>
 	<?php } else if ( $item['type'] == 'image' ) { ?>
 		<a class="imglink" <?php echo $lightbox ? 'rel="modalImage"' : ''; ?> href="<?php echo $this->_router->makeUrl( 'media', 'view', $item['identifier'] )->queryArgs( array('f' => 'large') ); ?>" title="{L_[View larger image]}">
-			<img src="<?php echo $this->_router->makeUrl( 'media', 'view', $item['identifier'] )->queryArgs( array('f' => 'medium') ); ?>" alt="{ITEM.NAME}">
+			<img src="<?php echo $this->_router->makeUrl( 'media', 'view', $item['identifier'] )->queryArgs( array('f' => 'medium') ); ?>" alt="{item.name}">
 		</a>
 	<?php } else { ?>
 		<a class="mediaPlayer <?php echo $item['type'] == 'audio' ? 'audio' : 'video'; ?>"
-			style="display: inline-block; width: {PLAYER.WIDTH}px; height: <?php echo $item['type'] == 'audio' ? 80 : $player['height']; ?>px;"
+			style="display: inline-block; width: {player.width}px; height: <?php echo $item['type'] == 'audio' ? 80 : $player['height']; ?>px;"
 			href="<?php echo $this->_router->makeUrl( 'media', 'view', $item['identifier'] )->queryArgs( array('f' => 'stream') )->makeFull(); ?>"></a>
 	<?php } ?>
 </div>
 
 <div id="mediaItemDetails">
 	<p>
-		<strong>{L_[Title]}:</strong> {ITEM.NAME}<br>
-		<strong>{L_[Category]}:</strong> <a href="<?php echo $this->_router->makeUrl( 'media', 'cat', $category['identifier'] ); ?>">{CATEGORY.NAME}</a>
+		<strong>{L_[Title]}:</strong> {item.name}<br>
+		<strong>{L_[Category]}:</strong> <a href="<?php echo $this->_router->makeUrl( 'media', 'cat', $category['identifier'] ); ?>">{category.name}</a>
 	</p>
 
 	<?php if ( $item['description'] ) { ?>
