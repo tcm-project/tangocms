@@ -53,7 +53,6 @@
 				if ( $import === false ) {
 					throw new Module_ControllerNoExist;
 				} else {
-					$this->_log->message( 'Page unable to import page "'.$page.'" as it does not exist', Log::L_WARNING );
 					return false;
 				}
 			}
