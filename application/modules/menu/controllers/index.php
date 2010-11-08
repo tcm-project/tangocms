@@ -82,8 +82,10 @@
 				} else if ( !zula_url_has_scheme( $item['url'] ) ) {
 					if ( $item['url'][0] == '#' ) {
 						$item['url'] = $this->_router->getCurrentUrl().$item['url'];
-					} else {
+					} else if ( strpos( $item['url'], '/' ) ) {
 						$item['url'] = $this->_router->makeUrl( $item['url'] );
+					} else {
+						$item['url'] = $this->_router->makeUrl( $item['url'], null, null, 'main' );
 					}
 				}
 				// Gather children and append the list item
