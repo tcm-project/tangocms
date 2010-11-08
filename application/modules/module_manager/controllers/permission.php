@@ -71,7 +71,7 @@
 				}
 				$this->setTitle( sprintf( t('"%1$s" permissions'), $module->title ), false );
 			} catch ( Module_NoExist $e ) {
-				$this->_event->error( sprintf( t('Module "%1$s" does not exist, could not get details'), $name ) );
+				$this->_event->error( sprintf( t('Module "%1$s" does not exist'), $name ) );
 				return zula_redirect( $this->_router->makeUrl( 'module_manager' ) );
 			}
 			/**

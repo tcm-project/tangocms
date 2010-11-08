@@ -13,14 +13,14 @@
         		<td colspan="4">{L_[There are currently no new modules to be installed.]}</td>
         	</tr>
         <?php } else { $i = 0; foreach( $modules as $modname ) { $module = new Module( $modname ); ?>
-            <tr class="<?php echo zula_odd_even( $i ); ?>">
+            <tr class="<?php echo zula_odd_even( $i++ ); ?>">
                     <td><?php echo $module->title.' ('.$module->name.')' ?></td>
                     <td><?php echo $module->author; ?></td>
                     <td><?php echo $module->description; ?></td>
                     <td class="managecol">
-						<a href="<?php echo $this->_router->makeUrl( 'module_manager', 'install', 'module', null, array('name' => $module->name) ); ?>">{L_[Install module]}</a>
+						<a href="<?php echo $this->_router->makeUrl( 'module_manager', 'install', $module->name ); ?>">{L_[Install module]}</a>
                     </td>
             </tr>
-        <?php $i++; } } ?>
+        <?php } } ?>
 	</tbody>
 </table>
