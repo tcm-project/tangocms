@@ -129,8 +129,12 @@
 				if ( $redirect == false && zula_url_has_scheme( $url ) ) {
 					$redirect = true;
 				}
-				$pdoSt = $this->_sql->prepare( 'INSERT INTO {PREFIX}mod_aliases (alias, url, redirect) VALUES(?, ?, ?)' );
-				$pdoSt->execute( array($alias, $url, $redirect) );
+				$pdoSt = $this->_sql->prepare( 'INSERT INTO {PREFIX}mod_aliases (alias, url, redirect)
+												VALUES(:alias, :url, :redirect)' );
+				$pdoSt->bindValue( ':alias', $alias );
+				$pdoSt->bindValue( ':url', $url );
+				$pdoSt->bindValue( ':redirect', (int) $redirect, PDO::PARAM_INT );
+				$pdoSt->execute();
  				if ( $pdoSt->rowCount() ) {
  					$this->_cache->delete( 'aliases' );
  					Hooks::notifyAll( 'aliases_add', $this->_sql->lastInsertId(), $alias, $url, $redirect );
@@ -155,8 +159,14 @@
 			if ( $redirect == false && zula_url_has_scheme( $url ) ) {
 				$redirect = true;
 			}
-			$pdoSt = $this->_sql->prepare( 'UPDATE {PREFIX}mod_aliases SET alias = ?, url = ?, redirect = ? WHERE id = ?' );
-			$pdoSt->execute( array($alias, $url, $redirect, $aliasDetails['id']) );
+			$pdoSt = $this->_sql->prepare( 'UPDATE {PREFIX}mod_aliases SET
+											alias = :alias, url = :url, redirect = :redirect
+											WHERE id = :id' );
+			$pdoSt->bindValue( ':alias', $alias );
+			$pdoSt->bindValue( ':url', $url );
+			$pdoSt->bindValue( ':redirect', (int) $redirect, PDO::PARAM_INT );
+			$pdoSt->bindValue( ':id', $aliasDetails['id'], PDO::PARAM_INT );
+			$pdoSt->execute();
  			$this->_cache->delete( 'aliases' );
  			Hooks::notifyAll( 'aliases_edit', $id, $alias, $url, $redirect );
  			return (bool) $pdoSt->rowCount();
