@@ -88,7 +88,7 @@
 			if ( $mime == 'text/html' ) {
 				$signature = zula_nls2p( $signature );
 			}
-			return $body."\n".$signature;
+			return $body."\n\n".$signature;
 		}
 
 		/**

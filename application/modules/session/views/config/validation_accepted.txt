@@ -7,4 +7,4 @@
 
 {L_[If you ever forget your password, or need to reset it for any reason you can do so by going to the following URL:]}
 
-<?php echo $this->_router->makeFullUrl( 'session', 'pwd', 'reset', 'main' );; ?>
+<?php echo $this->_router->makeFullUrl( 'session', 'pwd', 'reset', 'main' ); ?>
