@@ -85,7 +85,9 @@
 			$dirs = array(
 						$this->_zula->getDir( 'config' ).'/layouts',
 						$this->_zula->getDir( 'logs' ),
-						$this->_zula->getDir( 'tmp' )
+						$this->_zula->getDir( 'tmp' ),
+						$this->_zula->getDir( 'uploads' ),
+						$this->_zula->getDir( 'locale' ),
 						);
 			foreach( $dirs as $dir ) {
 				$items['dirs'][] = array('path' => $dir, 'result' => zula_is_writable( $dir ));
