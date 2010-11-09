@@ -31,6 +31,10 @@
 }
 
 /** Main Styles */
+.tcmPop {
+	overflow: hidden !important;
+}
+
 .tcmPop, .tcmPop div, .tcmPop span, .tcmPop a {
 	position: absolute;
 }

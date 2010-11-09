@@ -57,7 +57,7 @@ $(document).ready( function() {
 
 				// Advanced theme setup
 				theme: "advanced",
-				skin: "tcm",
+				skin: "default",
 				button_tile_map: true,
 				theme_advanced_toolbar_align: "left",
 				theme_advanced_toolbar_location: "top",
