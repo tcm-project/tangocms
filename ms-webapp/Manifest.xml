@@ -11,6 +11,7 @@
 	<setAcl path="tangocms/application/logs" setAclAccess="Modify" setAclUser="anonymousAuthenticationUser" />
 	<setAcl path="tangocms/tmp" setAclAccess="Modify" setAclUser="anonymousAuthenticationUser" />
 	<setAcl path="tangocms/assets/uploads" setAclAccess="Modify" setAclUser="anonymousAuthenticationUser" />
+	<setAcl path="tangocms/application/locale" setAclAccess="Modify" setAclUser="anonymousAuthenticationUser" />
 	<setAcl
 		path="tangocms/config/default/config.ini.php"
 		setAclResourceType="File" setAclAccess="Modify" setAclUser="anonymousAuthenticationUser" />

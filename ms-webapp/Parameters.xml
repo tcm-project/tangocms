@@ -104,23 +104,26 @@
 	<parameter name="SetAclParameter4" defaultValue="{AppPath}/assets/uploads" tags="Hidden">
 		<parameterEntry type="ProviderPath" scope="setAcl" match="tangocms/assets/uploads$" />
 	</parameter>
-	<parameter name="SetAclParameter5" defaultValue="{AppPath}/config/default/config.ini.php" tags="Hidden">
+	<parameter name="SetAclParameter5" defaultValue="{AppPath}/application/locale" tags="Hidden">
+		<parameterEntry type="ProviderPath" scope="setAcl" match="tangocms/application/locale$" />
+	</parameter>
+	<parameter name="SetAclParameter6" defaultValue="{AppPath}/config/default/config.ini.php" tags="Hidden">
 		<parameterEntry type="ProviderPath" scope="setAcl" match="tangocms/config/default/config.ini.php$" />
 	</parameter>
-	<parameter name="SetAclParameter6" defaultValue="{AppPath}/config/default/layouts/main-default.xml" tags="Hidden">
+	<parameter name="SetAclParameter7" defaultValue="{AppPath}/config/default/layouts/main-default.xml" tags="Hidden">
 		<parameterEntry type="ProviderPath" scope="setAcl" match="tangocms/config/default/layouts/main-default.xml$" />
 	</parameter>
-	<parameter name="SetAclParameter7" defaultValue="{AppPath}/config/default/layouts/admin-default.xml" tags="Hidden">
+	<parameter name="SetAclParameter8" defaultValue="{AppPath}/config/default/layouts/admin-default.xml" tags="Hidden">
 		<parameterEntry type="ProviderPath" scope="setAcl" match="tangocms/config/default/layouts/admin-default.xml$" />
 	</parameter>
-	<parameter name="SetAclParameter8" defaultValue="{AppPath}/config/default/layouts/fpsc-main.xml" tags="Hidden">
+	<parameter name="SetAclParameter9" defaultValue="{AppPath}/config/default/layouts/fpsc-main.xml" tags="Hidden">
 		<parameterEntry type="ProviderPath" scope="setAcl" match="tangocms/config/default/layouts/fpsc-main.xml$" />
 	</parameter>
-	<parameter name="SetAclParameter9" defaultValue="{AppPath}/config/default/layouts/fpsc-admin.xml" tags="Hidden">
+	<parameter name="SetAclParameter10" defaultValue="{AppPath}/config/default/layouts/fpsc-admin.xml" tags="Hidden">
 		<parameterEntry type="ProviderPath" scope="setAcl" match="tangocms/config/default/layouts/fpsc-admin.xml$" />
 	</parameter>
 
-	<parameter name="SetAclParameter10" defaultValue="{AppPath}/msInstall.php" tags="Hidden">
+	<parameter name="SetAclParameter11" defaultValue="{AppPath}/msInstall.php" tags="Hidden">
 		<parameterEntry type="ProviderPath" scope="setAcl" match="tangocms/msInstall.php" />
 	</parameter>
 </parameters>
