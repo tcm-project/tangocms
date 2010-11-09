@@ -405,14 +405,20 @@ div.actions {
 
 .categorylist ul {
 	margin: 0;
+	overflow: hidden;
 	padding: 0;
 }
 
 .categorylist li {
 	float: left;
+	list-style-position: inside;
 	list-style-type: circle;
-	margin: 0 20px 0 0;
+	margin: 0 0 0 20px;
 	padding: 0;
+}
+
+.categorylist li:first-child {
+	margin-left: 0;
 }
 
 /** Help dialogs */
