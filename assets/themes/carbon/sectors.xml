@@ -9,4 +9,10 @@
 	<sector id="S3">
 		<description>Left sidebar</description>
 	</sector>
+	<sector id="S4">
+		<description>Above main content</description>
+	</sector>
+	<sector id="S5">
+		<description>Below main content</description>
+	</sector>
 </sectors>

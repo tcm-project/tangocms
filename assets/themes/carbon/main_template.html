@@ -35,13 +35,17 @@
 					<div class="column sidebar">{S3}</div>
 				<?php } ?>
 
-				<div id="content" class="column <?php echo 'numCols', 1+!empty($s3)+!empty($s2); ?>">
-					<div>
-						<?php echo $controller_title ? '<h1>'.$controller_title.'</h1>' : ''; ?>
-						{EVENT_FEEDBACK}
-						{PAGE_LINKS}
-						{SC}
+				<div id="contentWrap" class="column <?php echo 'numCols', 1+!empty($s3)+!empty($s2); ?>">
+					{S4}
+					<div id="content">
+						<div>
+							<?php echo $controller_title ? '<h1>'.$controller_title.'</h1>' : ''; ?>
+							{EVENT_FEEDBACK}
+							{PAGE_LINKS}
+							{SC}
+						</div>
 					</div>
+					{S5}
 				</div>
 
 				<?php if ( !empty($s2) ) { ?>

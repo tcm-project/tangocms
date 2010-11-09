@@ -112,6 +112,22 @@ html, body {
 	width: 210px;
 }
 
+#contentWrap.numCols1 { width: 895px; }
+#contentWrap.numCols2 { width: 665px; }
+#contentWrap.numCols3 { width: 444px; }
+
+#contentWrap > div.module-wrap {
+	margin: 10px 5px;
+}
+
+#contentWrap > div.module-wrap:first-child {
+	margin-top: 5px;
+}
+
+#contentWrap > div.module-wrap + #content {
+	margin-top: 10px;
+}
+
 #content {
 	background-color: #f6f6f6;
 	overflow: hidden;
@@ -131,10 +147,6 @@ html, body {
 	-moz-border-radius: 8px;
 	-webkit-border-radius: 8px;
 }
-
-#content.numCols1 > div { width: 857px; }
-#content.numCols2 > div { width: 630px; }
-#content.numCols3 > div { width: 400px; }
 
 #content > div > h1 {
 	color: #393a38;
