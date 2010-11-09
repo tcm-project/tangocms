@@ -116,8 +116,7 @@
 }
 
 #tbMeta p {
-	margin-bottom: 0.1em;
-	margin-right: 10px;
+	margin: 0 10px 0.1em 0;
 }
 
 #tbMetaTitle {
