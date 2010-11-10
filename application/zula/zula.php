@@ -23,7 +23,7 @@
 		/**
 		 * Current version of Zula being used
 		 */
-		const _VERSION = '0.7.90';
+		const _VERSION = '0.8.0';
 
 		/**
 		 * Holds the singleton instance of this class

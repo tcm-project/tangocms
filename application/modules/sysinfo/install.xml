@@ -2,7 +2,7 @@
 <install>
 	<dependencies>
 		<zula>
-			<version operator=">=">0.7.6</version>
+			<version operator=">=">0.8.0</version>
 		</zula>
 	</dependencies>
 </install>

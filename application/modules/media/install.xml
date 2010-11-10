@@ -2,7 +2,7 @@
 <install>
 	<dependencies>
 		<php>
-			<version operator=">=">5.2.0</version>
+			<version operator=">=">0.8.0</version>
 			<extensions>
 				<name>gd</name>
 			</extensions>
