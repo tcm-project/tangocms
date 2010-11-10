@@ -21,7 +21,8 @@
 		 */
 		protected $routes = array(
 								# Stable Releases
-								'2.5.5'			=> '2.6.0-alpha1',
+								'2.5.6'			=> '2.6.0-alpha1',
+								'2.5.5'			=> '2.5.6',
 								'2.5.4'			=> '2.5.5',
 								'2.5.3'			=> '2.5.4',
 								'2.5.2'			=> '2.5.3',
@@ -429,6 +430,7 @@
 				case '2.5.3':
 				case '2.5.4':
 				case '2.5.5':
+				case '2.5.6':
 				case '2.5.50':
 					foreach( array('main', 'admin') as $siteType ) {
 						$layout = new Layout( $siteType.'-default' );
