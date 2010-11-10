@@ -32,7 +32,7 @@ $(document).ready( function() {
 		}
 		if ( editorShebangs[i] == "html" ) {
 			// Configure TinyMCE including preinit to set different base dir to the script url
-			tinyMCEPreInit = {base: zula_dir_js+"/tinymce", suffix: null, query: "cb=20101106"}
+			tinyMCEPreInit = {base: zula_dir_js+"/tinymce", suffix: null, query: "cb=20101110"}
 			var tinyMCEConfig = {
 				script_url: zula_dir_base+"index.php?url=editor/compressor/gzip",
 				width: "100%",
