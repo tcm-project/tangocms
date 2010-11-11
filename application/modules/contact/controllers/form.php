@@ -102,7 +102,7 @@
 			unset( $contact['body'] );
 			$form->assignHtml( array('body' => $editor->parse()) );
 			$form->assign( array(
-								'contact'	=> $contact,
+								'details'	=> $contact,
 								'fields'	=> $fields,
 								));
 			return $form->getOutput();
