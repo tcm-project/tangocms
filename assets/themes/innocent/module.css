@@ -150,31 +150,31 @@ ul.shareable li a:hover {
 	opacity: 1;
 }
 
-a.shareable-delicious {
+a.shareableDelicious {
 	background-position: 0 0;
 }
 
-a.shareable-digg {
+a.shareableDigg {
 	background-position: 0 -18px;
 }
 
-a.shareable-facebook {
+a.shareableFacebook {
 	background-position: 0 -36px;
 }
 
-a.shareable-google {
+a.shareableGoogle {
 	background-position: 0 -54px;
 }
 
-a.shareable-reddit {
+a.shareableReddit {
 	background-position: 0 -72px;
 }
 
-a.shareable-slashdot {
+a.shareableSlashdot {
 	background-position: 0 -90px;
 }
 
-a.shareable-stumbleupon {
+a.shareableStumbleupon {
 	background-position: 0 -108px;
 }
 
