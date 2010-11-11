@@ -23,7 +23,11 @@
 						<td class="checkcol">
 							<input type="checkbox" name="media_cat_ids[]" value="<?php echo $cat['id']; ?>">
 						</td>
-						<td><?php echo zula_snippet( $cat['name'], 80, true ); ?></td>
+						<td>
+							<a href="<?php echo $this->_router->makeUrl('media', 'cat', $cat['identifier']); ?>">
+								<?php echo zula_snippet( $cat['name'], 80, true ); ?>
+							</a>
+						</td>
 						<td><?php echo number_format( $cat['item_count'] ); ?></td>
 						<td><?php echo number_format( $cat['outstanding_count'] ); ?></td>
 						<td class="managecol">
