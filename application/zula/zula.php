@@ -81,28 +81,27 @@
 		 * @var array
 		 */
 		private $directories = array(
-									'3rd_party'	=> 'libraries/3rd_party',
+									'3rd_party'	=> 'application/libraries/3rd_party',
 									'assets'	=> './assets',
-									'config'	=> './config',
-									'fonts' 	=> 'fonts',
+									'config'	=> 'config',
+									'fonts' 	=> 'application/fonts',
 									'setup'		=> './setup',
 									'js'		=> './assets/js',
-									'libs'		=> 'libraries',
-									'locale'	=> 'locale',
-									'logs'		=> 'logs',
-									'modules'	=> 'modules',
+									'libs'		=> 'application/libraries',
+									'locale'	=> 'application/locale',
+									'logs'		=> 'application/logs',
+									'modules'	=> 'application/modules',
 									'themes'	=> './assets/themes',
 									'tmp'		=> './tmp',
 									'uploads'	=> './assets/uploads',
-									'views'		=> 'views',
-									'zula'		=> 'zula',
+									'views'		=> 'application/views',
+									'zula'		=> 'application/zula',
 									);
 
 		/**
 		 * Updates the current directories we have with the correct path and
 		 * also does some other needed startup things such as setting the autoloader
 		 * storing CWD, getting temp dir etc etc
-		 *
 		 *
 		 * @param string $rootDir
 		 * @param string $state
@@ -131,7 +130,7 @@
 			define( '_BASE_DIR', empty($base) ? '/' : '/'.$base.'/' );
 			foreach( $this->directories as $name=>$path ) {
 				if ( substr( $path, 0, 2 ) !== './' ) {
-					$path = $rootDir.'/application/'.$path;
+					$path = $rootDir.'/'.$path;
 				}
 				$this->updateDir( $name, $path );
 			}
