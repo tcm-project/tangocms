@@ -5,6 +5,46 @@ TangoCMS NEWS (Basic ChangeLog for Users)
 A complete ChangeLog can be found at http://tangocms.org/changelog
 
 
+2.6.0 (2010-11-12)
+========================
+
+-- Feature Improvements/Modifications
+
+	* Feature #65: Run Zula via CLI, with upgrade ability
+	* Feature #67: Finish Internationalisation/Localisation support.
+	* Feature #83: More consistent media module
+	* Feature #130: Additional Contact Details
+	* Feature #187: Bulk import / upload of items to Media
+	* Feature #204: Toggle displaying of Article published information in Headlines and Categories
+	* Feature #247: Assign different edit permissions to different pages
+	* Feature #265: Article Auto Expire Time/Date
+	* Feature #271: Different theme styles
+	* Feature #278: Read more option for page breaks
+	* Feature #279: RSS feeds should obey page breaks
+	* Feature #284: Media image watermarks
+	* Feature #290: Display media videos in widescreen 16:9 format
+	* Feature #302: Add PHP lint check in build.sh utility
+	* Feature #308: Add a usable left sidebar to 'carbon' theme
+	* Feature #309: Display email address in contact form email body
+	* Feature #314: Line numbers in the CSS textarea
+	* Feature #316: Improve the poll duration options
+	* Feature #318: Change default login type to 'email'
+	* Feature #319: Reset password, ask for email instead of username
+
+-- Bug Fixes
+
+	* Bug #238: Don't generate physical captcha files
+	* Bug #276: Permissions reset when changing the order of items in content layout
+	* Bug #283: 202 error with uploaded mp3 file in media player
+	* Bug #303: Article headlines links to wrong URL when displaying from all categories
+	* Bug #305: Unable to select suggestion with the arrow keys from aliases auto-completion
+	* Bug #306: Settings shows cache type as 'Disabled' instead of 'File' after install
+	* Bug #310: Ordering pages requires permission associated with the menu module
+	* Bug #315: No check for TLS/SSL support before offering as email encryption
+	* Bug #322: Email encryption 'TLS' does not support 'STARTTLS'
+	* Bug #323: TinyMCE theme toolbar double the height in MSIE8
+
+
 2.5.5 (2010-06-15)
 ========================
 
