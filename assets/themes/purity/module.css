@@ -192,31 +192,6 @@ a.shareableStumbleupon {
 	background-position: 0 -108px;
 }
 
-/** Tags */
-.tagLink1 { font-size: 3.3em; }
-.tagLink2 { font-size: 3.2em; }
-.tagLink3 { font-size: 3.1em; }
-.tagLink4 { font-size: 2.9em; }
-.tagLink5 { font-size: 2.7em; }
-.tagLink6 { font-size: 2.5em; }
-.tagLink7 { font-size: 2.3em; }
-.tagLink8 { font-size: 2.1em; }
-.tagLink9 { font-size: 1.9em; }
-.tagLink10 { font-size: 1.7em; }
-.tagLink11 { font-size: 1.5em; }
-.tagLink12 { font-size: 1.3em; }
-.tagLinknormal { font-size: 1.1em; }
-.tagCloud { text-align: center; }
-
-.tagList {
-	margin: 5px 0;
-}
-
-.tagList > span {
-	color: #444;
-	font-weight: bold;
-}
-
 /** Comments */
 ol.commentsList {
 	margin-bottom: 20px;
