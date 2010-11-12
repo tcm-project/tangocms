@@ -43,7 +43,7 @@
 		 */
 		public function __call( $name, $args ) {
 			$file = $this->rssDir.'/'.strtolower( substr($name, 0, -7) ).'.xml';
-			if ( preg_match( '#[^A-Z0-9\-_]+#i', $name ) || !file_exists( $file ) ) {
+			if ( preg_match( '#[^A-Z0-9_\-.!]+#i', $name ) || !file_exists( $file ) ) {
 				throw new Module_ControllerNoExist( 'The RSS feed requested does not exist!' );
 			}
 			header( 'Content-Type: application/rss+xml; charset=utf-8' );
