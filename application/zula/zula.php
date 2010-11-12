@@ -85,7 +85,7 @@
 									'assets'	=> './assets',
 									'config'	=> 'config',
 									'fonts' 	=> 'application/fonts',
-									'setup'		=> './setup',
+									'setup'		=> 'setup',
 									'js'		=> './assets/js',
 									'libs'		=> 'application/libraries',
 									'locale'	=> 'application/locale',

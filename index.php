@@ -60,7 +60,6 @@
 		$zula->setDir( 'assets', '../assets' );
 		$zula->setDir( 'js', '../assets/js' );
 		$zula->setDir( 'tmp', '../tmp' );
-		$zula->setDir( 'setup', './' );
 		$zula->setDir( 'uploads', '../assets/uploads' );
 		$zula->setDir( 'config', '../config' );
 	}
