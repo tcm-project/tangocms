@@ -1,52 +1,54 @@
-<?php
-	// Build the jump box
-	if ( count( $article_parts ) > 1 ) {
-		$url = clone $this->_router->getParsedUrl();
-		$options = '';
-		foreach( $article_parts as $key=>$part ) {
-			if ( $key == 0 ) {
-				$url->removeQueryArgs( 'part' );
-			} else {
-				$url->queryArgs( array('part' => $key+1) );
+<div class="article">
+	<?php
+		// Build the jump box
+		if ( count( $article_parts ) > 1 ) {
+			$url = clone $this->_router->getParsedUrl();
+			$options = '';
+			foreach( $article_parts as $key=>$part ) {
+				if ( $key == 0 ) {
+					$url->removeQueryArgs( 'part' );
+				} else {
+					$url->queryArgs( array('part' => $key+1) );
+				}
+				$options .= sprintf( '<option value="%1$s" %2$s>%3$s</option>',
+									$url,
+									($part['id'] == $requested_part['id'] ? 'selected="selected"' : ''),
+									(trim($part['title']) ? $part['title'] : sprintf( t('Part %d'), $key+1 ))
+								);
 			}
-			$options .= sprintf( '<option value="%1$s" %2$s>%3$s</option>',
-								 $url,
-								 ($part['id'] == $requested_part['id'] ? 'selected="selected"' : ''),
-								 (trim($part['title']) ? $part['title'] : sprintf( t('Part %d'), $key+1 ))
-							   );
+			$jumpBox = '<p>'.t('View part:').' <select id="articleJumpbox">'.$options.'</select></p>';
+		} else {
+			$jumpBox = '';
 		}
-		$jumpBox = '<p>'.t('View part:').' <select id="articleJumpbox">'.$options.'</select></p>';
-	} else {
-		$jumpBox = '';
-	}
-?>
+	?>
 
-<div id="articleHeader">
-	<?php if ( $meta_format ) { ?>
-		<p class="articleMeta">
-			<?php
-				$catLink = $this->_router->makeUrl( 'article', 'cat', $category['identifier'] );
-				printf( $meta_format,
-						$this->_date->format( $article['date'] ),
-						$this->_helper('user')->link( $article['author'] ),
-						'<a href="'.$catLink.'">'.$category['title'].'</a>'
-						);
-			?>
-		</p>
-	<?php } ?>
+	<div id="articleHeader">
+		<?php if ( $meta_format ) { ?>
+			<p class="articleMeta">
+				<?php
+					$catLink = $this->_router->makeUrl( 'article', 'cat', $category['identifier'] );
+					printf( $meta_format,
+							$this->_date->format( $article['date'] ),
+							$this->_helper('user')->link( $article['author'] ),
+							'<a href="'.$catLink.'">'.$category['title'].'</a>'
+							);
+				?>
+			</p>
+		<?php } ?>
 
-	<?php echo $this->_config->get( 'article/jump_box_position' ) == 'top' ? $jumpBox : ''; ?>
+		<?php echo $this->_config->get( 'article/jump_box_position' ) == 'top' ? $jumpBox : ''; ?>
+	</div>
+
+	<hr>
+
+	<div id="articleBody">
+		<?php if ( trim( $requested_part['title'] ) ) { ?>
+			<h3>{REQUESTED_PART.TITLE}</h3>
+		<?php } ?>
+		{BODY}
+	</div>
+
+	<?php echo $this->_config->get( 'article/jump_box_position' ) == 'bottom' ? '<hr>'.$jumpBox : ''; ?>
+
+	{PAGINATION}
 </div>
-
-<hr>
-
-<div id="articleBody">
-	<?php if ( trim( $requested_part['title'] ) ) { ?>
-		<h3>{REQUESTED_PART.TITLE}</h3>
-	<?php } ?>
-	{BODY}
-</div>
-
-<?php echo $this->_config->get( 'article/jump_box_position' ) == 'bottom' ? '<hr>'.$jumpBox : ''; ?>
-
-{PAGINATION}
