@@ -24,7 +24,7 @@
 							<input type="checkbox" name="media_cat_ids[]" value="<?php echo $cat['id']; ?>">
 						</td>
 						<td>
-							<a href="<?php echo $this->_router->makeUrl('media', 'cat', $cat['identifier']); ?>">
+							<a href="<?php echo $this->_router->makeUrl('media', 'cat', $cat['identifier'], 'main'); ?>">
 								<?php echo zula_snippet( $cat['name'], 80, true ); ?>
 							</a>
 						</td>
