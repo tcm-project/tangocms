@@ -21,6 +21,8 @@
 		 */
 		protected $routes = array(
 								# Stable Releases
+								'2.6.0'			=> '2.7.0-alpha1',
+
 								'2.5.6'			=> '2.6.0-alpha1',
 								'2.5.5'			=> '2.5.6',
 								'2.5.4'			=> '2.5.5',
@@ -523,6 +525,20 @@
 					return '2.5.72';
 				default:
 					return '2.5.90';
+			}
+		}
+
+		/**
+		 * Upgrades to 2.7.0-alpha1 (2.6.60)
+		 *
+		 * @return bool|string
+		 */
+		protected function upgradeTo_270_alpha1() {
+			switch( $this->version ) {
+				case '2.6.0':
+					return '2.6.50';
+				default:
+					return '2.6.60';
 			}
 		}
 
