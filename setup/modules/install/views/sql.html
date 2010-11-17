@@ -13,7 +13,7 @@
 				<td class="confcol">
 					<select name="type">
 						<?php
-							$supportedTypes = array( 'mysql' => 'MySQL', 'mssql' => 'Microsoft SQL Server' );
+							$supportedTypes = array( 'mysql' => 'MySQL', 'sqlsrv' => 'Microsoft SQL Server' );
 							foreach( $supportedTypes as $cleanType => $type ) {
 								printf( '<option value="%1$s">%2$s</option>',
 										$cleanType,
