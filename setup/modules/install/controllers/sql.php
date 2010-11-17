@@ -101,6 +101,7 @@
 				}
 			} catch ( SQL_UnableToConnect $e ) {
 				$this->_event->error( t('Unable to connect to, or select SQL database') );
+				$this->_log->message( $e->getMessage(), Log::L_WARNING );
 			}
 			if ( isset( $form ) ) {
 				return $form->getOutput();
