@@ -400,10 +400,14 @@
 				/**
 				 * Continue with the installation, firstly doing all SQL queries needed
 				 */
-				$sqlFile = $this->path.'/install.sql';
-				if ( is_readable( $sqlFile ) ) {
-					$this->_sql->loadSqlFile( $sqlFile );
+				try {
+					$this->_sql->loadSqlFile( $this->path, 'install' );
+				} catch (Sql_InvalidFile $e) {
+					/* Silently fail as an install SQL file is not required for
+					a module, and so installation should continue. */
+					$this->_log->message( $e->getMessage(), Log::L_NOTICE );
 				}
+				
 				$this->_sql->query( 'INSERT INTO {PREFIX}modules (name) VALUES("'.$this->name.'")
 									 ON DUPLICATE KEY UPDATE name=name' )
 						   ->closeCursor();
