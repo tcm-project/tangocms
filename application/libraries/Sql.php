@@ -40,7 +40,7 @@
 		/**
 		 * Creates a new PDO instance
 		 *
-		 * @param string $type				Simple string such as 'mysql' or a PDO DNS string
+		 * @param string $type				Simple string such as 'mysql' or a PDO DSN string
 		 * @param string $dbname
 		 * @param string $host
 		 * @param string $user
@@ -50,21 +50,27 @@
 		 */
 		public function __construct( $type, $dbname='', $host='', $user='', $pass='', $port='', array $opts=array() ) {
 			if ( empty( $dbname ) && empty( $host ) ) {
-				$dns = $type;
+				$dsn = $type;
 				// Get the driver that is to be used
-				$splitDns = explode( ':', $dns );
-				$driver = $splitDns[0];
+				$splitDsn = explode( ':', $dsn );
+				$driver = $splitDsn[0];
 			} else if ( $type == 'mysql' || $type == 'mysqli' ) {
 				$driver = 'mysql';
-				$dns = sprintf( 'mysql:host=%1$s;dbname=%2$s', $host, $dbname );
-				if ( trim( $port ) ) {
-					$dns .= ';port='.$port;
+				$dsn = sprintf( 'mysql:host=%1$s;dbname=%2$s', $host, $dbname );
+				if ( $port ) {
+					$dsn .= ';port='.$port;
 				}
 			} else if ( $type == 'pgsql' ) {
 				$driver = 'pgsql';
 				$port = trim($port) ? $port : 5432;
-				$dns = sprintf( 'pgsql:host=%1$s port=%2$s dbname=%3$s user=%3$s password=%4$s',
+				$dsn = sprintf( 'pgsql:host=%1$s port=%2$s dbname=%3$s user=%3$s password=%4$s',
 								$host, $port, $dbname, $user, $pass );
+			} else if ( $type == 'sqlsrv' ) {
+				if ( !$port ) {
+					$port = 1433;
+				}
+				$driver = 'sqlsrv';
+				$dsn = sprintf( 'sqlsrv:server=%1$s,%2$d;database=%3$s', $host, $port, $dbname );
 			}
 			if ( !in_array( $driver, PDO::getAvailableDrivers() ) ) {
 				throw new SQL_InvalidDriver( 'PDO driver "'.$driver.'" is not available, ensure it is installed', 20 );
@@ -74,7 +80,7 @@
 				if ( $driver == 'mysql' ) {
 					$opts[ PDO::MYSQL_ATTR_USE_BUFFERED_QUERY ] = true;
 				}
-				parent::__construct( $dns, $user, $pass, $opts );
+				parent::__construct( $dsn, $user, $pass, $opts );
 			} catch ( PDOexception $e ) {
 				throw new SQL_UnableToConnect( $e->getMessage(), 21 );
 			}
