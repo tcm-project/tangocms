@@ -68,7 +68,6 @@
 			try {
 				$sql = new SQL( $data['type'], $data['dbname'], $data['host'], $data['user'], $data['pass'], $data['port'] );
 				$sql->setPrefix( $data['prefix'] );
-				$sql->query( "SET NAMES 'utf8'" ); # Use UTF-8 character set for the connection
 				$sql->loadSqlFile( $this->getPath(), 'schema' );
 				/**
 				* Update config.ini.php file with the new values
