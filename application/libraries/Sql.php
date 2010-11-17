@@ -133,6 +133,44 @@
 		}
 
 		/**
+		 * Changes the quote identifier character to be compatible with the
+		 * current database type, eg `` to [] for sqlsrv
+		 *
+		 * @param string $statement
+		 * @return string
+		 */
+		protected function fixIdentifierQuote( $statement ) {
+			switch( $this->getAttribute( PDO::ATTR_DRIVER_NAME ) ) {
+				case 'sqlsrv':
+					for( $i = 0; $i < strlen( $statement ); $i++ ) {
+						switch( $statement[$i] ) {
+							case '\'':
+							case '"':
+								$char = $statement[$i];
+								do {
+									$i++;
+								} while( $statement[$i] != $char );
+								break;
+							case '`':
+								$statement[$i] = '[';
+								do {
+									$i++;
+								} while( $statement[$i] != '`' );
+								$statement[$i] = ']';
+								break;
+							default:
+								break;
+						}
+					}
+					break;
+				case 'mysql':
+				default:
+					break;
+			}
+			return $statement;
+		}
+
+		/**
 		 * Do a query on the current connection and database
 		 *
 		 * @param string $statement
@@ -141,7 +179,7 @@
 		 */
 		public function query( $statement, $options=null ) {
 			try {
-				$stmt = $this->replacePrefix( $statement );
+				$stmt = $this->fixIdentiferQuote( $this->replacePrefix( $statement ) );
 				return is_int($options) ? parent::query( $stmt, $options ) : parent::query( $stmt );
 			} catch ( PDOException $e ) {
 				throw new SQL_QueryFailed( $e->getMessage(), 22 );
@@ -156,7 +194,7 @@
 		 * @return object|bool
 		 */
 		public function prepare( $statement, $driverOpts=array() ) {
-			$stmt = $this->replacePrefix( $statement );
+			$stmt = $this->fixIdentifierQuote( $this->replacePrefix( $statement ) );
 			return is_array($driverOpts) ? parent::prepare( $stmt, $driverOpts ) : parent::prepare( $stmt );
 		}
 
@@ -167,7 +205,7 @@
 		 * @return int|bool
 		 */
 		public function exec( $statement ) {
-			return parent::exec( $this->replacePrefix( $statement ) );
+			return parent::exec( $this->fixIdentifierQuote( $this->replacePrefix( $statement ) ) );
 		}
 
 		/**
@@ -203,7 +241,7 @@
 				$statement = 'INSERT INTO '.$table.' ( '.$queryParts['col'].' ) VALUES ( '.$queryParts['val'].' )';
 				// Prepare and execute query
 				try {
-					$pdoSt = parent::prepare( $statement );
+					$pdoSt = parent::prepare( $this->fixIdentifierQuote($statement) );
 					$pdoSt->execute( array_values( $entries ) );
 					return $pdoSt;
 				} catch ( PDOException $e ) {
@@ -259,7 +297,7 @@
 				}
 				// Prepare and execute query
 				try {
-					$pdoSt = parent::prepare( $sql );
+					$pdoSt = parent::prepare( $this->fixIdentifierQuote($sql) );
 					$pdoSt->execute( array_merge( array_values($entries), array_values($where) ) );
 					return $pdoSt;
 				} catch ( PDOException $e ) {
@@ -345,7 +383,7 @@
 					}
 					// Prepare and execute query
 					try {
-						$pdoSt = parent::prepare( $sql );
+						$pdoSt = parent::prepare( $this->fixIdentifierQuote($sql) );
 						$pdoSt->execute( array_values( $where ) );
 						return $pdoSt;
 					} catch ( PDOException $e ) {
@@ -391,7 +429,7 @@
 				$sql .= ' WHERE '.trim( $whereSql, 'AND ' );
 				// Prepare and execute query
 				try {
-					$pdoSt = parent::prepare( $sql );
+					$pdoSt = parent::prepare( $this->fixIdentifierQuote( $sql ) );
 					$pdoSt->execute( array_values( $where ) );
 					return $pdoSt;
 				} catch ( PDOException $e ) {
