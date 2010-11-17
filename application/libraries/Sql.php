@@ -123,13 +123,13 @@
 
 		/**
 		 * Replaces all occurences of {PREFIX} or {SQL_PREFIX} within
-		 * the SQL query, however not when it is within quotes.
+		 * the SQL query.
 		 *
 		 * @param string $statement
 		 * @return string
 		 */
 		protected function replacePrefix( $statement ) {
-			return preg_replace( '#\G((?>("|\')[^"\']+("|\')|.)*?)\{(?:SQL_)?PREFIX\}#s', '$1'.$this->getSqlPrefix(), $statement );
+			return str_replace( array('{PREFIX}', '{SQL_PREFIX}'), $this->getSqlPrefix(), $statement );
 		}
 
 		/**

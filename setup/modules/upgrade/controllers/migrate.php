@@ -189,37 +189,22 @@
 		/**
 		 * Attempts to run multiple SQL files
 		 *
-		 * @param array $files
-		 * @return int
-		 */
-		protected function sqlFile( array $files ) {
-			$path = $this->getPath().'/sql/';
-			$i = 0;
-			foreach( $files as $dir=>$file ) {
-				try {
-					$this->_sql->loadSqlFile( $path . $dir, $file );
-					++$i;
-				} catch ( Sql_QueryFailed $e ) {
-					// Handle module tables failing differently
-					if ( strpos( $e->getMessage(), '42S02' ) !== false && preg_match( "#'.*?\..*?mod_.*?'#i", $e->getMessage() ) ) {
-						$this->_log->message( 'Upgrader: '.$e->getMessage(), Log::L_NOTICE );
-					} else {
-						throw $e;
-					}
-				}
-			}
-			return $i;
-		}
-
-		/**
-		 * Attempt to run a single SQL file
-		 *
 		 * @param string $dir
 		 * @param string $file
 		 * @return int
 		 */
 		protected function sqlFile( $dir, $file ) {
-			return $this->sqlFile( array( $dir=>$file ) );
+			$path = $this->getPath().'/sql/';
+			try {
+				return $this->_sql->loadSqlFile( $path.$dir, $file );
+			} catch ( Sql_QueryFailed $e ) {
+				// Handle module tables failing differently
+				if ( strpos( $e->getMessage(), '42S02' ) !== false && preg_match( "#'.*?\..*?mod_.*?'#i", $e->getMessage() ) ) {
+					$this->_log->message( 'Upgrader: '.$e->getMessage(), Log::L_NOTICE );
+				} else {
+					throw $e;
+				}
+			}
 		}
 
 		/**
