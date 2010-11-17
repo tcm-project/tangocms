@@ -78,6 +78,7 @@
 				$opts = array_merge( $opts, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION) );
 				if ( $driver == 'mysql' ) {
 					$opts[ PDO::MYSQL_ATTR_USE_BUFFERED_QUERY ] = true;
+					$opts[ PDO::MYSQL_ATTR_INIT_COMMAND ] = 'SET NAMES "utf8"';
 				}
 				parent::__construct( $dsn, $user, $pass, $opts );
 			} catch ( PDOexception $e ) {

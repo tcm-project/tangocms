@@ -45,10 +45,6 @@
 								  $sql['user'], $sql['pass'], $sql['port'], $sqlDriverOpts );
 		Registry::register( 'sql', $sqlConnection );
 		$sqlConnection->setPrefix( $sql['prefix'] );
-		if ( $sql['type'] == 'mysql' ) {
-			# Use UTF-8 character set for the connection
-			$sqlConnection->query( 'SET NAMES "utf8"' );
-		}
 		unset( $sqlConnection );
 		// Attempt to load the SQL configuration details
 		$configSql = new Config_sql;
