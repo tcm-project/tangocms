@@ -6,6 +6,27 @@
 			<tr class="even">
 				<td>
 					<dl>
+						<dt>{L_[Database type]}</strong>
+						<dd>{L_[Select the type of database. Default 'MySQL']}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<select name="type">
+						<?php
+							$supportedTypes = array( 'mysql' => 'MySQL', 'mssql' => 'Microsoft SQL Server' );
+							foreach( $supportedTypes as $cleanType => $type ) {
+								printf( '<option value="%1$s">%2$s</option>',
+										$cleanType,
+										$type
+									  );
+							}
+						?>
+					</select>
+				</td>
+			</tr>
+			<tr class="odd">
+				<td>
+					<dl>
 						<dt>{L_[SQL host]}</strong>
 						<dd>{L_[Enter the SQL host to attempt to connect to. Default 'localhost']}</dd>
 					</dl>
@@ -14,7 +35,7 @@
 					<input type="type" name="host" value="{host}">
 				</td>
 			</tr>
-			<tr class="odd">
+			<tr class="even">
 				<td>
 					<dl>
 						<dt>{L_[SQL port]}</strong>
@@ -25,7 +46,7 @@
 					<input type="number" min="1" name="port" value="{port}">
 				</td>
 			</tr>
-			<tr class="even">
+			<tr class="odd">
 				<td>
 					<dl>
 						<dt>{L_[SQL username]}</strong>
@@ -36,7 +57,7 @@
 					<input type="text" name="user" value="{user}">
 				</td>
 			</tr>
-			<tr class="odd">
+			<tr class="even">
 				<td>
 					<dl>
 						<dt>{L_[SQL password]}</strong>
@@ -47,7 +68,7 @@
 					<input type="password" name="pass">
 				</td>
 			</tr>
-			<tr class="even">
+			<tr class="odd">
 				<td>
 					<dl>
 						<dt>{L_[SQL database]}</strong>
@@ -58,7 +79,7 @@
 					<input type="text" name="dbname" value="{dbname}">
 				</td>
 			</tr>
-			<tr class="odd">
+			<tr class="even">
 				<td>
 					<dl>
 						<dt>{L_[Table prefix]}</strong>

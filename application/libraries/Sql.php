@@ -271,7 +271,7 @@
 		}
 
 		/**
-		 * Quick 'select' method allows for shorted and easie
+		 * Quick 'select' method allows for shorter and easier
 		 * code for simple select queries
 		 *
 		 * @param string $table
@@ -358,7 +358,7 @@
 		}
 
 		/**
-		 * Quick 'deoete' method allows for shorted and easie
+		 * Quick 'delete' method allows for shorter and easier
 		 * code for simple delete queries
 		 *
 		 * @param string $table
@@ -403,25 +403,27 @@
 		}
 
 		/**
-		 * Run all SQL queries within the specified file, the Queries
-		 * are split by the MYSQL ';' delimiter that is outside of any
-		 * quotes.
+		 * Run all SQL queries within the specified file
 		 *
-		 * @param strng $file
+		 * @param string $directory
+		 * @param string $file - filename without the .sql
 		 * @return object
 		 */
-		public function loadSqlFile( $file ) {
+		public function loadSqlFile( $directory, $file ) {
+			$fallbackFile = printf( '%s/%s.sql',	rtrim( $directory, '/' ),
+								$file );
+			$file = printf( '%s/%s.%s.sql', rtrim( $directory, '/' ),
+							$file,
+							$this->getAttribute( PDO::ATTR_DRIVER_NAME ) );
 			if ( !is_file( $file ) || !is_readable( $file ) ) {
-				throw new Sql_InvalidFile( $file.' does not exist or is not readable' );
-			}
-			foreach( explode( ";\n", file_get_contents($file) ) as $query ) {
-				if ( ($query = trim($query)) ) {
-					// We should use PDO::exec() but we had many bugs with it
-					$result = $this->query( $query );
-					if ( $result instanceof PDOStatement ) {
-						$result->closeCursor();
-					}
+				if ( !is_file( $fallbackFile ) || !is_readable( $fallbackFile ) ) {
+					throw new Sql_InvalidFile( $file.' does not exist or is not readable' );
 				}
+				$file = $fallbackFile;
+			}
+			$result = $this->query( file_get_contents( $file ) );
+			if ( $result instanceof PDOStatement ) {
+				$result->closeCursor();
 			}
 			return true;
 		}

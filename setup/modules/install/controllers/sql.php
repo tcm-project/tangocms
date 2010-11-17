@@ -52,6 +52,7 @@
 				}
 			} else {
 				$form = new View_Form( 'sql.html', 'install' );
+				$form->addElement( 'type', 'mysql', t('Database type'), new Validator_inarray( array('mysql', 'mssql') ) );
 				$form->addElement( 'user', null, t('Username'), new Validator_Length(1, 16) );
 				$form->addElement( 'pass', null, t('Password'), array(new Validator_Length(0, 64), new Validator_Regex('#^[^"]*$#')) );
 				$form->addElement( 'host', 'localhost', t('SQL host'), new Validator_Length(1, 80) );
@@ -60,7 +61,6 @@
 				$form->addElement( 'prefix', 'tcm_', t('Table prefix'), array(new Validator_Length(0, 12), new Validator_Alphanumeric('_-')) );
 				if ( $form->hasInput() && $form->isValid() ) {
 					$data = $form->getValues();
-					$data['type'] = 'mysql';
 				} else {
 					return $form->getOutput();
 				}
@@ -69,7 +69,7 @@
 				$sql = new SQL( $data['type'], $data['dbname'], $data['host'], $data['user'], $data['pass'], $data['port'] );
 				$sql->setPrefix( $data['prefix'] );
 				$sql->query( "SET NAMES 'utf8'" ); # Use UTF-8 character set for the connection
-				$sql->loadSqlFile( $this->getPath().'/schema.sql' );
+				$sql->loadSqlFile( $this->getPath(), 'schema' );
 				/**
 				* Update config.ini.php file with the new values
 				*/

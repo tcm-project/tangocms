@@ -192,15 +192,12 @@
 		 * @param array $files
 		 * @return int
 		 */
-		protected function sqlFile( $files ) {
-			if ( !is_array( $files ) ) {
-				$files = array( $files );
-			}
-			$path = $this->getPath().'/sql';
+		protected function sqlFile( array $files ) {
+			$path = $this->getPath().'/sql/';
 			$i = 0;
-			foreach( $files as $file ) {
+			foreach( $files as $dir=>$file ) {
 				try {
-					$this->_sql->loadSqlFile( $path.'/'.$file );
+					$this->_sql->loadSqlFile( $path . $dir, $file );
 					++$i;
 				} catch ( Sql_QueryFailed $e ) {
 					// Handle module tables failing differently
@@ -212,6 +209,17 @@
 				}
 			}
 			return $i;
+		}
+
+		/**
+		 * Attempt to run a single SQL file
+		 *
+		 * @param string $dir
+		 * @param string $file
+		 * @return int
+		 */
+		protected function sqlFile( $dir, $file ) {
+			return $this->sqlFile( array( $dir=>$file ) );
 		}
 
 		/**
@@ -245,9 +253,9 @@
 						$layoutObj->save();
 					}
 				case '2.3.51':
-					$this->sqlFile( '2.4.0-alpha1/2.3.52.sql' );
+					$this->sqlFile( '2.4.0-alpha1', '2.3.52' );
 				case '2.3.52':
-					$this->sqlFile( '2.4.0-alpha1/2.3.53.sql' );
+					$this->sqlFile( '2.4.0-alpha1', '2.3.53' );
 					foreach( Layout::getAll() as $layout ) {
 						$layoutObj = new Layout( $layout['name'] );
 						foreach( $layoutObj->getControllers() as $cntrlr ) {
@@ -267,11 +275,11 @@
 						$layoutObj->save();
 					}
 				case '2.3.53':
-					$this->sqlFile( '2.4.0-alpha1/2.3.54.sql' );
+					$this->sqlFile( '2.4.0-alpha1', '2.3.54' );
 				case '2.3.54':
-					$this->sqlFile( '2.4.0-alpha1/2.3.55.sql' );
+					$this->sqlFile( '2.4.0-alpha1', '2.3.55' );
 				case '2.3.55':
-					$this->sqlFile( '2.4.0-alpha1/2.3.56.sql' );
+					$this->sqlFile( '2.4.0-alpha1', '2.3.56' );
 				case '2.3.56':
 				default:
 					return '2.3.60';
@@ -286,7 +294,7 @@
 		protected function upgradeTo_240_alpha2() {
 			switch( $this->version ) {
 				case '2.3.60':
-					$this->sqlFile( '2.4.0-alpha2/2.3.61.sql' );
+					$this->sqlFile( '2.4.0-alpha2', '2.3.61' );
 				case '2.3.61':
 					// Captcha/Antispam changes (feature #149)
 					$this->_config_sql->add( array('antispam/recaptcha/public', 'antispam/recaptcha/private'), array('', '') );
@@ -297,7 +305,7 @@
 				case '2.3.62':
 					$this->_config_ini->add( 'cache/google_cdn', '1' );
 				case '2.3.63':
-					$this->sqlFile( '2.4.0-alpha2/2.3.64.sql' );
+					$this->sqlFile( '2.4.0-alpha2', '2.3.64' );
 					$this->_config_sql->delete( array(
 													'media/border_width', 'media/border_color',
 													'media/add_copyright', 'media/copyright_text',
@@ -319,7 +327,7 @@
 		protected function upgradeTo_240_beta1() {
 			switch( $this->version ) {
 				case '2.3.70':
-					$this->sqlFile( '2.4.0-beta1/2.3.71.sql' );
+					$this->sqlFile( '2.4.0-beta1', '2.3.71' );
 					foreach( Layout::getAll() as $layout ) {
 						$layoutObj = new Layout( $layout['name'] );
 						foreach( $layoutObj->getControllers() as $cntrlr ) {
@@ -378,15 +386,15 @@
 			switch( $this->version ) {
 				case '2.4.0':
 				case '2.4.50':
-					$this->sqlFile( '2.5.0-alpha1/2.4.51.sql' );
+					$this->sqlFile( '2.5.0-alpha1', '2.4.51' );
 				case '2.4.51':
-					$this->sqlFile( '2.5.0-alpha1/2.4.52.sql' );
+					$this->sqlFile( '2.5.0-alpha1', '2.4.52' );
 				case '2.4.52':
-					$this->sqlFile( '2.5.0-alpha1/2.4.53.sql' );
+					$this->sqlFile( '2.5.0-alpha1', '2.4.53' );
 				case '2.4.53':
-					$this->sqlFile( '2.5.0-alpha1/2.4.54.sql' );
+					$this->sqlFile( '2.5.0-alpha1', '2.4.54' );
 				case '2.4.54':
-					$this->sqlFile( '2.5.0-alpha1/2.4.55.sql' );
+					$this->sqlFile( '2.5.0-alpha1', '2.4.55' );
 					$this->_config_sql->add( 'session/expire_pw', '0' );
 					return '2.4.55';
 				default:
@@ -415,7 +423,7 @@
 		protected function upgradeTo_251() {
 			switch( $this->version ) {
 				case '2.5.0':
-					$this->sqlFile( '2.5.1/2.5.1.sql' );
+					$this->sqlFile( '2.5.1', '2.5.1' );
 				default:
 					return '2.5.1';
 			}
@@ -448,16 +456,16 @@
 						$layout->save();
 					}
 				case '2.5.51':
-					$this->sqlFile( '2.6.0-alpha1/2.5.52.sql' );
+					$this->sqlFile( '2.6.0-alpha1', '2.5.52' );
 				case '2.5.52':
-					$this->sqlFile( '2.6.0-alpha1/2.5.53.sql' );
+					$this->sqlFile( '2.6.0-alpha1', '2.5.53' );
 				case '2.5.53':
 					$this->_config_sql->add( 'media/wm_position', 'bl' );
 				case '2.5.54':
 					/**
 					 * Update the ACL resources for the page changes (#247)
 					 */
-					$this->sqlFile( '2.6.0-alpha1/2.5.55.sql' );
+					$this->sqlFile( '2.6.0-alpha1', '2.5.55' );
 					$addRoles = $editRoles = $manageRoles = array();
 					foreach( $this->_acl->getAllRoles() as $role ) {
 						if ( $this->_acl->check( 'page_delete', $role['id'] ) ) {
@@ -480,7 +488,7 @@
 					$this->_acl->deleteResource( array('page_add', 'page_edit', 'page_delete') );
 					$this->_acl->allowOnly( 'page_manage', $addRoles );
 				case '2.5.55':
-					$this->sqlFile( '2.6.0-alpha1/2.5.56.sql' );
+					$this->sqlFile( '2.6.0-alpha1', '2.5.56' );
 				case '2.5.56':
 				default:
 					return '2.5.60';
@@ -499,11 +507,11 @@
 				case '2.5.61':
 					$this->_config_sql->add( 'article/max_display_age', 145152000 );
 				case '2.5.62':
-					$this->sqlFile( '2.6.0-beta1/2.5.63.sql' );
+					$this->sqlFile( '2.6.0-beta1', '2.5.63' );
 				case '2.5.63':
-					$this->sqlFile( '2.6.0-beta1/2.5.64.sql' );
+					$this->sqlFile( '2.6.0-beta1', '2.5.64' );
 				case '2.5.64':
-					$this->sqlFile( '2.6.0-beta1/2.5.65.sql' );
+					$this->sqlFile( '2.6.0-beta1', '2.5.65' );
 				case '2.5.65':
 					return '2.5.70';
 				default:
@@ -519,9 +527,9 @@
 		protected function upgradeTo_260_rc1() {
 			switch( $this->version ) {
 				case '2.5.70':
-					$this->sqlFile( '2.6.0-rc1/2.5.71.sql' );
+					$this->sqlFile( '2.6.0-rc1', '2.5.71' );
 				case '2.5.71':
-					$this->sqlFile( '2.6.0-rc1/2.5.72.sql' );
+					$this->sqlFile( '2.6.0-rc1', '2.5.72' );
 					return '2.5.72';
 				default:
 					return '2.5.90';
