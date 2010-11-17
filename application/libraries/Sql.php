@@ -75,7 +75,7 @@
 				throw new SQL_InvalidDriver( 'PDO driver "'.$driver.'" is not available, ensure it is installed', 20 );
 			}
 			try {
-				$opts = array_merge( $opts, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION) );
+				$opts += array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION);
 				if ( $driver == 'mysql' ) {
 					$opts[ PDO::MYSQL_ATTR_USE_BUFFERED_QUERY ] = true;
 					$opts[ PDO::MYSQL_ATTR_INIT_COMMAND ] = 'SET NAMES "utf8"';
@@ -448,11 +448,12 @@
 		 * @return object
 		 */
 		public function loadSqlFile( $directory, $file ) {
-			$fallbackFile = printf( '%s/%s.sql',	rtrim( $directory, '/' ),
+			$fallbackFile = sprintf( '%s/%s.sql',	rtrim( $directory, '/' ),
 								$file );
-			$file = printf( '%s/%s.%s.sql', rtrim( $directory, '/' ),
+			$file = sprintf( '%s/%s.%s.sql', rtrim( $directory, '/' ),
 							$file,
 							$this->getAttribute( PDO::ATTR_DRIVER_NAME ) );
+							
 			if ( !is_file( $file ) || !is_readable( $file ) ) {
 				if ( !is_file( $fallbackFile ) || !is_readable( $fallbackFile ) ) {
 					throw new Sql_InvalidFile( $file.' does not exist or is not readable' );
