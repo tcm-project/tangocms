@@ -91,14 +91,22 @@
 		 * @return string
 		 */
 		static public function find( $siteType, $requestPath ) {
-			$pdoSt = Registry::get('sql')->prepare( 'SELECT name FROM {PREFIX}layouts WHERE
-													name LIKE ? AND ? REGEXP regex LIMIT 1' );
-			$pdoSt->execute( array($siteType.'-%', (string) $requestPath) );
-			if ( ($layout = $pdoSt->fetchColumn()) == false ) {
-				$layout = $siteType.'-default';
+			$pdoSt = Registry::get('sql')->prepare( 'SELECT name, regex FROM {PREFIX}layouts
+													 WHERE name LIKE :name ORDER BY name' );
+			$pdoSt->bindvalue( ':name', $siteType.'%' );
+			$pdoSt->execute();
+			$availableLayouts = $pdoSt->fetchAll( PDO::FETCH_ASSOC );
+			foreach( $availableLayouts as $layout ) {
+				$regex = addcslashes( $layout['regex'], '#' );
+				if ( @preg_match( '#'.$regex.'#', $requestPath ) ) {
+					$layoutName = $layout['name'];
+					break;
+				}
+				if ( preg_last_error() != PREG_NO_ERROR ) {
+					$this->_log->message( 'Content layout regex is invalid', Log::L_WARNING );
+				}
 			}
-			$pdoSt->closeCursor();
-			return $layout;
+			return isset($layoutName) ? $layoutName : $siteType.'-default';
 		}
 
 		/**
