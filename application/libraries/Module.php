@@ -471,28 +471,28 @@
 			// Default detail array and allowed version operators
 			$allowedOperators = array('<', 'lt', '<=', 'le', '>', 'gt', '>=', 'ge', '==', '=', 'eq', '!=', '<>', 'ne');
 			$details = array(
-							'file'	=> $file,
-							'dependencies'	=> array(
-													'php'	=> array(
-																	'passed'		=> true,
-																	'version'		=> '5.2.0',
-																	'operator'		=> '>=',
-																	'extensions'	=> array(),
-																	),
-													'zula'	=> array(
-																	'passed'		=> true,
-																	'version'		=> Zula::_VERSION,
-																	'operator'		=> '>=',
-																	),
-													'tcm'	=> array(
-																	'passed'		=> true,
-																	'version'		=> _PROJECT_VERSION,
-																	'operator'		=> '>='
-																	),
-													),
-							'aclResources'	=> array($this->name.'_global' => null),
-							'config'		=> array('sql' => array(), 'ini' => array()),
-							);
+						'file'		=> $file,
+						'dependencies'	=> array(
+									'php'	=> array(
+											'passed'		=> true,
+											'version'		=> '5.2.0',
+											'operator'		=> '>=',
+											'extensions'		=> array(),
+											),
+									'zula'	=> array(
+											'passed'		=> true,
+											'version'		=> Zula::_VERSION,
+											'operator'		=> '>='
+											),
+									'tcm'	=> array(
+											'passed'		=> true,
+											'version'		=> _PROJECT_VERSION,
+											'operator'		=> '>='
+											),
+									),
+						'aclResources'	=> array($this->name.'_global' => null),
+						'config'	=> array('sql' => array(), 'ini' => array()),
+					);
 			// Parse the install.xml file
 			$dom = new DomDocument;
 			$dom->load( $file );
