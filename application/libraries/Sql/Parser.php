@@ -144,43 +144,75 @@
 		/**
 		 * Replace LIMIT x [OFFSET y]
 		 *
-		 * @todo Don't replace in strings
 		 * @return null
 		 */
 		protected function replaceLimitsAndOffsets() {
-			if ( stripos($this->statement, 'LIMIT') === false && stripos($this->statement, 'OFFSET') === false ) {
-				// No limits or offsets
-				return;
-			}
-			$startLimPos = stripos( $this->statement, 'LIMIT' );
-			$this->i = $startLimPos + 5;
-			$this->eatSpace();
-			$arg1 = $this->eatNpOrNumber();
-			$this->eatSpace();
-			if ( substr( $this->statement, $this->i, 6 ) != 'OFFSET' ) {
-				$this->statement = substr($this->statement, 0, $startLimPos).
-							'ROW_NUMBER() OVER(ORDER BY(SELECT 1)) > '.$arg1.' '.
-							substr($this->statement, $this->i);
-			} else {
-				$this->i += 6;
-				$this->eatSpace();
-				$arg2 = $this->eatNpOrNumber();
-				$this->statement = substr($this->statement, 0, $startLimPos).
-							'ROW_NUMBER() OVER(ORDER BY(SELECT 1)) BETWEEN '.$arg2.' AND '.$arg2.'+'.$arg1.
-							substr($this->statement, $this->i);
+			for(; $this->i < strlen( $this->statement ); $this->i++ ) {
+				switch( $this->statement[$this->i] ) {
+					case '\'':
+					case '"':
+						$char = $this->statement[$this->i];
+						do {
+							$this->i++;
+						} while( $this->statement[$this->i] != $char );
+						break;
+					case 'L':
+						if ( substr( $this->statement, $this->i, 5 ) != 'LIMIT' ) {
+							break;
+						}
+						$startLimPos = $this->i;
+						$this->i = $startLimPos + 5;
+						$this->eatSpace();
+						$arg1 = $this->eatNpOrNumber();
+						$this->eatSpace();
+						if ( substr( $this->statement, $this->i, 6 ) != 'OFFSET' ) {
+							$this->statement = substr($this->statement, 0, $startLimPos).
+										'ROW_NUMBER() OVER(ORDER BY(SELECT 1)) > '.$arg1.' '.
+										substr($this->statement, $this->i);
+						} else {
+							$this->i += 6;
+							$this->eatSpace();
+							$arg2 = $this->eatNpOrNumber();
+							$this->statement = substr($this->statement, 0, $startLimPos).
+										'ROW_NUMBER() OVER(ORDER BY(SELECT 1)) BETWEEN '.$arg2.' AND '.$arg2.'+'.$arg1.
+										substr($this->statement, $this->i);
+						}
+						break;
+					default:
+						break;
+				}
 			}
 			$this->i = 0;
-			$this->replaceLimitsAndOffsets();
 		}
 
 		/**
 		 * Replace UTC_TIMESTAMP() with SYSUTCDATETIME()
 		 *
-		 * @todo Don't replace in strings
 		 * @return null
 		 */
 		protected function replaceUtcTimestamp() {
-			$this->statement = str_replace( 'UTC_TIMESTAMP()', 'SYSUTCDATETIME()', $this->statement );
+			for(; $this->i < strlen( $this->statement ); $this->i++ ) {
+				switch( $this->statement[$this->i] ) {
+					case '\'':
+					case '"':
+						$char = $this->statement[$this->i];
+						do {
+							$this->i++;
+						} while( $this->statement[$this->i] != $char );
+						break;
+					case 'U':
+						if ( substr( $this->statement, $this->i, 15 ) != 'UTC_TIMESTAMP()' ) {
+							break;
+						}
+						$this->statement = substr($this->statement, 0, $this->i).
+									'SYSUTCDATETIME()'.
+									substr($this->statement, $this->i += 15);
+						break;
+					default:
+						break;
+				}
+			}
+			$this->i = 0;
 		}
 
 		/**
