@@ -144,6 +144,7 @@
 		/**
 		 * Replace LIMIT x [OFFSET y]
 		 *
+		 * @todo Don't replace in strings
 		 * @return null
 		 */
 		protected function replaceLimitsAndOffsets() {
@@ -173,6 +174,16 @@
 		}
 
 		/**
+		 * Replace UTC_TIMESTAMP() with SYSUTCDATETIME()
+		 *
+		 * @todo Don't replace in strings
+		 * @return null
+		 */
+		protected function replaceUtcTimestamp() {
+			$this->statement = str_replace( 'UTC_TIMESTAMP()', 'SYSUTCDATETIME()', $this->statement );
+		}
+
+		/**
 		 * Parse and replace with SQL Server SQL
 		 *  - Replaces LIMIT, OFFSET with ROW_NUMBER() OVER()
 		 *
@@ -181,6 +192,7 @@
 		protected function parseSqlsrv() {
 			$this->replaceSqlsrvQuotes();
 			$this->replaceLimitsAndOffsets();
+			$this->replaceUtcTimestamp();
 		}
 	}
 
