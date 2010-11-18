@@ -7,7 +7,7 @@ CREATE TABLE {PREFIX}mod_articles (
   author smallint(32) NOT NULL,
   `date` datetime NOT NULL,
   published int(1) NOT NULL DEFAULT '0',
-  UNIQUE KEY id (id),
+  PRIMARY KEY id (id),
   UNIQUE KEY identifier (identifier),
   KEY cat_id (cat_id),
   KEY `date` (`date`)
@@ -20,7 +20,7 @@ CREATE TABLE {PREFIX}mod_article_cats (
   title varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'unknown',
   identifier varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   description varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  UNIQUE KEY id (id),
+  PRIMARY KEY id (id),
   UNIQUE KEY identifier (identifier)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=2 ;
 
@@ -34,5 +34,5 @@ CREATE TABLE {PREFIX}mod_article_parts (
   title varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `order` tinyint(3) NOT NULL DEFAULT '10',
   body text COLLATE utf8_unicode_ci NOT NULL,
-  UNIQUE KEY id (id)
+  PRIMARY KEY id (id)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
