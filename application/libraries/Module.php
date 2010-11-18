@@ -415,7 +415,7 @@
 									WHEN MATCHED THEN
 										UPDATE SET name = src.name
 									WHEN NOT MATCHED THEN
-										INSERT (name) VALUES(src.name)' )
+										INSERT (name) VALUES(src.name);' )
 							->closeCursor();
 				} else {
 					$this->_sql->query( 'INSERT INTO {PREFIX}modules (name) VALUES("'.$this->name.'")

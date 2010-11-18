@@ -44,7 +44,7 @@
 									WHEN MATCHED THEN
 										UPDATE SET attempts = attempts + 1, blocked = SYSUTCDATETIME()
 									WHEN NOT MATCHED THEN
-										INSERT (ip, attempts, blocked) VALUES(src.ip, src.attempts, src.blocked)' );
+										INSERT (ip, attempts, blocked) VALUES(src.ip, src.attempts, src.blocked);' );
 				} else {
 					$pdoSt = $this->_sql->prepare( 'INSERT INTO {PREFIX}mod_session (ip, attempts, blocked)
 										VALUES (?, 1, UTC_TIMESTAMP())
