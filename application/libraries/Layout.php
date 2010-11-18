@@ -409,8 +409,19 @@
 			) {
 				if ( Registry::has( 'sql' ) ) {
 					if ( ($regex = $this->getRegex()) ) {
-						$pdoSt = $this->_sql->prepare( 'INSERT INTO {PREFIX}layouts (name, regex) VALUES (?, ?)
-														ON DUPLICATE KEY UPDATE regex = VALUES(regex)' );
+						if ( $this->_sql->getAttribute( PDO::ATTR_DRIVER_NAME ) == 'sqlsrv' ) {
+							$stmt = 'MERGE INTO {PREFIX}layouts AS dest
+									USING (VALUES(:name, :regex)) AS src(name, regex)
+										ON dest.name = src.name
+									WHEN MATCHED THEN
+										UPDATE SET regex = src.regex
+									WHEN NOT MATCHED THEN
+										INSERT (name, regex) VALUES(src.name, src.regex)';
+						} else {
+							$stmt = 'INSERT INTO {PREFIX}layouts (name, regex) VALUES (?, ?)
+									ON DUPLICATE KEY UPDATE regex = VALUES(regex)';
+						}
+						$pdoSt = $this->_sql->prepare( $stmt );
 						$pdoSt->execute( array($this->name, $this->getRegex()) );
 					} else {
 						$pdoSt = $this->_sql->prepare( 'DELETE FROM {PREFIX}layouts WHERE name = ?' );

@@ -206,7 +206,7 @@
 					'SELECT groups.*, users.num  AS user_count
 						FROM {PREFIX}groups AS groups
 						LEFT JOIN (
-							SELECT `group`, COUNT(id) AS num FROM {PREFIX}users 
+							SELECT `group`, COUNT(id) AS num FROM {PREFIX}users
 						    GROUP BY `group`
 						) AS users ON users.`group` = groups.id
 						WHERE groups.'.$col.' = ?'
@@ -291,10 +291,10 @@
 				$query = 'SELECT g.*, users.num  AS user_count
 							FROM {PREFIX}groups AS g
 							LEFT JOIN (
-								SELECT `group`, COUNT(id) AS num FROM {PREFIX}users 
+								SELECT `group`, COUNT(id) AS num FROM {PREFIX}users
 							    GROUP BY `group`
 							) AS users ON users.`group` = g.id';
-							
+
 				foreach( $this->_sql->query($query, PDO::FETCH_ASSOC) as $group ) {
 					$this->groups[ $group['id'] ] = $group;
 				}
@@ -538,9 +538,20 @@
 			}
 			// Insert/update user meta data
 			$deleteMetaKeys = array();
-			$pdoStMeta = $this->_sql->prepare( 'INSERT INTO {PREFIX}users_meta (uid, name, value)
-												VALUES(:uid, :name, :value)
-												ON DUPLICATE KEY UPDATE value = VALUES(value)' );
+			if ( $this->_sql->getAttribute( PDO::ATTR_DRIVER_NAME ) == 'sqlsrv' ) {
+				$stmt = 'MERGE INTO {PREFIX}users_meta AS dest
+						USING (VALUES(:uid, :name, :value)) AS src(uid, name, value)
+							ON dest.uid = src.uid AND dest.name = src.name
+						WHEN MATCHED THEN
+							UPDATE SET value = src.value
+						WHEN NOT MATCHED THEN
+							INSERT (uid, name, value) VALUES(src.uid, src.name, src.value)';
+			} else {
+				$stmt = 'INSERT INTO {PREFIX}users_meta (uid, name, value)
+							VALUES(:uid, :name, :value)
+							ON DUPLICATE KEY UPDATE value = VALUES(value)';
+			}
+			$pdoStMeta = $this->_sql->prepare( $stmt );
 			foreach( array_diff_key( $details, array_flip($this->userKeys) ) as $key=>$val ) {
 				if ( $val === null ) {
 					$deleteMetaKeys[] = $key;
