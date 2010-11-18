@@ -18,4 +18,8 @@
 
 	class Sql_InvalidFile extends Zula_Exception {}
 
+	class Sql_UnsupportedDbType extends Zula_Exception {}
+
+	class Sql_ParserException extends Zula_Exception {}
+
 ?>
