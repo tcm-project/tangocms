@@ -32,9 +32,15 @@
 		 * @return array
 		 */
 		public function getAllPolls( $limit=0, $offset=0, $aclCheck=true ) {
-			$statement = 'SELECT id, title, status,
+			if ( $this->_sql->getAttribute( PDO::ATTR_DRIVER_NAME ) == 'sqlsrv' ) {
+				$statement = 'SELECT id, title, status,
+							start_date, end_date, DATEDIFF(second, start_date, end_date) AS duration
+							FROM {PREFIX}mod_poll ORDER BY start_date DESC';
+			} else {
+				$statement = 'SELECT id, title, status,
 							start_date, end_date, TIMESTAMPDIFF(SECOND, start_date, end_date) AS duration
 							FROM {PREFIX}mod_poll ORDER BY start_date DESC';
+			}
 			if ( $limit != 0 || $offset != 0 ) {
 				// Limit the result set.
 				$params = array();
@@ -122,9 +128,15 @@
 		 * @return array
 		 */
 		public function getPoll( $pid ) {
-			$pdoSt = $this->_sql->prepare( 'SELECT id, title, status, start_date, end_date,
+			if ( $this->_sql->getAttribute( PDO::ATTR_DRIVER_NAME ) == 'sqlsrv' ) {
+				$pdoSt = $this->_sql->prepare( 'SELECT id, title, status, start_date, end_date,
+												DATEDIFF(second, start_date, end_date) AS duration
+											FROM {PREFIX}mod_poll WHERE id = :id' );
+			} else {
+				$pdoSt = $this->_sql->prepare( 'SELECT id, title, status, start_date, end_date,
 												TIMESTAMPDIFF(SECOND, start_date, end_date) AS duration
 											FROM {PREFIX}mod_poll WHERE id = :id' );
+			}
 			$pdoSt->bindValue( ':id', $pid, PDO::PARAM_INT );
 			$pdoSt->execute();
 			$poll = $pdoSt->fetch( PDO::FETCH_ASSOC );
@@ -207,8 +219,14 @@
 		 * @return int
 		 */
 		public function addPoll( $title, $duration, array $options, $status='active' ) {
-			$pdoSt = $this->_sql->prepare( 'INSERT INTO {PREFIX}mod_poll(title, status, start_date, end_date)
-											VALUES (?, ?, UTC_TIMESTAMP(), DATE_ADD(UTC_TIMESTAMP(), INTERVAL ? SECOND))' );
+			if ( $this->_sql->getAttribute( PDO::ATTR_DRIVER_NAME ) == 'sqlsrv' ) {
+				$pdoSt = $this->_sql->prepare( 'INSERT INTO {PREFIX}mod_poll(title, status, start_date, end_date)
+									VALUES (?, ?, UTC_TIMESTAMP(), DATEADD(second, ?, UTC_TIMESTAMP()))' );
+			} else {
+				$pdoSt = $this->_sql->prepare( 'INSERT INTO {PREFIX}mod_poll(title, status, start_date, end_date)
+									VALUES (?, ?, UTC_TIMESTAMP(), DATE_ADD(UTC_TIMESTAMP(), INTERVAL ? SECOND))' );
+
+			}
 			$pdoSt->execute( array($title, $status, $duration) );
 			$this->_cache->delete( 'polls' );
 			$pid = $this->_sql->lastInsertId();
@@ -227,9 +245,15 @@
 		 */
 		public function editPoll( $pid, $title, $duration, $status ) {
 			$poll = $this->getPoll( $pid );
-			$pdoSt = $this->_sql->prepare( 'UPDATE {PREFIX}mod_poll
-											SET title = ?, status = ?, end_date = DATE_ADD(start_date, INTERVAL ? SECOND)
-											WHERE id = ?' );
+			if ( $this->_sql->getAttribute( PDO::ATTR_DRIVER_NAME ) == 'sqlsrv' ) {
+				$pdoSt = $this->_sql->prepare( 'UPDATE {PREFIX}mod_poll
+								SET title = ?, status = ?, end_date = DATEADD(second, ?, start_date)
+								WHERE id = ?' );
+			} else {
+				$pdoSt = $this->_sql->prepare( 'UPDATE {PREFIX}mod_poll
+								SET title = ?, status = ?, end_date = DATE_ADD(start_date, INTERVAL ? SECOND)
+								WHERE id = ?' );
+			}
 			$this->_cache->delete( 'polls' );
 			return $pdoSt->execute( array($title, $status, $duration, $pid) );
 		}
