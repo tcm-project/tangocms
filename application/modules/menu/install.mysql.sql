@@ -7,10 +7,10 @@ CREATE TABLE {PREFIX}mod_menu (
   url varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   attr_title varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `order` smallint(4) NOT NULL DEFAULT '0',
-  UNIQUE KEY id (id),
-  KEY cat_id (cat_id),
-  KEY heading_id (heading_id),
-  KEY `order` (`order`)
+  PRIMARY KEY id (id),
+  INDEX cat_id (cat_id),
+  INDEX heading_id (heading_id),
+  INDEX `order` (`order`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=15 ;
 
 INSERT INTO {PREFIX}mod_menu (id, cat_id, heading_id, url, `name`, attr_title, `order`) VALUES
@@ -33,7 +33,7 @@ DROP TABLE IF EXISTS {PREFIX}mod_menu_cats;
 CREATE TABLE {PREFIX}mod_menu_cats (
   id smallint(4) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  UNIQUE KEY id (id)
+  PRIMARY KEY id (id)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=4 ;
 
 INSERT INTO {PREFIX}mod_menu_cats (id, name) VALUES
