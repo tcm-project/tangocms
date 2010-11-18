@@ -545,7 +545,7 @@
 						WHEN MATCHED THEN
 							UPDATE SET value = src.value
 						WHEN NOT MATCHED THEN
-							INSERT (uid, name, value) VALUES(src.uid, src.name, src.value)';
+							INSERT (uid, name, value) VALUES(src.uid, src.name, src.value);';
 			} else {
 				$stmt = 'INSERT INTO {PREFIX}users_meta (uid, name, value)
 							VALUES(:uid, :name, :value)

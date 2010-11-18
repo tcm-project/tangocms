@@ -416,7 +416,7 @@
 									WHEN MATCHED THEN
 										UPDATE SET regex = src.regex
 									WHEN NOT MATCHED THEN
-										INSERT (name, regex) VALUES(src.name, src.regex)';
+										INSERT (name, regex) VALUES(src.name, src.regex);';
 						} else {
 							$stmt = 'INSERT INTO {PREFIX}layouts (name, regex) VALUES (?, ?)
 									ON DUPLICATE KEY UPDATE regex = VALUES(regex)';
