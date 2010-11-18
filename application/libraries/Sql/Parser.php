@@ -186,12 +186,13 @@
 		}
 
 		/**
-		 * Replace UTC_TIMESTAMP() with SYSUTCDATETIME()
+		 * Replace UTC_TIMESTAMP() and NOW() with SYSUTCDATETIME()
 		 *
 		 * @return null
 		 */
 		protected function replaceUtcTimestamp() {
 			for(; $this->i < strlen( $this->statement ); $this->i++ ) {
+				$plus = 0;
 				switch( $this->statement[$this->i] ) {
 					case '\'':
 					case '"':
@@ -200,13 +201,17 @@
 							$this->i++;
 						} while( $this->statement[$this->i] != $char );
 						break;
+					case 'N':
+						$plus = 5;
 					case 'U':
-						if ( substr( $this->statement, $this->i, 15 ) != 'UTC_TIMESTAMP()' ) {
+						if ( substr( $this->statement, $this->i, 15 ) != 'UTC_TIMESTAMP()' &&
+							substr( $this->statement, $this->i, 5 ) != 'NOW()') {
 							break;
 						}
+						$plus = $plus == 5 ? 5 : 15;
 						$this->statement = substr($this->statement, 0, $this->i).
 									'SYSUTCDATETIME()'.
-									substr($this->statement, $this->i += 15);
+									substr($this->statement, $this->i += $plus);
 						break;
 					default:
 						break;
