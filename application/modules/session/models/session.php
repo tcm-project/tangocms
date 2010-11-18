@@ -37,8 +37,19 @@
 			 */
 			$remoteAddr = zula_ip2long( zula_get_client_ip() );
 			if ( empty( $user ) ) {
-				$pdoSt = $this->_sql->prepare( 'INSERT INTO {PREFIX}mod_session (ip, attempts, blocked) VALUES (?, 1, UTC_TIMESTAMP())
-												ON DUPLICATE KEY UPDATE attempts = attempts+1, blocked = UTC_TIMESTAMP()' );
+				if ( $this->_sql->getAttribute( PDO::ATTR_DRIVER_NAME ) == 'sqlsrv' ) {
+					$pdoSt = $this->_sql->prepare( 'MERGE INTO {PREFIX}mod_session AS dest
+									USING (VALUES(?, 1, SYSUTCDATETIME())) AS src(ip, attempts, blocked)
+										ON dest.ip = src.ip
+									WHEN MATCHED THEN
+										UPDATE SET attempts = attempts + 1, blocked = SYSUTCDATETIME()
+									WHEN NOT MATCHED THEN
+										INSERT (ip, attempts, blocked) VALUES(src.ip, src.attempts, src.blocked)' );
+				} else {
+					$pdoSt = $this->_sql->prepare( 'INSERT INTO {PREFIX}mod_session (ip, attempts, blocked)
+										VALUES (?, 1, UTC_TIMESTAMP())
+										ON DUPLICATE KEY UPDATE attempts = attempts+1, blocked = UTC_TIMESTAMP()' );
+				}
 				$pdoSt->execute( array($remoteAddr) );
 				throw new Session_InvalidCredentials;
 			} else {
