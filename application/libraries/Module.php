@@ -408,9 +408,20 @@
 					$this->_log->message( $e->getMessage(), Log::L_NOTICE );
 				}
 				
-				$this->_sql->query( 'INSERT INTO {PREFIX}modules (name) VALUES("'.$this->name.'")
-									 ON DUPLICATE KEY UPDATE name=name' )
-						   ->closeCursor();
+				if ( $this->_sql->getAttribute( PDO::ATTR_DRIVER_NAME ) == 'sqlsrv' ) {
+					$this->_sql->query( 'MERGE INTO {PREFIX}modules AS dest
+									USING (VALUES('.$this->name.')) AS src(name)
+										ON dest.name = src.name
+									WHEN MATCHED THEN
+										UPDATE SET name = src.name
+									WHEN NOT MATCHED THEN
+										INSERT (name) VALUES(src.name)' )
+							->closeCursor();
+				} else {
+					$this->_sql->query( 'INSERT INTO {PREFIX}modules (name) VALUES("'.$this->name.'")
+										 ON DUPLICATE KEY UPDATE name=name' )
+							   ->closeCursor();
+				}
 				// Add all of the new ACL resources and run the install.sql file
 				$guestGroup = $this->_ugmanager->getGroup( Ugmanager::_GUEST_GID );
 				foreach( $details['aclResources'] as $resource=>$roleHint ) {
