@@ -67,7 +67,7 @@
 		 * @return null
 		 */
 		protected function eatSpace() {
-			while( in_array( $this->statement[$this->i], array( ' ', "\t", "\n", "\r" ) ) ) {
+			while( isset( $this->statement[$this->i] ) && in_array( $this->statement[$this->i], array( ' ', "\t", "\n", "\r" ) ) ) {
 				$this->i++;
 			}
 		}
@@ -81,7 +81,7 @@
 			$num = '';
 			do {
 				$num .= $this->statement[$this->i];
-			} while( is_numeric( $this->statement[++$this->i] ) );  
+			} while( isset( $this->statement[++$this->i] ) && is_numeric( $this->statement[$this->i] ) );  
 			return $num;
 		}
 
@@ -94,7 +94,7 @@
 			$np = '';
 			do {
 				$np .= $this->statement[$this->i];
-			} while( preg_match( '/[A-Z]/i', $this->statement[++$this->i] ) );
+			} while( isset( $this->statement[++$this->i] ) && preg_match( '/[A-Z]/i', $this->statement[$this->i] ) );
 			return $np;
 		}
 
