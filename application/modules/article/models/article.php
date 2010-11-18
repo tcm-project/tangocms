@@ -101,7 +101,11 @@
 				} else {
 					$where .= '';
 				}
-				$where .= ' TIMESTAMPADD(SECOND, :mda, `date`) >= NOW()';
+				if ( $this->_sql->getAttribute( PDO::ATTR_DRIVER_NAME ) == 'sqlsrv' ) {
+					$where .= ' DATEADD(second, :mda, [date]) >= NOW()';
+				} else {
+					$where .= ' TIMESTAMPADD(SECOND, :mda, `date`) >= NOW()';
+				}
 				$params[':mda'] = $maxDisplayAge;
 			}
 			if ( $where != 'WHERE' ) {
@@ -196,14 +200,24 @@
 		 * @return int
 		 */
 		public function countArticles( $cid, $unpublished=false, $maxDisplayAge=null ) {
-			$query = 'SELECT COUNT(id) FROM {PREFIX}mod_articles WHERE cat_id = '.(int) $cid;
+			$stmt = 'SELECT COUNT(*) FROM {PREFIX}mod_articles WHERE cat_id = :cid';
 			if ( $unpublished == false ) {
-				$query .= ' AND published = 1';
+				$stmt .= ' AND published = 1';
 			}
 			if ( $maxDisplayAge ) {
-				$query .= ' AND TIMESTAMPADD(SECOND, '.(int) $maxDisplayAge.', `date`) >= NOW()';
+				if ( $this->_sql->getAttribute( PDO::ATTR_DRIVER_NAME ) == 'sqlsrv' ) {
+					$stmt .= ' AND DATEADD(second, :mda, [date]) >= NOW()';
+				} else {
+					$stmt .= ' AND TIMESTAMPADD(SECOND, :mda, `date`) >= NOW()';
+				}
 			}
-			return $this->_sql->query( $query )->fetch( PDO::FETCH_COLUMN );
+			$pdoSt = $this->_sql->prepare( $stmt );
+			$pdoSt->bindValue( ':cid', (int) $cid, PDO::PARAM_INT );
+			$pdoSt->bindValue( ':mda', (int) $maxDisplayAge, PDO::PARAM_INT );
+			$pdoSt->execute();
+			$count = $pdoSt->fetch( PDO::FETCH_COLUMN );
+			$pdoSt->closeCursor();
+			return $count;
 		}
 
 		/**
