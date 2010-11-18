@@ -201,12 +201,17 @@
 				} else {
 					$col = ctype_digit( (string) $group ) ? 'id' : 'name';
 				}
-				$pdoSt = $this->_sql->prepare( 'SELECT groups.*, COUNT(users.id) AS user_count
-												FROM
-													{PREFIX}groups AS groups
-												 	LEFT JOIN {PREFIX}users AS users ON users.group = groups.id
-												WHERE groups.'.$col.' = ?
-												GROUP BY groups.id' );
+
+				$pdoSt = $this->_sql->prepare(
+					'SELECT groups.*, users.num  AS user_count
+						FROM {PREFIX}groups AS groups
+						LEFT JOIN (
+							SELECT `group`, COUNT(id) AS num FROM {PREFIX}users 
+						    GROUP BY `group`
+						) AS users ON users.`group` = groups.id
+						WHERE groups.'.$col.' = ?'
+				);
+
 				$pdoSt->execute( array($group) );
 				$groupDetails = $pdoSt->fetch( PDO::FETCH_ASSOC );
 				if ( empty( $groupDetails ) ) {
@@ -283,9 +288,13 @@
 		public function getAllGroups() {
 			if ( !$this->groups || !($this->groups = $this->_cache->get('ugmanager_groups')) ) {
 				$this->groups = array();
-				$query = 'SELECT g.*, COUNT(u.id) AS user_count
-							FROM {PREFIX}groups AS g LEFT JOIN {PREFIX}users AS u ON u.group = g.id
-							GROUP BY g.id';
+				$query = 'SELECT g.*, users.num  AS user_count
+							FROM {PREFIX}groups AS g
+							LEFT JOIN (
+								SELECT `group`, COUNT(id) AS num FROM {PREFIX}users 
+							    GROUP BY `group`
+							) AS users ON users.`group` = g.id';
+							
 				foreach( $this->_sql->query($query, PDO::FETCH_ASSOC) as $group ) {
 					$this->groups[ $group['id'] ] = $group;
 				}

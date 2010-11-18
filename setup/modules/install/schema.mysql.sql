@@ -4,8 +4,8 @@ DROP TABLE IF EXISTS {PREFIX}acl_resources;
 CREATE TABLE {PREFIX}acl_resources (
   id mediumint(6) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  PRIMARY KEY (`name`),
-  UNIQUE KEY id (id)
+  PRIMARY KEY (id),
+  UNIQUE KEY `name` (`name`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 DROP TABLE IF EXISTS {PREFIX}acl_roles;
@@ -13,8 +13,8 @@ CREATE TABLE {PREFIX}acl_roles (
   id smallint(4) NOT NULL AUTO_INCREMENT,
   `name` varchar(48) COLLATE utf8_unicode_ci NOT NULL,
   parent_id smallint(4) NOT NULL,
-  PRIMARY KEY (`name`),
-  UNIQUE KEY id (id),
+  PRIMARY KEY (id),
+  UNIQUE KEY `name` (`name`),
   KEY parent_id (parent_id)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=6 ;
 
@@ -30,7 +30,7 @@ CREATE TABLE {PREFIX}acl_rules (
   role_id smallint(4) NOT NULL,
   resource_id mediumint(6) NOT NULL,
   access tinyint(1) NOT NULL DEFAULT '0',
-  UNIQUE KEY id (id)
+  PRIMARY KEY (id)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 DROP TABLE IF EXISTS {PREFIX}config;
@@ -77,7 +77,7 @@ CREATE TABLE {PREFIX}groups (
   `name` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
   `status` enum('active','locked') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'active',
   role_id smallint(4) NOT NULL,
-  UNIQUE KEY id (id),
+  PRIMARY KEY (id),
   UNIQUE KEY `name` (`name`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=6 ;
 
@@ -91,7 +91,7 @@ DROP TABLE IF EXISTS {PREFIX}layouts;
 CREATE TABLE {PREFIX}layouts (
   `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   regex varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  UNIQUE KEY `name` (`name`),
+  PRIMARY KEY (`name`),
   KEY regex (regex)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -103,7 +103,7 @@ CREATE TABLE {PREFIX}modules (
   `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `order` smallint(3) NOT NULL DEFAULT '0',
   disabled tinyint(1) NOT NULL DEFAULT '0',
-  UNIQUE KEY `name` (`name`),
+  PRIMARY KEY (`name`),
   KEY `order` (`order`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -112,7 +112,7 @@ CREATE TABLE {PREFIX}sessions (
   uid mediumint(6) NOT NULL,
   session_key char(64) COLLATE utf8_unicode_ci NOT NULL,
   session_id varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  UNIQUE KEY session_key (session_key)
+  PRIMARY KEY session_key (session_key)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 DROP TABLE IF EXISTS {PREFIX}users;
@@ -129,7 +129,7 @@ CREATE TABLE {PREFIX}users (
   last_name varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   last_login int(11) NOT NULL DEFAULT '0',
   last_pw_change datetime NOT NULL,
-  UNIQUE KEY id (id),
+  PRIMARY KEY (id),
   UNIQUE KEY username (username),
   INDEX `password` (`password`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
@@ -143,5 +143,5 @@ CREATE TABLE {PREFIX}users_meta (
   uid mediumint(6) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `value` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  UNIQUE KEY uid (uid,`name`)
+  PRIMARY KEY (uid,`name`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=8 ;
