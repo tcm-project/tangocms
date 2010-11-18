@@ -16,7 +16,7 @@
 
  	Registry::get( 'cache' )->purge();
  	Registry::unregister( 'cache' );
-	Cache::factory( 'disabled' );
+	Cache::factory( 'tmp' );
 	I18n::factory( 'gettext_php' );
 
 	$config->update( 'config/title', sprintf( t('%s %s setup'), _PROJECT_NAME, _PROJECT_LATEST_VERSION ) );
