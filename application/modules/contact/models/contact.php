@@ -31,7 +31,7 @@
 		 * @return array
 		 */
 		public function getAllForms( $limit=0, $offset=0, $aclCheck=true ) {
-			$statement = 'SELECT SQL_CALC_FOUND_ROWS * FROM {PREFIX}mod_contact ORDER BY name ASC';
+			$statement = 'SELECT * FROM {PREFIX}mod_contact ORDER BY name ASC';
 			if ( $limit != 0 || $offset != 0 ) {
 				// Limit the result set.
 				$params = array();
@@ -66,7 +66,8 @@
 					$forms[ $row['id'] ] = $row;
 				}
 				$pdoSt->closeCursor();
-				$query = $this->_sql->query( 'SELECT FOUND_ROWS()' );
+				// Find out how many rows without the limit
+				$query = $this->_sql->query( 'SELECT COUNT(*) FROM {PREFIX}mod_contact' );
 				$this->formCount = $query->fetch( PDO::FETCH_COLUMN );
 				$query->closeCursor();
 				if ( isset( $cacheKey ) ) {

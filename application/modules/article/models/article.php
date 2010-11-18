@@ -85,23 +85,27 @@
 		 * @return array
 		 */
 		public function getAllArticles( $limit=0, $offset=0, $cid=false, $unpublished=false, $maxDisplayAge=null, $aclCheck=true ) {
-			$statement = 'SELECT SQL_CALC_FOUND_ROWS * FROM {PREFIX}mod_articles';
+			$statement = 'SELECT * FROM {PREFIX}mod_articles';
+			$where = 'WHERE';
 			$params = array();
 			if ( $cid ) {
-				$statement .= ' WHERE cat_id = :cid';
+				$where .= ' cat_id = :cid';
 				$params[':cid'] = abs( $cid );
 			}
 			if ( $unpublished == false ) {
-				$statement .= ($cid ? ' AND' : ' WHERE').' published = 1';
+				$where .= ($cid ? ' AND' : '').' published = 1';
 			}
 			if ( $maxDisplayAge != null ) {
 				if ( $cid || $unpublished == false ) {
-					$statement .= ' AND';
+					$where .= ' AND';
 				} else {
-					$statement .= ' WHERE';
+					$where .= '';
 				}
-				$statement .= ' TIMESTAMPADD(SECOND, :mda, `date`) >= NOW()';
+				$where .= ' TIMESTAMPADD(SECOND, :mda, `date`) >= NOW()';
 				$params[':mda'] = $maxDisplayAge;
+			}
+			if ( $where != 'WHERE' ) {
+				$statement .= ' '.$where;
 			}
 			$statement .= ' ORDER BY published ASC, `date` DESC';
 			if ( $limit != 0 || $offset != 0 || $maxDisplayAge != null) {
@@ -142,9 +146,19 @@
 					$articles[ $row['id'] ] = $row;
 				}
 				$pdoSt->closeCursor();
-				$query = $this->_sql->query( 'SELECT FOUND_ROWS()' );
-				$this->articleCount = $query->fetch( PDO::FETCH_COLUMN );
-				$query->closeCursor();
+				// Find out the total amount of rows
+				$statement = 'SELECT COUNT(*) FROM {PREFIX}mod_articles';
+				if ( $where != 'WHERE' ) {
+					$statement .= ' '.$where;
+				}
+				$pdoSt = $this->_sql->prepare( $statement );
+				unset( $params[':limit'], $params[':offset'] );
+				foreach( $params as $ident=>$val ) {
+					$pdoSt->bindValue( $ident, (int) $val, PDO::PARAM_INT );
+				}
+				$pdoSt->execute();
+				$this->articleCount = $pdoSt->fetch( PDO::FETCH_COLUMN );
+				$pdoSt->closeCursor();
 				if ( isset( $cacheKey ) ) {
 					$this->_cache->add( $cacheKey, $articles );
 				}

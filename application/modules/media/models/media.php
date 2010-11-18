@@ -35,7 +35,7 @@
 		 * @return array
 		 */
 		public function getAllCategories( $limit=0, $offset=0, $aclCheck=true ) {
-			$statement = 'SELECT SQL_CALC_FOUND_ROWS * FROM {PREFIX}mod_media_cats';
+			$statement = 'SELECT * FROM {PREFIX}mod_media_cats';
 			if ( $limit != 0 || $offset != 0 ) {
 				if ( $limit > 0 ) {
 					$statement .= ' LIMIT '.(int) $limit;
@@ -64,8 +64,9 @@
 					$this->_cache->add( $cacheKey, $categories );
 				}
 				// Get how many results there would have been
-				$this->categoryCount = $this->_sql->query( 'SELECT FOUND_ROWS()' )
-												  ->fetch( PDO::FETCH_COLUMN );
+				$query = $this->_sql->query( 'SELECT COUNT(*) FROM {PREFIX}mod_media_cats' );
+				$this->categoryCount = $query->fetch( PDO::FETCH_COLUMN );
+				$query->closeCursor();
 			} else {
 				$this->categoryCount = count( $categories );
 			}
@@ -162,8 +163,7 @@
 		 * @return array
 		 */
 		public function getItems( $limit=0, $offset=0, $cid=null, $aclCheck=true ) {
-			$statement = 'SELECT SQL_CALC_FOUND_ROWS *
-						  FROM {PREFIX}mod_media_items WHERE outstanding = 0';
+			$statement = 'SELECT * FROM {PREFIX}mod_media_items WHERE outstanding = 0';
 			$params = array();
 			if ( $cid ) {
 				$statement .= ' AND cat_id = :cid';
@@ -191,19 +191,29 @@
 			$pdoSt->execute();
 			$items = array();
 			foreach( $pdoSt->fetchAll( PDO::FETCH_ASSOC ) as $row ) {
-				if ( !$cid && $aclCheck ) {
-					// Check if user has permission to parent category
-					$resource = 'media-cat_view_'.$row['cat_id'];
-					if ( !$this->_acl->resourceExists( $resource ) || !$this->_acl->check( $resource ) ) {
-						continue; # Don't return this result
-					}
-				}
 				$items[ $row['id'] ] = $row;
 			}
-			// Get the real amount of rows that would have been returned
 			$pdoSt->closeCursor();
-			$this->itemCount = $this->_sql->query( 'SELECT FOUND_ROWS()' )
-										   ->fetch( PDO::FETCH_COLUMN );
+			// Find out the total amount of rows
+			$statement = 'SELECT COUNT(*) FROM {PREFIX}mod_media_items
+							WHERE outstanding = 0';
+			if ( $cid ) {
+				$statement .= ' AND cat_id = :cid';
+			}
+			$pdoSt = $this->_sql->prepare( $statement );
+			$pdoSt->bindValue( ':cid', $cid, PDO::PARAM_INT );
+			$pdoSt->execute();
+			$this->itemCount = $pdoSt->fetch( PDO::FETCH_COLUMN );
+			$pdoSt->closeCursor();
+			// Check ACL resources if needed
+			if ( $aclCheck ) {
+				foreach( $items as $item ) {
+					if ( !$this->_acl->check( 'media-cat_view_'.$item['cat_id'] ) ) {
+						--$this->itemCount;
+
+					}
+				}
+			}
 			return $items;
 		}
 

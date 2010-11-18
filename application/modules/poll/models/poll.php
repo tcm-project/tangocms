@@ -32,7 +32,7 @@
 		 * @return array
 		 */
 		public function getAllPolls( $limit=0, $offset=0, $aclCheck=true ) {
-			$statement = 'SELECT SQL_CALC_FOUND_ROWS id, title, status,
+			$statement = 'SELECT id, title, status,
 							start_date, end_date, TIMESTAMPDIFF(SECOND, start_date, end_date) AS duration
 							FROM {PREFIX}mod_poll ORDER BY start_date DESC';
 			if ( $limit != 0 || $offset != 0 ) {
@@ -69,7 +69,7 @@
 					$polls[ $row['id'] ] = $row;
 				}
 				$pdoSt->closeCursor();
-				$query = $this->_sql->query( 'SELECT FOUND_ROWS()' );
+				$query = $this->_sql->query( 'SELECT COUNT(*) FROM {PREFIX}mod_poll' );
 				$this->pollCount = $query->fetch( PDO::FETCH_COLUMN );
 				$query->closeCursor();
 				if ( isset( $cacheKey ) ) {

@@ -34,7 +34,7 @@
 		 */
 		public function getAllPages( $limit=0, $offset=0, $parent=0, $aclCheck=true, $withBody=false ) {
 			$cols = $withBody ? '*' : 'id, title, author, date, parent, `order`, identifier';
-			$statement = 'SELECT SQL_CALC_FOUND_ROWS '.$cols.' FROM {PREFIX}mod_page
+			$statement = 'SELECT '.$cols.' FROM {PREFIX}mod_page
 						  WHERE parent = '.(int) $parent.' ORDER BY title ASC';
 			if ( $limit != 0 || $offset != 0 ) {
 				// Limit the result set.
@@ -63,9 +63,14 @@
 				$pages[ $row['id'] ] = $row;
 			}
 			$pdoSt->closeCursor();
-			$query = $this->_sql->query( 'SELECT FOUND_ROWS()' );
-			$this->pageCount = $query->fetch( PDO::FETCH_COLUMN );
-			$query->closeCursor();
+			// Calculate how many rows without the limit
+			$pdoSt = $this->_sql->prepare( 'SELECT COUNT(*) FROM {PREFIX}mod_page
+											WHERE parent = :parent' );
+			$pdoSt->bindValue( ':parent', $parent, PDO::PARAM_INT );
+			$pdoSt->execute();
+			$this->pageCount = $pdoSt->fetch( PDO::FETCH_COLUMN );
+			$pdoSt->closeCursor();
+			// Check ACL resources
 			if ( $aclCheck ) {
 				foreach( $pages as $tmpPage ) {
 					$resource = 'page-view_'.$tmpPage['id'];

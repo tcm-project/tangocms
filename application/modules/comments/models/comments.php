@@ -39,7 +39,7 @@
 		 * @return array
 		 */
 		public function get( $requestPath=null, $status=self::_ACCEPTED, $limit=0, $offset=0, $order='ASC' ) {
-			$statement = 'SELECT SQL_CALC_FOUND_ROWS * FROM {PREFIX}mod_comments';
+			$statement = 'SELECT * FROM {PREFIX}mod_comments';
 			$params = array();
 			// Add in the WHERE
 			$where = 'WHERE';
@@ -114,9 +114,22 @@
 					$this->_cache->add( $cacheKey, $comments );
 				}
 				$pdoSt->closeCursor();
-				$query = $this->_sql->query( 'SELECT FOUND_ROWS()' );
-				$this->commentCount = $query->fetch( PDO::FETCH_COLUMN );
-				$query->closeCursor();
+				// Find out the number of rows without the limits
+				$statement = 'SELECT COUNT(*) FROM {PREFIX}mod_comments';
+				if ( $where != 'WHERE' ) {
+					$statement .= ' '.$where;
+				}
+				$pdoSt = $this->_sql->prepare( $statement );
+				foreach( $params as $ident=>$val ) {
+					if ( $ident == ':url' || $ident == ':status' ) {
+						$pdoSt->bindValue( $ident, $val );
+					} else {
+						$pdoSt->bindValue( $ident, (int) $val, PDO::PARAM_INT );
+					}
+				}
+				$pdoSt->execute();
+				$this->commentCount = $pdoSt->fetch( PDO::FETCH_COLUMN );
+				$pdoSt->closeCursor();
 			} else {
 				$this->commentCount = count( $comments );
 			}
