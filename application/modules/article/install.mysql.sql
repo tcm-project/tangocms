@@ -9,8 +9,8 @@ CREATE TABLE {PREFIX}mod_articles (
   published int(1) NOT NULL DEFAULT '0',
   PRIMARY KEY id (id),
   UNIQUE KEY identifier (identifier),
-  KEY cat_id (cat_id),
-  KEY `date` (`date`)
+  INDEX cat_id (cat_id),
+  INDEX `date` (`date`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 DROP TABLE IF EXISTS {PREFIX}mod_article_cats;

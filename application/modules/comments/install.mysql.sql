@@ -8,8 +8,8 @@ CREATE TABLE {PREFIX}mod_comments (
   `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   website varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   body text COLLATE utf8_unicode_ci NOT NULL,
-  UNIQUE KEY id (id),
-  KEY url (url),
-  KEY `status` (`status`),
-  KEY `date` (`date`)
+  PRIMARY KEY id (id),
+  INDEX url (url),
+  INDEX `status` (`status`),
+  INDEX `date` (`date`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
