@@ -214,7 +214,7 @@
 		{
 			$orders = array();
 			foreach ($this->getSorts() as $key => $value) {
-				$orders = $key . ' ' . $value;
+				$orders[] = $key . ' ' . $value;
 			}
 			return implode(', ', $orders);
 		}
