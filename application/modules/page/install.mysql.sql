@@ -8,10 +8,10 @@ CREATE TABLE {PREFIX}mod_page (
   `date` datetime NOT NULL,
   `order` smallint(5) NOT NULL DEFAULT '0',
   body text COLLATE utf8_unicode_ci NOT NULL,
-  UNIQUE KEY id (id),
+  PRIMARY KEY id (id),
   UNIQUE KEY identifier (identifier),
-  KEY title (title),
-  KEY `date` (`date`)
+  INDEX title (title),
+  INDEX `date` (`date`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 INSERT INTO {PREFIX}mod_page (id, parent, title, identifier, author, `date`, `order`, body) VALUES

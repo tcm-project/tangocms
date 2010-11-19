@@ -4,7 +4,7 @@ CREATE TABLE {PREFIX}mod_media_cats (
   `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   identifier varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   description varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  UNIQUE KEY id (id),
+  PRIMARY KEY id (id),
   UNIQUE KEY identifier (identifier)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
@@ -25,7 +25,7 @@ CREATE TABLE {PREFIX}mod_media_items (
   external_service varchar(32) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   external_id varchar(128) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   description text COLLATE utf8_unicode_ci NOT NULL,
-  UNIQUE KEY id (id),
+  PRIMARY KEY id (id),
   UNIQUE KEY identifier (identifier),
-  KEY cat_id (cat_id)
+  INDEX cat_id (cat_id)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;

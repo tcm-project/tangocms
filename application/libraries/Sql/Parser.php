@@ -142,56 +142,13 @@
 		}
 
 		/**
-		 * Replace LIMIT x [OFFSET y]
-		 *
-		 * @return null
-		 */
-		protected function replaceLimitsAndOffsets() {
-			for(; $this->i < strlen( $this->statement ); $this->i++ ) {
-				switch( $this->statement[$this->i] ) {
-					case '\'':
-					case '"':
-						$char = $this->statement[$this->i];
-						do {
-							$this->i++;
-						} while( $this->statement[$this->i] != $char );
-						break;
-					case 'L':
-						if ( substr( $this->statement, $this->i, 5 ) != 'LIMIT' ) {
-							break;
-						}
-						$startLimPos = $this->i;
-						$this->i = $startLimPos + 5;
-						$this->eatSpace();
-						$arg1 = $this->eatNpOrNumber();
-						$this->eatSpace();
-						if ( substr( $this->statement, $this->i, 6 ) != 'OFFSET' ) {
-							$this->statement = substr($this->statement, 0, $startLimPos).
-										'ROW_NUMBER() OVER(ORDER BY(SELECT 1)) > '.$arg1.' '.
-										substr($this->statement, $this->i);
-						} else {
-							$this->i += 6;
-							$this->eatSpace();
-							$arg2 = $this->eatNpOrNumber();
-							$this->statement = substr($this->statement, 0, $startLimPos).
-										'ROW_NUMBER() OVER(ORDER BY(SELECT 1)) BETWEEN '.$arg2.' AND '.$arg2.'+'.$arg1.
-										substr($this->statement, $this->i);
-						}
-						break;
-					default:
-						break;
-				}
-			}
-			$this->i = 0;
-		}
-
-		/**
-		 * Replace UTC_TIMESTAMP() with SYSUTCDATETIME()
+		 * Replace UTC_TIMESTAMP() and NOW() with SYSUTCDATETIME()
 		 *
 		 * @return null
 		 */
 		protected function replaceUtcTimestamp() {
 			for(; $this->i < strlen( $this->statement ); $this->i++ ) {
+				$plus = 0;
 				switch( $this->statement[$this->i] ) {
 					case '\'':
 					case '"':
@@ -200,13 +157,17 @@
 							$this->i++;
 						} while( $this->statement[$this->i] != $char );
 						break;
+					case 'N':
+						$plus = 5;
 					case 'U':
-						if ( substr( $this->statement, $this->i, 15 ) != 'UTC_TIMESTAMP()' ) {
+						if ( substr( $this->statement, $this->i, 15 ) != 'UTC_TIMESTAMP()' &&
+							substr( $this->statement, $this->i, 5 ) != 'NOW()') {
 							break;
 						}
+						$plus = $plus == 5 ? 5 : 15;
 						$this->statement = substr($this->statement, 0, $this->i).
 									'SYSUTCDATETIME()'.
-									substr($this->statement, $this->i += 15);
+									substr($this->statement, $this->i += $plus);
 						break;
 					default:
 						break;
@@ -217,13 +178,11 @@
 
 		/**
 		 * Parse and replace with SQL Server SQL
-		 *  - Replaces LIMIT, OFFSET with ROW_NUMBER() OVER()
 		 *
 		 * @return string
 		 */
 		protected function parseSqlsrv() {
 			$this->replaceSqlsrvQuotes();
-			$this->replaceLimitsAndOffsets();
 			$this->replaceUtcTimestamp();
 		}
 	}
