@@ -88,13 +88,13 @@
 			$query = $this->_sql->makeQuery();
 			$query->select( '*', '{PREFIX}mod_articles' );
 			if ( $cid ) {
-				$query->where( 'cat_id = :cid', array( ':cid' => abs( $cid ) ) );
+				$query->where( 'cat_id = ?', array( abs( $cid ) ) );
 			}
 			if ( $unpublished == false ) {
 				$query->where( 'published = 1' );
 			}
 			if ( $maxDisplayAge != null ) {
-				$query->where( 'DATEADD(second, :mda, `date`) >= NOW()', array( ':mda', $maxDisplayAge ) );
+				$query->where( 'DATEADD(second, ?, `date`) >= NOW()', array( $maxDisplayAge ) );
 			}
 			$query->order( array('published' => 'ASC', '`date`' => 'DESC') );
 			if ( $limit != 0 || $offset != 0 || $maxDisplayAge != null) {
