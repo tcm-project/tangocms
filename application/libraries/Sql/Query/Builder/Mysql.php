@@ -25,7 +25,9 @@
 				$sql .= ' LIMIT ' . $this->getOffset() . ', ' . $this->getLimit();
 			}
 			
-			return array($sql, $this->getBinds(), $this->getIndex());
+			$this->setSql($sql);
+			
+			return $this;
 		}
 		
 	} // END class Sql_Query_Builder_Mysql implements Sql_Query_Builder_Abstract
