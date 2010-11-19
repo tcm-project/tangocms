@@ -8,6 +8,11 @@
 	 **/
 	class Sql_Query_Builder_Sqlsrv extends Sql_Query_Builder_Abstract
 	{
+		protected $_replacements = array(
+			'UTC_TIMESTAMP' => 'SYSUTCDATETIME',
+			'DATEADD' => 'TIMESTAMPADD'
+		);
+			
 		/**
 		 * Build the query for SQL Server;
 		 *
@@ -56,6 +61,8 @@
 			if ($this->hasSorts()) {
 				$sql .= ' ORDER BY ' . implode(', ', $this->getSorts());
 			}
+			
+			$sql = $this->_resolveTokens($sql);
 			
 			return array($sql, $this->getBinds(), $this->getIndex());
 		}

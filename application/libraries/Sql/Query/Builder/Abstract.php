@@ -211,12 +211,23 @@
 			foreach ($this->getSources() as $index => $source) {
 				if ($source instanceof Sql_Query_Builder_Abstract) {
 					$q = $source->build();
-					$sources[$index] = '(' . $q[0] . ') AS subquery_' . $q[2];
+					$sources[$index] = '(' . $q[0] . ') AS [subquery_' . $q[2] . ']';
 					$this->addBinds($q[1]);
 				} else {
 					$sources[$index] = $source;
 				}
 			}
 			$this->setSources($sources);
+		}
+		
+		protected function _resolveTokens($string)
+		{
+			foreach ($this->_replacements as $find => $replace) {
+				$string = preg_replace('/([\s]+)'.$find.'([\s]+|\()/', '$1'.$replace.'$2', $string);
+			}
+			
+			$string = preg_replace('/`(.*)?`/', '[$1]', $string);
+
+			return $string;
 		}
 	} // END interface Sql_Query_Builder_I
