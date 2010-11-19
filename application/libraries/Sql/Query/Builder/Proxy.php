@@ -7,7 +7,7 @@
 	 * @package Sql::Query::Builder
 	 * @author James Stephenson
 	 **/
-	class Sql_Query_Builder_Proxy
+	class Sql_Query_Builder_Proxy implements Sql_Query_Builder_Interface
 	{
 		private $_context;
 		
@@ -43,7 +43,7 @@
 		 **/
 		public function __call($method, array $args)
 		{
-			call_user_func_array(array($this->_context, $method), $args);
+			return call_user_func_array(array($this->_context, $method), $args);
 		}
 		
 	} // END class Sql_Query_Builder_Proxy

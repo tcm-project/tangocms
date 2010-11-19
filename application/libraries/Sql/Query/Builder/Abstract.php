@@ -6,7 +6,7 @@
 	 * @package Sql::Query::Builder
 	 * @author James Stephenson
 	 **/
-	abstract class Sql_Query_Builder_Abstract
+	abstract class Sql_Query_Builder_Abstract implements Sql_Query_Builder_Interface
 	{
 		private $_data;
 		
@@ -25,7 +25,7 @@
 			$this->setFields(array());
 			$this->setEntity('');
 			$this->setConditions('');
-			$this->setBinds(array(null));
+			$this->setBinds(array());
 			$this->setSorts(array());
 			$this->setOffet(null);
 			$this->setLimit(null);
@@ -83,7 +83,7 @@
 				$this->setConditions($this->getConditions() . ' AND ' . $conditions);
 			}
 			
-			$this->setBinds($this->getBinds() + $values);
+			$this->addBinds($values);
 			
 			return $this;
 		}
@@ -179,7 +179,7 @@
 		
 		public function addBinds(array $binds)
 		{
-			$this->setBinds($this->getBinds() + $binds);
+			$this->setBinds(array_merge($this->getBinds(), $binds));
 		}
 		
 		public function getDepth()
@@ -248,10 +248,10 @@
 		{
 			$sources = array();
 			foreach ($this->getSources() as $index => $source) {
-				if ($source instanceof Sql_Query_Builder_Abstract) {
-					$q = $source->build();
+				if ($source instanceof Sql_Query_Builder_Interface) {
+					$source->build();
 					$sources[$index] = '(' . $source->getSql() . ') AS [subquery_' . $source->getIndex() . ']';
-					$this->setBinds($source->getBinds() + $this->getBinds());
+					$this->setBinds(array_merge($source->getBinds(), $this->getBinds()));
 				} else {
 					$sources[$index] = $source;
 				}
