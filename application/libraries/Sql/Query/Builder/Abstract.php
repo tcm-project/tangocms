@@ -250,11 +250,8 @@
 			foreach ($this->getSources() as $index => $source) {
 				if ($source instanceof Sql_Query_Builder_Abstract) {
 					$q = $source->build();
-					$sources[$index] = '(' . $q[0] . ') AS [subquery_' . $q[2] . ']';
-					foreach ($this->getBinds() as $bind) {
-						$q[1][] = $bind;
-					}
-					$this->setBinds($q[1]);
+					$sources[$index] = '(' . $source->getSql() . ') AS [subquery_' . $source->getIndex() . ']';
+					$this->setBinds($source->getBinds() + $this->getBinds());
 				} else {
 					$sources[$index] = $source;
 				}
