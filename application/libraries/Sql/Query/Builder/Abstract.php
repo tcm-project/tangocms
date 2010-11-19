@@ -83,7 +83,7 @@
 				$this->setConditions($this->getConditions() . ' AND ' . $conditions);
 			}
 			
-			$this->setBinds(array_merge($this->getBinds(), $values));
+			$this->setBinds($this->getBinds() + $values);
 			
 			return $this;
 		}
