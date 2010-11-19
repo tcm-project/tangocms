@@ -77,7 +77,12 @@
 		 **/
 		public function where($conditions, array $values = array())
 		{
-			$this->setConditions($conditions);
+			if ($this->getConditions() == '') {
+				$this->setConditions($conditions);
+			} else {
+				$this->setConditions($this->getConditions() . ' AND ' . $conditions);
+			}
+			
 			$this->setBinds(array_merge($this->getBinds(), $values));
 			
 			return $this;
