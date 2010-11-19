@@ -25,7 +25,7 @@
 			$this->setFields(array());
 			$this->setEntity('');
 			$this->setConditions('');
-			$this->setBinds(array());
+			$this->setBinds(array(null));
 			$this->setSorts(array());
 			$this->setOffet(null);
 			$this->setLimit(null);
@@ -179,7 +179,7 @@
 		
 		public function addBinds(array $binds)
 		{
-			$this->setBinds(array_merge($this->getBinds(), $binds));
+			$this->setBinds($this->getBinds() + $binds);
 		}
 		
 		public function getDepth()

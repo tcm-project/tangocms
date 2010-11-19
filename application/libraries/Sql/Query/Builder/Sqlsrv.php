@@ -26,10 +26,12 @@
 			if ($this->hasOffset() OR $this->hasLimit()) {
 				
 				$fields = $this->getFields();
-				$field = 'ROW_NUMBER() OVER(';
-				if ($this->hasOrder()) {
-					$field .= 'ORDER BY ' . $this->getOrder();
-					$this->setOrder('');
+				$field = 'ROW_NUMBER() OVER(ORDER BY ';
+				if ($this->hasSorts()) {
+					$field .= $this->getSorts();
+					$this->setSorts(array());
+				} else {
+					$field .= 'id ASC';
 				}
 				$field .= ') AS [rownum]';
 				$fields[] = $field;
@@ -59,7 +61,11 @@
 			}
 			
 			if ($this->hasSorts()) {
-				$sql .= ' ORDER BY ' . implode(', ', $this->getSorts());
+				$sql .= ' ORDER BY ';
+				foreach ($this->getSorts() as $key => $order) {
+					$joined[] = $key . ' ' . $value;
+				}
+				$sql .= implode(', ', $joined);
 			}
 			
 			$sql = $this->_resolveTokens($sql);
