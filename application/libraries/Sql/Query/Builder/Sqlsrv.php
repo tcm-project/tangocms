@@ -85,17 +85,18 @@
 			$bound = '';
 			$params = array();
 			if (is_int($offset)) {
-				$bound .= '> ?';
-				$params[] = $offset;
-			}
-			
-			if (is_int($limit)) {
-				if (!empty($bound)) {
-					$bound .= ' AND ';
+				if (is_int($limit)) {
+					$bound .= 'BETWEEN ? AND ?';
+					$params = array($offset, $offset + $limit);
+				} else {
+					$bound .= '> ?';
+					$params[] = $offset;
 				}
-				
-				$bound .= '<= ?';
-				$params[] = $limit;
+			} else {
+				if (is_int($limit)) {
+					$bound .= '<= ?';
+					$params[] = $limit;
+				}
 			}
 			
 			return array($bound, $params);

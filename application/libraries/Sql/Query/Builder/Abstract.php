@@ -240,7 +240,7 @@
 				$string = preg_replace('/([\s]+)'.$find.'([\s]+|\()/', '$1'.$replace.'$2', $string);
 			}
 			
-			$string = preg_replace('/`(.*)?`/', '[$1]', $string);
+			$string = preg_replace('/`([[:alnum:]]*)?`/', '[$1]', $string);
 
 			return $string;
 		}
