@@ -11,7 +11,8 @@
 		protected $_replacements = array(
 			'NOW' => 'SYSUTCDATETIME',
 			'UTC_TIMESTAMP' => 'SYSUTCDATETIME',
-			'TIMESTAMPADD' => 'DATEADD'
+			'TIMESTAMPADD' => 'DATEADD',
+			'TIMESTAMPDIFF' => 'DATEDIFF'
 		);
 			
 		/**
