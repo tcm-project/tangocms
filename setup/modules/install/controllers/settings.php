@@ -25,9 +25,9 @@
 			$this->setTitle( t('Basic configuration') );
 			if (
 				$this->_zula->getMode() != 'cli' &&
-				(!isset( $_SESSION['installStage'] ) || $_SESSION['installStage'] !== 6)
+				(!isset( $_SESSION['installStage'] ) || $_SESSION['installStage'] !== 5)
 			) {
-				return zula_redirect( $this->_router->makeUrl('install', 'security') );
+				return zula_redirect( $this->_router->makeUrl('install', 'checks') );
 			}
 			// Get data from either a form or CLI arguments
 			if ( $this->_zula->getMode() == 'cli' ) {

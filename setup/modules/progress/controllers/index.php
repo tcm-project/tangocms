@@ -29,7 +29,6 @@
 				// Build the view
 				$view = $this->loadView( 'installation.html' );
 				$stages = array(
-								t('Security check'),
 								t('Pre-installation checks'),
 								t('SQL details'),
 								t('First user'),

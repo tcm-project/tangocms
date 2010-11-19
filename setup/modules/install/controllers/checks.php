@@ -24,12 +24,6 @@
 		 */
 		public function indexSection() {
 			$this->setTitle( t('Pre-installation checks') );
-			if (
-				$this->_zula->getMode() != 'cli' &&
-				(!isset( $_SESSION['installStage'] ) || $_SESSION['installStage'] !== 2)
-			) {
-				return zula_redirect( $this->_router->makeUrl('install', 'security') );
-			}
 			$checks = array(
 						'exts'	=> array(
 										'title'	=> t('Required PHP extensions'),
@@ -92,8 +86,8 @@
 				$checks[ $name ]['values'] = $results;
 			}
 			if ( $passed ) {
-				if ( isset( $_SESSION['installStage'] ) ) {
-					++$_SESSION['installStage'];
+				if ( $this->_zula->getMode() !== 'cli' ) {
+					$_SESSION['installStage'] = 2;
 				}
 				$this->_event->success( t('Pre-installation checks were successful') );
 				return zula_redirect( $this->_router->makeUrl('install', 'sql') );

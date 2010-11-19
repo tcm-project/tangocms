@@ -25,8 +25,8 @@
 			if ( $this->_zula->getMode() == 'cli' ) {
 				$this->_event->success( t('Installation complete') );
 				return true;
-			} else if ( !isset( $_SESSION['installStage'] ) || $_SESSION['installStage'] !== 7 ) {
-				return zula_redirect( $this->_router->makeUrl('install', 'security') );
+			} else if ( !isset( $_SESSION['installStage'] ) || $_SESSION['installStage'] !== 6 ) {
+				return zula_redirect( $this->_router->makeUrl('install', 'checks') );
 			} else {
 				$view = $this->loadView( 'complete.html' );
 				return $view->getOutput();

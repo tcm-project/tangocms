@@ -22,9 +22,9 @@
 			$this->setTitle( t('Module installation') );
 			if (
 				$this->_zula->getMode() != 'cli' &&
-				(!isset( $_SESSION['installStage'] ) || $_SESSION['installStage'] !== 5)
+				(!isset( $_SESSION['installStage'] ) || $_SESSION['installStage'] !== 4)
 			) {
-				return zula_redirect( $this->_router->makeUrl('install', 'security') );
+				return zula_redirect( $this->_router->makeUrl('install', 'checks') );
 			}
 			Module::setDirectory( _REAL_MODULE_DIR );
 			foreach( Module::getModules( Module::_INSTALLABLE ) as $modname ) {

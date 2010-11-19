@@ -28,9 +28,9 @@
 			$this->setTitle( t('SQL details') );
 			if (
 				$this->_zula->getMode() != 'cli' &&
-				(!isset( $_SESSION['installStage'] ) || $_SESSION['installStage'] !== 3)
+				(!isset( $_SESSION['installStage'] ) || $_SESSION['installStage'] !== 2)
 			) {
-				return zula_redirect( $this->_router->makeUrl('install', 'security') );
+				return zula_redirect( $this->_router->makeUrl('install', 'checks') );
 			}
 			// Get data from either a form or CLI arguments
 			if ( $this->_zula->getMode() == 'cli' ) {
