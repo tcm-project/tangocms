@@ -118,7 +118,8 @@
 				if ( $articles == false ) {
 					$result = $query->build();
 					$pdoSt = $this->_sql->prepare( $result[0] );
-					array_unshift($result[1], null); 
+					array_unshift($result[1], null);
+					unset($result[1][0]);
 					foreach( $result[1] as $ident=>$val ) {
 						$pdoSt->bindValue( $ident, (int) $val, PDO::PARAM_INT );
 					}

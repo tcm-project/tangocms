@@ -26,9 +26,9 @@
 			$field = $method == 'username' ? 'username' : 'email';
 			$pdoSt = $this->_sql->prepare( 'SELECT u.id, u.username, m.value AS activate_code
 											FROM {PREFIX}users AS u LEFT JOIN {PREFIX}users_meta AS m
-											ON u.id = m.uid AND m.name = "activate_code"
+											ON u.id = m.uid AND m.name = ?
 											WHERE u.'.$field.' = ? AND u.password = ?' );
-			$pdoSt->execute( array($identifier, zula_hash($password)) );
+			$pdoSt->execute( array('activate_code', $identifier, zula_hash($password)) );
 			$user = $pdoSt->fetch( PDO::FETCH_ASSOC );
 			$pdoSt->closeCursor();
 			/**
