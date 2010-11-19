@@ -44,7 +44,7 @@
 				foreach( $query->getBoundParams() as $ident=>$val ) {
 					$pdoSt->bindValue( $ident, (int) $val, PDO::PARAM_INT );
 				}
-				$pdoSt->execute( $this->getBoundParams() );
+				$pdoSt->execute( $query->getBoundParams() );
 			} else {
 				$cacheKey = 'polls'; # Used later on as well
 				$polls = $this->_cache->get( $cacheKey );
