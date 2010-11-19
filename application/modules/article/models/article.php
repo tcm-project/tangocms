@@ -102,7 +102,10 @@
 				// Prepare and execute query
 				$result = $query->build();
 				$pdoSt = $this->_sql->prepare( $result[0] );
-				$pdoSt->execute( $result[1] );
+				foreach( $result[1] as $ident=>$val ) {	 	
+					$pdoSt->bindValue( $ident, (int) $val, PDO::PARAM_INT );
+				}
+				$pdoSt->execute();
 			} else {
 				if ( $unpublished ) {
 					$cacheKey = $cid ? 'articles_c'.$cid : 'articles'; # Used later on as well
@@ -114,7 +117,10 @@
 				if ( $articles == false ) {
 					$result = $query->build();
 					$pdoSt = $this->_sql->prepare( $result[0] );
-					$pdoSt->execute( $result[1] );
+					foreach( $result[1] as $ident=>$val ) {	 	
+						$pdoSt->bindValue( $ident, (int) $val, PDO::PARAM_INT );
+					}
+					$pdoSt->execute();
 				} else {
 					$this->articleCount = count( $articles );
 				}

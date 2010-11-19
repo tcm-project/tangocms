@@ -35,23 +35,22 @@
 		 * @return array
 		 */
 		public function getAllCategories( $limit=0, $offset=0, $aclCheck=true ) {
-			$statement = 'SELECT * FROM {PREFIX}mod_media_cats';
+			$query = $this->_sql->makeQuery()
+						->select( '*', '{PREFIX}mod_media_cats' )
+						->limit( $offset, $limit == 0 ? 1000000 : $limit );
 			if ( $limit != 0 || $offset != 0 ) {
-				if ( $limit > 0 ) {
-					$statement .= ' LIMIT '.(int) $limit;
-				} else if ( empty( $limit ) && !empty( $offset ) ) {
-					$statement .= ' LIMIT 1000000';
-				}
-				if ( $offset > 0 ) {
-					$statement .= ' OFFSET '.(int) $offset;
-				}
-				$query = $this->_sql->query( $statement );
+				$result = $query->build();
+				$query = $this->_sql->prepare( $result[0] );
+				$query->execute( $result[1] );
+
 			} else {
 				// Get from cache instead, if possible
 				$cacheKey = 'media_cats';
 				if ( !($categories = $this->_cache->get($cacheKey)) ) {
-					$statement .= ' ORDER BY name ASC';
-					$query = $this->_sql->query( $statement );
+					$query->order( 'name', 'ASC' );
+					$result = $query->build();
+					$query = $this->_sql->prepare( $result[0] );
+					$query->execute( $result[1] );
 				}
 			}
 			if ( isset( $query ) ) {
@@ -163,29 +162,17 @@
 		 * @return array
 		 */
 		public function getItems( $limit=0, $offset=0, $cid=null, $aclCheck=true ) {
-			$statement = 'SELECT * FROM {PREFIX}mod_media_items WHERE outstanding = 0';
-			$params = array();
+			$query = $this->_sql->makeQuery()
+						->select( '*', '{PREFIX}mod_media_items' )
+						->where( 'outstanding = 0' );
 			if ( $cid ) {
-				$statement .= ' AND cat_id = :cid';
-				$params[':cid'] = $cid;
+				$query->where( 'cat_id = ?', array( $cid ) );
 			}
-			if ( $limit != 0 || $offset != 0 ) {
-				$statement .= ' ORDER BY date DESC';
-				if ( $limit > 0 ) {
-					$statement .= ' LIMIT :limit';
-					$params[':limit'] = $limit;
-				} else if ( empty( $limit ) && !empty( $offset ) ) {
-					$statement .= ' LIMIT 1000000';
-				}
-				if ( $offset > 0 ) {
-					$statement .= ' OFFSET :offset';
-					$params[':offset'] = $offset;
-				}
-			} else {
-				$statement .= ' ORDER BY date DESC';
-			}
-			$pdoSt = $this->_sql->prepare( $statement );
-			foreach( $params as $key=>$val ) {
+			$query->limit( $offset, $limit == 0 ? 1000000 : $limit )
+				->order( array('date' => 'DESC') );
+			$result = $query->build();
+			$pdoSt = $this->_sql->prepare( $result[0] );
+			foreach( $result[1] as $key=>$val ) {
 				$pdoSt->bindValue( $key, (int) $val, PDO::PARAM_INT );
 			}
 			$pdoSt->execute();
