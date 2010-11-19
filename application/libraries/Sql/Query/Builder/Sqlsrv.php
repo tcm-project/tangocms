@@ -25,7 +25,6 @@
 			$this->_resolveSources();
 			
 			if ($this->hasOffset() OR $this->hasLimit()) {
-				
 				$fields = $this->getFields();
 				$field = 'ROW_NUMBER() OVER(ORDER BY ';
 				if ($this->hasSorts()) {
@@ -68,7 +67,7 @@
 			$sql = $this->_resolveTokens($sql);
 			$this->setSql($sql);
 			
-			return true;
+			return $this;
 		}
 		
 		public function getOrder()

@@ -28,8 +28,11 @@
 		{
 			$class = 'Sql_Query_Builder_' . ucfirst(strtolower($type));
 			if (class_exists($class)) {
-				return new $class;
+				$builder = new $class;
+			} else {
+				throw new Exception('No query builder for driver: ' . $type);
 			}
-			throw new Exception('No query builder for driver: ' . $type);
+			
+			return new Sql_Query_Builder_Proxy($builder);
 		}
 	} // END final class Sql_Query_Builder_Factory
