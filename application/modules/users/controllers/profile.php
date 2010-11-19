@@ -108,8 +108,14 @@
 			 * Prepare form validation
 			 */
 			$form = new View_Form( 'profile/settings.html', 'users' );
-			$form->addElement( 'users/password', null, t('Password'),
-								array(new Validator_Length(4,32), new Validator_Confirm('users/password_confirm', Validator_Confirm::_POST)),
+			$form->addElement( 'users/passwd/current', null, t('Current password'),
+								array(array($this, 'validatePassword'))
+							 );
+			$form->addElement( 'users/passwd/new', null, t('Password'),
+								array(
+									new Validator_Length(4,32),
+									new Validator_Confirm('users/passwd/conf', Validator_Confirm::_POST)
+									),
 								false
 							 );
 			$form->addElement( 'users/hide_email', $user['hide_email'], t('Hide email'), new Validator_Bool );
@@ -131,6 +137,8 @@
 					if ( empty( $fd['theme'] ) ) {
 						$fd['theme'] = null;
 					}
+					$fd['password'] = $fd['passwd']['new'];
+					unset( $fd['passwd'] );
 					$this->_ugmanager->editUser( $this->_session->getUserId(), $fd );
 					$this->_event->success( t('Updated Profile') );
 					return zula_redirect( $this->_router->makeUrl( 'users', 'profile', 'settings' ) );
@@ -139,6 +147,21 @@
 				}
 			}
 			return $form->getOutput();
+		}
+
+		/**
+		 * Validates the users password to ensure it is their
+		 * current one, to help with security.
+		 *
+		 * @param string $value
+		 * @return string|bool
+		 */
+		public function validatePassword( $value ) {
+			if ( zula_hash( $value ) == $this->_session->getUser( 'password' ) ) {
+				return true;
+			} else {
+				return t('Please enter your current user password');
+			}
 		}
 
 	}

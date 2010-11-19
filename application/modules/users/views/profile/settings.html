@@ -2,7 +2,28 @@
 	<table>
 		<thead>
 			<tr>
-				<th colspan="2">{L_[Password]}</th>
+				<th colspan="2">{L_[Current password]}</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr class="even">
+				<td>
+					<dl>
+						<dt>{L_[Current password]}</dt>
+						<dd>{L_[Please enter your current password to perform any changes below.]}</dd>
+					</dl>
+				</td>
+				<td class="confcol">
+					<input type="password" name="users[passwd][current]">
+				</td>
+			</tr>
+		</thead>
+	</table>
+
+	<table>
+		<thead>
+			<tr>
+				<th colspan="2">{L_[Change password]}</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -14,7 +35,7 @@
 					</d>
 				</td>
 				<td class="confcol">
-					<input type="password" name="users[password]" value="{USERS.PASSWORD}">
+					<input type="password" name="users[passwd][new]" value="{users.passwd.new}">
 				</td>
 			</tr>
 			<tr class="odd">
@@ -25,7 +46,7 @@
 					</dl>
 				</td>
 				<td class="confcol">
-					<input type="password" name="users[password_confirm]">
+					<input type="password" name="users[passwd][conf]">
 				</td>
 			</tr>
 		</tbody>
@@ -46,7 +67,7 @@
 					</dl>
 				</td>
 				<td class="confcol">
-					<input type="email" name="users[email]" value="{USERS.EMAIL}">
+					<input type="email" name="users[email]" value="{user.email}">
 				</td>
 			</tr>
 			<tr class="odd">
