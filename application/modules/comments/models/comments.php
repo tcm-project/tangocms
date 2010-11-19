@@ -39,52 +39,28 @@
 		 * @return array
 		 */
 		public function get( $requestPath=null, $status=self::_ACCEPTED, $limit=0, $offset=0, $order='ASC' ) {
-			$statement = 'SELECT * FROM {PREFIX}mod_comments';
-			$params = array();
-			// Add in the WHERE
-			$where = 'WHERE';
+			$query = $this->_sql->makeQuery()->select( '*', '{PREFIX}mod_comments' );
 			if ( $requestPath !== null ) {
-				$where .= ' url LIKE :url';
-				$params[':url'] = $requestPath.'%';
+				$query->where( 'url LIKE ?', array( $requestPath.'%' ) )
 			}
 			if ( $status != self::_ALL ) {
-				$tmp = ' status = :status';
-				if ( $where != 'WHERE' ) {
-					$tmp = ' AND'.$tmp;
-				}
-				$where .= $tmp;
-				$params[':status'] = $status;
-			}
-			if ( $where != 'WHERE' ) {
-				$statement .= ' '.$where;
+				$query->where( 'status = ?', array( $status ) );
 			}
 			if ( strtoupper( $order ) != 'ASC' ) {
 				$order = 'DESC';
 			}
+			$query->limit( $offset, $limit == 0 ? 1000000 : $limit );
+			$query->order( array('date' => $order) );
+			$result = $query->build();
+
 			// Check if we need to limit the result set
 			if ( $limit != 0 || $offset != 0 ) {
 				$comments = array();
-				$statement .= ' ORDER BY date '.$order;
-				if ( $limit > 0 ) {
-					$statement .= ' LIMIT :limit';
-					$params[':limit'] = $limit;
-				} else if ( empty( $limit ) && !empty( $offset ) ) {
-					$statement .= ' LIMIT 1000000';
-				}
-				if ( $offset > 0 ) {
-					$statement .= ' OFFSET :offset';
-					$params[':offset'] = $offset;
-				}
+				$query->order( array('date' => $order) );
+
 				// Prepare and execute query
-				$pdoSt = $this->_sql->prepare( $statement );
-				foreach( $params as $ident=>$val ) {
-					if ( $ident == ':url' || $ident == ':status' ) {
-						$pdoSt->bindValue( $ident, $val );
-					} else {
-						$pdoSt->bindValue( $ident, (int) $val, PDO::PARAM_INT );
-					}
-				}
-				$pdoSt->execute();
+				$pdoSt = $this->_sql->prepare( $result[0] );
+				$pdoSt->execute( $result[1] );
 			} else {
 				/**
 				 * Get all comments of a certain status. Only cache accepted comments
@@ -99,9 +75,8 @@
 				}
 				if ( !($comments = $this->_cache->get( $cacheKey )) ) {
 					$comments = array();
-					$statement .= ' ORDER BY date '.$order;
-					$pdoSt = $this->_sql->prepare( $statement );
-					$pdoSt->execute( $params );
+					$pdoSt = $this->_sql->prepare( $result[0] );
+					$pdoSt->execute( $result[1] );
 				}
 			}
 			if ( isset( $pdoSt ) ) {

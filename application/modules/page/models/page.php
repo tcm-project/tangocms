@@ -33,31 +33,16 @@
 		 * @return array
 		 */
 		public function getAllPages( $limit=0, $offset=0, $parent=0, $aclCheck=true, $withBody=false ) {
-			$cols = $withBody ? '*' : 'id, title, author, date, parent, `order`, identifier';
-			$statement = 'SELECT '.$cols.' FROM {PREFIX}mod_page
-						  WHERE parent = '.(int) $parent.' ORDER BY title ASC';
-			if ( $limit != 0 || $offset != 0 ) {
-				// Limit the result set.
-				$params = array();
-				if ( $limit > 0 ) {
-					$statement .= ' LIMIT :limit';
-					$params[':limit'] = $limit;
-				} else if ( $limit == 0 && $offset > 0 ) {
-					$statement .= ' LIMIT 1000000';
-				}
-				if ( $offset > 0 ) {
-					$statement .= ' OFFSET :offset';
-					$params[':offset'] = $offset;
-				}
-				// Prepare and execute query
-				$pdoSt = $this->_sql->prepare( $statement );
-				foreach( $params as $ident=>$val ) {
-					$pdoSt->bindValue( $ident, (int) $val, PDO::PARAM_INT );
-				}
-				$pdoSt->execute();
-			} else {
-				$pdoSt = $this->_sql->query( $statement );
-			}
+			$cols = $withBody ? '*' : array('id', 'title', 'author', 'date', 'parent', '`order`', 'identifier');
+			$query = $this->_sql->makeQuery();
+			$query->select( $cols, '{PREFIX}mod_page' )
+				->where( 'parent = ?', array( (int)$parent ) )
+				->order( array('title' => 'ASC') )
+				->limit($offset, $limit == 0 ? 1000000 : $limit);
+
+			$result = $query->build();
+			$pdoSt = $this->_sql->prepare( $result[0] );
+			$pdoSt->execute( $result[1] );
 			$pages = array();
 			foreach( $pdoSt->fetchAll( PDO::FETCH_ASSOC ) as $row ) {
 				$pages[ $row['id'] ] = $row;

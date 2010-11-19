@@ -207,7 +207,7 @@
 				$pdoSt->execute( array($uid, $authKey, session_id()) );
 				// Attempt to identify the user we are switching to
 				if ( $this->identify($authKey, $authFor) === $uid ) {
-					$this->_sql->query( 'UPDATE {PREFIX}users SET last_login = UNIX_TIMESTAMP() WHERE id = '.$uid );
+					$this->_sql->query( 'UPDATE {PREFIX}users SET last_login = UTC_TIMESTAMP() WHERE id = '.$uid );
 					$_SESSION['auth'] = array(
 											'remember'	=> (bool) $remember,
 											'key'		=> $authKey,

@@ -31,31 +31,21 @@
 		 * @return array
 		 */
 		public function getAllForms( $limit=0, $offset=0, $aclCheck=true ) {
-			$statement = 'SELECT * FROM {PREFIX}mod_contact ORDER BY name ASC';
+			$query = $this->_sql->makeQuery()
+						->select( '*', '{PREFIX}mod_contact' )
+						->order( array('name' => 'ASC') )
+						->limit( $offset, $limit == 0 ? 1000000 : $limit );
+			$result = $query->build();
 			if ( $limit != 0 || $offset != 0 ) {
-				// Limit the result set.
-				$params = array();
-				if ( $limit > 0 ) {
-					$statement .= ' LIMIT :limit';
-					$params[':limit'] = $limit;
-				} else if ( $limit == 0 && $offset > 0 ) {
-					$statement .= ' LIMIT 1000000';
-				}
-				if ( $offset > 0 ) {
-					$statement .= ' OFFSET :offset';
-					$params[':offset'] = $offset;
-				}
 				// Prepare and execute query
-				$pdoSt = $this->_sql->prepare( $statement );
-				foreach( $params as $ident=>$val ) {
-					$pdoSt->bindValue( $ident, (int) $val, PDO::PARAM_INT );
-				}
-				$pdoSt->execute();
+				$pdoSt = $this->_sql->prepare( $result[0] );
+				$pdoSt->execute( $result[1] );
 			} else {
 				$cacheKey = 'contact_forms'; # Used later on as well
 				$forms = $this->_cache->get( $cacheKey );
 				if ( $forms == false ) {
-					$pdoSt = $this->_sql->query( $statement );
+					$pdoSt = $this->_sql->prepare( $result[0] );
+					$pdoSt->execute( $result[1] );
 				} else {
 					$this->formCount = count( $forms );
 				}

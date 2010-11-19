@@ -32,39 +32,22 @@
 		 * @return array
 		 */
 		public function getAllPolls( $limit=0, $offset=0, $aclCheck=true ) {
-			if ( $this->_sql->getAttribute( PDO::ATTR_DRIVER_NAME ) == 'sqlsrv' ) {
-				$statement = 'SELECT id, title, status,
-							start_date, end_date, DATEDIFF(second, start_date, end_date) AS duration
-							FROM {PREFIX}mod_poll ORDER BY start_date DESC';
-			} else {
-				$statement = 'SELECT id, title, status,
-							start_date, end_date, TIMESTAMPDIFF(SECOND, start_date, end_date) AS duration
-							FROM {PREFIX}mod_poll ORDER BY start_date DESC';
-			}
+			$query = $this->_sql->makeQuery()
+					->select( array('id','title','status','start_date','end_date','TIMESTAMPDIFF(second, start_date, end_date)'),
+							'{PREFIX}mod_poll')
+					->order( array('start_date' => 'DESC') )
+					->limit( $offset, $limit == 0 ? 1000000 : $limit );
+			$result = $query->build();
 			if ( $limit != 0 || $offset != 0 ) {
-				// Limit the result set.
-				$params = array();
-				if ( $limit > 0 ) {
-					$statement .= ' LIMIT :limit';
-					$params[':limit'] = $limit;
-				} else if ( $limit == 0 && $offset > 0 ) {
-					$statement .= ' LIMIT 1000000';
-				}
-				if ( $offset > 0 ) {
-					$statement .= ' OFFSET :offset';
-					$params[':offset'] = $offset;
-				}
 				// Prepare and execute query
-				$pdoSt = $this->_sql->prepare( $statement );
-				foreach( $params as $ident=>$val ) {
-					$pdoSt->bindValue( $ident, (int) $val, PDO::PARAM_INT );
-				}
-				$pdoSt->execute();
+				$pdoSt = $this->_sql->prepare( $result[0] );
+				$pdoSt->execute( $result[1] );
 			} else {
 				$cacheKey = 'polls'; # Used later on as well
 				$polls = $this->_cache->get( $cacheKey );
 				if ( $polls == false ) {
-					$pdoSt = $this->_sql->query( $statement );
+					$pdoSt = $this->_sql->prepare( $result[0] );
+					$pdoSt->execute( $result[1] );
 				} else {
 					$this->pollCount = count( $polls );
 				}
