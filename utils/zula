@@ -193,12 +193,15 @@ case "$1" in
 			exit 2
 		fi
 		count=0
-		for config in $(find config -maxdepth 1 -type d -path "config/*" \! -name "default.dist" -printf '%f\n'); do
-			if (( $count > 0 )); then
+		for config in config/*; do
+			configName=$(basename $config)
+			if [[ $configName = default.dist ]]; then
+				continue
+			elif (( $count > 0 )); then
 				echo
 			fi
 			echo "Starting upgrade for '$config' ..."
-			(cd setup && $pathPHP -f index.php -- -c "$config" -r upgrade/version)
+			(cd setup && $pathPHP -f index.php -- -c "$configName" -r upgrade/version)
 			let count++;
 		done;
 		if (( $count == 0 )); then
