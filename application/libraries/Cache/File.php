@@ -7,7 +7,7 @@
  * @patches submit all patches to patches@tangocms.org
  *
  * @author Alex Cartwright
- * @copyright Copyright (C) 2008, Alex Cartwright
+ * @copyright Copyright (C) 2008, 2009, 2010 Alex Cartwright
  * @license http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html GNU/LGPL 2.1
  * @package Zula_Cache
  */
@@ -51,16 +51,12 @@
 		 * @return bool
 		 */
 		public function add( $key, $data, $overwrite=false ) {
-			if ( $key === null ) {
+			$file = $this->cacheDir.'/'.zula_hash( $key, null, 'md5' );
+			if ( file_exists( $file ) && $overwrite == false ) {
 				return false;
 			} else {
-				$file = $this->cacheDir.'/'.zula_hash( $key, null, 'md5' );
-				if ( file_exists( $file ) && $overwrite == false ) {
-					return false;
-				} else {
-					$this->cached[ $key ] = $data;
-					return file_put_contents( $file, serialize($data) );
-				}
+				$this->cached[ $key ] = $data;
+				return file_put_contents( $file, serialize($data) );
 			}
 		}
 
@@ -71,9 +67,7 @@
 		 * @return mixed
 		 */
 		public function get( $key ) {
-			if ( $key === null ) {
-				return false;
-			} else if ( array_key_exists( $key, $this->cached ) ) {
+			if ( array_key_exists( $key, $this->cached ) ) {
 				return $this->cached[ $key ];
 			} else {
 				$file = $this->cacheDir.'/'.zula_hash( $key, null, 'md5' );

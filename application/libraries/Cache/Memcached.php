@@ -7,7 +7,7 @@
  * @patches submit all patches to patches@tangocms.org
  *
  * @author Robert Clipsham
- * @copyright Copyright (C) 2008, Robert Clipsham
+ * @copyright Copyright (C) 2008, 2009, 2010 Robert Clipsham
  * @license http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html GNU/LGPL 2.1
  * @package Zula_Cache
  */
@@ -46,9 +46,7 @@
 		 * @return bool
 		 */
 		public function add( $key, $data, $overwrite=false ) {
-			if ( $key === null ) {
-				return false;
-			} else if ( $overwrite == false ) {
+			if ( $overwrite == false ) {
 				return Memcache::add( $key, $data, $this->compression, $this->ttl() );
 			} else {
 				return Memcache::set( $key, $data, $this->compression, $this->ttl() );
@@ -62,7 +60,7 @@
 		 * @return mixed
 		 */
 		public function get( $key ) {
-			return $key === null ? false : Memcache::get( $key );
+			return Memcache::get( $key );
 		}
 
 		/**

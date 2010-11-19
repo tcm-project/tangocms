@@ -30,7 +30,7 @@
 		 * @return bool
 		 */
 		public function add( $key, $data, $overwrite=false ) {
-			if ( $key === null || array_key_exists( $key, $this->cached ) && $overwrite == false ) {
+			if ( array_key_exists( $key, $this->cached ) && $overwrite == false ) {
 				return false;
 			} else {
 				$this->cached[ $key ] = $data;
@@ -45,11 +45,7 @@
 		 * @return mixed
 		 */
 		public function get( $key ) {
-			if ( $key === null ) {
-				return false;
-			} else {
-				return array_key_exists($key, $this->cached) ? $this->cached[$key] : false;
-			}
+			return array_key_exists($key, $this->cached) ? $this->cached[$key] : false;
 		}
 
 		/**

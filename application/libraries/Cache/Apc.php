@@ -34,9 +34,7 @@
 		 * @return bool
 		 */
 		public function add( $key, $data, $overwrite=false ) {
-			if ( $key === null ) {
-				return false;
-			} else if ( $overwrite == false ) {
+			if ( $overwrite == false ) {
 				return apc_add( $key, $data, $this->ttl() );
 			} else {
 				return apc_store( $key, $data, $this->ttl() );
@@ -50,7 +48,7 @@
 		 * @return mixed
 		 */
 		public function get( $key ) {
-			return $key === null ? false : apc_fetch( $key );
+			return apc_fetch( $key );
 		}
 
 		/**

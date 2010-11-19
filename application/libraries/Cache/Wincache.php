@@ -34,9 +34,7 @@
 		 * @return bool
 		 */
 		public function add( $key, $data, $overwrite=false ) {
-			if ( $key === null ) {
-				return false;
-			} else if ( $overwrite == false ) {
+			if ( $overwrite == false ) {
 				return wincache_ucache_add( $key, $data, $this->ttl() );
 			} else {
 				return wincache_ucache_set( $key, $data, $this->ttl() );
@@ -50,11 +48,9 @@
 		 * @return mixed
 		 */
 		public function get( $key ) {
-			if ( $key !== null ) {
-				$value = wincache_ucache_get( $key, $success );
-				if ( $success ) {
-					return $value;
-				}
+			$value = wincache_ucache_get( $key, $success );
+			if ( $success ) {
+				return $value;
 			}
 			return false;
 		}
