@@ -132,13 +132,20 @@
 				}
 				$pdoSt->closeCursor();
 				// Find out the total amount of rows
-				$statement = 'SELECT COUNT(*) FROM {PREFIX}mod_articles';
-				if ( $where != 'WHERE' ) {
-					$statement .= ' '.$where;
+				$query = $this->_sql->makeQuery();
+				$query->select( 'COUNT(*)', '{PREFIX}mod_articles' );
+				if ( $cid ) {
+					$query->where( 'cat_id = ?', array( abs( $cid ) ) );
 				}
-				$pdoSt = $this->_sql->prepare( $statement );
-				unset( $params[':limit'], $params[':offset'] );
-				foreach( $params as $ident=>$val ) {
+				if ( $unpublished == false ) {
+					$query->where( 'published = 1' );
+				}
+				if ( $maxDisplayAge != null ) {
+					$query->where( 'DATEADD(second, ?, `date`) >= NOW()', array( $maxDisplayAge ) );
+				}
+				$query->build();
+				$pdoSt = $this->_sql->prepare( $query->getSql() );
+				foreach( $query->getBoundParams() as $ident=>$val ) {
 					$pdoSt->bindValue( $ident, (int) $val, PDO::PARAM_INT );
 				}
 				$pdoSt->execute();
