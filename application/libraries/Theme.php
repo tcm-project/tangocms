@@ -20,7 +20,7 @@
 		/**
 		 * Version of jQuery to load (used only when use of Google CDN is allowed)
 		 */
-		const _JQUERY_VERSION = '1.4.3';
+		const _JQUERY_VERSION = '1.4.4';
 
 		/**
 		 * Toggles if JavaScript files should be aggregated
