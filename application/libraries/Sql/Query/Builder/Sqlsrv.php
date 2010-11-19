@@ -9,8 +9,9 @@
 	class Sql_Query_Builder_Sqlsrv extends Sql_Query_Builder_Abstract
 	{
 		protected $_replacements = array(
+			'NOW' => 'SYSUTCDATETIME',
 			'UTC_TIMESTAMP' => 'SYSUTCDATETIME',
-			'DATEADD' => 'TIMESTAMPADD'
+			'TIMESTAMPADD' => 'DATEADD'
 		);
 			
 		/**
@@ -28,7 +29,7 @@
 				$fields = $this->getFields();
 				$field = 'ROW_NUMBER() OVER(ORDER BY ';
 				if ($this->hasSorts()) {
-					$field .= $this->getSorts();
+					$field .= $this->getOrderBy();
 					$this->setSorts(array());
 				} else {
 					$field .= 'id ASC';
@@ -61,11 +62,7 @@
 			}
 			
 			if ($this->hasSorts()) {
-				$sql .= ' ORDER BY ';
-				foreach ($this->getSorts() as $key => $order) {
-					$joined[] = $key . ' ' . $value;
-				}
-				$sql .= implode(', ', $joined);
+				$sql .= ' ORDER BY ' . $this->getOrderBy();
 			}
 			
 			$sql = $this->_resolveTokens($sql);

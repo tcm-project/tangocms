@@ -210,6 +210,15 @@
 			$this->_data['fields'] = $fields;
 		}
 		
+		public function getOrderBy()
+		{
+			$orders = array();
+			foreach ($this->getSorts() as $key => $value) {
+				$orders = $key . ' ' . $value;
+			}
+			return implode(', ', $orders);
+		}
+		
 		protected function _resolveSources()
 		{
 			$sources = array();
