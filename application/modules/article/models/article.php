@@ -102,7 +102,8 @@
 				// Prepare and execute query
 				$result = $query->build();
 				$pdoSt = $this->_sql->prepare( $result[0] );
-				foreach( array_unshift($result[1], null) as $ident=>$val ) {
+				array_unshift($result[1], null); 
+				foreach( $result[1] as $ident=>$val ) {
 					$pdoSt->bindValue( $ident, (int) $val, PDO::PARAM_INT );
 				}
 				$pdoSt->execute();
@@ -117,7 +118,8 @@
 				if ( $articles == false ) {
 					$result = $query->build();
 					$pdoSt = $this->_sql->prepare( $result[0] );
-					foreach( array_unshift($result[1], null) as $ident=>$val ) {
+					array_unshift($result[1], null); 
+					foreach( $result[1] as $ident=>$val ) {
 						$pdoSt->bindValue( $ident, (int) $val, PDO::PARAM_INT );
 					}
 					$pdoSt->execute();
