@@ -21,7 +21,7 @@
 		 */
 		public function __construct() {
 			if ( !extension_loaded( 'wincache' ) ) {
-				throw new Zula_Exception( 'wincache extension is currently not loaded, unable to use WinCache caching' );
+				throw new Cache_Exception( 'PHP extension "wincache" not loaded' );
 			}
 		}
 

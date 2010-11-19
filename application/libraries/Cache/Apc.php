@@ -7,7 +7,7 @@
  * @patches submit all patches to patches@tangocms.org
  *
  * @author Alex Cartwright
- * @copyright Copyright (C) 2008, Alex Cartwright
+ * @copyright Copyright (C) 2008, 2009, 2010 Alex Cartwright
  * @license http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html GNU/LGPL 2.1
  * @package Zula_Cache
  */
@@ -21,7 +21,7 @@
 		 */
 		public function __construct() {
 			if ( !extension_loaded( 'apc' ) ) {
-				throw new Zula_Exception( 'APC extension is currently not loaded, unable to use APC caching' );
+				throw new Cache_Exception( 'PHP extension "apc" not loaded' );
 			}
 		}
 

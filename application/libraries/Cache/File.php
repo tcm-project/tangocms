@@ -37,6 +37,9 @@
 			if ( !is_dir( $this->cacheDir ) ) {
 				zula_make_dir( $this->cacheDir );
 			}
+			if ( !zula_is_writable( $this->cacheDir ) ) {
+				throw new Cache_Exception( $this->cacheDir.' is not writable' );
+			}
 		}
 
 		/**
@@ -53,9 +56,6 @@
 			} else {
 				$file = $this->cacheDir.'/'.zula_hash( $key, null, 'md5' );
 				if ( file_exists( $file ) && $overwrite == false ) {
-					return false;
-				} else if ( !zula_is_writable( $this->cacheDir ) ) {
-					$this->_log->message( 'CacheFile::add() cache directory "'.$this->cacheDir.'" is not writeable', Log::L_WARNING );
 					return false;
 				} else {
 					$this->cached[ $key ] = $data;

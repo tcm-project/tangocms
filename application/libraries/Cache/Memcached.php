@@ -27,7 +27,7 @@
 		 */
 		public function __construct() {
 			if ( !extension_loaded( 'memcache' ) ) {
-				throw new Exception( 'Memcache extension is currently not loaded, unable to use Memcached caching' );
+				throw new Cache_Exception( 'PHP extension "memcache" not loaded' );
 			}
 			if ( extension_loaded( 'zlib' ) ) {
 				$this->compression = MEMCACHE_COMPRESSED;

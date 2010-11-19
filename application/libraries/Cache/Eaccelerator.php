@@ -21,10 +21,9 @@
 		 */
 		public function __construct() {
 			if ( !extension_loaded( 'eaccelerator' ) ) {
-				throw new Exception( 'eAccelerator extension is currently not loaded, unable to use eAccelerator caching' );
-			}
-			if ( !function_exists( 'eaccelerator_put' ) ) {
-				throw new Exception( 'eAccelerator functions required for eAccelerator caching are not enabled. Please reconfigure eAccelerator with --with-eaccelerator-content-caching to enable.' );
+				throw new Cache_Exception( 'PHP extension "eaccelerator" not loaded' );
+			} else if ( !function_exists( 'eaccelerator_put' ) ) {
+				throw new Cache_Exception( 'eAccelerator must be configured with "--with-eaccelerator-content-caching"' );
 			}
 		}
 
