@@ -68,7 +68,7 @@
 				$pdoSt->execute();
 				++$i;
 			} while( $pdoSt->rowCount() > 0 );
-			$pdoSt->closeCursor;
+			$pdoSt->closeCursor();
 			return $identifier;
 		}
 
