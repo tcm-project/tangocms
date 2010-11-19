@@ -100,11 +100,9 @@
 			if ( $limit != 0 || $offset != 0 || $maxDisplayAge != null) {
 				$query->limit( $offset, $limit == 0 ? 1000000 : $limit );
 				// Prepare and execute query
-				$pdoSt = $this->_sql->prepare( $query->build() );
-				foreach( $params as $ident=>$val ) {
-					$pdoSt->bindValue( $ident, (int) $val, PDO::PARAM_INT );
-				}
-				$pdoSt->execute();
+				$result = $query->build();
+				$pdoSt = $this->_sql->prepare( $result[0] );
+				$pdoSt->execute( $result[1] );
 			} else {
 				if ( $unpublished ) {
 					$cacheKey = $cid ? 'articles_c'.$cid : 'articles'; # Used later on as well
@@ -114,7 +112,9 @@
 					$articles = false;
 				}
 				if ( $articles == false ) {
-					$pdoSt = $this->_sql->query( $query->build() );
+					$result = $query->build();
+					$pdoSt = $this->_sql->prepare( $result[0] );
+					$pdoSt->execute( $result[1] );
 				} else {
 					$this->articleCount = count( $articles );
 				}
