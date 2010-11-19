@@ -112,9 +112,13 @@
 		 * @return int|false
 		 */
 		public function resetCodeUid( $rc ) {
-			$pdoSt = $this->_sql->prepare( 'SELECT uid FROM {PREFIX}users_meta
-											WHERE name = "sessionResetCode" AND value = ? LIMIT 1' );
-			$pdoSt->execute( array($rc) );
+			$result = $this->_sql->makeQuery()->select( 'uid', 'users_meta' )
+							->where( 'name = "sessionResetCode"' )
+							->where( 'value = ?', array($rc) )
+							->limit(0, 1)
+							->build();
+			$pdoSt = $this->_sql->prepare( $result[0] );
+			$pdoSt->execute( $result[1] );
 			$uid = $pdoSt->fetchColumn();
 			$pdoSt->closeCursor();
 			return $uid ? $uid : false;
