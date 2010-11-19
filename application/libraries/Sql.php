@@ -440,6 +440,17 @@
 			}
 			return true;
 		}
+		
+		/**
+		 * Return a new query object of the appropriate type.
+		 *
+		 * @return Sql_Query_Builder_Abstract
+		 * @author James Stephenson
+		 **/
+		public function makeQuery()
+		{
+			return Sql_Query_Builder_Factory::make($this->getAttribute( PDO::ATTR_DRIVER_NAME ));
+		}
 
 	}
 
