@@ -37,17 +37,23 @@
 							'{PREFIX}mod_poll')
 					->order( array('start_date' => 'DESC') )
 					->limit( $offset, $limit == 0 ? 1000000 : $limit );
-			$result = $query->build();
+			$query->build();
 			if ( $limit != 0 || $offset != 0 ) {
 				// Prepare and execute query
-				$pdoSt = $this->_sql->prepare( $result[0] );
+				$pdoSt = $this->_sql->prepare( $query->getSql() );
+				foreach( $query->getBoundParams() as $ident=>$val ) {
+					$pdoSt->bindValue( $ident, (int) $val, PDO::PARAM_INT );
+				}
 				$pdoSt->execute( $result[1] );
 			} else {
 				$cacheKey = 'polls'; # Used later on as well
 				$polls = $this->_cache->get( $cacheKey );
 				if ( $polls == false ) {
-					$pdoSt = $this->_sql->prepare( $result[0] );
-					$pdoSt->execute( $result[1] );
+					$pdoSt = $this->_sql->prepare( $query->getSql() );
+					foreach( $query->getBoundParams() as $ident=>$val ) {
+						$pdoSt->bindValue( $ident, (int) $val, PDO::PARAM_INT );
+					}
+					$pdoSt->execute();
 				} else {
 					$this->pollCount = count( $polls );
 				}

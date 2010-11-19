@@ -40,9 +40,12 @@
 				->order( array('title' => 'ASC') )
 				->limit($offset, $limit == 0 ? 1000000 : $limit);
 
-			$result = $query->build();
-			$pdoSt = $this->_sql->prepare( $result[0] );
-			$pdoSt->execute( $result[1] );
+			$query->build();
+			$pdoSt = $this->_sql->prepare( $query->getSql() );
+			foreach( $query->getBoundParams() as $ident=>$val ) {
+				$pdoSt->bindValue( $ident, (int) $val, PDO::PARAM_INT );
+			}
+			$pdoSt->execute();
 			$pages = array();
 			foreach( $pdoSt->fetchAll( PDO::FETCH_ASSOC ) as $row ) {
 				$pages[ $row['id'] ] = $row;

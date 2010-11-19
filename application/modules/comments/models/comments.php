@@ -59,8 +59,16 @@
 				$query->order( array('date' => $order) );
 
 				// Prepare and execute query
-				$pdoSt = $this->_sql->prepare( $result[0] );
-				$pdoSt->execute( $result[1] );
+				$pdoSt = $this->_sql->prepare( $query->getSql() );
+
+				foreach( $query->getBoundParams() as $ident=>$val ) {
+					if ( is_string($val) ) {
+						$pdoSt->bindValue( $ident, $val );
+					} else {
+						$pdoSt->bindValue( $ident, (int) $val, PDO::PARAM_INT );
+					}
+				}
+				$pdoSt->execute();
 			} else {
 				/**
 				 * Get all comments of a certain status. Only cache accepted comments

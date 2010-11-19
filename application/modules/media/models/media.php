@@ -39,18 +39,23 @@
 						->select( '*', '{PREFIX}mod_media_cats' )
 						->limit( $offset, $limit == 0 ? 1000000 : $limit );
 			if ( $limit != 0 || $offset != 0 ) {
-				$result = $query->build();
-				$query = $this->_sql->prepare( $result[0] );
-				$query->execute( $result[1] );
-
+				$query->build();
+				$query = $this->_sql->prepare( $query->getSql() );
+				foreach( $query->getBoundParams() as $ident=>$val ) {
+					$pdoSt->bindValue( $ident, (int) $val, PDO::PARAM_INT );
+				}
+				$pdoSt->execute();
 			} else {
 				// Get from cache instead, if possible
 				$cacheKey = 'media_cats';
 				if ( !($categories = $this->_cache->get($cacheKey)) ) {
 					$query->order( 'name', 'ASC' );
 					$result = $query->build();
-					$query = $this->_sql->prepare( $result[0] );
-					$query->execute( $result[1] );
+					$query = $this->_sql->prepare( $query->getSql() );
+					foreach( $query->getBoundParams() as $ident=>$val ) {
+						$pdoSt->bindValue( $ident, (int) $val, PDO::PARAM_INT );
+					}
+					$pdoSt->execute();
 				}
 			}
 			if ( isset( $query ) ) {
@@ -170,9 +175,9 @@
 			}
 			$query->limit( $offset, $limit == 0 ? 1000000 : $limit )
 				->order( array('date' => 'DESC') );
-			$result = $query->build();
-			$pdoSt = $this->_sql->prepare( $result[0] );
-			foreach( $result[1] as $key=>$val ) {
+			$query->build();
+			$pdoSt = $this->_sql->prepare( $query->getSql() );
+			foreach( $query->getBoundParams() as $key=>$val ) {
 				$pdoSt->bindValue( $key, (int) $val, PDO::PARAM_INT );
 			}
 			$pdoSt->execute();
