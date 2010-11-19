@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 ###
 # Zula Framework CLI
@@ -140,6 +140,7 @@ case "$1" in
 		##
 		## Create a new stateless request to the provided request path
 		##
+		requestPath=${!#}
 		while [[ -n $2 ]]; do
 			case "$2" in
 				-c)
@@ -155,15 +156,16 @@ case "$1" in
 					echo "Report bugs to <bugs@tangocms.org>"
 					exit 0
 					;;
-				*)
+				-*)
 					echo "Invalid argument '$2'. See '-h' for help text." >&2
 					exit 1
 					;;
 			esac
+			shift 2
 		done
 
 		## Get output from the provided request path
-		$pathPHP -f index.php -- -c "$optConfig" -r "${!#}"
+		$pathPHP -f index.php -- -c "$optConfig" -r "$requestPath"
 		exit $?
 		;;
 
