@@ -426,7 +426,7 @@
 								$file );
 			$file = sprintf( '%s/%s.%s.sql', rtrim( $directory, '/' ),
 							$file,
-							$this->getAttribute( PDO::ATTR_DRIVER_NAME ) );
+							$this->getAsttribute( PDO::ATTR_DRIVER_NAME ) );
 							
 			if ( !is_file( $file ) || !is_readable( $file ) ) {
 				if ( !is_file( $fallbackFile ) || !is_readable( $fallbackFile ) ) {
