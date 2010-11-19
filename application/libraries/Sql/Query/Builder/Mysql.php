@@ -18,7 +18,7 @@
 			}
 			
 			if ($this->hasSorts()) {
-				$sql .= ' ORDER BY ' . implode(', ', $this->getSorts());
+				$sql .= ' ORDER BY ' . $this->getOrderBy();
 			}
 			
 			if ($this->hasOffset() OR $this->hasLimit()) {

@@ -48,7 +48,7 @@
 				$bound = $this->_getLimitBoundSql($this->getOffset(), $this->getLimit());
 				$this->setOffset(null);
 				$this->setLimit(null);
-				
+
 				$outer->select('*', $this)
 					  ->where('[subquery_' . $this->getIndex(). '].[rownum] ' . $bound[0], 
 							  $bound[1]);
@@ -66,8 +66,9 @@
 			}
 			
 			$sql = $this->_resolveTokens($sql);
+			$this->setSql($sql);
 			
-			return array($sql, $this->getBinds(), $this->getIndex());
+			return true;
 		}
 		
 		public function getOrder()

@@ -219,6 +219,31 @@
 			return implode(', ', $orders);
 		}
 		
+		public function getSql()
+		{
+			$this->_ensureBuilt();
+			
+			return $this->_data['sql'];
+		}
+		
+		public function getBoundParams()
+		{
+			$this->_ensureBuilt();
+			
+			$bound = $this->getBinds();
+			array_unshift($bound, null);
+			unset($bound[0]);
+			
+			return $bound;
+		}
+		
+		protected function _ensureBuilt()
+		{
+			if (!$this->hasSql()) {
+				$this->build();
+			}
+		}
+		
 		protected function _resolveSources()
 		{
 			$sources = array();
@@ -226,7 +251,10 @@
 				if ($source instanceof Sql_Query_Builder_Abstract) {
 					$q = $source->build();
 					$sources[$index] = '(' . $q[0] . ') AS [subquery_' . $q[2] . ']';
-					$this->addBinds($q[1]);
+					foreach ($this->getBinds() as $bind) {
+						$q[1][] = $bind;
+					}
+					$this->setBinds($q[1]);
 				} else {
 					$sources[$index] = $source;
 				}
