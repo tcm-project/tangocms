@@ -85,47 +85,22 @@
 		 * @return array
 		 */
 		public function getAllArticles( $limit=0, $offset=0, $cid=false, $unpublished=false, $maxDisplayAge=null, $aclCheck=true ) {
-			$statement = 'SELECT * FROM {PREFIX}mod_articles';
-			$where = 'WHERE';
-			$params = array();
+			$query = $this->_sql->makeQuery();
+			$query->select( '*', '{PREFIX}mod_articles' );
 			if ( $cid ) {
-				$where .= ' cat_id = :cid';
-				$params[':cid'] = abs( $cid );
+				$query->where( 'cat_id = :cid', array( ':cid' => abs( $cid ) ) );
 			}
 			if ( $unpublished == false ) {
-				$where .= ($cid ? ' AND' : '').' published = 1';
+				$query->where( 'published = 1' );
 			}
 			if ( $maxDisplayAge != null ) {
-				if ( $cid || $unpublished == false ) {
-					$where .= ' AND';
-				} else {
-					$where .= '';
-				}
-				if ( $this->_sql->getAttribute( PDO::ATTR_DRIVER_NAME ) == 'sqlsrv' ) {
-					$where .= ' DATEADD(second, :mda, [date]) >= NOW()';
-				} else {
-					$where .= ' TIMESTAMPADD(SECOND, :mda, `date`) >= NOW()';
-				}
-				$params[':mda'] = $maxDisplayAge;
+				$query->where( 'DATEADD(second, :mda, `date`) >= NOW()', array( ':mda', $maxDisplayAge ) );
 			}
-			if ( $where != 'WHERE' ) {
-				$statement .= ' '.$where;
-			}
-			$statement .= ' ORDER BY published ASC, `date` DESC';
+			$query->order( array('published' => 'ASC', '`date`' => 'DESC') );
 			if ( $limit != 0 || $offset != 0 || $maxDisplayAge != null) {
-				// Limit the result set.
-				if ( $limit > 0 ) {
-					$statement .= ' LIMIT :limit';
-					$params[':limit'] = $limit;
-				} else if ( $limit == 0 && $offset > 0 ) {
-					$statement .= ' LIMIT 1000000';
-				}
-				if ( $offset > 0 ) {
-					$statement .= ' OFFSET :offset';
-					$params[':offset'] = $offset;
-				}
+				$query->limit( $offset, $limit == 0 ? 1000000 : $limit );
 				// Prepare and execute query
-				$pdoSt = $this->_sql->prepare( $statement );
+				$pdoSt = $this->_sql->prepare( $query->build() );
 				foreach( $params as $ident=>$val ) {
 					$pdoSt->bindValue( $ident, (int) $val, PDO::PARAM_INT );
 				}
@@ -139,7 +114,7 @@
 					$articles = false;
 				}
 				if ( $articles == false ) {
-					$pdoSt = $this->_sql->query( $statement );
+					$pdoSt = $this->_sql->query( $query->build() );
 				} else {
 					$this->articleCount = count( $articles );
 				}
