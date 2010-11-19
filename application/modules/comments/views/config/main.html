@@ -1,4 +1,7 @@
 <form action="<?php echo $this->_router->makeUrl( 'comments', 'config' ); ?>" method="get">
+	<?php if ( $this->_router->getType() == 'standard' ) { ?>
+		<div><input type="hidden" name="url" value="<?php echo $this->_router->getRawRequestPath(); ?>"></div>
+	<?php } ?>
 	<p>
 		<label for="commentsFilter" class="horizontal">{L_[Type]}:</label>
 		<select id="commentsFilter" name="type">
