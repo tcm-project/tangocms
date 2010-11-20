@@ -94,7 +94,7 @@
 				$query->where( 'published = 1' );
 			}
 			if ( $maxDisplayAge != null ) {
-				$query->where( 'DATEADD(second, ?, `date`) >= NOW()', array( $maxDisplayAge ) );
+				$query->where( 'TIMESTAMPADD(second, ?, `date`) >= NOW()', array( $maxDisplayAge ) );
 			}
 			$query->order( array('published' => 'ASC', '`date`' => 'DESC') );
 			if ( $limit != 0 || $offset != 0 || $maxDisplayAge != null) {
@@ -141,7 +141,7 @@
 					$query->where( 'published = 1' );
 				}
 				if ( $maxDisplayAge != null ) {
-					$query->where( 'DATEADD(second, ?, `date`) >= NOW()', array( $maxDisplayAge ) );
+					$query->where( 'TIMESTAMPADD(second, ?, `date`) >= NOW()', array( $maxDisplayAge ) );
 				}
 				$query->build();
 				$pdoSt = $this->_sql->prepare( $query->getSql() );

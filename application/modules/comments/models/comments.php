@@ -41,7 +41,7 @@
 		public function get( $requestPath=null, $status=self::_ACCEPTED, $limit=0, $offset=0, $order='ASC' ) {
 			$query = $this->_sql->makeQuery()->select( '*', '{PREFIX}mod_comments' );
 			if ( $requestPath !== null ) {
-				$query->where( 'url LIKE ?', array( $requestPath.'%' ) )
+				$query->where( 'url LIKE ?', array( $requestPath.'%' ) );
 			}
 			if ( $status != self::_ALL ) {
 				$query->where( 'status = ?', array( $status ) );

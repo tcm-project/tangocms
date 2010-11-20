@@ -49,28 +49,28 @@
 				// Get from cache instead, if possible
 				$cacheKey = 'media_cats';
 				if ( !($categories = $this->_cache->get($cacheKey)) ) {
-					$query->order( 'name', 'ASC' );
+					$query->order( array('name' => 'ASC') );
 					$result = $query->build();
-					$query = $this->_sql->prepare( $query->getSql() );
+					$pdoSt = $this->_sql->prepare( $query->getSql() );
 					foreach( $query->getBoundParams() as $ident=>$val ) {
 						$pdoSt->bindValue( $ident, (int) $val, PDO::PARAM_INT );
 					}
 					$pdoSt->execute();
 				}
 			}
-			if ( isset( $query ) ) {
+			if ( isset( $pdoSt ) ) {
 				$categories = array();
-				foreach( $query->fetchAll( PDO::FETCH_ASSOC ) as $row ) {
+				foreach( $pdoSt->fetchAll( PDO::FETCH_ASSOC ) as $row ) {
 					$categories[ $row['id'] ] = $row;
 				}
-				$query->closeCursor();
+				$pdoSt->closeCursor();
 				if ( isset( $cacheKey ) ) {
 					$this->_cache->add( $cacheKey, $categories );
 				}
 				// Get how many results there would have been
-				$query = $this->_sql->query( 'SELECT COUNT(*) FROM {PREFIX}mod_media_cats' );
-				$this->categoryCount = $query->fetch( PDO::FETCH_COLUMN );
-				$query->closeCursor();
+				$pdoSt = $this->_sql->query( 'SELECT COUNT(*) FROM {PREFIX}mod_media_cats' );
+				$this->categoryCount = $pdoSt->fetch( PDO::FETCH_COLUMN );
+				$pdoSt->closeCursor();
 			} else {
 				$this->categoryCount = count( $categories );
 			}

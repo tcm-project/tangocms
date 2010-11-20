@@ -43,7 +43,7 @@
 					$pdoSt->bindValue( $ident, (int) $val, PDO::PARAM_INT );
 				}
 				$pdoSt->execute();
-			} else 
+			} else {
 				$cacheKey = 'contact_forms'; # Used later on as well
 				$forms = $this->_cache->get( $cacheKey );
 				if ( $forms == false ) {
