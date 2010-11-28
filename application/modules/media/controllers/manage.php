@@ -161,7 +161,7 @@
 				if ( $this->_acl->resourceExists( $resource ) && $this->_acl->check( $resource ) ) {
 					if ( $this->_input->checkToken( 'get' ) ) {
 						$this->_model()->deleteItem( $item['id'] );
-						zula_full_rmdir( $item['path_fs'] );
+						zula_full_rmdir( $item['path_fs'].'/'.dirname($item['filename']) );
 						$this->_event->success( t('Deleted media item') );
 						// Redirect back to the parent media category
 						try {
