@@ -78,7 +78,7 @@
 			// Build the form to use
 			$view = new View( 'captcha.html' );
 			$view->assign( array(
-								'url'	=> $this->_router->makeUrl( 'antispam', 'captcha', $captchaId, 'main' ),
+								'url'	=> $this->_router->makeUrl( 'antispam', 'captcha', $captchaId, 'main' )->make(),
 								'id'	=> $captchaId,
 								));
 			return $view->getOutput();
