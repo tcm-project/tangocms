@@ -5,6 +5,26 @@ TangoCMS NEWS (Basic ChangeLog for Users)
 A complete ChangeLog can be found at http://tangocms.org/changelog
 
 
+2.6.1 (2010-11-29)
+========================
+
+-- Security Fixes
+
+	* Security #326: Users can change passwords without entering the old password
+
+-- Feature Improvements/Modifications
+
+	* Feature #324: Upgrade to jQuery 1.4.4
+
+-- Bug Fixes
+
+	* Bug #325: zula.sh doesn't work on OS X or Ubuntu
+	* Bug #327: Manage comments incorrect URL when selecting type + standard router
+	* Bug #336: Undefined property: PDOStatement::$closeCursor
+	* Bug #338: Media category dir removed when deleting item
+	* Bug #339: PHP segfaults viewing articles w/ traditional captcha
+
+
 2.6.0 (2010-11-13)
 ========================
 
