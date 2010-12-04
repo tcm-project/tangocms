@@ -22,7 +22,7 @@
 		<parameterValidation type="RegularExpression,AllowEmpty" validationString="^[^&quot;]*$" />
 		<parameterEntry type="TextFile" scope="setup.sql" match="dbPass"/>
 	</parameter>
-	<parameter name="Zula config.ini.php dbUserPassword" defaultValue="pass = {dbUserPassword}" tags="Hidden,MySQL">
+	<parameter name="Zula config.ini.php dbUserPassword" defaultValue="pass = &quot;{dbUserPassword}&quot;" tags="Hidden,MySQL">
 		<parameterEntry type="TextFile" scope="\\config\\default\\config\.ini\.php$" match="pass\s*=\s*[^\r\n]*" />
 	</parameter>
 
