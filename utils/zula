@@ -122,9 +122,15 @@ case $1 in
 		## Run the correct Zula request path
 		(
 			cd setup
-			$pathPHP -f index.php -- -c "$optConfig" -r "install/checks"\
-									 -e "$optEmail" -p "$optPass" -t "$optTitle" -u "$optUser"\
-									 --dsn "$optDsn" --dbPrefix "$optPrefix"
+			$pathPHP -f index.php -- \
+				-c "$optConfig" \
+				-r "install/checks" \
+				-e "$optEmail" \
+				-p "$optPass" \
+				-t "$optTitle" \
+				-u "$optUser" \
+				--dsn "$optDsn" \
+				--dbPrefix "$optPrefix"
 		)
 		code=$?
 		if (( $code == 0 )); then

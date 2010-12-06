@@ -132,8 +132,12 @@ if [[ $taskJsCompress = true ]]; then
 	fi
 	for sourceFile in $(find . -name "*.src.js"); do
 		fileName=$(basename "$sourceFile" .src.js).js
-		$javaBin -jar "$optPathClosure" --js "$sourceFile" --charset utf-8 --js_output_file "$(dirname "$sourceFile")/$fileName" \
-					  --warning_level QUIET
+		$javaBin \
+			-jar "$optPathClosure" \
+			--warning_level QUIET
+			--charset utf-8 \
+			--js "$sourceFile" \
+			--js_output_file "$(dirname "$sourceFile")/$fileName"
 		verbose || echo -ne "."
 	done
 	verbose || echo " done!"
