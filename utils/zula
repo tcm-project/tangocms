@@ -24,7 +24,7 @@ if [[ -z $pathPHP || $($pathPHP -v | grep "(cli)" &> /dev/null; echo -n $?) -ne 
 fi
 
 ## See what action we need to run
-case "$1" in
+case $1 in
 	--install)
 		##
 		## Setup a new configuration profile and install Zula using it
@@ -32,27 +32,27 @@ case "$1" in
 		optPrefix=
 		optTitle=Untitled1
 		while [[ -n $2 ]]; do
-			case "$2" in
+			case $2 in
 				-c)
-					optConfig="$3"
+					optConfig=$3
 					;;
 				--dsn)
-					optDsn="$3"
+					optDsn=$3
 					;;
 				-e)
-					optEmail="$3"
+					optEmail=$3
 					;;
 				-p)
-					optPass="$3"
+					optPass=$3
 					;;
 				--prefix)
-					optPrefix="$3"
+					optPrefix=$3
 					;;
 				-t)
-					optTitle="$3"
+					optTitle=$3
 					;;
 				-u)
-					optUser="$3"
+					optUser=$3
 					;;
 				-h)
 					echo "Zula Framework (cli)"
@@ -108,7 +108,7 @@ case "$1" in
 		fi
 
 		## Create the config profile directory
-		if (( $(cp -a config/default.dist config/$optConfig; echo -n $?) > 0 )); then
+		if (( $(cp -a config/default.dist "config/$optConfig"; echo -n $?) > 0 )); then
 			echo "--- Unable to create config profile directory." >&2
 		fi
 
@@ -130,7 +130,7 @@ case "$1" in
 		if (( $code == 0 )); then
 			echo -e "\nPlease login to your Zula application using the above details."
 		else
-			rm -rf config/$optConfig
+			rm -rf "config/$optConfig"
 			echo -e "\nInstallation failed! Configuration profile has been removed."
 		fi
 		exit $code
@@ -142,9 +142,9 @@ case "$1" in
 		##
 		requestPath=${!#}
 		while [[ -n $2 ]]; do
-			case "$2" in
+			case $2 in
 				-c)
-					optConfig="$3"
+					optConfig=$3
 					shift 2
 					;;
 				-h)
@@ -174,7 +174,7 @@ case "$1" in
 		## Attempt to upgrade to the latest version
 		##
 		while [[ -n $2 ]]; do
-			case "$2" in
+			case $2 in
 				-h)
 					echo "Zula Framework (cli)"
 					echo -e "Usage: zula.sh --upgrade\n"
@@ -194,7 +194,7 @@ case "$1" in
 		fi
 		count=0
 		for config in config/*; do
-			configName=$(basename $config)
+			configName=$(basename "$config")
 			if [[ $configName = default.dist ]]; then
 				continue
 			elif (( $count > 0 )); then

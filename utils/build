@@ -22,12 +22,12 @@ taskPackage=false
 taskCheckExceptions=false
 taskLint=false
 
-while [[ $1 == -* ]]; do
-	case "$1" in
+while [[ $1 = * ]]; do
+	case $1 in
 		-j)
 			taskJsCompress=true
 			if [[ $# -gt 1 && $2 =~ ^[^-] ]]; then
-				optPathClosure="$2"
+				optPathClosure=$2
 				shift 2;
 			else
 				shift
@@ -45,7 +45,7 @@ while [[ $1 == -* ]]; do
 			taskPackage=true
 			taskLint=true
 			if [[ $# -gt 1 && $2 =~ ^[^-] ]]; then
-				optPackageMode="$2"
+				optPackageMode=$2
 				shift 2;
 			else
 				shift
@@ -73,7 +73,7 @@ while [[ $1 == -* ]]; do
 			echo "Report bugs to <bugs@tangocms.org>"
 			exit 0
 			;;
-		-*)
+		*)
 			echo "Invalid argument '$1'. See '-h' for help text." >&2
 			exit 1
 			;;
@@ -94,12 +94,12 @@ if [[ $taskLint = true ]]; then
 	verbose || echo -n ":: PHP syntax check on *.php, *.html and *.txt files (this may take a while) ....."
 	failedCount=0
 	for file in $(find . -name "*.php" -o -name "*.html" -o -name "*.txt"); do
-		lintResult=$(php -l $file 2>&1 > /dev/null)
+		lintResult=$(php -l "$file" 2>&1 > /dev/null)
 		if (( $? > 0 )); then
 			if [[ $failedCount -eq 0 && $optVerbose = true ]]; then
 				echo "" # Add a new line
 			fi
-			echo $lintResult
+			echo "$lintResult"
 			let failedCount++
 		fi
 	done
@@ -131,8 +131,8 @@ if [[ $taskJsCompress = true ]]; then
 		exit 2
 	fi
 	for sourceFile in $(find . -name "*.src.js"); do
-		fileName=$(basename $sourceFile .src.js).js
-		$javaBin -jar $optPathClosure --js $sourceFile --charset utf-8 --js_output_file $(dirname $sourceFile)/$fileName \
+		fileName=$(basename "$sourceFile" .src.js).js
+		$javaBin -jar "$optPathClosure" --js "$sourceFile" --charset utf-8 --js_output_file "$(dirname "$sourceFile")/$fileName" \
 					  --warning_level QUIET
 		verbose || echo -ne "."
 	done
@@ -153,15 +153,15 @@ if [[ $taskCheckExceptions = true ]]; then
 				 perl -pi -e 's/.* ([^\(; ]+) extends.*/\1/' |
 				 sort | uniq | tr '\n' ' ' | sed 's/ $//')
 	## Classes which extend previously discovered exceptions
-	toCheck="$expDefined"
+	toCheck=$expDefined
 	while [[ ! -z $toCheck ]]; do
 		expDefinedTmp=$(find . -name '*.php' -not -path "*/3rd_party/*" -print0 | xargs -0 grep -iE "extends (${toCheck// /|})" |
 						perl -pi -e 's/.* ([^\(; ]+) extends.*/\1/' |
 						sort | uniq | tr '\n' ' ' | sed 's/ $//')
 		expDefined="$expDefined $expDefinedTmp"
-		toCheck="$expDefinedTmp"
+		toCheck=$expDefinedTmp
 	done
-	expDefined=$(echo $expDefined | tr ' ' '\n' | sort | tr '\n' ' ' | sed 's/ $//')
+	expDefined=$(echo "$expDefined" | tr ' ' '\n' | sort | tr '\n' ' ' | sed 's/ $//')
 
 	## Display the totals and exception names
 	echo ":: Exceptions that need to be defined"
@@ -203,47 +203,47 @@ if [[ $taskPackage = true ]]; then
 	curPwd=$PWD
 
 	if [[ -d .git ]]; then
-		git checkout-index -a -f --prefix=$tmpDir/
+		git checkout-index -a -f --prefix="$tmpDir/"
 	elif [[ -d .svn ]]; then
-		svn export . $tmpDir/
+		svn export . "$tmpDir/"
 	else
-		cp -ar . $tmpDir
+		cp -ar . "$tmpDir"
 	fi
 
 	## Move some files around and do certain edits depending on application mode
-	rm -rf $tmpDir/{config/default,tmp/*,application/logs/*.log,assets/uploads/*,.gitignore,*~}
-	touch $tmpDir/{tmp/index.html,assets/uploads/index.html} 2> /dev/null
-	mv $tmpDir/config/default.dist $tmpDir/config/default
+	rm -rf "$tmpDir"/{config/default,tmp/*,application/logs/*.log,assets/uploads/*,.gitignore,*~}
+	touch "$tmpDir"/{tmp/index.html,assets/uploads/index.html} 2> /dev/null
+	mv "$tmpDir/config/default.dist" "$tmpDir/config/default"
 
 	## Edit and remove some files depending on required application mode
 	if [[ $optPackageMode = production ]]; then
-		find $tmpDir -name "*.src.js" -delete
-		rm -rf $tmpDir/assets/js/ckeditor/_source $tmpDir/utils
+		find "$tmpDir" -name "*.src.js" -delete
+		rm -rf "$tmpDir/assets/js/ckeditor/_source" "$tmpDir/utils"
 		confDebugFlag=0
 	else
 		optPackageMode=development
 		confDebugFlag=1
 	fi
-	sed -i "s/'\(development\|production\)'/'$optPackageMode'/" $tmpDir/index.php
+	sed -i "s/'\(development\|production\)'/'$optPackageMode'/" "$tmpDir/index.php"
 	sed -i -e "s/\(php_display_errors\|zula_detailed_error\|zula_show_errors\) = \([0-1]\{1\}\)/\1 = $confDebugFlag/" \
-		$tmpDir/config/default/config.ini.php
+		"$tmpDir/config/default/config.ini.php"
 
 	if [[ $optIsMsWag = true && -d $tmpDir/ms-webapp ]]; then
-		mkdir $tmpDir/$projectId
-		mv $tmpDir/* $tmpDir/$projectId 2> /dev/null
-		mv $tmpDir/$projectId/ms-webapp/* $tmpDir
-		mv $tmpDir/$projectId/setup/modules/install/schema.sql $tmpDir/$projectId.sql
-		rm -rf $tmpDir/$projectId/setup $tmpDir/$projectId/ms-webapp
+		mkdir "$tmpDir/$projectId"
+		mv "$tmpDir"/* "$tmpDir/$projectId" 2> /dev/null
+		mv "$tmpDir/$projectId"/ms-webapp/* "$tmpDir"
+		mv "$tmpDir/$projectId/setup/modules/install/schema.sql" "$tmpDir/$projectId.sql"
+		rm -rf "$tmpDir/$projectId/setup" "$tmpDir/$projectId/ms-webapp"
 
-		(cd $tmpDir && zip -qr9 $curPwd/$packageName-wag.zip . && verbose || echo -ne ".")
+		(cd "$tmpDir" && zip -qr9 "$curPwd/$packageName-wag.zip" . && verbose || echo -ne ".")
 	else
-		rm -rf $tmpDir/ms-webapp
-		tar -czf $packageName.tar.gz -C $tmpDir/../ $packageName && verbose || echo -ne "."
-		tar -cjf $packageName.tar.bz2 -C $tmpDir/../ $packageName && verbose || echo -ne "."
-		(cd $tmpDir/../ && zip -qr9 $curPwd/$packageName.zip $packageName && verbose || echo -ne ".")
+		rm -rf "$tmpDir/ms-webapp"
+		tar -czf "$packageName.tar.gz" -C "$tmpDir/../" "$packageName" && verbose || echo -ne "."
+		tar -cjf "$packageName.tar.bz2" -C "$tmpDir/../" "$packageName" && verbose || echo -ne "."
+		(cd "$tmpDir/../" && zip -qr9 "$curPwd/$packageName.zip" "$packageName" && verbose || echo -ne ".")
 	fi
 
-	rm -rf $tmpDir
+	rm -rf "$tmpDir"
 	verbose || echo " done!"
 fi
 
