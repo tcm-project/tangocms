@@ -36,7 +36,7 @@
 			if ( isset( $imageInfo['bits'] ) ) {
 				$memoryNeeded = round( ($imageInfo[0] * $imageInfo[1] * $imageInfo['bits'] * $imageInfo['channels'] / 8 + pow(2, 16)) * 1.65 );
 				$memoryLimit = zula_byte_value( ini_get('memory_limit') );
-				if ( (memory_get_usage() + $memoryNeeded) > $memoryLimit * pow( 1024, 2 ) ) {
+				if ( (memory_get_usage() + $memoryNeeded) > $memoryLimit ) {
 					throw new Image_LoadFailed( 'image would consume more memory than current limit' );
 				}
 			}
