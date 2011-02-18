@@ -260,8 +260,7 @@ input[type="radio"]:focus, input[type="checkbox"]:focus {
 }
 
 select {
-	height: 26px;
-	padding: 4px 5px;
+	padding: 2px;
 }
 
 option {
