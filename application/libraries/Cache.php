@@ -76,7 +76,7 @@
 							break;
 
 						case 'Memcached':
-							$extension = 'memcache';
+							$extension = 'memcached';
 							break;
 
 						default:

@@ -15,10 +15,10 @@
 	class Cache_memcached extends Cache_Base {
 
 		/**
-		 * Whether to use compression
-		 * @var mixed
+		 * Memcached object
+		 * @var object
 		 */
-		private $compression = false;
+		protected $memcached = null;
 
 		/**
 		 * Constructor
@@ -26,14 +26,25 @@
 		 * @return object
 		 */
 		public function __construct() {
-			if ( !extension_loaded( 'memcache' ) ) {
-				throw new Exception( 'Memcache extension is currently not loaded, unable to use Memcached caching' );
+			if ( !extension_loaded( 'memcached' ) ) {
+				throw new Cache_Exception( 'PHP extension "memcached" not loaded' );
 			}
-			if ( extension_loaded( 'zlib' ) ) {
-				$this->compression = MEMCACHE_COMPRESSED;
+			try {
+				$servers = explode( ',', $this->_config->get('cache/memcached_servers') );
+			} catch ( Config_KeyNoExist $e ) {
+				$servers = array();
 			}
-			foreach( $this->_config->get('memcached_servers') as $server ) {
-				Memcache::addServer($server);
+			if ( empty( $servers ) ) {
+				$servers = array('localhost:11211');
+			}
+			// Configure memcached
+			$this->memcached = new Memcached;
+			foreach( $servers as $server ) {
+				$split = explode( ':', $server );
+				if ( !isset( $split[1] ) ) {
+					$split[1] = 11211;
+				}
+				$this->memcached->addServer( $split[0], (int) $split[1] );
 			}
 		}
 
@@ -46,12 +57,10 @@
 		 * @return bool
 		 */
 		public function add( $key, $data, $overwrite=false ) {
-			if ( $key === null ) {
-				return false;
-			} else if ( $overwrite == false ) {
-				return Memcache::add( $key, $data, $this->compression, $this->ttl() );
+			if ( $overwrite == false ) {
+				return $this->memcached->add( $key, $data, $this->ttl() );
 			} else {
-				return Memcache::set( $key, $data, $this->compression, $this->ttl() );
+				return $this->memcached->set( $key, $data, $this->ttl() );
 			}
 		}
 
@@ -62,7 +71,7 @@
 		 * @return mixed
 		 */
 		public function get( $key ) {
-			return $key === null ? false : Memcache::get( $key );
+			return $this->memcached->get( $key );
 		}
 
 		/**
@@ -74,11 +83,20 @@
 		public function delete( $key ) {
 			$delCount = 0;
 			foreach( array_filter( (array) $key ) as $cacheKey ) {
-				if ( Memcache::delete( $key ) ) {
+				if ( $this->memcached->delete( $key ) ) {
 					++$delCount;
 				}
 			}
 			return $delCount;
+		}
+
+		/**
+		 * Purges all cached items
+		 *
+		 * @return bool
+		 */
+		public function purge() {
+			return $this->memcached->flush();
 		}
 
 	}
