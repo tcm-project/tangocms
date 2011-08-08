@@ -1,0 +1,19 @@
+php_extensions:
+	- ctype
+	- date
+	- dom
+	- filter
+	- hash
+	- pdo
+	- pdo_mysql
+	- pcre
+	- session
+	- simplexml
+	- fileinfo
+	- gd
+
+php_short_open_tag: Off
+php_post_max_size: 8M
+php_upload_max_filesize: 6M
+
+shared_writable_dirs: [application/logs, assets/uploads, config/default, config/default/layouts, tmp]
