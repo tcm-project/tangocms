@@ -8,14 +8,14 @@
 		<parameterEntry type="TextFile" scope="setup.sql" match="dbServer"/>
 	</parameter>
 	<parameter name="Zula config.ini.php dbServer" defaultValue="host = {dbServer}" tags="Hidden,MySQL">
-		<parameterEntry type="TextFile" scope="\\config\\default\\config\.ini\.php$" match="host\s*=\s*[^\r\n]*" />
+		<parameterEntry type="TextFile" scope="\\config\\default\\config\.ini\.php$" match="host\s*=\s*([^\r\n]*)" />
 	</parameter>
 
 	<parameter name="dbUsername" tags="MySQL,dbUsername" >
 		<parameterEntry type="TextFile" scope="setup.sql" match="dbUser"/>
 	</parameter>
 	<parameter name="Zula config.ini.php dbUsername" defaultValue="user = {dbUsername}" tags="Hidden,MySQL">
-		<parameterEntry type="TextFile" scope="\\config\\default\\config\.ini\.php$" match="user\s*=\s*[^\r\n]*" />
+		<parameterEntry type="TextFile" scope="\\config\\default\\config\.ini\.php$" match="user\s*=\s*([^\r\n]*)" />
 	</parameter>
 
 	<parameter name="dbUserPassword" tags="New,Password,MySQL,dbUserPassword">
@@ -23,14 +23,14 @@
 		<parameterEntry type="TextFile" scope="setup.sql" match="dbPass"/>
 	</parameter>
 	<parameter name="Zula config.ini.php dbUserPassword" defaultValue="pass = &quot;{dbUserPassword}&quot;" tags="Hidden,MySQL">
-		<parameterEntry type="TextFile" scope="\\config\\default\\config\.ini\.php$" match="pass\s*=\s*[^\r\n]*" />
+		<parameterEntry type="TextFile" scope="\\config\\default\\config\.ini\.php$" match="pass\s*=\s*([^\r\n]*)" />
 	</parameter>
 
 	<parameter name="dbName" defaultValue="tangocms" tags="MySQL,dbName">
 		<parameterEntry type="TextFile" scope="setup.sql" match="dbName"/>
 	</parameter>
 	<parameter name="Zula config.ini.php dbName" defaultValue="database = {dbName}" tags="Hidden,MySQL">
-		<parameterEntry type="TextFile" scope="\\config\\default\\config\.ini\.php$" match="database\s*=\s*[^\r\n]*" />
+		<parameterEntry type="TextFile" scope="\\config\\default\\config\.ini\.php$" match="database\s*=\s*([^\r\n]*)" />
 	</parameter>
 
    <parameter name="dbTablePrefix" friendlyName="Table Prefix" description="Prefix to use for tables, if any." defaultValue="tcm_" tags="MySQL">
@@ -38,7 +38,7 @@
 	   <parameterEntry type="TextFile" scope="tangocms.sql" match="{PREFIX}"/>
    </parameter>
    <parameter name="Zula config.ini.php dbPrefix" defaultValue="prefix = {dbTablePrefix}" tags="Hidden,MySQL">
-	   <parameterEntry type="TextFile" scope="\\config\\default\\config\.ini\.php$" match="prefix\s*=\s*[^\r\n]*" />
+	   <parameterEntry type="TextFile" scope="\\config\\default\\config\.ini\.php$" match="prefix\s*=\s*([^\r\n]*)" />
    </parameter>
 
 	<!-- Database administration details and SQL connection string for the SQL files -->
