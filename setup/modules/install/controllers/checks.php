@@ -36,7 +36,7 @@
 										'passed'=> false,
 										'values'=> array(
 														'ctype', 'date', 'dom', 'filter', 'hash', 'pdo',
-														'pdo_mysql', 'pcre', 'session', 'json',
+														'pcre', 'session', 'json',
 														)
 										),
 						'optExts' => array(
@@ -44,6 +44,10 @@
 										'passed'=> true,
 										'values'=> array('gd', 'FileInfo')
 										),
+                        'sqlExts' => array( 'title' => t('PHP Drivers'),
+                                            'passed' => false,
+                                            'values' => array('pdo_mysql', 'pdo_sqlsrv')
+                                            ),
 						'files'	=> array(
 										'title'	=> t('Writable files'),
 										'passed'=> false,
@@ -75,6 +79,7 @@
 					switch( $name ) {
 						case 'exts':
 						case 'optExts':
+                        case 'sqlExts':
 							$results[ $val ] = extension_loaded( $val );
 							break;
 
@@ -83,7 +88,10 @@
 							$results[ $val ] = zula_is_writable( $val );
 					}
 				}
-				if ( $name != 'optExts' && in_array( false, $results, true ) ) {
+                if ( $name == 'sqlExts' && in_array( true, $results, true ) ) {
+                    $passed = true;
+                    $checks[ $name ]['passed'] = true;
+                } else if ( $name != 'optExts' && in_array( false, $results, true ) ) {
 					$passed = false;
 					$checks[ $name ]['passed'] = false;
 				} else {

@@ -52,7 +52,14 @@
 				}
 			} else {
 				$form = new View_Form( 'sql.html', 'install' );
-				$form->addElement( 'type', 'mysql', t('Database type'), new Validator_inarray( array('mysql', 'sqlsrv') ) );
+                $types = array();
+                if ( extension_loaded( 'pdo_mysql' ) ) {
+                    $types[] = 'mysql';
+                }
+                if ( extension_loaded( 'pdo_sqlsrv' ) ) {
+                    $types[] = 'sqlsrv';
+                }
+				$form->addElement( 'type', 'mysql', t('Database type'), new Validator_inarray( $types ) );
 				$form->addElement( 'user', null, t('Username'), new Validator_Length(1, 16) );
 				$form->addElement( 'pass', null, t('Password'), array(new Validator_Length(0, 64), new Validator_Regex('#^[^"]*$#')) );
 				$form->addElement( 'host', 'localhost', t('SQL host'), new Validator_Length(1, 80) );
