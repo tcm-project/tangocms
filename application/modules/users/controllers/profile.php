@@ -40,7 +40,7 @@
 					$user['email'] = t('Hidden');
 				}
                 
-                $user['avatar'] = $this->getAvatar($user['email']);
+                                $user['avatar'] = $this->getAvatar($user['email']);
                 
 				// Output main view
 				$view = $this->loadView( 'profile/profile.html' );
