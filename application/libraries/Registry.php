@@ -1,3 +1,4 @@
+<?php
 /**
  * Zula Framework Registry
  *
