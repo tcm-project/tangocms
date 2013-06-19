@@ -39,6 +39,9 @@
 				if ( $uid != $this->_session->getUserId() && $user['hide_email'] && !$this->_acl->check( 'users_edit' ) ) {
 					$user['email'] = t('Hidden');
 				}
+                
+                                $user['avatar'] = $this->getAvatar($user['email']);
+                
 				// Output main view
 				$view = $this->loadView( 'profile/profile.html' );
 				$view->assign( $user );
@@ -46,6 +49,26 @@
 			} catch ( Ugmanager_UserNoExist $e ) {
 				throw new Module_ControllerNoExist;
 			}
+		}
+		
+		/**
+		 * Get image avatar from gravatar
+		 *
+		 * @author Jefersson Nathan
+		 *
+		 * @param string $mail
+		 * @param integer|string $width
+		 *
+		 * @return string
+		 */
+		public function getAvatar($mail, $width = 200) {
+		    	$imageName    = md5(strtolower(trim($mail)));
+				$requestImage = 'http://www.gravatar.com/avatar/'. $imageName;
+				
+				$imageWidth    = (string) $width;
+				$requestImage .= '?s='.$imageWidth;
+				
+				return $requestImage;
 		}
 
 		/**
